@@ -1,17 +1,17 @@
-name: "Cant_eMLR"
+name: Cant_eMLR
 output_dir: ../docs
 navbar:
-  title: "Cant_eMLR"
+  title: Cant - eMLR(C*)
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/jens-daniel-mueller/Cant_eMLR
 output:
   workflowr::wflow_html:
-    toc: yes
-    toc_float: yes
-    theme: cosmo
-    highlight: textmate
+    theme: flatly
+    code_folding: hide
