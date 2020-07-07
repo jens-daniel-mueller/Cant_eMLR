@@ -5,12 +5,17 @@ navbar:
   left:
   - text: Home
     href: index.html
+  - text: Data
+    href: read_data.html
   - text: License
     href: license.html
   right:
   - icon: fa-github
     text: Source code
     href: https://github.com/jens-daniel-mueller/Cant_eMLR
+  - icon: fa-home
+    text: Jens' homepage
+    href: https://jens-daniel-mueller.github.io/
 output:
   workflowr::wflow_html:
     theme: flatly
