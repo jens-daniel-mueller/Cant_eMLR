@@ -28,7 +28,7 @@ theme_set(theme_bw())
 
 # Reading original data
 
-The file `GLODAPv2.2019_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/) was used.
+The file `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/) was used.
 
 Only rows which have at least one `talk` or `tco2` observation were subsetted. 
 
