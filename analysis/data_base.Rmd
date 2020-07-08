@@ -157,7 +157,7 @@ GLODAP_hovmoeller_year %>%
 
 ## Maps
 
-```{r coverage_maps_decade, fig.asp=2}
+```{r coverage_maps_decade, fig.asp=2.5}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
@@ -173,7 +173,7 @@ GLODAP_map_decade %>%
 
 ```
 
-```{r coverage_maps_year, fig.asp=2}
+```{r coverage_maps_year, fig.asp=3.5}
 
 GLODAP_map_year %>%
   filter(year > 1990) %>% 
