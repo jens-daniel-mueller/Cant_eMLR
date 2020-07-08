@@ -3,10 +3,8 @@ output_dir: ../docs
 navbar:
   title: Cant - eMLR(C*)
   left:
-  - text: Home
-    href: index.html
   - text: Data
-    href: read_data.html
+    href: data_base.html
   - text: License
     href: license.html
   right:

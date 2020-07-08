@@ -1,0 +1,135 @@
+---
+title: "Data base"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Reading original data
+
+The file `GLODAPv2.2019_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/) was used.
+
+Only rows which have at least one `talk` or `tco2` observation were subsetted. 
+
+```{r rewrite_GLODAP_master_file, eval=FALSE}
+
+GLODAP <- read_csv(here::here("data", "GLODAPv2.2020_Merged_Master_File.csv"),
+                   na = "-9999",
+                   col_types = cols(.default = col_double()))
+
+# relevant columns
+GLODAP <- GLODAP %>% 
+  select(cruise:phtsqc)
+
+# select columns with at least one talk or tco2 observation
+GLODAP <- GLODAP %>% 
+  filter(!is.na(talk) | !is.na(tco2))
+
+# date and decade column
+GLODAP <- GLODAP %>% 
+  mutate(date = ymd(paste(year, month, day)),
+         decade = as.factor(floor(year / 10) * 10))
+
+GLODAP  %>%  write_csv(here::here("data/_summarized_data_files", "GLODAPv2.2020_Merged_Master_File_JM.csv"))
+
+```
+
+# Overview GLODAPv2-2019
+
+Saptio-temporal distribution of `talk` and `tco2` data.
+
+```{r reopen_GLODAP}
+
+GLODAP <- read_csv(here::here("data/_summarized_data_files",
+                              "GLODAPv2.2020_Merged_Master_File_JM.csv"),
+                   guess_max = 1e5)
+
+GLODAP <- GLODAP %>% 
+  mutate(decade = as.factor(decade))
+
+```
+
+## Histograms
+
+```{r histogramm_tco2}
+
+GLODAP %>% 
+  filter(!is.na(tco2)) %>% 
+  ggplot(aes(latitude, fill=decade))+
+  geom_vline(xintercept = -30, col="red")+
+  geom_histogram(binwidth = 10, col="black", boundary = 0)+
+  coord_cartesian(expand = 0)+
+  scale_x_continuous(breaks = seq(-85,90,10))+
+  scale_fill_viridis_d()+
+  labs(title = "tco2 observations")
+
+```
+
+```{r histogramm_talk}
+
+GLODAP %>% 
+  filter(!is.na(talk)) %>% 
+  ggplot(aes(latitude, fill=decade))+
+  geom_vline(xintercept = -30, col="red")+
+  geom_histogram(binwidth = 10, col="black", boundary = 0)+
+  coord_cartesian(expand = 0)+
+  scale_x_continuous(breaks = seq(-85,90,10))+
+  scale_fill_viridis_d()+
+  labs(title = "talk observations")
+
+```
+
+```{r histogramm_tCO2_talk}
+
+GLODAP %>% 
+  filter(!is.na(talk) & !is.na(tco2)) %>% 
+  ggplot(aes(latitude, fill=decade))+
+  geom_vline(xintercept = -30, col="red")+
+  geom_histogram(binwidth = 10, col="black", boundary = 0)+
+  coord_cartesian(expand = 0)+
+  scale_x_continuous(breaks = seq(-85,90,10))+
+  scale_fill_viridis_d()+
+  labs(title = "Paired tco2 + talk observations")
+
+```
+
+## World map
+
+```{r worldmap_surface_tco2_talk}
+
+mapWorld <- borders("world", colour="gray60", fill="gray60")
+
+GLODAP %>% 
+  filter(depth < 10) %>% 
+  ggplot(aes(longitude, latitude))+
+  mapWorld+
+  geom_point()+
+  geom_hline(yintercept = c(-30, -65), col="red")+
+  scale_x_continuous(breaks = seq(-180, 180, 30))+
+  scale_y_continuous(breaks = seq(-90, 90, 30))+
+  coord_quickmap(expand = FALSE)+
+  labs(title = "Observations within 0-10m water depth")
+
+```
+
