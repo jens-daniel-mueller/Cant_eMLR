@@ -40,29 +40,60 @@ GLODAP <- read_csv(here::here("data", "GLODAPv2.2020_Merged_Master_File.csv"),
 
 # relevant columns
 GLODAP <- GLODAP %>% 
-  select(cruise:phtsqc)
+  select(cruise:talkqc)
 
-# select columns with at least one talk or tco2 observation
-GLODAP <- GLODAP %>% 
-  filter(!is.na(talk) | !is.na(tco2))
+# select rows with tco2, good flag
+GLODAP_clean <- GLODAP %>% 
+  filter(!is.na(tco2))
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(tco2f == "2")
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(tco2qc == "1")
+
+
+# select rows with talk, good flag
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(!is.na(talk))
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(talkf == "2")
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(talkqc == "1")
+
+
+# select rows with talk, good flag
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(!is.na(phosphate))
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(phosphatef == "2")
+
+GLODAP_clean <- GLODAP_clean %>% 
+  filter(phosphateqc == "1")
+
 
 # date and decade column
-GLODAP <- GLODAP %>% 
+GLODAP_clean <- GLODAP_clean %>% 
   mutate(date = ymd(paste(year, month, day)),
          decade = as.factor(floor(year / 10) * 10))
 
-GLODAP  %>%  write_csv(here::here("data/_summarized_data_files", "GLODAPv2.2020_Merged_Master_File_JM.csv"))
+GLODAP_clean  %>%  write_csv(here::here("data/_summarized_data_files", "GLODAPv2.2020_Merged_Master_File_clean.csv"))
 
 ```
 
-# Overview GLODAPv2-2019
+# Overview GLODAPv2-2020
 
-Saptio-temporal distribution of `talk` and `tco2` data.
+Saptio-temporal distribution of paired `talk`, `tco2`, and `phosphate` data.
 
 ```{r reopen_GLODAP}
 
 GLODAP <- read_csv(here::here("data/_summarized_data_files",
-                              "GLODAPv2.2020_Merged_Master_File_JM.csv"),
+                              "GLODAPv2.2020_Merged_Master_File_clean.csv"),
                    guess_max = 1e5)
 
 GLODAP <- GLODAP %>% 
@@ -70,66 +101,90 @@ GLODAP <- GLODAP %>%
 
 ```
 
+## Gridding
+
+```{r spatial_gridding}
+
+GLODAP <- GLODAP %>% 
+  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+         lat_grid = as.numeric(as.character(lat_grid)),
+         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = as.numeric(as.character(lon_grid)))
+
+GLODAP_map_year <- GLODAP %>% 
+  group_by(year, lat_grid, lon_grid) %>% 
+  tally() %>% 
+  ungroup()
+
+GLODAP_map_decade <- GLODAP %>% 
+  group_by(decade, lat_grid, lon_grid) %>% 
+  tally() %>% 
+  ungroup()
+
+GLODAP_hovmoeller_year <- GLODAP %>% 
+  group_by(year, lat_grid) %>% 
+  tally() %>% 
+  ungroup()
+
+
+```
+
 ## Histograms
 
-```{r histogramm_tco2}
+```{r histogramm_observations}
 
 GLODAP %>% 
-  filter(!is.na(tco2)) %>% 
   ggplot(aes(latitude, fill=decade))+
-  geom_vline(xintercept = -30, col="red")+
   geom_histogram(binwidth = 10, col="black", boundary = 0)+
-  coord_cartesian(expand = 0)+
   scale_x_continuous(breaks = seq(-85,90,10))+
   scale_fill_viridis_d()+
-  labs(title = "tco2 observations")
+  coord_flip(expand = 0)+
+  labs(title = "paired tco2 + talk + phosphate observations")
 
 ```
 
-```{r histogramm_talk}
+## Hovmoeller (Lat-time)
 
-GLODAP %>% 
-  filter(!is.na(talk)) %>% 
-  ggplot(aes(latitude, fill=decade))+
-  geom_vline(xintercept = -30, col="red")+
-  geom_histogram(binwidth = 10, col="black", boundary = 0)+
-  coord_cartesian(expand = 0)+
-  scale_x_continuous(breaks = seq(-85,90,10))+
-  scale_fill_viridis_d()+
-  labs(title = "talk observations")
+```{r Coverage_Hovmoeller}
+
+GLODAP_hovmoeller_year %>% 
+  ggplot(aes(year, lat_grid, fill=log10(n)))+
+  geom_raster()+
+  scale_fill_viridis_c(option = "magma")
 
 ```
 
-```{r histogramm_tCO2_talk}
 
-GLODAP %>% 
-  filter(!is.na(talk) & !is.na(tco2)) %>% 
-  ggplot(aes(latitude, fill=decade))+
-  geom_vline(xintercept = -30, col="red")+
-  geom_histogram(binwidth = 10, col="black", boundary = 0)+
-  coord_cartesian(expand = 0)+
-  scale_x_continuous(breaks = seq(-85,90,10))+
-  scale_fill_viridis_d()+
-  labs(title = "Paired tco2 + talk observations")
+## Maps
 
-```
-
-## World map
-
-```{r worldmap_surface_tco2_talk}
+```{r coverage_maps_decade}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
-GLODAP %>% 
-  filter(depth < 10) %>% 
-  ggplot(aes(longitude, latitude))+
+GLODAP_map_decade %>%
+  ggplot(aes(lon_grid, lat_grid, fill=log10(n)))+
   mapWorld+
-  geom_point()+
-  geom_hline(yintercept = c(-30, -65), col="red")+
+  geom_raster()+
+  scale_fill_viridis_c(option = "magma")+
   scale_x_continuous(breaks = seq(-180, 180, 30))+
   scale_y_continuous(breaks = seq(-90, 90, 30))+
   coord_quickmap(expand = FALSE)+
-  labs(title = "Observations within 0-10m water depth")
+  facet_wrap(~decade)
+
+```
+
+```{r coverage_maps_year, fig.asp=2}
+
+GLODAP_map_year %>%
+  filter(year > 1990) %>% 
+  ggplot(aes(lon_grid, lat_grid, fill=log10(n)))+
+  mapWorld+
+  geom_raster()+
+  scale_fill_viridis_c(option = "magma")+
+  coord_quickmap(expand = FALSE)+
+  facet_wrap(~year, ncol = 5)+
+  theme(axis.title = element_blank(),
+        axis.text = element_blank())
 
 ```
 
