@@ -5,6 +5,8 @@ navbar:
   left:
   - text: Data
     href: data_base.html
+  - text: eMLR
+    href: eMLR.html
   - text: License
     href: license.html
   right:

@@ -19,6 +19,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lubridate)
+library(patchwork)
 ```
 
 
@@ -26,13 +27,11 @@ library(lubridate)
 theme_set(theme_bw())
 ```
 
-# Reading original data
+# Read GLODAP master file
 
-The file `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/) was used.
+- Data source: `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/)
 
-Only rows which have at least one `talk` or `tco2` observation were subsetted. 
-
-```{r rewrite_GLODAP_master_file, eval=FALSE}
+```{r read_GLODAPv2_2020_merged_master_file, eval=FALSE}
 
 GLODAP <- read_csv(here::here("data", "GLODAPv2.2020_Merged_Master_File.csv"),
                    na = "-9999",
@@ -40,7 +39,24 @@ GLODAP <- read_csv(here::here("data", "GLODAPv2.2020_Merged_Master_File.csv"),
 
 # relevant columns
 GLODAP <- GLODAP %>% 
-  select(cruise:talkqc)
+  select(cruise:phtsqc)
+
+GLODAP <- GLODAP %>% 
+  mutate(date = ymd(paste(year, month, day)),
+         decade = as.factor(floor(year / 10) * 10)) %>% 
+  relocate(date, decade)
+
+
+```
+
+# Clean data
+
+- subsetted rows with 
+  - paired tco2, talk, and (!) phosphate observations
+  - flag f: 2
+  - flag qc: 1
+
+```{r clean_GLODAP_master_file,eval=FALSE}
 
 # select rows with tco2, good flag
 GLODAP_clean <- GLODAP %>% 
@@ -78,17 +94,71 @@ GLODAP_clean <- GLODAP_clean %>%
 
 
 # date and decade column
-GLODAP_clean <- GLODAP_clean %>% 
-  mutate(date = ymd(paste(year, month, day)),
-         decade = as.factor(floor(year / 10) * 10))
-
 GLODAP_clean  %>%  write_csv(here::here("data/_summarized_data_files", "GLODAPv2.2020_Merged_Master_File_clean.csv"))
 
 ```
 
+
+
+
 # Overview GLODAPv2-2020
 
-Saptio-temporal distribution of paired `talk`, `tco2`, and `phosphate` data.
+## Nr of observations
+
+```{r calculate_stats, eval=FALSE}
+
+GLODAP_stats <- GLODAP %>% 
+  summarise(total = n(),
+            tco2 = sum(!is.na(tco2)),
+            tco2_flag = sum(!is.na(tco2) & tco2f == 2 & tco2qc == 1),
+            talk = sum(!is.na(talk)),
+            talk_f_qc = sum(!is.na(talk) & talkf == 2 & talkqc == 1),
+            phosphate = sum(!is.na(phosphate)),
+            phosphate_f_qc = sum(!is.na(phosphate) & phosphatef == 2 & phosphateqc == 1))
+
+GLODAP_stats_2 <- GLODAP %>% 
+  summarise(tco2_talk = sum(!is.na(tco2) & !is.na(talk)),
+            tco2_phosphate = sum(!is.na(tco2) & !is.na(phosphate)),
+            tco2_talk_phosphate = sum(!is.na(tco2) & !is.na(talk) & !is.na(phosphate)),
+            tco2_talk_phosphate_f_qc = sum(!is.na(tco2) & !is.na(talk) & !is.na(phosphate) &
+                                        tco2f == 2 & tco2qc == 1 &
+                                        talkf == 2 & talkqc == 1 &
+                                        phosphatef == 2 & phosphateqc == 1),
+           incl_pH = sum(!is.na(tco2) & !is.na(talk) & !is.na(phosphate) &
+                                        tco2f == 2 & tco2qc == 1 &
+                                        talkf == 2 & talkqc == 1 &
+                                        phosphatef == 2 & phosphateqc == 1 &
+                                        !is.na(phts25p0)))
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_2)
+
+rm(GLODAP_stats_2)
+
+GLODAP_stats_long <- GLODAP_stats %>% 
+  pivot_longer(1:12, names_to = "parameter", values_to = "n")
+
+GLODAP_stats_long  %>%  write_csv(here::here("data/_summarized_data_files",
+                                             "GLODAPv2.2020_stats.csv"))
+
+```
+
+```{r GLODAP_stats_barplot}
+
+GLODAP_stats_long <-  read_csv(here::here("data/_summarized_data_files",
+                                             "GLODAPv2.2020_stats.csv"))
+
+GLODAP_stats_long %>% 
+  ggplot(aes(parameter, n))+
+  geom_col()+
+  coord_flip()
+
+rm(GLODAP_stats_long)
+
+```
+
+## Data coverage
+
+Spatio-temporal distribution of non-flagged, paired `talk`, `tco2`, and `phosphate` data.
 
 ```{r reopen_GLODAP}
 
@@ -145,15 +215,16 @@ GLODAP %>%
 
 ## Hovmoeller (Lat-time)
 
-```{r Coverage_Hovmoeller}
+```{r coverage_Hovmoeller}
 
 GLODAP_hovmoeller_year %>% 
   ggplot(aes(year, lat_grid, fill=log10(n)))+
-  geom_raster()+
-  scale_fill_viridis_c(option = "magma")
+  geom_tile()+
+  scale_fill_viridis_c(option = "magma", direction = -1)
+
+rm(GLODAP_hovmoeller_year)
 
 ```
-
 
 ## Maps
 
@@ -165,11 +236,13 @@ GLODAP_map_decade %>%
   ggplot(aes(lon_grid, lat_grid, fill=log10(n)))+
   mapWorld+
   geom_raster()+
-  scale_fill_viridis_c(option = "magma")+
+  scale_fill_viridis_c(option = "magma", direction = -1)+
   scale_x_continuous(breaks = seq(-180, 180, 30))+
   scale_y_continuous(breaks = seq(-90, 90, 30))+
   coord_quickmap(expand = FALSE)+
   facet_wrap(~decade, ncol=1)
+
+rm(GLODAP_map_decade)
 
 ```
 
@@ -180,11 +253,117 @@ GLODAP_map_year %>%
   ggplot(aes(lon_grid, lat_grid, fill=log10(n)))+
   mapWorld+
   geom_raster()+
-  scale_fill_viridis_c(option = "magma")+
+  scale_fill_viridis_c(option = "magma", direction = -1)+
   coord_quickmap(expand = FALSE)+
   facet_wrap(~year, ncol = 2)+
   theme(axis.title = element_blank(),
         axis.text = element_blank())
 
+rm(GLODAP_map_year)
+
 ```
 
+## Individual cruise sections
+
+```{r individual_cruises_clean_triplicates, eval = FALSE}
+
+cruises <- GLODAP %>% 
+  group_by(cruise) %>% 
+  summarise(date_mean = mean(date, na.rm = TRUE),
+            n = n()) %>% 
+  ungroup() %>% 
+  arrange(-n, cruise)
+
+GLODAP <- full_join(GLODAP, cruises)
+
+mapWorld <- borders("world", colour="gray60", fill="gray60")
+
+n <- 0
+for (i_cruise in unique(cruises$cruise)) {
+
+#i_cruise <- unique(cruises$cruise)[1]
+n <- n+1
+print(n)  
+  
+GLODAP_cruise <- GLODAP %>%
+  filter(cruise == i_cruise) %>% 
+  arrange(year, month, day, hour, minute)
+
+cruises_cruise <- cruises %>%
+  filter(cruise == i_cruise)
+  
+map <- GLODAP_cruise %>%
+  ggplot(aes(longitude, latitude))+
+  mapWorld+
+  geom_point(aes(col=date))+
+  geom_path()+
+  coord_quickmap(expand = FALSE)+
+  scale_color_viridis_c(trans = "date")+
+  labs(title = paste("Mean date:", cruises_cruise$date_mean,
+                     "| cruise:", cruises_cruise$cruise,
+                     "| n(samples):", cruises_cruise$n))
+
+
+lon_section <- GLODAP_cruise %>%
+  ggplot(aes(longitude, depth))+
+  scale_y_reverse()+
+  scale_color_viridis_c()
+
+lon_tco2 <- lon_section+
+  geom_point(aes(col=tco2))
+
+lon_talk <- lon_section+
+  geom_point(aes(col=talk))
+
+lon_phosphate <- lon_section+
+  geom_point(aes(col=phosphate))
+
+
+lat_section <- GLODAP_cruise %>%
+  ggplot(aes(latitude, depth))+
+  scale_y_reverse()+
+  scale_color_viridis_c()
+
+lat_tco2 <- lat_section+
+  geom_point(aes(col=tco2))
+
+lat_talk <- lat_section+
+  geom_point(aes(col=talk))
+
+lat_phosphate <- lat_section+
+  geom_point(aes(col=phosphate))
+
+map /
+((lat_tco2 / lat_talk / lat_phosphate) |
+(lon_tco2 / lon_talk / lon_phosphate))
+
+ggsave(here::here("output/plots/data/all_cruises_clean_triplicates",
+                  paste("GLODAP_cruise_",
+                        cruises_cruise$n,
+                        cruises_cruise$date_mean,
+                        cruises_cruise$cruise,
+                        ".png",
+                        sep = "_")),
+                  width = 9, height = 9)
+
+rm(map,
+   lon_section, lat_section,
+   lat_tco2, lat_talk, lat_phosphate, lon_tco2, lon_talk, lon_phosphate,
+   GLODAP_cruise, cruises_cruise)
+
+}
+
+
+# library("rnaturalearth")
+# library("rnaturalearthdata")
+# 
+# world <- ne_countries(scale = "small", returnclass = "sf")
+# class(world)
+# 
+# ggplot(data = world) +
+#     geom_sf()
+# 
+# ggplot()+
+#   mapWorld
+
+```

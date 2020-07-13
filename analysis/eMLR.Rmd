@@ -1,0 +1,125 @@
+---
+title: "Data base"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+```
+
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Open clean data set
+
+```{r reopen_GLODAP}
+
+GLODAP <- read_csv(here::here("data/_summarized_data_files",
+                              "GLODAPv2.2020_Merged_Master_File_clean.csv"),
+                   guess_max = 1e5)
+
+GLODAP <- GLODAP %>% 
+  mutate(decade = as.factor(decade))
+
+```
+
+
+# C* calculation
+
+```{r set_stoichiometric_ratios}
+
+rCP <- 117
+rNP <- 16
+
+```
+
+
+```{r calculate_C_star}
+
+GLODAP <- GLODAP %>% 
+  mutate(C_star = tco2 - (rCP * phosphate) - 0.5 * (talk + rNP * phosphate))
+
+```
+
+## Selected section plots
+
+```{r select_cruises}
+
+cruises_meridional <- c("1041")
+
+# cruises_meridional <- c("1041","1042", "260",
+#                         "2011", "393", "1031", "394", "395",
+#                         "1088", "983")
+
+# cruises_zonal <- c()
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% cruises_meridional)
+
+```
+
+```{r meridional_sections, fig.asp=2}
+
+mapWorld <- borders("world", colour="gray60", fill="gray60")
+
+map <- GLODAP_cruise %>%
+  ggplot(aes(longitude, latitude))+
+  mapWorld+
+  geom_point(aes(col=date))+
+  geom_path()+
+  coord_quickmap(expand = FALSE)+
+  scale_color_viridis_c(trans = "date")
+
+lat_section <- GLODAP_cruise %>%
+  ggplot(aes(latitude, depth))+
+  scale_y_reverse()+
+  scale_color_viridis_c()
+
+lat_tco2 <- lat_section+
+  geom_point(aes(col=tco2))
+
+lat_talk <- lat_section+
+  geom_point(aes(col=talk))
+
+lat_phosphate <- lat_section+
+  geom_point(aes(col=phosphate))
+
+lat_C_star <- lat_section+
+  geom_point(aes(col=C_star))
+
+map / lat_tco2 / lat_talk / lat_phosphate / lat_C_star
+
+```
+
+
+
+# Reference year adjustment
+
+The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX. 
+
+```{r adjust_reference_year}
+
+
+```
+
+
+
+
+
