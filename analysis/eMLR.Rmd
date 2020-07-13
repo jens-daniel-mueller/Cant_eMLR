@@ -75,7 +75,7 @@ GLODAP_cruise <- GLODAP %>%
 
 ```
 
-```{r meridional_sections, fig.asp=2}
+```{r meridional_sections, fig.asp=3}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
