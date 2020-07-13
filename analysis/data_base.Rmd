@@ -320,7 +320,7 @@ rm(GLODAP_hovmoeller_year)
 
 ## Maps
 
-```{r coverage_maps_era, fig.fullwidth=TRUE}
+```{r coverage_maps_era, fig.asp=1.5}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
