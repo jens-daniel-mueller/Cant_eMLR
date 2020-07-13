@@ -114,8 +114,10 @@ map / lat_tco2 / lat_talk / lat_phosphate / lat_C_star
 
 The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX. 
 
-```{r adjust_reference_year}
+```{r adjust_reference_year, eval=FALSE}
 
+GLODAP <- GLODAP %>% 
+  mutate(C_star_ref = tco2 - (rCP * phosphate) - 0.5 * (talk + rNP * phosphate))
 
 ```
 

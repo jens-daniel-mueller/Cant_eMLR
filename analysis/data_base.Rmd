@@ -215,7 +215,7 @@ GLODAP %>%
 
 ## Hovmoeller (Lat-time)
 
-```{r coverage_Hovmoeller}
+```{r coverage_hovmoeller}
 
 GLODAP_hovmoeller_year %>% 
   ggplot(aes(year, lat_grid, fill=log10(n)))+
