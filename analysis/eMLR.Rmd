@@ -110,12 +110,15 @@ rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star)
 
 # Reference year adjustment
 
-The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX. 
+The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX.
+Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator.
 
 ```{r adjust_reference_year, eval=FALSE}
 
 GLODAP <- GLODAP %>% 
-  mutate(C_star_ref = C_star - ( (pCO2_atm(year) - pCO2_atm(year_ref)) / pCO2_atm(year_ref) ) * Cant_ref)
+  mutate(C_star_ref = C_star - 
+           ( (pCO2_atm(year) - pCO2_atm(year_ref)) / 
+               (pCO2_atm(year_ref) - pCO2_atm(year_pi) ) * Cant_ref)
 
 ```
 

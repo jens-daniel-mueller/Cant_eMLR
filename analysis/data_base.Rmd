@@ -271,6 +271,10 @@ GLODAP_hovmoeller_year <- GLODAP %>%
   tally() %>% 
   ungroup()
 
+era_median_year <- GLODAP %>% 
+  group_by(era) %>% 
+  summarise(t_ref = median(year)) %>% 
+  ungroup()
 
 ```
 
@@ -291,7 +295,9 @@ GLODAP %>%
 
 GLODAP_histogram_year %>% 
   ggplot(aes(year, n, fill=era))+
-  geom_col()
+  geom_col()+
+  geom_vline(xintercept = era_median_year$t_ref)+
+  coord_cartesian(expand = 0)
 
 
 rm(GLODAP_histogram_year)
