@@ -32,11 +32,7 @@ theme_set(theme_bw())
 ```{r reopen_GLODAP}
 
 GLODAP <- read_csv(here::here("data/_summarized_data_files",
-                              "GLODAPv2.2020_Merged_Master_File_clean.csv"),
-                   guess_max = 1e5)
-
-GLODAP <- GLODAP %>% 
-  mutate(decade = as.factor(decade))
+                              "GLODAPv2.2020_clean.csv"))
 
 ```
 
@@ -106,6 +102,8 @@ lat_C_star <- lat_section+
 
 map / lat_tco2 / lat_talk / lat_phosphate / lat_C_star
 
+rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star)
+
 ```
 
 
@@ -117,11 +115,38 @@ The scaling factor Cant_apriori at a given location and depth was estimated for 
 ```{r adjust_reference_year, eval=FALSE}
 
 GLODAP <- GLODAP %>% 
-  mutate(C_star_ref = tco2 - (rCP * phosphate) - 0.5 * (talk + rNP * phosphate))
+  mutate(C_star_ref = C_star - ( (pCO2_atm(year) - pCO2_atm(year_ref)) / pCO2_atm(year_ref) ) * Cant_ref)
 
 ```
 
+# MLR fitting
+
+```{r predictor_variables, eval=FALSE}
+
+temperature
+salinity
+phosphate
+silicate
+phosphate_star = phosphate + (oxygen / 170) - 1.95
+oxygen
+aou
 
 
+```
+
+```{r estimate_MLR_models, eval=FALSE}
+
+basins <- c("Atlantic", "Indo_Pacific")
+slabs <- c("")
+
+for (i_basin in basins) {
+  for (i_slab in slabs) {
+    
+    
+  }
+  
+}
+
+```
 
 
