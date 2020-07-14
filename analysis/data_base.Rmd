@@ -27,13 +27,16 @@ library(patchwork)
 theme_set(theme_bw())
 ```
 
-# Read GLODAP master file
+# GLODAPv2.2020
+
+## Read master file
 
 - Data source: `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/)
 
 ```{r read_GLODAPv2_2020_merged_master_file, eval=FALSE}
 
-GLODAP <- read_csv(here::here("data", "GLODAPv2.2020_Merged_Master_File.csv"),
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/Merged_data_product",
+                              "GLODAPv2.2020_Merged_Master_File.csv"),
                    na = "-9999",
                    col_types = cols(.default = col_double()))
 
@@ -54,44 +57,7 @@ GLODAP <- GLODAP %>%
 
 ```
 
-```{r calculate_stats, eval=FALSE}
-
-GLODAP_stats <- GLODAP %>% 
-  summarise(total = n(),
-            tco2 = sum(!is.na(tco2)),
-            tco2_flag = sum(!is.na(tco2) & tco2f == 2 & tco2qc == 1),
-            talk = sum(!is.na(talk)),
-            talk_f_qc = sum(!is.na(talk) & talkf == 2 & talkqc == 1),
-            phosphate = sum(!is.na(phosphate)),
-            phosphate_f_qc = sum(!is.na(phosphate) & phosphatef == 2 & phosphateqc == 1))
-
-GLODAP_stats_2 <- GLODAP %>% 
-  summarise(tco2_talk = sum(!is.na(tco2) & !is.na(talk)),
-            tco2_phosphate = sum(!is.na(tco2) & !is.na(phosphate)),
-            tco2_talk_phosphate = sum(!is.na(tco2) & !is.na(talk) & !is.na(phosphate)),
-            tco2_talk_phosphate_f_qc = sum(!is.na(tco2) & !is.na(talk) & !is.na(phosphate) &
-                                        tco2f == 2 & tco2qc == 1 &
-                                        talkf == 2 & talkqc == 1 &
-                                        phosphatef == 2 & phosphateqc == 1),
-           incl_pH = sum(!is.na(tco2) & !is.na(talk) & !is.na(phosphate) &
-                                        tco2f == 2 & tco2qc == 1 &
-                                        talkf == 2 & talkqc == 1 &
-                                        phosphatef == 2 & phosphateqc == 1 &
-                                        !is.na(phts25p0)))
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_2)
-
-rm(GLODAP_stats_2)
-
-GLODAP_stats_long <- GLODAP_stats %>% 
-  pivot_longer(1:12, names_to = "parameter", values_to = "n")
-
-GLODAP_stats_long  %>%  write_csv(here::here("data/_summarized_data_files",
-                                             "GLODAPv2.2020_stats.csv"))
-
-```
-
-# Clean data
+## Clean data
 
 - subsetted rows with 
   - paired observations of all relevant parameters
@@ -99,6 +65,9 @@ GLODAP_stats_long  %>%  write_csv(here::here("data/_summarized_data_files",
   - flag qc: 1
 
 ```{r clean_GLODAP_master_file, eval=FALSE}
+
+GLODAP_stats <- GLODAP %>% 
+  summarise(total = n())
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(tco2))
@@ -110,6 +79,12 @@ GLODAP <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   filter(tco2qc == "1") %>% 
   select(-tco2qc)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(tco2 = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
 
 ###
 
@@ -136,6 +111,12 @@ GLODAP <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   filter(phosphateqc == "1") %>% 
   select(-phosphateqc)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(C_star_variables = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
 
 ###
 
@@ -190,6 +171,21 @@ GLODAP <- GLODAP %>%
   filter(aouf == "2") %>% 
   select(-aouf)
 
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(eMLR_variables = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+
+GLODAP_stats_long <- GLODAP_stats %>% 
+  pivot_longer(1:4, names_to = "parameter", values_to = "n")
+
+GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                             "GLODAPv2.2020_stats.csv"))
+
+rm(GLODAP_stats_long, GLODAP_stats)
+
 ```
 
 # Assign reference eras
@@ -208,7 +204,7 @@ GLODAP <- GLODAP %>%
  
 ```{r write_clean_data_file, eval=FALSE}
 
-GLODAP  %>%  write_csv(here::here("data/_summarized_data_files",
+GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                   "GLODAPv2.2020_clean.csv"))
 
 ```
@@ -220,13 +216,18 @@ GLODAP  %>%  write_csv(here::here("data/_summarized_data_files",
 
 ```{r GLODAP_stats_barplot}
 
-GLODAP_stats_long <-  read_csv(here::here("data/_summarized_data_files",
+GLODAP_stats_long <-  read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                              "GLODAPv2.2020_stats.csv"))
 
+GLODAP_stats_long <- GLODAP_stats_long %>%
+  mutate(parameter = fct_reorder(parameter, n))
+
 GLODAP_stats_long %>% 
-  ggplot(aes(parameter, n))+
+  ggplot(aes(parameter, n/1000))+
   geom_col()+
-  coord_flip()
+  coord_flip()+
+  labs(y="n (1000)")+
+  theme(axis.title.y = element_blank())
 
 rm(GLODAP_stats_long)
 
@@ -238,7 +239,7 @@ Spatio-temporal distribution of non-flagged, paired `talk`, `tco2`, and `phospha
 
 ```{r reopen_GLODAP}
 
-GLODAP <- read_csv(here::here("data/_summarized_data_files",
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                               "GLODAPv2.2020_clean.csv"))
 
 ```
