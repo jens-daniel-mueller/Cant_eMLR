@@ -35,7 +35,7 @@ Files used:
 
 GLODAPv2.2016b.Cant.nc
 
-```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs, eval=FALSE}
+```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs}
 
 Cant <- tidync(here::here("data/GLODAPv2_2016b_MappedClimatologies",
                           "GLODAPv2.2016b.Cant.nc"))
