@@ -446,16 +446,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree61574a8f5210f033d32bc4a80cfcbd31a9429d14targetblank61574a8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/61574a8f5210f033d32bc4a80cfcbd31a9429d14" target="_blank">61574a8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree02ffdd7812c526e7460c35af0a982e59091c399ctargetblank02ffdd7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/02ffdd7812c526e7460c35af0a982e59091c399c" target="_blank">02ffdd7</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree61574a8f5210f033d32bc4a80cfcbd31a9429d14targetblank61574a8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree02ffdd7812c526e7460c35af0a982e59091c399ctargetblank02ffdd7a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/61574a8f5210f033d32bc4a80cfcbd31a9429d14" target="_blank">61574a8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/02ffdd7812c526e7460c35af0a982e59091c399c" target="_blank">02ffdd7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -506,6 +506,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/02ffdd7812c526e7460c35af0a982e59091c399c/analysis/data_base.Rmd" target="_blank">02ffdd7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-14
+</td>
+<td>
+read atmo pco2 data
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/8d8ae0f09201ba9abfb10213c40fe4941043ab77/docs/data_base.html" target="_blank">8d8ae0f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1339,6 +1373,36 @@ rm(map,
 </div>
 <div id="atmospheric-pco2" class="section level1">
 <h1><span class="header-section-number">2</span> Atmospheric pCO<sub>2</sub></h1>
+<div id="read-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Read data</h2>
+<ul>
+<li>Data source: <code>Globally averaged marine surface annual mean data</code> from <a href="https://www.esrl.noaa.gov/gmd/ccgg/trends/gl_data.html">ESRL-NOAA</a></li>
+</ul>
+<pre class="r"><code>co2_atm &lt;- read_table2(here::here(&quot;data/pCO2_atmosphere&quot;,
+                              &quot;co2_annmean_gl.txt&quot;),
+                   col_names = FALSE, comment = &quot;#&quot;)
+
+co2_atm &lt;- co2_atm %&gt;% 
+  select(-X3)
+
+names(co2_atm) &lt;- c(&quot;year&quot;, &quot;pCO2&quot;)</code></pre>
+</div>
+<div id="time-series" class="section level2">
+<h2><span class="header-section-number">2.2</span> Time series</h2>
+<pre class="r"><code>co2_atm %&gt;% 
+  ggplot(aes(year, pCO2))+
+  geom_path()+
+  geom_point()</code></pre>
+<p><img src="figure/data_base.Rmd/co2_atm_time_series-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="write-clean-file" class="section level2">
+<h2><span class="header-section-number">2.3</span> Write clean file</h2>
+<pre class="r"><code>co2_atm %&gt;% 
+  write_csv(here::here(&quot;data/pCO2_atmosphere/_summarized_data_files&quot;,
+                       &quot;co2_atm.csv&quot;))
+
+rm(co2_atm)</code></pre>
+</div>
 </div>
 <div id="open-tasks" class="section level1">
 <h1><span class="header-section-number">3</span> Open tasks</h1>
