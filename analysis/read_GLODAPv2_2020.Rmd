@@ -1,0 +1,484 @@
+---
+title: "GLODAP"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+```
+
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Read master file
+
+- Data source: `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/)
+
+```{r read_GLODAPv2_2020_merged_master_file, eval=FALSE}
+
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/Merged_data_product",
+                              "GLODAPv2.2020_Merged_Master_File.csv"),
+                   na = "-9999",
+                   col_types = cols(.default = col_double()))
+
+# relevant columns
+GLODAP <- GLODAP %>% 
+  select(cruise:talkqc)
+
+GLODAP <- GLODAP %>% 
+  mutate(date = ymd(paste(year, month, day))) %>% 
+         #decade = as.factor(floor(year / 10) * 10)) %>% 
+  relocate(date)
+
+GLODAP <- GLODAP %>% 
+  select(-c(month:minute, 
+            maxsampdepth, pressure,
+            theta, sigma0:gamma,
+            nitrate:nitritef))
+
+```
+
+# Clean data
+
+- subsetted rows with 
+  - paired observations of all relevant parameters
+  - flag f: 2
+  - flag qc: 1
+  
+- calculate summary statistics during cleaning process
+
+```{r clean_GLODAP_master_file, eval=FALSE}
+
+GLODAP_stats <- GLODAP %>% 
+  summarise(total = n())
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(tco2))
+
+GLODAP <- GLODAP %>% 
+  filter(tco2f == "2") %>% 
+  select(-tco2f)
+
+GLODAP <- GLODAP %>% 
+  filter(tco2qc == "1") %>% 
+  select(-tco2qc)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(tco2 = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(talk))
+
+GLODAP <- GLODAP %>% 
+  filter(talkf == "2") %>% 
+  select(-talkf)
+
+GLODAP <- GLODAP %>% 
+  filter(talkqc == "1") %>% 
+  select(-talkqc)
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(phosphate))
+
+GLODAP <- GLODAP %>% 
+  filter(phosphatef == "2") %>% 
+  select(-phosphatef)
+
+GLODAP <- GLODAP %>% 
+  filter(phosphateqc == "1") %>% 
+  select(-phosphateqc)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(C_star_variables = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(temperature))
+
+##
+  
+GLODAP <- GLODAP %>% 
+  filter(!is.na(salinity))
+
+GLODAP <- GLODAP %>% 
+  filter(salinityf == "2") %>% 
+  select(-salinityf)
+
+GLODAP <- GLODAP %>% 
+  filter(salinityqc == "1") %>% 
+  select(-salinityqc)
+
+##
+  
+GLODAP <- GLODAP %>% 
+  filter(!is.na(silicate))
+
+GLODAP <- GLODAP %>% 
+  filter(silicatef == "2") %>% 
+  select(-silicatef)
+
+GLODAP <- GLODAP %>% 
+  filter(silicateqc == "1") %>% 
+  select(-silicateqc)
+
+##
+  
+GLODAP <- GLODAP %>% 
+  filter(!is.na(oxygen))
+
+GLODAP <- GLODAP %>% 
+  filter(oxygenf == "2") %>% 
+  select(-oxygenf)
+
+GLODAP <- GLODAP %>% 
+  filter(oxygenqc == "1") %>% 
+  select(-oxygenqc)
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(aou))
+
+GLODAP <- GLODAP %>% 
+  filter(aouf == "2") %>% 
+  select(-aouf)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(eMLR_variables = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+
+GLODAP_stats_long <- GLODAP_stats %>% 
+  pivot_longer(1:4, names_to = "parameter", values_to = "n")
+
+GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                             "GLODAPv2.2020_stats.csv"))
+
+rm(GLODAP_stats_long, GLODAP_stats)
+
+```
+
+# Assign reference eras
+
+Samples were assigned to following eras:
+
+`JGOFS/WOCE` 1981 - 1999
+
+`GO-SHIP` 2000 - 2012
+ 
+`new_era` 2013 - now
+
+```{r era_assignement, eval=FALSE}
+
+GLODAP <- GLODAP %>%
+  filter(year >= 1981) %>% 
+  mutate(era = "JGOFS/WOCE",
+         era = if_else(year >= 2000, "GO-SHIP", era),
+         era = if_else(year >= 2013, "new_era", era))
+
+```
+ 
+```{r write_clean_data_file, eval=FALSE}
+
+GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                  "GLODAPv2.2020_clean.csv"))
+
+```
+
+
+# Overview plots
+
+Open clean data file.
+
+```{r reopen_GLODAP}
+
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                              "GLODAPv2.2020_clean.csv"))
+
+```
+
+## Assign spatial grid
+
+For the following plots, observations were gridded spatially to 5°x5° intervals.
+
+```{r grid_spatially}
+
+GLODAP <- GLODAP %>% 
+  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+         lat_grid = as.numeric(as.character(lat_grid)),
+         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = as.numeric(as.character(lon_grid))) %>% 
+  arrange(date)
+
+```
+
+
+## Cleaning stats
+
+```{r GLODAP_stats_barplot}
+
+GLODAP_stats_long <-  read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                             "GLODAPv2.2020_stats.csv"))
+
+GLODAP_stats_long <- GLODAP_stats_long %>%
+  mutate(parameter = fct_reorder(parameter, n))
+
+GLODAP_stats_long %>% 
+  ggplot(aes(parameter, n/1000))+
+  geom_col()+
+  coord_flip()+
+  labs(y="n (1000)")+
+  theme(axis.title.y = element_blank())
+
+rm(GLODAP_stats_long)
+
+```
+
+## Histogram latitudes
+
+```{r histogramm_latitude_observations}
+
+GLODAP_histogram_lat <- GLODAP %>% 
+  group_by(era, lat_grid) %>% 
+  tally() %>% 
+  ungroup()
+
+GLODAP_histogram_lat %>% 
+  ggplot(aes(lat_grid, n, fill=era))+
+  geom_col()+
+  scale_x_continuous(breaks = seq(-87.5,90,10))+
+  scale_fill_viridis_d()+
+  coord_flip(expand = 0)
+
+rm(GLODAP_histogram_lat)
+
+```
+
+## Histogram year
+
+```{r histogramm_year_observations}
+
+GLODAP_histogram_year <- GLODAP %>% 
+  group_by(era, year) %>% 
+  tally() %>% 
+  ungroup()
+
+era_median_year <- GLODAP %>% 
+  group_by(era) %>% 
+  summarise(t_ref = median(year)) %>% 
+  ungroup()
+
+GLODAP_histogram_year %>% 
+  ggplot(aes(year, n, fill=era))+
+  geom_col()+
+  geom_vline(data = era_median_year, aes(xintercept = t_ref))+
+  coord_cartesian(expand = 0)
+
+
+rm(GLODAP_histogram_year,
+   era_median_year)
+
+```
+
+## Hovmoeller (lat vs year)
+
+```{r coverage_hovmoeller}
+
+GLODAP_hovmoeller_year <- GLODAP %>% 
+  group_by(year, lat_grid) %>% 
+  tally() %>% 
+  ungroup()
+
+GLODAP_hovmoeller_year %>% 
+  ggplot(aes(year, lat_grid, fill=log10(n)))+
+  geom_tile()+
+  geom_vline(xintercept = c(1999.5, 2012.5))+
+  scale_fill_viridis_c(option = "magma", direction = -1)
+
+rm(GLODAP_hovmoeller_year)
+
+```
+
+## Maps by era
+
+```{r coverage_maps_era, fig.asp=1.5}
+
+mapWorld <- borders("world", colour="gray60", fill="gray60")
+
+GLODAP_map_era <- GLODAP %>% 
+  group_by(era, lat_grid, lon_grid) %>% 
+  tally() %>% 
+  ungroup()
+
+GLODAP_map_era <- GLODAP_map_era %>% 
+  mutate(era = factor(era, c("JGOFS/WOCE", "GO-SHIP", "new_era")))
+
+GLODAP_map_era %>%
+  ggplot(aes(lon_grid, lat_grid, fill=log10(n)))+
+  mapWorld+
+  geom_raster()+
+  scale_fill_viridis_c(option = "magma", direction = -1)+
+  scale_x_continuous(breaks = seq(-180, 180, 30))+
+  scale_y_continuous(breaks = seq(-90, 90, 30))+
+  coord_quickmap(expand = FALSE)+
+  facet_wrap(~era, ncol=1)
+
+rm(GLODAP_map_era,
+   mapWorld)
+
+```
+
+# Individual cruise sections
+
+```{r individual_cruises_clean_triplicates, eval = FALSE}
+
+cruises <- GLODAP %>% 
+  group_by(cruise) %>% 
+  summarise(date_mean = mean(date, na.rm = TRUE),
+            n = n()) %>% 
+  ungroup() %>% 
+  arrange(date_mean)
+
+GLODAP <- full_join(GLODAP, cruises)
+
+mapWorld <- borders("world", colour="gray60", fill="gray60")
+
+n <- 0
+for (i_cruise in unique(cruises$cruise)) {
+
+#i_cruise <- unique(cruises$cruise)[1]
+n <- n+1
+print(n)  
+  
+GLODAP_cruise <- GLODAP %>%
+  filter(cruise == i_cruise) %>% 
+  arrange(date)
+
+cruises_cruise <- cruises %>%
+  filter(cruise == i_cruise)
+  
+map <- GLODAP_cruise %>%
+  ggplot(aes(longitude, latitude))+
+  mapWorld+
+  geom_point(aes(col=date))+
+  geom_path()+
+  coord_quickmap(expand = FALSE)+
+  scale_color_viridis_c(trans = "date")+
+  labs(title = paste("Mean date:", cruises_cruise$date_mean,
+                     "| cruise:", cruises_cruise$cruise,
+                     "| n(samples):", cruises_cruise$n))
+
+
+lon_section <- GLODAP_cruise %>%
+  ggplot(aes(longitude, depth))+
+  scale_y_reverse()+
+  scale_color_viridis_c()
+
+lon_tco2 <- lon_section+
+  geom_point(aes(col=tco2))
+
+lon_talk <- lon_section+
+  geom_point(aes(col=talk))
+
+lon_phosphate <- lon_section+
+  geom_point(aes(col=phosphate))
+
+
+lat_section <- GLODAP_cruise %>%
+  ggplot(aes(latitude, depth))+
+  scale_y_reverse()+
+  scale_color_viridis_c()
+
+lat_tco2 <- lat_section+
+  geom_point(aes(col=tco2))
+
+lat_talk <- lat_section+
+  geom_point(aes(col=talk))
+
+lat_phosphate <- lat_section+
+  geom_point(aes(col=phosphate))
+
+map /
+((lat_tco2 / lat_talk / lat_phosphate) |
+(lon_tco2 / lon_talk / lon_phosphate))
+
+ggsave(here::here("output/plots/data/all_cruises_clean",
+                  paste("GLODAP_cruise_date",
+                        cruises_cruise$date_mean,
+                        "n",
+                        cruises_cruise$n,
+                        "cruise",
+                        cruises_cruise$cruise,
+                        ".png",
+                        sep = "_")),
+                  width = 9, height = 9)
+
+rm(map,
+   lon_section, lat_section,
+   lat_tco2, lat_talk, lat_phosphate, lon_tco2, lon_talk, lon_phosphate,
+   GLODAP_cruise, cruises_cruise)
+
+}
+
+
+# library("rnaturalearth")
+# library("rnaturalearthdata")
+# library("sf")
+# 
+# world <- ne_countries(scale = "small", returnclass = "sf")
+# class(world)
+# 
+# GLODAP_map <- GLODAP %>% 
+#   group_by(lat_grid, lon_grid) %>% 
+#   tally() %>% 
+#   ungroup()
+# 
+# ggplot() +
+#   geom_raster(data = GLODAP_map, aes(lon_grid, lat_grid))+
+#   geom_sf(data = world)+
+#   coord_sf(crs = "+proj=robin +lat_0=0 +lon_0=0 +x0=0 +y0=0")
+
+
+# https://gist.github.com/clauswilke/783e1a8ee3233775c9c3b8bfe531e28a
+# https://twitter.com/clauswilke/status/1066024436208406529
+# https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html
+```
+
+# Open tasks
+
+- remove marginal seas and data north of 65°N
+- move A16 cruises from new_era to GO-SHIP era
+
+# Questions
+
+- exclude coastal area in general?

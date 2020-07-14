@@ -31,7 +31,7 @@ theme_set(theme_bw())
 
 ```{r reopen_GLODAP}
 
-GLODAP <- read_csv(here::here("data/_summarized_data_files",
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                               "GLODAPv2.2020_clean.csv"))
 
 ```
