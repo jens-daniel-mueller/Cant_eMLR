@@ -543,16 +543,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec18812aec819c81cf19d811e4933a26b7a1072a5targetblankc18812aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c18812aec819c81cf19d811e4933a26b7a1072a5" target="_blank">c18812a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea48c8f0a019a4488992dc4f499741588cafb09aatargetblanka48c8f0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a48c8f0a019a4488992dc4f499741588cafb09aa" target="_blank">a48c8f0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec18812aec819c81cf19d811e4933a26b7a1072a5targetblankc18812aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea48c8f0a019a4488992dc4f499741588cafb09aatargetblanka48c8f0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c18812aec819c81cf19d811e4933a26b7a1072a5" target="_blank">c18812a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a48c8f0a019a4488992dc4f499741588cafb09aa" target="_blank">a48c8f0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -604,6 +604,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/a48c8f0a019a4488992dc4f499741588cafb09aa/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">a48c8f0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-14
+</td>
+<td>
+Read plot netcdf woth tidync
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/fc4cf4cf902c8af95d0956675241a38e2449498f/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">fc4cf4c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -708,60 +742,12 @@ library(tidync)</code></pre>
 <p>GLODAPv2.2016b.Cant.nc</p>
 <pre class="r"><code>Cant &lt;- tidync(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies&quot;,
                           &quot;GLODAPv2.2016b.Cant.nc&quot;))
-print(Cant)</code></pre>
-<pre><code>
-Data Source (1): GLODAPv2.2016b.Cant.nc ...
+# print(Cant)
 
-Grids (5) &lt;dimension family&gt; : &lt;associated variables&gt; 
+Cant_slice &lt;- Cant %&gt;% hyper_filter(depth_surface = depth_surface == 20)
+# Cant_slice
 
-[1]   D0,D1,D2 : Cant, Cant_error, Input_mean, Input_std, Input_N, Cant_relerr    **ACTIVE GRID** ( 2138400  values per variable)
-[2]   D0       : lon
-[3]   D1       : lat
-[4]   D2       : Depth
-[5]   D4       : SnR, CL
-
-Dimensions 5 (3 active): 
-  
-  dim   name          length   min   max start count  dmin  dmax unlim coord_dim 
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
-1 D0    lon              360  20.5 380.      1   360  20.5 380.  FALSE TRUE      
-2 D1    lat              180 -89.5  89.5     1   180 -89.5  89.5 FALSE TRUE      
-3 D2    depth_surface     33   1    33       1    33   1    33   FALSE FALSE     
-  
-Inactive dimensions:
-  
-  dim   name  length   min   max unlim coord_dim 
-  &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
-1 D3    time       1    NA    NA FALSE FALSE     
-2 D4    snr        1     1     1 FALSE FALSE     </code></pre>
-<pre class="r"><code>Cant_slice &lt;- Cant %&gt;% hyper_filter(depth_surface = depth_surface == 20)
-Cant_slice</code></pre>
-<pre><code>
-Data Source (1): GLODAPv2.2016b.Cant.nc ...
-
-Grids (5) &lt;dimension family&gt; : &lt;associated variables&gt; 
-
-[1]   D0,D1,D2 : Cant, Cant_error, Input_mean, Input_std, Input_N, Cant_relerr    **ACTIVE GRID** ( 2138400  values per variable)
-[2]   D0       : lon
-[3]   D1       : lat
-[4]   D2       : Depth
-[5]   D4       : SnR, CL
-
-Dimensions 5 (3 active): 
-  
-  dim   name          length   min   max start count  dmin  dmax unlim coord_dim 
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
-1 D0    lon              360  20.5 380.      1   360  20.5 380.  FALSE TRUE      
-2 D1    lat              180 -89.5  89.5     1   180 -89.5  89.5 FALSE TRUE      
-3 D2    depth_surface     33   1    33      20     1  20    20   FALSE FALSE     
-  
-Inactive dimensions:
-  
-  dim   name  length   min   max unlim coord_dim 
-  &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
-1 D3    time       1    NA    NA FALSE FALSE     
-2 D4    snr        1     1     1 FALSE FALSE     </code></pre>
-<pre class="r"><code>Cant_slice_data &lt;- Cant_slice %&gt;% hyper_tibble()
+Cant_slice_data &lt;- Cant_slice %&gt;% hyper_tibble()
 Cant_data &lt;- Cant %&gt;% hyper_tibble()
 
 Cant_data %&gt;% 
@@ -828,20 +814,20 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] jsonlite_1.7.0    rstudioapi_0.11   generics_0.0.2    magrittr_1.5     
  [5] farver_2.0.3      gtable_0.3.0      rmarkdown_2.3     vctrs_0.3.1      
- [9] fs_1.4.2          hms_0.5.3         utf8_1.1.4        xml2_1.3.2       
-[13] ncmeta_0.2.5      pillar_1.4.6      htmltools_0.5.0   haven_2.3.1      
-[17] later_1.1.0.1     broom_0.7.0       cellranger_1.1.0  tidyselect_1.1.0 
-[21] knitr_1.29        git2r_0.27.1      whisker_0.4       lifecycle_0.2.0  
-[25] pkgconfig_2.0.3   R6_2.4.1          digest_0.6.25     xfun_0.15        
-[29] colorspace_1.4-1  rprojroot_1.3-2   stringi_1.4.6     yaml_2.2.1       
-[33] evaluate_0.14     labeling_0.3      fansi_0.4.1       httr_1.4.1       
-[37] compiler_3.6.3    here_0.1          cli_2.0.2         withr_2.2.0      
-[41] backports_1.1.5   munsell_0.5.0     DBI_1.1.0         modelr_0.1.8     
-[45] Rcpp_1.0.5        readxl_1.3.1      dbplyr_1.4.4      ellipsis_0.3.1   
-[49] assertthat_0.2.1  blob_1.2.1        RNetCDF_2.3-1     tools_3.6.3      
-[53] reprex_0.3.0      viridisLite_0.3.0 httpuv_1.5.4      scales_1.1.1     
-[57] crayon_1.3.4      ncdf4_1.17        glue_1.4.1        rlang_0.4.7      
-[61] rvest_0.3.5       promises_1.1.1    grid_3.6.3       </code></pre>
+ [9] fs_1.4.2          hms_0.5.3         xml2_1.3.2        ncmeta_0.2.5     
+[13] pillar_1.4.6      htmltools_0.5.0   haven_2.3.1       later_1.1.0.1    
+[17] broom_0.7.0       cellranger_1.1.0  tidyselect_1.1.0  knitr_1.29       
+[21] git2r_0.27.1      whisker_0.4       lifecycle_0.2.0   pkgconfig_2.0.3  
+[25] R6_2.4.1          digest_0.6.25     xfun_0.15         colorspace_1.4-1 
+[29] rprojroot_1.3-2   stringi_1.4.6     yaml_2.2.1        evaluate_0.14    
+[33] labeling_0.3      fansi_0.4.1       httr_1.4.1        compiler_3.6.3   
+[37] here_0.1          cli_2.0.2         withr_2.2.0       backports_1.1.5  
+[41] munsell_0.5.0     DBI_1.1.0         modelr_0.1.8      Rcpp_1.0.5       
+[45] readxl_1.3.1      dbplyr_1.4.4      ellipsis_0.3.1    assertthat_0.2.1 
+[49] blob_1.2.1        RNetCDF_2.3-1     tools_3.6.3       reprex_0.3.0     
+[53] viridisLite_0.3.0 httpuv_1.5.4      scales_1.1.1      crayon_1.3.4     
+[57] ncdf4_1.17        glue_1.4.1        rlang_0.4.7       rvest_0.3.5      
+[61] promises_1.1.1    grid_3.6.3       </code></pre>
 </div>
 </div>
 
