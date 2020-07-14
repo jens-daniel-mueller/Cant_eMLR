@@ -446,16 +446,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree0e17433800f61a2507f46094251f3578a0e3a865targetblank0e17433a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/0e17433800f61a2507f46094251f3578a0e3a865" target="_blank">0e17433</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree61574a8f5210f033d32bc4a80cfcbd31a9429d14targetblank61574a8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/61574a8f5210f033d32bc4a80cfcbd31a9429d14" target="_blank">61574a8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree0e17433800f61a2507f46094251f3578a0e3a865targetblank0e17433a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree61574a8f5210f033d32bc4a80cfcbd31a9429d14targetblank61574a8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/0e17433800f61a2507f46094251f3578a0e3a865" target="_blank">0e17433</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/61574a8f5210f033d32bc4a80cfcbd31a9429d14" target="_blank">61574a8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -506,6 +506,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/61574a8f5210f033d32bc4a80cfcbd31a9429d14/analysis/data_base.Rmd" target="_blank">61574a8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-14
+</td>
+<td>
+cleaned overview plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/ac5a348f4b09640a317011741ee2febe4b6ffe6d/docs/data_base.html" target="_blank">ac5a348</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -943,6 +977,7 @@ GLODAP &lt;- GLODAP %&gt;%
 <li>flag f: 2</li>
 <li>flag qc: 1</li>
 </ul></li>
+<li>calculate summary statistics during cleaning process</li>
 </ul>
 <pre class="r"><code>GLODAP_stats &lt;- GLODAP %&gt;% 
   summarise(total = n())
@@ -1064,10 +1099,12 @@ GLODAP_stats_long  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summar
 
 rm(GLODAP_stats_long, GLODAP_stats)</code></pre>
 </div>
-</div>
-<div id="assign-reference-eras" class="section level1">
-<h1><span class="header-section-number">2</span> Assign reference eras</h1>
-<p>Samples before Jan 01, 2000 were assigned as to the “JGOFS/WOCE” era, else to “GO-SHIP” era.</p>
+<div id="assign-reference-eras" class="section level2">
+<h2><span class="header-section-number">1.3</span> Assign reference eras</h2>
+<p>Samples were assigned to following eras:</p>
+<p><code>JGOFS/WOCE</code> 1981 - 1999</p>
+<p><code>GO-SHIP</code> 2000 - 2012</p>
+<p><code>new_era</code> 2013 - now</p>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;%
   filter(year &gt;= 1981) %&gt;% 
   mutate(era = &quot;JGOFS/WOCE&quot;,
@@ -1076,10 +1113,23 @@ rm(GLODAP_stats_long, GLODAP_stats)</code></pre>
 <pre class="r"><code>GLODAP  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                   &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
 </div>
-<div id="overview-glodapv2-2020" class="section level1">
-<h1><span class="header-section-number">3</span> Overview GLODAPv2-2020</h1>
-<div id="nr-of-observations" class="section level2">
-<h2><span class="header-section-number">3.1</span> Nr of observations</h2>
+<div id="overview-plots" class="section level2">
+<h2><span class="header-section-number">1.4</span> Overview plots</h2>
+<p>Open clean data file.</p>
+<pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
+                              &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
+<div id="assign-spatial-grid" class="section level3">
+<h3><span class="header-section-number">1.4.1</span> Assign spatial grid</h3>
+<p>For the following plots, observations were gridded spatially to 5°x5° intervals.</p>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
+  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+         lat_grid = as.numeric(as.character(lat_grid)),
+         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = as.numeric(as.character(lon_grid))) %&gt;% 
+  arrange(date)</code></pre>
+</div>
+<div id="cleaning-stats" class="section level3">
+<h3><span class="header-section-number">1.4.2</span> Cleaning stats</h3>
 <pre class="r"><code>GLODAP_stats_long &lt;-  read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                              &quot;GLODAPv2.2020_stats.csv&quot;))
 
@@ -1095,73 +1145,66 @@ GLODAP_stats_long %&gt;%
 <p><img src="figure/data_base.Rmd/GLODAP_stats_barplot-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_stats_long)</code></pre>
 </div>
-<div id="data-coverage" class="section level2">
-<h2><span class="header-section-number">3.2</span> Data coverage</h2>
-<p>Spatio-temporal distribution of non-flagged, paired <code>talk</code>, <code>tco2</code>, and <code>phosphate</code> data.</p>
-<pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
-                              &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
+<div id="histogram-latitudes" class="section level3">
+<h3><span class="header-section-number">1.4.3</span> Histogram latitudes</h3>
+<pre class="r"><code>GLODAP_histogram_lat &lt;- GLODAP %&gt;% 
+  group_by(era, lat_grid) %&gt;% 
+  tally() %&gt;% 
+  ungroup()
+
+GLODAP_histogram_lat %&gt;% 
+  ggplot(aes(lat_grid, n, fill=era))+
+  geom_col()+
+  scale_x_continuous(breaks = seq(-87.5,90,10))+
+  scale_fill_viridis_d()+
+  coord_flip(expand = 0)</code></pre>
+<p><img src="figure/data_base.Rmd/histogramm_latitude_observations-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(GLODAP_histogram_lat)</code></pre>
 </div>
-<div id="gridding" class="section level2">
-<h2><span class="header-section-number">3.3</span> Gridding</h2>
-<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
-  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
-         lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
-         lon_grid = as.numeric(as.character(lon_grid)))
-
-GLODAP &lt;- GLODAP %&gt;% 
-  arrange(date)
-
-GLODAP_histogram_year &lt;- GLODAP %&gt;% 
+<div id="histogram-year" class="section level3">
+<h3><span class="header-section-number">1.4.4</span> Histogram year</h3>
+<pre class="r"><code>GLODAP_histogram_year &lt;- GLODAP %&gt;% 
   group_by(era, year) %&gt;% 
-  tally() %&gt;% 
-  ungroup()
-
-GLODAP_map_era &lt;- GLODAP %&gt;% 
-  group_by(era, lat_grid, lon_grid) %&gt;% 
-  tally() %&gt;% 
-  ungroup()
-
-GLODAP_hovmoeller_year &lt;- GLODAP %&gt;% 
-  group_by(year, lat_grid) %&gt;% 
   tally() %&gt;% 
   ungroup()
 
 era_median_year &lt;- GLODAP %&gt;% 
   group_by(era) %&gt;% 
   summarise(t_ref = median(year)) %&gt;% 
-  ungroup()</code></pre>
-</div>
-<div id="histograms" class="section level2">
-<h2><span class="header-section-number">3.4</span> Histograms</h2>
-<pre class="r"><code>GLODAP %&gt;% 
-  ggplot(aes(latitude, fill=era))+
-  geom_histogram(binwidth = 10, col=&quot;black&quot;, boundary = 0)+
-  scale_x_continuous(breaks = seq(-85,90,10))+
-  scale_fill_viridis_d()+
-  coord_flip(expand = 0)</code></pre>
-<p><img src="figure/data_base.Rmd/histogramm_latitude_observations-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>GLODAP_histogram_year %&gt;% 
+  ungroup()
+
+GLODAP_histogram_year %&gt;% 
   ggplot(aes(year, n, fill=era))+
   geom_col()+
-  geom_vline(xintercept = era_median_year$t_ref)+
+  geom_vline(data = era_median_year, aes(xintercept = t_ref))+
   coord_cartesian(expand = 0)</code></pre>
 <p><img src="figure/data_base.Rmd/histogramm_year_observations-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(GLODAP_histogram_year)</code></pre>
+<pre class="r"><code>rm(GLODAP_histogram_year,
+   era_median_year)</code></pre>
 </div>
-<div id="hovmoeller-lat-time" class="section level2">
-<h2><span class="header-section-number">3.5</span> Hovmoeller (Lat-time)</h2>
-<pre class="r"><code>GLODAP_hovmoeller_year %&gt;% 
+<div id="hovmoeller-lat-vs-year" class="section level3">
+<h3><span class="header-section-number">1.4.5</span> Hovmoeller (lat vs year)</h3>
+<pre class="r"><code>GLODAP_hovmoeller_year &lt;- GLODAP %&gt;% 
+  group_by(year, lat_grid) %&gt;% 
+  tally() %&gt;% 
+  ungroup()
+
+GLODAP_hovmoeller_year %&gt;% 
   ggplot(aes(year, lat_grid, fill=log10(n)))+
-  geom_vline(xintercept = c(2000, 2013))+
   geom_tile()+
+  geom_vline(xintercept = c(1999.5, 2012.5))+
   scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1)</code></pre>
 <p><img src="figure/data_base.Rmd/coverage_hovmoeller-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_hovmoeller_year)</code></pre>
 </div>
-<div id="maps" class="section level2">
-<h2><span class="header-section-number">3.6</span> Maps</h2>
+<div id="maps-by-era" class="section level3">
+<h3><span class="header-section-number">1.4.6</span> Maps by era</h3>
 <pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray60&quot;, fill=&quot;gray60&quot;)
+
+GLODAP_map_era &lt;- GLODAP %&gt;% 
+  group_by(era, lat_grid, lon_grid) %&gt;% 
+  tally() %&gt;% 
+  ungroup()
 
 GLODAP_map_era &lt;- GLODAP_map_era %&gt;% 
   mutate(era = factor(era, c(&quot;JGOFS/WOCE&quot;, &quot;GO-SHIP&quot;, &quot;new_era&quot;)))
@@ -1176,10 +1219,12 @@ GLODAP_map_era %&gt;%
   coord_quickmap(expand = FALSE)+
   facet_wrap(~era, ncol=1)</code></pre>
 <p><img src="figure/data_base.Rmd/coverage_maps_era-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(GLODAP_map_era)</code></pre>
+<pre class="r"><code>rm(GLODAP_map_era,
+   mapWorld)</code></pre>
+</div>
 </div>
 <div id="individual-cruise-sections" class="section level2">
-<h2><span class="header-section-number">3.7</span> Individual cruise sections</h2>
+<h2><span class="header-section-number">1.5</span> Individual cruise sections</h2>
 <pre class="r"><code>cruises &lt;- GLODAP %&gt;% 
   group_by(cruise) %&gt;% 
   summarise(date_mean = mean(date, na.rm = TRUE),
@@ -1292,15 +1337,18 @@ rm(map,
 # https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html</code></pre>
 </div>
 </div>
+<div id="atmospheric-pco2" class="section level1">
+<h1><span class="header-section-number">2</span> Atmospheric pCO<sub>2</sub></h1>
+</div>
 <div id="open-tasks" class="section level1">
-<h1><span class="header-section-number">4</span> Open tasks</h1>
+<h1><span class="header-section-number">3</span> Open tasks</h1>
 <ul>
 <li>remove marginal seas and data north of 65°N</li>
 <li>move A16 cruises from new_era to GO-SHIP era</li>
 </ul>
 </div>
 <div id="questions" class="section level1">
-<h1><span class="header-section-number">5</span> Questions</h1>
+<h1><span class="header-section-number">4</span> Questions</h1>
 <ul>
 <li>exclude coastal area in general?</li>
 </ul>
