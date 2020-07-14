@@ -1,0 +1,44 @@
+---
+title: "GLODAPv2_2016_MappedClimatologies"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+```
+
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Read ncdf files
+
+- Data source: `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/)
+
+```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs, eval=FALSE}
+
+```
+
+# Open tasks
+
+- none
+
+# Questions
+
+- none
