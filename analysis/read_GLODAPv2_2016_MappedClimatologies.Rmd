@@ -39,10 +39,10 @@ GLODAPv2.2016b.Cant.nc
 
 Cant <- tidync(here::here("data/GLODAPv2_2016b_MappedClimatologies",
                           "GLODAPv2.2016b.Cant.nc"))
-print(Cant)
+# print(Cant)
 
 Cant_slice <- Cant %>% hyper_filter(depth_surface = depth_surface == 20)
-Cant_slice
+# Cant_slice
 
 Cant_slice_data <- Cant_slice %>% hyper_tibble()
 Cant_data <- Cant %>% hyper_tibble()
