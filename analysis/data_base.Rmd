@@ -63,6 +63,8 @@ GLODAP <- GLODAP %>%
   - paired observations of all relevant parameters
   - flag f: 2
   - flag qc: 1
+  
+- calculate summary statistics during cleaning process
 
 ```{r clean_GLODAP_master_file, eval=FALSE}
 
@@ -188,9 +190,15 @@ rm(GLODAP_stats_long, GLODAP_stats)
 
 ```
 
-# Assign reference eras
+## Assign reference eras
 
-Samples before Jan 01, 2000 were assigned as to the "JGOFS/WOCE" era, else to "GO-SHIP" era.
+Samples were assigned to following eras:
+
+`JGOFS/WOCE` 1981 - 1999
+
+`GO-SHIP` 2000 - 2012
+ 
+`new_era` 2013 - now
 
 ```{r era_assignement, eval=FALSE}
 
@@ -210,9 +218,34 @@ GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 ```
 
 
-# Overview GLODAPv2-2020
+## Overview plots
 
-## Nr of observations
+Open clean data file.
+
+```{r reopen_GLODAP}
+
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                              "GLODAPv2.2020_clean.csv"))
+
+```
+
+### Assign spatial grid
+
+For the following plots, observations were gridded spatially to 5°x5° intervals.
+
+```{r grid_spatially}
+
+GLODAP <- GLODAP %>% 
+  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+         lat_grid = as.numeric(as.character(lat_grid)),
+         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = as.numeric(as.character(lon_grid))) %>% 
+  arrange(date)
+
+```
+
+
+### Cleaning stats
 
 ```{r GLODAP_stats_barplot}
 
@@ -233,42 +266,32 @@ rm(GLODAP_stats_long)
 
 ```
 
-## Data coverage
+### Histogram latitudes
 
-Spatio-temporal distribution of non-flagged, paired `talk`, `tco2`, and `phosphate` data.
+```{r histogramm_latitude_observations}
 
-```{r reopen_GLODAP}
+GLODAP_histogram_lat <- GLODAP %>% 
+  group_by(era, lat_grid) %>% 
+  tally() %>% 
+  ungroup()
 
-GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                              "GLODAPv2.2020_clean.csv"))
+GLODAP_histogram_lat %>% 
+  ggplot(aes(lat_grid, n, fill=era))+
+  geom_col()+
+  scale_x_continuous(breaks = seq(-87.5,90,10))+
+  scale_fill_viridis_d()+
+  coord_flip(expand = 0)
+
+rm(GLODAP_histogram_lat)
 
 ```
 
-## Gridding
+### Histogram year
 
-```{r spatial_gridding}
-
-GLODAP <- GLODAP %>% 
-  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
-         lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
-         lon_grid = as.numeric(as.character(lon_grid)))
-
-GLODAP <- GLODAP %>% 
-  arrange(date)
+```{r histogramm_year_observations}
 
 GLODAP_histogram_year <- GLODAP %>% 
   group_by(era, year) %>% 
-  tally() %>% 
-  ungroup()
-
-GLODAP_map_era <- GLODAP %>% 
-  group_by(era, lat_grid, lon_grid) %>% 
-  tally() %>% 
-  ungroup()
-
-GLODAP_hovmoeller_year <- GLODAP %>% 
-  group_by(year, lat_grid) %>% 
   tally() %>% 
   ungroup()
 
@@ -277,53 +300,47 @@ era_median_year <- GLODAP %>%
   summarise(t_ref = median(year)) %>% 
   ungroup()
 
-```
-
-## Histograms
-
-```{r histogramm_latitude_observations}
-
-GLODAP %>% 
-  ggplot(aes(latitude, fill=era))+
-  geom_histogram(binwidth = 10, col="black", boundary = 0)+
-  scale_x_continuous(breaks = seq(-85,90,10))+
-  scale_fill_viridis_d()+
-  coord_flip(expand = 0)
-
-```
-
-```{r histogramm_year_observations}
-
 GLODAP_histogram_year %>% 
   ggplot(aes(year, n, fill=era))+
   geom_col()+
-  geom_vline(xintercept = era_median_year$t_ref)+
+  geom_vline(data = era_median_year, aes(xintercept = t_ref))+
   coord_cartesian(expand = 0)
 
 
-rm(GLODAP_histogram_year)
+rm(GLODAP_histogram_year,
+   era_median_year)
 
 ```
 
-## Hovmoeller (Lat-time)
+### Hovmoeller (lat vs year)
 
 ```{r coverage_hovmoeller}
 
+GLODAP_hovmoeller_year <- GLODAP %>% 
+  group_by(year, lat_grid) %>% 
+  tally() %>% 
+  ungroup()
+
 GLODAP_hovmoeller_year %>% 
   ggplot(aes(year, lat_grid, fill=log10(n)))+
-  geom_vline(xintercept = c(2000, 2013))+
   geom_tile()+
+  geom_vline(xintercept = c(1999.5, 2012.5))+
   scale_fill_viridis_c(option = "magma", direction = -1)
 
 rm(GLODAP_hovmoeller_year)
 
 ```
 
-## Maps
+### Maps by era
 
 ```{r coverage_maps_era, fig.asp=1.5}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
+
+GLODAP_map_era <- GLODAP %>% 
+  group_by(era, lat_grid, lon_grid) %>% 
+  tally() %>% 
+  ungroup()
 
 GLODAP_map_era <- GLODAP_map_era %>% 
   mutate(era = factor(era, c("JGOFS/WOCE", "GO-SHIP", "new_era")))
@@ -338,7 +355,8 @@ GLODAP_map_era %>%
   coord_quickmap(expand = FALSE)+
   facet_wrap(~era, ncol=1)
 
-rm(GLODAP_map_era)
+rm(GLODAP_map_era,
+   mapWorld)
 
 ```
 
@@ -457,6 +475,9 @@ rm(map,
 # https://twitter.com/clauswilke/status/1066024436208406529
 # https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html
 ```
+
+# Atmospheric pCO~2~
+
 
 # Open tasks
 
