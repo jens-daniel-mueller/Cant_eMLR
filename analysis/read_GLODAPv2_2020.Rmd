@@ -57,10 +57,22 @@ GLODAP <- GLODAP %>%
 
 # Clean data
 
-- subsetted rows with 
-  - paired observations of all relevant parameters
-  - flag f: 2
-  - flag qc: 1
+Only samples with all relevant parameters determined were selected.
+The following subsetting parameters were defined:
+
+```{r subsetting_rules}
+
+flag_f <- 2
+flag_qc <- 1
+min_depth <- 150
+
+
+flag_f
+flag_qc
+min_depth
+
+```
+
   
 - calculate summary statistics during cleaning process
 
@@ -73,11 +85,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(tco2))
 
 GLODAP <- GLODAP %>% 
-  filter(tco2f == "2") %>% 
+  filter(tco2f == flag_f) %>% 
   select(-tco2f)
 
 GLODAP <- GLODAP %>% 
-  filter(tco2qc == "1") %>% 
+  filter(tco2qc == flag_qc) %>% 
   select(-tco2qc)
 
 GLODAP_stats_temp <- GLODAP %>% 
@@ -92,11 +104,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(talk))
 
 GLODAP <- GLODAP %>% 
-  filter(talkf == "2") %>% 
+  filter(talkf == flag_f) %>% 
   select(-talkf)
 
 GLODAP <- GLODAP %>% 
-  filter(talkqc == "1") %>% 
+  filter(talkqc == flag_qc) %>% 
   select(-talkqc)
 
 ##
@@ -105,11 +117,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(phosphate))
 
 GLODAP <- GLODAP %>% 
-  filter(phosphatef == "2") %>% 
+  filter(phosphatef == flag_f) %>% 
   select(-phosphatef)
 
 GLODAP <- GLODAP %>% 
-  filter(phosphateqc == "1") %>% 
+  filter(phosphateqc == flag_qc) %>% 
   select(-phosphateqc)
 
 GLODAP_stats_temp <- GLODAP %>% 
@@ -129,11 +141,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(salinity))
 
 GLODAP <- GLODAP %>% 
-  filter(salinityf == "2") %>% 
+  filter(salinityf == flag_f) %>% 
   select(-salinityf)
 
 GLODAP <- GLODAP %>% 
-  filter(salinityqc == "1") %>% 
+  filter(salinityqc == flag_qc) %>% 
   select(-salinityqc)
 
 ##
@@ -142,11 +154,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(silicate))
 
 GLODAP <- GLODAP %>% 
-  filter(silicatef == "2") %>% 
+  filter(silicatef == flag_f) %>% 
   select(-silicatef)
 
 GLODAP <- GLODAP %>% 
-  filter(silicateqc == "1") %>% 
+  filter(silicateqc == flag_qc) %>% 
   select(-silicateqc)
 
 ##
@@ -155,11 +167,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(oxygen))
 
 GLODAP <- GLODAP %>% 
-  filter(oxygenf == "2") %>% 
+  filter(oxygenf == flag_f) %>% 
   select(-oxygenf)
 
 GLODAP <- GLODAP %>% 
-  filter(oxygenqc == "1") %>% 
+  filter(oxygenqc == flag_qc) %>% 
   select(-oxygenqc)
 
 ##
@@ -168,7 +180,7 @@ GLODAP <- GLODAP %>%
   filter(!is.na(aou))
 
 GLODAP <- GLODAP %>% 
-  filter(aouf == "2") %>% 
+  filter(aouf == flag_f) %>% 
   select(-aouf)
 
 GLODAP_stats_temp <- GLODAP %>% 
@@ -177,9 +189,20 @@ GLODAP_stats_temp <- GLODAP %>%
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
 
+##
+
+GLODAP <- GLODAP %>% 
+  filter(depth >= min_depth)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(eMLR_variables_150 = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
 
 GLODAP_stats_long <- GLODAP_stats %>% 
-  pivot_longer(1:4, names_to = "parameter", values_to = "n")
+  pivot_longer(1:length(GLODAP_stats), names_to = "parameter", values_to = "n")
 
 GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                              "GLODAPv2.2020_stats.csv"))
