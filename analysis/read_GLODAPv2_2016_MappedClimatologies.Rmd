@@ -1,5 +1,5 @@
 ---
-title: "GLODAPv2_2016_MappedClimatologies"
+title: "GLODAPv2_2016_Mappedclim_starsatologies"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -28,61 +28,65 @@ library(stars)
 theme_set(theme_bw())
 ```
 
-# Read ncdf files
+# Read/plot ncdf files
 
 - Data source: [glodap.info](https://www.glodap.info/)
 
-Files used:
 
-GLODAPv2.2016b.Cant.nc
+```{r read_GLODAPv2_2016_Mappedclimatologies_netcdfs}
 
-```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs_tidyn, eval=FALSE}
+file_list <- list.files(path= "data/GLODAPv2_2016b_Mappedclimatologies", pattern = "*.nc")
 
-Cant <- tidync(here::here("data/GLODAPv2_2016b_MappedClimatologies",
-                          "GLODAPv2.2016b.Cant.nc"))
-print(Cant)
-
-# Cant_slice <- Cant %>% hyper_filter(depth_surface = depth_surface == 20)
-# Cant_slice_tibble <- Cant_slice %>% hyper_tibble()
-
-Cant_tibble <- Cant %>% hyper_tibble()
-
-Cant_tibble %>% 
-  ggplot(aes(lon, lat, fill=Cant))+
-  geom_raster()+
-  scale_fill_viridis_b()+
-  facet_wrap(~depth_surface)
-
-```
-
-```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars, fig.asp=3}
-
-file_list <- list.files(path= "data/GLODAPv2_2016b_MappedClimatologies", pattern = "*.nc")
+print("files used:")
+print(file_list)
 
 #file <- file_list[1]
 
 for (file in file_list) {
  
-map_clim <- read_stars(here::here("data/GLODAPv2_2016b_MappedClimatologies",
+clim_stars <- read_stars(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
                           file))
 
 parameter <- str_split(file, pattern = "6b.", simplify = TRUE)[2]
 parameter <- str_split(parameter, pattern = ".nc", simplify = TRUE)[1]
 
-map_clim <- map_clim %>% select(all_of(parameter))
+map_clim_stars <- clim_stars %>% select(all_of(parameter))
+
+map_clim_stars <- map_clim_stars %>% 
+  filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
 
 print(
 ggplot()+
-  geom_stars(data = map_clim)+
+  geom_stars(data = map_clim_stars)+
+  geom_vline(xintercept = 335, col="white")+
   scale_fill_viridis_b()+
+  labs(title = file)+
   facet_wrap(~depth_surface, ncol = 3)+
   theme(axis.text = element_blank(),
-        axis.title = element_blank())
+        axis.title = element_blank(),
+        axis.ticks = element_blank())+
+  coord_quickmap(expand = 0)
 )
+
+
+# clim_tidync <- tidync(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
+#                                  file))
+# print(clim_tidync)
+# 
+# Atl_sec_clim <- clim_tidync %>% hyper_filter(lon = lon == 335.5)
+# Atl_sec_clim_tibble <- Atl_sec_clim %>% hyper_tibble()
+# 
+# Atl_sec_clim_tibble %>% 
+#   ggplot(aes(lat, depth_surface, fill=Cant))+
+#   geom_point()+
+#   scale_y_reverse()+
+#   scale_fill_viridis_b()
 
 }
 
+
 ```
+
 
 # Open tasks
 
