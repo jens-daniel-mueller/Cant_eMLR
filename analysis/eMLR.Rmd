@@ -37,7 +37,7 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 ```
 
 
-# C* calculation
+# C* calculation 
 
 ```{r set_stoichiometric_ratios}
 
