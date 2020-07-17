@@ -20,6 +20,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 library(tidyverse)
 library(lubridate)
 library(tidync)
+library(stars)
 ```
 
 
@@ -35,39 +36,51 @@ Files used:
 
 GLODAPv2.2016b.Cant.nc
 
-```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs}
+```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs_tidyn, eval=FALSE}
 
 Cant <- tidync(here::here("data/GLODAPv2_2016b_MappedClimatologies",
                           "GLODAPv2.2016b.Cant.nc"))
-# print(Cant)
+print(Cant)
 
-Cant_slice <- Cant %>% hyper_filter(depth_surface = depth_surface == 20)
-# Cant_slice
+# Cant_slice <- Cant %>% hyper_filter(depth_surface = depth_surface == 20)
+# Cant_slice_tibble <- Cant_slice %>% hyper_tibble()
 
-Cant_slice_data <- Cant_slice %>% hyper_tibble()
-Cant_data <- Cant %>% hyper_tibble()
+Cant_tibble <- Cant %>% hyper_tibble()
 
-Cant_data %>% 
+Cant_tibble %>% 
   ggplot(aes(lon, lat, fill=Cant))+
   geom_raster()+
   scale_fill_viridis_b()+
   facet_wrap(~depth_surface)
 
-Cant_slice_data %>% 
-  ggplot(aes(lon, lat, fill=Cant))+
-  geom_raster()+
+```
+
+```{r read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars, fig.asp=3}
+
+file_list <- list.files(path= "data/GLODAPv2_2016b_MappedClimatologies", pattern = "*.nc")
+
+#file <- file_list[1]
+
+for (file in file_list) {
+ 
+map_clim <- read_stars(here::here("data/GLODAPv2_2016b_MappedClimatologies",
+                          file))
+
+parameter <- str_split(file, pattern = "6b.", simplify = TRUE)[2]
+parameter <- str_split(parameter, pattern = ".nc", simplify = TRUE)[1]
+
+map_clim <- map_clim %>% select(all_of(parameter))
+
+print(
+ggplot()+
+  geom_stars(data = map_clim)+
   scale_fill_viridis_b()+
-  facet_wrap(~depth_surface)
+  facet_wrap(~depth_surface, ncol = 3)+
+  theme(axis.text = element_blank(),
+        axis.title = element_blank())
+)
 
-Cant_data_inventory <- Cant_data %>% 
-  group_by(lon, lat) %>% 
-  summarise(Cant_inventory = sum(Cant)) %>% 
-  ungroup()
-
-Cant_data_inventory %>% 
-  ggplot(aes(lon, lat, fill=Cant_inventory))+
-  geom_raster()+
-  scale_fill_viridis_c()
+}
 
 ```
 
