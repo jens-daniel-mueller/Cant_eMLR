@@ -12,7 +12,7 @@
 <meta name="author" content="Jens Daniel Müller" />
 
 
-<title>GLODAPv2_2016_MappedClimatologies</title>
+<title>GLODAPv2_2016_Mappedclim_starsatologies</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -425,7 +425,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">GLODAPv2_2016_MappedClimatologies</h1>
+<h1 class="title toc-ignore">GLODAPv2_2016_Mappedclim_starsatologies</h1>
 <h4 class="author">Jens Daniel Müller</h4>
 <h4 class="date">17 July, 2020</h4>
 
@@ -543,16 +543,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree81f9f3f29e52c53d740952da2eb1921b778c445ftargetblank81f9f3fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/81f9f3f29e52c53d740952da2eb1921b778c445f" target="_blank">81f9f3f</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree93fd22b4c67101c1a85ab4df1fc1ca5da672f138targetblank93fd22ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/93fd22b4c67101c1a85ab4df1fc1ca5da672f138" target="_blank">93fd22b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree81f9f3f29e52c53d740952da2eb1921b778c445ftargetblank81f9f3fa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree93fd22b4c67101c1a85ab4df1fc1ca5da672f138targetblank93fd22ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/81f9f3f29e52c53d740952da2eb1921b778c445f" target="_blank">81f9f3f</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/93fd22b4c67101c1a85ab4df1fc1ca5da672f138" target="_blank">93fd22b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -604,6 +604,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/93fd22b4c67101c1a85ab4df1fc1ca5da672f138/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">93fd22b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-17
+</td>
+<td>
+cleaned maps
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/0f483e44c80b1f3eebbfd1a7684698752320876b/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">0f483e4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -768,69 +802,82 @@ added Rmd for MappedClimatologies
 library(lubridate)
 library(tidync)
 library(stars)</code></pre>
-<div id="read-ncdf-files" class="section level1">
-<h1><span class="header-section-number">1</span> Read ncdf files</h1>
+<div id="readplot-ncdf-files" class="section level1">
+<h1><span class="header-section-number">1</span> Read/plot ncdf files</h1>
 <ul>
 <li>Data source: <a href="https://www.glodap.info/">glodap.info</a></li>
 </ul>
-<p>Files used:</p>
-<p>GLODAPv2.2016b.Cant.nc</p>
-<pre class="r"><code>Cant &lt;- tidync(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies&quot;,
-                          &quot;GLODAPv2.2016b.Cant.nc&quot;))
-print(Cant)
+<pre class="r"><code>file_list &lt;- list.files(path= &quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;, pattern = &quot;*.nc&quot;)
 
-# Cant_slice &lt;- Cant %&gt;% hyper_filter(depth_surface = depth_surface == 20)
-# Cant_slice_tibble &lt;- Cant_slice %&gt;% hyper_tibble()
-
-Cant_tibble &lt;- Cant %&gt;% hyper_tibble()
-
-Cant_tibble %&gt;% 
-  ggplot(aes(lon, lat, fill=Cant))+
-  geom_raster()+
-  scale_fill_viridis_b()+
-  facet_wrap(~depth_surface)</code></pre>
-<pre class="r"><code>file_list &lt;- list.files(path= &quot;data/GLODAPv2_2016b_MappedClimatologies&quot;, pattern = &quot;*.nc&quot;)
-
-#file &lt;- file_list[1]
+print(&quot;files used:&quot;)</code></pre>
+<pre><code>[1] &quot;files used:&quot;</code></pre>
+<pre class="r"><code>print(file_list)</code></pre>
+<pre><code>[1] &quot;GLODAPv2.2016b.Cant.nc&quot;        &quot;GLODAPv2.2016b.NO3.nc&quot;        
+[3] &quot;GLODAPv2.2016b.oxygen.nc&quot;      &quot;GLODAPv2.2016b.PO4.nc&quot;        
+[5] &quot;GLODAPv2.2016b.salinity.nc&quot;    &quot;GLODAPv2.2016b.silicate.nc&quot;   
+[7] &quot;GLODAPv2.2016b.TAlk.nc&quot;        &quot;GLODAPv2.2016b.TCO2.nc&quot;       
+[9] &quot;GLODAPv2.2016b.temperature.nc&quot;</code></pre>
+<pre class="r"><code>#file &lt;- file_list[1]
 
 for (file in file_list) {
  
-map_clim &lt;- read_stars(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies&quot;,
+clim_stars &lt;- read_stars(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
                           file))
 
 parameter &lt;- str_split(file, pattern = &quot;6b.&quot;, simplify = TRUE)[2]
 parameter &lt;- str_split(parameter, pattern = &quot;.nc&quot;, simplify = TRUE)[1]
 
-map_clim &lt;- map_clim %&gt;% select(all_of(parameter))
+map_clim_stars &lt;- clim_stars %&gt;% select(all_of(parameter))
+
+map_clim_stars &lt;- map_clim_stars %&gt;% 
+  filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
 
 print(
 ggplot()+
-  geom_stars(data = map_clim)+
+  geom_stars(data = map_clim_stars)+
+  geom_vline(xintercept = 335, col=&quot;white&quot;)+
   scale_fill_viridis_b()+
+  labs(title = file)+
   facet_wrap(~depth_surface, ncol = 3)+
   theme(axis.text = element_blank(),
-        axis.title = element_blank())
+        axis.title = element_blank(),
+        axis.ticks = element_blank())+
+  coord_quickmap(expand = 0)
 )
+
+
+# clim_tidync &lt;- tidync(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
+#                                  file))
+# print(clim_tidync)
+# 
+# Atl_sec_clim &lt;- clim_tidync %&gt;% hyper_filter(lon = lon == 335.5)
+# Atl_sec_clim_tibble &lt;- Atl_sec_clim %&gt;% hyper_tibble()
+# 
+# Atl_sec_clim_tibble %&gt;% 
+#   ggplot(aes(lat, depth_surface, fill=Cant))+
+#   geom_point()+
+#   scale_y_reverse()+
+#   scale_fill_viridis_b()
 
 }</code></pre>
 <pre><code>Cant, Cant_error, Input_mean, Input_std, Input_N, Cant_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>NO3, NO3_error, Input_mean, Input_std, Input_N, NO3_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>oxygen, oxygen_error, Input_mean, Input_std, Input_N, oxygen_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>PO4, PO4_error, Input_mean, Input_std, Input_N, PO4_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>salinity, salinity_error, Input_mean, Input_std, Input_N, salinity_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>silicate, silicate_error, Input_mean, Input_std, Input_N, silicate_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>TAlk, TAlk_error, Input_mean, Input_std, Input_N, TAlk_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-7.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>TCO2, TCO2_error, Input_mean, Input_std, Input_N, TCO2_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>temperature, temperature_error, Input_mean, Input_std, Input_N, temperature_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_MappedClimatologies_netcdfs_stars-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-9.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="open-tasks" class="section level1">
 <h1><span class="header-section-number">2</span> Open tasks</h1>
@@ -877,19 +924,19 @@ loaded via a namespace (and not attached):
  [9] tidyselect_1.1.0   viridisLite_0.3.0  here_0.1           colorspace_1.4-1  
 [13] R6_2.4.1           rlang_0.4.7        fansi_0.4.1        parallel_3.6.3    
 [17] broom_0.7.0        xfun_0.15          e1071_1.7-3        ncmeta_0.2.5      
-[21] dbplyr_1.4.4       modelr_0.1.8       withr_2.2.0        git2r_0.27.1      
-[25] ellipsis_0.3.1     htmltools_0.5.0    class_7.3-17       assertthat_0.2.1  
-[29] rprojroot_1.3-2    digest_0.6.25      lifecycle_0.2.0    RNetCDF_2.3-1     
-[33] haven_2.3.1        rmarkdown_2.3      compiler_3.6.3     cellranger_1.1.0  
-[37] pillar_1.4.6       scales_1.1.1       backports_1.1.5    generics_0.0.2    
-[41] classInt_0.4-3     jsonlite_1.7.0     httpuv_1.5.4       pkgconfig_2.0.3   
-[45] rstudioapi_0.11    munsell_0.5.0      blob_1.2.1         httr_1.4.1        
-[49] tools_3.6.3        grid_3.6.3         gtable_0.3.0       KernSmooth_2.23-16
-[53] DBI_1.1.0          cli_2.0.2          readxl_1.3.1       yaml_2.2.1        
-[57] lwgeom_0.2-5       crayon_1.3.4       farver_2.0.3       later_1.1.0.1     
-[61] promises_1.1.1     fs_1.4.2           vctrs_0.3.1        ncdf4_1.17        
-[65] glue_1.4.1         evaluate_0.14      labeling_0.3       reprex_0.3.0      
-[69] stringi_1.4.6     </code></pre>
+[21] cubelyr_1.0.0      dbplyr_1.4.4       modelr_0.1.8       withr_2.2.0       
+[25] git2r_0.27.1       ellipsis_0.3.1     htmltools_0.5.0    class_7.3-17      
+[29] assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25      lifecycle_0.2.0   
+[33] RNetCDF_2.3-1      haven_2.3.1        rmarkdown_2.3      compiler_3.6.3    
+[37] cellranger_1.1.0   pillar_1.4.6       scales_1.1.1       backports_1.1.5   
+[41] generics_0.0.2     classInt_0.4-3     jsonlite_1.7.0     httpuv_1.5.4      
+[45] pkgconfig_2.0.3    rstudioapi_0.11    munsell_0.5.0      blob_1.2.1        
+[49] httr_1.4.1         tools_3.6.3        grid_3.6.3         gtable_0.3.0      
+[53] KernSmooth_2.23-16 DBI_1.1.0          cli_2.0.2          readxl_1.3.1      
+[57] yaml_2.2.1         lwgeom_0.2-5       crayon_1.3.4       farver_2.0.3      
+[61] later_1.1.0.1      promises_1.1.1     fs_1.4.2           vctrs_0.3.1       
+[65] ncdf4_1.17         glue_1.4.1         evaluate_0.14      labeling_0.3      
+[69] reprex_0.3.0       stringi_1.4.6     </code></pre>
 </div>
 </div>
 
