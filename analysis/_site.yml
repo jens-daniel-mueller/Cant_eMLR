@@ -9,6 +9,8 @@ navbar:
       href: read_GLODAPv2_2020.html
     - text: GLODAPv2_2016_MappedClimatologies
       href: read_GLODAPv2_2016_MappedClimatologies.html
+    - text: World_Ocean_Atlas_2018
+      href: read_World_Ocean_Atlas_2018.html
     - text: CO2 atmosphere
       href: read_CO2_atm.html
   - text: eMLR

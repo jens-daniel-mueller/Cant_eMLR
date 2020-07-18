@@ -1,5 +1,5 @@
 ---
-title: "GLODAPv2_2016_Mappedclimatologies"
+title: "World Ocean Atlas 2018"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -30,10 +30,10 @@ theme_set(theme_bw())
 
 # Read/plot ncdf files
 
-- Data source: [glodap.info](https://www.glodap.info/)
+- Data source: [World Ocean Atlas 2018](https://www.nodc.noaa.gov/OC5/woa18/woa18data.html)
+- read-in not yet started
 
-
-```{r read_GLODAPv2_2016_Mappedclimatologies_netcdfs}
+```{r read_GLODAPv2_2016_Mappedclimatologies_netcdfs, eval=FALSE}
 
 file_list <- list.files(path= "data/GLODAPv2_2016b_Mappedclimatologies", pattern = "*.nc")
 
