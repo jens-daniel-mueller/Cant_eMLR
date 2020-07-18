@@ -37,7 +37,9 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 ```
 
 
-# C* calculation 
+# C*
+
+## stoichiometric ratios
 
 ```{r set_stoichiometric_ratios}
 
@@ -46,6 +48,12 @@ rNP <- 16
 
 ```
 
+The stoichiometric nutrient ratios for the production and mineralization of organic matter were set to:
+
+- C/P: `r rCP`
+- N/P: `r rNP`
+
+## Calculation
 
 ```{r calculate_C_star}
 
@@ -57,7 +65,7 @@ GLODAP <- GLODAP %>%
 
 ```
 
-## Selected section plots
+# Selected section plots
 
 ```{r select_cruises}
 
