@@ -55,10 +55,9 @@ GLODAP <- GLODAP %>%
 
 ```
 
-# Clean data
+# Data cleaning
 
-Only samples with all relevant parameters determined were selected.
-The following subsetting parameters were defined:
+## Define subsetting criteria
 
 ```{r subsetting_rules}
 
@@ -66,15 +65,18 @@ flag_f <- 2
 flag_qc <- 1
 min_depth <- 150
 
-
-flag_f
-flag_qc
-min_depth
-
 ```
 
+Only samples with all relevant parameters determined were selected.
+The following subsetting parameters were defined:
+
+- flag_f:     `r flag_f`
+- flag_qc:    `r flag_qc`
+- min_depth:  `r min_depth`
   
-- calculate summary statistics during cleaning process
+- summary statistics were calculated during cleaning process
+
+## Subset rows
 
 ```{r clean_GLODAP_master_file, eval=FALSE}
 
@@ -211,7 +213,7 @@ rm(GLODAP_stats_long, GLODAP_stats)
 
 ```
 
-# Assign reference eras
+## Assign reference eras
 
 Samples were assigned to following eras:
 
@@ -230,6 +232,8 @@ GLODAP <- GLODAP %>%
          era = if_else(year >= 2013, "new_era", era))
 
 ```
+ 
+## Write summary file 
  
 ```{r write_clean_data_file, eval=FALSE}
 
@@ -382,6 +386,8 @@ rm(GLODAP_map_era,
 ```
 
 # Individual cruise sections
+
+Zonal and meridional section plots are produce
 
 ```{r individual_cruises_clean_triplicates, eval = FALSE}
 
