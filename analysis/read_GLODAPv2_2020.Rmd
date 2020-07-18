@@ -72,9 +72,9 @@ The following subsetting parameters were defined:
 
 - flag_f:     `r flag_f`
 - flag_qc:    `r flag_qc`
-- min_depth:  `r min_depth`
+- min_depth:  `r min_depth`m
   
-- summary statistics were calculated during cleaning process
+Summary statistics were calculated during cleaning process
 
 ## Subset rows
 
@@ -245,31 +245,6 @@ GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 
 # Overview plots
 
-Open clean data file.
-
-```{r reopen_GLODAP}
-
-GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                              "GLODAPv2.2020_clean.csv"))
-
-```
-
-## Assign spatial grid
-
-For the following plots, observations were gridded spatially to 5°x5° intervals.
-
-```{r grid_spatially}
-
-GLODAP <- GLODAP %>% 
-  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
-         lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
-         lon_grid = as.numeric(as.character(lon_grid))) %>% 
-  arrange(date)
-
-```
-
-
 ## Cleaning stats
 
 ```{r GLODAP_stats_barplot}
@@ -290,6 +265,31 @@ GLODAP_stats_long %>%
 rm(GLODAP_stats_long)
 
 ```
+
+
+## Assign spatial grid
+
+For the following plots, the cleaned data set was re-opened and observations were gridded spatially to 5°x5° intervals.
+
+
+```{r reopen_GLODAP}
+
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                              "GLODAPv2.2020_clean.csv"))
+
+```
+
+```{r grid_spatially}
+
+GLODAP <- GLODAP %>% 
+  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+         lat_grid = as.numeric(as.character(lat_grid)),
+         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = as.numeric(as.character(lon_grid))) %>% 
+  arrange(date)
+
+```
+
 
 ## Histogram latitudes
 
@@ -329,6 +329,7 @@ GLODAP_histogram_year %>%
   ggplot(aes(year, n, fill=era))+
   geom_col()+
   geom_vline(data = era_median_year, aes(xintercept = t_ref))+
+  scale_fill_viridis_d()+
   coord_cartesian(expand = 0)
 
 
@@ -387,7 +388,7 @@ rm(GLODAP_map_era,
 
 # Individual cruise sections
 
-Zonal and meridional section plots are produce
+Zonal and meridional section plots are produce for each cruise individually and stored locally.
 
 ```{r individual_cruises_clean_triplicates, eval = FALSE}
 
