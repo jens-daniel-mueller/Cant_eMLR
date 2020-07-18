@@ -430,7 +430,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">GLODAPv2_2020</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">18 July, 2020</h4>
+<h4 class="date">19 July, 2020</h4>
 
 </div>
 
@@ -455,7 +455,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-18
+<strong>Last updated:</strong> 2020-07-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed3032c78f0a214bebe52a9977909bf190280cf7btargetblankd3032c7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d3032c78f0a214bebe52a9977909bf190280cf7b" target="_blank">d3032c7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree66540a9dacdcb845b9f58fa12b7337cb479469f0targetblank66540a9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/66540a9dacdcb845b9f58fa12b7337cb479469f0" target="_blank">66540a9</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed3032c78f0a214bebe52a9977909bf190280cf7btargetblankd3032c7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree66540a9dacdcb845b9f58fa12b7337cb479469f0targetblank66540a9a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d3032c78f0a214bebe52a9977909bf190280cf7b" target="_blank">d3032c7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/66540a9dacdcb845b9f58fa12b7337cb479469f0" target="_blank">66540a9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/66540a9dacdcb845b9f58fa12b7337cb479469f0/analysis/read_GLODAPv2_2020.Rmd" target="_blank">66540a9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-19
+</td>
+<td>
+formating and color scale
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/61b3390d84b031834f445958a56c528fa615242a/docs/read_GLODAPv2_2020.html" target="_blank">61b3390</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -804,11 +838,11 @@ flag_qc &lt;- 1
 min_depth &lt;- 150</code></pre>
 <p>Only samples with all relevant parameters determined were selected. The following subsetting parameters were defined:</p>
 <ul>
-<li><p>flag_f: 2</p></li>
-<li><p>flag_qc: 1</p></li>
-<li><p>min_depth: 150</p></li>
-<li><p>summary statistics were calculated during cleaning process</p></li>
+<li>flag_f: 2</li>
+<li>flag_qc: 1</li>
+<li>min_depth: 150m</li>
 </ul>
+<p>Summary statistics were calculated during cleaning process</p>
 </div>
 <div id="subset-rows" class="section level2">
 <h2><span class="header-section-number">2.2</span> Subset rows</h2>
@@ -963,21 +997,8 @@ rm(GLODAP_stats_long, GLODAP_stats)</code></pre>
 </div>
 <div id="overview-plots" class="section level1">
 <h1><span class="header-section-number">3</span> Overview plots</h1>
-<p>Open clean data file.</p>
-<pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
-                              &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
-<div id="assign-spatial-grid" class="section level2">
-<h2><span class="header-section-number">3.1</span> Assign spatial grid</h2>
-<p>For the following plots, observations were gridded spatially to 5°x5° intervals.</p>
-<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
-  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
-         lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
-         lon_grid = as.numeric(as.character(lon_grid))) %&gt;% 
-  arrange(date)</code></pre>
-</div>
 <div id="cleaning-stats" class="section level2">
-<h2><span class="header-section-number">3.2</span> Cleaning stats</h2>
+<h2><span class="header-section-number">3.1</span> Cleaning stats</h2>
 <pre class="r"><code>GLODAP_stats_long &lt;-  read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                              &quot;GLODAPv2.2020_stats.csv&quot;))
 
@@ -992,6 +1013,18 @@ GLODAP_stats_long %&gt;%
   theme(axis.title.y = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/GLODAP_stats_barplot-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_stats_long)</code></pre>
+</div>
+<div id="assign-spatial-grid" class="section level2">
+<h2><span class="header-section-number">3.2</span> Assign spatial grid</h2>
+<p>For the following plots, the cleaned data set was re-opened and observations were gridded spatially to 5°x5° intervals.</p>
+<pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
+                              &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
+  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+         lat_grid = as.numeric(as.character(lat_grid)),
+         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = as.numeric(as.character(lon_grid))) %&gt;% 
+  arrange(date)</code></pre>
 </div>
 <div id="histogram-latitudes" class="section level2">
 <h2><span class="header-section-number">3.3</span> Histogram latitudes</h2>
@@ -1025,6 +1058,7 @@ GLODAP_histogram_year %&gt;%
   ggplot(aes(year, n, fill=era))+
   geom_col()+
   geom_vline(data = era_median_year, aes(xintercept = t_ref))+
+  scale_fill_viridis_d()+
   coord_cartesian(expand = 0)</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/histogramm_year_observations-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_histogram_year,
@@ -1073,7 +1107,7 @@ GLODAP_map_era %&gt;%
 </div>
 <div id="individual-cruise-sections" class="section level1">
 <h1><span class="header-section-number">4</span> Individual cruise sections</h1>
-<p>Zonal and meridional section plots are produce</p>
+<p>Zonal and meridional section plots are produce for each cruise individually and stored locally.</p>
 <pre class="r"><code>cruises &lt;- GLODAP %&gt;% 
   group_by(cruise) %&gt;% 
   summarise(date_mean = mean(date, na.rm = TRUE),
