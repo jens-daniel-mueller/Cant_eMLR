@@ -50,7 +50,10 @@ rNP <- 16
 ```{r calculate_C_star}
 
 GLODAP <- GLODAP %>% 
-  mutate(C_star = tco2 - (rCP * phosphate) - 0.5 * (talk + rNP * phosphate))
+  mutate(rCP_phosphate = - rCP * phosphate,
+         talk_05 = - 0.5 * talk,
+         rNP_phosphate_05 = - 0.5 * rNP * phosphate,
+         C_star = tco2 + rCP_phosphate + talk_05 + rNP_phosphate_05)
 
 ```
 
@@ -97,10 +100,19 @@ lat_talk <- lat_section+
 lat_phosphate <- lat_section+
   geom_point(aes(col=phosphate))
 
+lat_rCP_phosphate <- lat_section+
+  geom_point(aes(col=rCP_phosphate))
+
+lat_talk_05 <- lat_section+
+  geom_point(aes(col=talk_05))
+
+lat_rNP_phosphate_05 <- lat_section+
+  geom_point(aes(col=rNP_phosphate_05))
+
 lat_C_star <- lat_section+
   geom_point(aes(col=C_star))
 
-map / lat_tco2 / lat_talk / lat_phosphate / lat_C_star
+map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_C_star
 
 rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star)
 
