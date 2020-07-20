@@ -306,9 +306,38 @@ GLODAP <- GLODAP %>%
 
 ```{r remove_era_variables}
 
-rm(start, JGOFS, GOSHIP)
+# rm(start, JGOFS, GOSHIP)
 
 ```
+
+## Basin mask
+
+```{r read_basin_mask_file}
+
+basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "basin_mask_WOA18.csv"))
+
+```
+
+
+```{r grid_spatially_1x1}
+
+GLODAP <- GLODAP %>% 
+  mutate(Latitude = cut(latitude, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
+         Latitude = as.numeric(as.character(Latitude)),
+         Longitude = cut(longitude, seq(-180, 180, 1), seq(-179.5, 179.5, 1)),
+         Longitude = as.numeric(as.character(Longitude))) %>% 
+  arrange(date) %>% 
+  select(-c(latitude,longitude))
+
+```
+
+```{r join_basin_mask}
+
+GLODAP <- inner_join(GLODAP, basinmask)
+
+```
+
 
 ## Write summary file 
  
@@ -346,7 +375,7 @@ rm(GLODAP_stats_long)
 ```
 
 
-## Assign spatial grid
+## Assign coarse spatial grid
 
 For the following plots, the cleaned data set was re-opened and observations were gridded spatially to 5°x5° intervals.
 
@@ -358,12 +387,12 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 
 ```
 
-```{r grid_spatially}
+```{r grid_spatially_5x5}
 
 GLODAP <- GLODAP %>% 
-  mutate(lat_grid = cut(latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+  mutate(lat_grid = cut(Latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
          lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = cut(Longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
          lon_grid = as.numeric(as.character(lon_grid))) %>% 
   arrange(date)
 
@@ -375,7 +404,7 @@ GLODAP <- GLODAP %>%
 ```{r histogramm_latitude_observations}
 
 GLODAP_histogram_lat <- GLODAP %>% 
-  group_by(era, lat_grid) %>% 
+  group_by(era, lat_grid, basin) %>% 
   tally() %>% 
   ungroup()
 
@@ -383,7 +412,8 @@ GLODAP_histogram_lat %>%
   ggplot(aes(lat_grid, n, fill=era))+
   geom_col()+
   scale_x_continuous(breaks = seq(-87.5,90,10))+
-  scale_fill_viridis_d()+
+  scale_fill_brewer(palette = "Dark2")+
+  facet_wrap(~basin)+
   coord_flip(expand = 0)
 
 rm(GLODAP_histogram_lat)
@@ -395,7 +425,7 @@ rm(GLODAP_histogram_lat)
 ```{r histogramm_year_observations}
 
 GLODAP_histogram_year <- GLODAP %>% 
-  group_by(era, year) %>% 
+  group_by(year, basin) %>% 
   tally() %>% 
   ungroup()
 
@@ -405,12 +435,13 @@ era_median_year <- GLODAP %>%
   ungroup()
 
 GLODAP_histogram_year %>% 
-  ggplot(aes(year, n, fill=era))+
-  geom_col()+
-  geom_vline(data = era_median_year, aes(xintercept = t_ref))+
-  scale_fill_viridis_d()+
+  ggplot()+
+  geom_vline(xintercept = c(JGOFS+0.5, GOSHIP+0.5))+
+  geom_col(aes(year, n, fill=basin))+
+  geom_point(data = era_median_year, aes(t_ref,0, shape="Median year"), size=2, fill="white")+
+  scale_fill_brewer(palette = "Dark2")+
+  scale_shape_manual(values = 24)+
   coord_cartesian(expand = 0)
-
 
 rm(GLODAP_histogram_year,
    era_median_year)
@@ -422,7 +453,7 @@ rm(GLODAP_histogram_year,
 ```{r coverage_hovmoeller}
 
 GLODAP_hovmoeller_year <- GLODAP %>% 
-  group_by(year, lat_grid) %>% 
+  group_by(year, lat_grid, basin) %>% 
   tally() %>% 
   ungroup()
 
@@ -430,7 +461,8 @@ GLODAP_hovmoeller_year %>%
   ggplot(aes(year, lat_grid, fill=log10(n)))+
   geom_tile()+
   geom_vline(xintercept = c(1999.5, 2012.5))+
-  scale_fill_viridis_c(option = "magma", direction = -1)
+  scale_fill_viridis_c(option = "magma", direction = -1)+
+  facet_wrap(~basin)
 
 rm(GLODAP_hovmoeller_year)
 
@@ -443,7 +475,7 @@ rm(GLODAP_hovmoeller_year)
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 GLODAP_map_era <- GLODAP %>% 
-  group_by(era, lat_grid, lon_grid) %>% 
+  group_by(era, Latitude, Longitude) %>% 
   tally() %>% 
   ungroup()
 
@@ -451,9 +483,9 @@ GLODAP_map_era <- GLODAP_map_era %>%
   mutate(era = factor(era, c("JGOFS/WOCE", "GO-SHIP", "new_era")))
 
 GLODAP_map_era %>%
-  ggplot(aes(lon_grid, lat_grid, fill=log10(n)))+
+  ggplot(aes(Longitude, Latitude, fill=log10(n)))+
   mapWorld+
-  geom_raster()+
+  geom_tile()+
   scale_fill_viridis_c(option = "magma", direction = -1)+
   scale_x_continuous(breaks = seq(-180, 180, 30))+
   scale_y_continuous(breaks = seq(-90, 90, 30))+
