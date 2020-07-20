@@ -52,16 +52,9 @@ basinmask_01 <- basinmask_01 %>%
 
 According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html) website, number codes in the mask file refer to Ocean basins as follows:  
 
-1 - Atlantic Ocean
-10 - Southern Ocean, between 63°W and 20°E longitudes
-
-The Pacific:
-2 - Pacific Ocean
-10 - Southern Ocean, between 147°E and 63°W
-
-The Indian:
-3 - Indian Ocean
-10 - Southern Ocean, between 20°E and 147°E.  
+- 1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)
+- 2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)
+- 3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)
 
 From this, the Atlantik and the Indo-Pcific were labeled.
 
