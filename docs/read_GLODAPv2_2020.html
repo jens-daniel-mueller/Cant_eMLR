@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree82120fe9d40ad0da9c8f7dd02c3fde9edf4104c6targetblank82120fea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/82120fe9d40ad0da9c8f7dd02c3fde9edf4104c6" target="_blank">82120fe</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree50be8de9d9453df01a6008b717a7d465414eda4etargetblank50be8dea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/50be8de9d9453df01a6008b717a7d465414eda4e" target="_blank">50be8de</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree82120fe9d40ad0da9c8f7dd02c3fde9edf4104c6targetblank82120fea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree50be8de9d9453df01a6008b717a7d465414eda4etargetblank50be8dea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/82120fe9d40ad0da9c8f7dd02c3fde9edf4104c6" target="_blank">82120fe</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/50be8de9d9453df01a6008b717a7d465414eda4e" target="_blank">50be8de</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/50be8de9d9453df01a6008b717a7d465414eda4e/analysis/read_GLODAPv2_2020.Rmd" target="_blank">50be8de</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-20
+</td>
+<td>
+formating
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b9769e88c056648a63450951579c100c0d758752/docs/read_GLODAPv2_2020.html" target="_blank">b9769e8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -865,23 +899,16 @@ GLODAP &lt;- GLODAP %&gt;%
 </div>
 <div id="data-preparation" class="section level1">
 <h1><span class="header-section-number">2</span> Data preparation</h1>
-<div id="define-subsetting-criteria" class="section level2">
-<h2><span class="header-section-number">2.1</span> Define subsetting criteria</h2>
+<div id="flags-and-missing-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Flags and missing data</h2>
 <pre class="r"><code>flag_f &lt;- 2
-flag_qc &lt;- 1
-min_depth &lt;- 150
-max_lat &lt;- 65</code></pre>
-<p>Only samples with all relevant parameters determined were selected. The following subsetting parameters were defined:</p>
+flag_qc &lt;- 1</code></pre>
+<p>Only samples with all relevant parameters determined were selected. The following flagging criteria were defined:</p>
 <ul>
 <li>flag f: 2</li>
 <li>flag qc: 1</li>
-<li>minimum depth: 150m</li>
-<li>maximum latitude: 65°N</li>
 </ul>
 <p>Summary statistics were calculated during cleaning process</p>
-</div>
-<div id="subset-rows" class="section level2">
-<h2><span class="header-section-number">2.2</span> Subset rows</h2>
 <pre class="r"><code>GLODAP_stats &lt;- GLODAP %&gt;% 
   summarise(total = n())
 
@@ -1016,11 +1043,20 @@ GLODAP_stats_temp &lt;- GLODAP %&gt;%
   summarise(eMLR_variables = n())
 
 GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP &lt;- GLODAP %&gt;% 
+rm(GLODAP_stats_temp)</code></pre>
+<pre class="r"><code>rm(flag_f, flag_qc)</code></pre>
+</div>
+<div id="spatial-boundaries" class="section level2">
+<h2><span class="header-section-number">2.2</span> Spatial boundaries</h2>
+<pre class="r"><code>min_depth &lt;- 150
+max_lat &lt;- 65</code></pre>
+<p>Only observations with:</p>
+<ul>
+<li>minimum depth: 150m</li>
+<li>maximum latitude: 65°N</li>
+</ul>
+<p>were taken into consideration.</p>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   filter(depth &gt;= min_depth)
 
 GLODAP_stats_temp &lt;- GLODAP %&gt;% 
@@ -1048,10 +1084,11 @@ GLODAP_stats_long  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summar
                                              &quot;GLODAPv2.2020_stats.csv&quot;))
 
 rm(GLODAP_stats_long, GLODAP_stats)
-rm(flag_f, flag_qc, min_depth)</code></pre>
+rm(min_depth, max_lat)</code></pre>
+<pre class="r"><code>rm(min_depth, max_lat)</code></pre>
 </div>
-<div id="assign-reference-eras" class="section level2">
-<h2><span class="header-section-number">2.3</span> Assign reference eras</h2>
+<div id="reference-eras" class="section level2">
+<h2><span class="header-section-number">2.3</span> Reference eras</h2>
 <pre class="r"><code>start &lt;- 1981
 JGOFS &lt;- 1999
 GOSHIP &lt;- 2012</code></pre>
@@ -1059,7 +1096,7 @@ GOSHIP &lt;- 2012</code></pre>
 <ul>
 <li>JGOFS/WOCE: 1981 - 1999</li>
 <li>GO-SHIP: 2000 - 2012</li>
-<li>new_era: 2013 - 2012</li>
+<li>new_era: &gt; 2013</li>
 </ul>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;%
   filter(year &gt;= start) %&gt;% 
@@ -1071,7 +1108,9 @@ GOSHIP &lt;- 2012</code></pre>
 <div id="write-summary-file" class="section level2">
 <h2><span class="header-section-number">2.4</span> Write summary file</h2>
 <pre class="r"><code>GLODAP  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
-                                  &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
+                                  &quot;GLODAPv2.2020_clean.csv&quot;))
+
+rm(GLODAP)</code></pre>
 </div>
 </div>
 <div id="overview-plots" class="section level1">
