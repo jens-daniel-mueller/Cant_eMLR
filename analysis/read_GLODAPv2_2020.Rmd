@@ -50,12 +50,12 @@ GLODAP <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   select(-c(month:minute, 
             maxsampdepth, pressure,
-            theta, sigma0:gamma,
-            nitrate:nitritef))
+            theta, sigma0:sigma4,
+            nitrite:nitritef))
 
 ```
 
-# Data cleaning
+# Data preparation
 
 ## Define subsetting criteria
 
@@ -64,15 +64,17 @@ GLODAP <- GLODAP %>%
 flag_f <- 2
 flag_qc <- 1
 min_depth <- 150
+max_lat <- 65
 
 ```
 
 Only samples with all relevant parameters determined were selected.
 The following subsetting parameters were defined:
 
-- flag_f:     `r flag_f`
-- flag_qc:    `r flag_qc`
-- min_depth:  `r min_depth`m
+- flag f:     `r flag_f`
+- flag qc:    `r flag_qc`
+- minimum depth:  `r min_depth`m
+- maximum latitude:  `r max_lat`°N
   
 Summary statistics were calculated during cleaning process
 
@@ -82,6 +84,8 @@ Summary statistics were calculated during cleaning process
 
 GLODAP_stats <- GLODAP %>% 
   summarise(total = n())
+
+##
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(tco2))
@@ -185,6 +189,29 @@ GLODAP <- GLODAP %>%
   filter(aouf == flag_f) %>% 
   select(-aouf)
 
+##
+  
+GLODAP <- GLODAP %>% 
+  filter(!is.na(nitrate))
+
+GLODAP <- GLODAP %>% 
+  filter(nitratef == flag_f) %>% 
+  select(-nitratef)
+
+GLODAP <- GLODAP %>% 
+  filter(nitrateqc == flag_qc) %>% 
+  select(-nitrateqc)
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(depth))
+
+GLODAP <- GLODAP %>% 
+  filter(!is.na(gamma))
+
+##
+
 GLODAP_stats_temp <- GLODAP %>% 
   summarise(eMLR_variables = n())
 
@@ -197,7 +224,18 @@ GLODAP <- GLODAP %>%
   filter(depth >= min_depth)
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(eMLR_variables_150 = n())
+  summarise(eMLR_variables_150m = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(latitude <= max_lat)
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(eMLR_variables_150m_65N = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -210,29 +248,43 @@ GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_dat
                                              "GLODAPv2.2020_stats.csv"))
 
 rm(GLODAP_stats_long, GLODAP_stats)
+rm(flag_f, flag_qc, min_depth)
 
 ```
 
 ## Assign reference eras
 
-Samples were assigned to following eras:
+```{r define_eras}
 
-`JGOFS/WOCE` 1981 - 1999
-
-`GO-SHIP` 2000 - 2012
- 
-`new_era` 2013 - now
-
-```{r era_assignement, eval=FALSE}
-
-GLODAP <- GLODAP %>%
-  filter(year >= 1981) %>% 
-  mutate(era = "JGOFS/WOCE",
-         era = if_else(year >= 2000, "GO-SHIP", era),
-         era = if_else(year >= 2013, "new_era", era))
+start <- 1981
+JGOFS <- 1999
+GOSHIP <- 2012
 
 ```
- 
+
+Samples were assigned to following eras:
+
+- JGOFS/WOCE: `r start` - `r JGOFS`
+- GO-SHIP:    `r JGOFS+1` - `r GOSHIP`
+- new_era:    `r GOSHIP+1` - `r GOSHIP`
+
+
+```{r assigne_eras, eval=FALSE}
+
+GLODAP <- GLODAP %>%
+  filter(year >= start) %>% 
+  mutate(era = "JGOFS/WOCE",
+         era = if_else(year > JGOFS, "GO-SHIP", era),
+         era = if_else(year > GOSHIP, "new_era", era))
+
+```
+
+```{r remove_era_variables}
+
+rm(start, JGOFS, GOSHIP)
+
+```
+
 ## Write summary file 
  
 ```{r write_clean_data_file, eval=FALSE}
@@ -506,7 +558,7 @@ rm(map,
 
 # Open tasks
 
-- remove marginal seas and data north of 65°N
+- remove marginal seas
 - move A16 cruises from new_era to GO-SHIP era
 
 # Questions
