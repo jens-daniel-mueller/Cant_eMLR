@@ -35,6 +35,8 @@ theme_set(theme_bw())
 
 ## Read data
 
+The surface mask (0m) with 1x1° resolution from the file `basinmask_01.msk` was used.
+
 ```{r read_basin_mask}
 
 basinmask_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
