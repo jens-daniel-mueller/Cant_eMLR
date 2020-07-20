@@ -82,6 +82,7 @@ basinmask_01 %>%
   ggplot(aes(Longitude, Latitude, fill=basin))+
   mapWorld+
   geom_raster()+
+  scale_fill_brewer(palette = "Dark2")+
   coord_quickmap(expand = 0)
 
 ```

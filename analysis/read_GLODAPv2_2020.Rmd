@@ -450,7 +450,7 @@ rm(GLODAP_histogram_year,
 
 ## Hovmoeller (lat vs year)
 
-```{r coverage_hovmoeller}
+```{r coverage_hovmoeller, fig.asp=1}
 
 GLODAP_hovmoeller_year <- GLODAP %>% 
   group_by(year, lat_grid, basin) %>% 
@@ -462,7 +462,7 @@ GLODAP_hovmoeller_year %>%
   geom_tile()+
   geom_vline(xintercept = c(1999.5, 2012.5))+
   scale_fill_viridis_c(option = "magma", direction = -1)+
-  facet_wrap(~basin)
+  facet_wrap(~basin, ncol=1)
 
 rm(GLODAP_hovmoeller_year)
 
