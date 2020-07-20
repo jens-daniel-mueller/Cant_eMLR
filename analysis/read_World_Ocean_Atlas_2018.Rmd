@@ -37,22 +37,20 @@ theme_set(theme_bw())
 
 ```{r read_basin_mask}
 
-basinmask_01 <- read_csv("data/World_Ocean_Atlas_2018/basinmask_01.msk",
-    skip = 1)
+basinmask_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
+                                    "basinmask_01.msk"),
+                         skip = 1)
 
 basinmask_01 <- basinmask_01 %>% 
   select(Latitude:Basin_0m) %>% 
   mutate(Basin_0m = as.factor(Basin_0m))
 
-# basinmask_01_long <- basinmask_01 %>% 
-#   pivot_longer(Basin_0m:Basin_3000m, values_to = "basin_ID", names_to = "depth") %>% 
-#   mutate(basin_ID = as.factor(basin_ID))
 
 ```
 
-## Assign labels
+## Basin labels
 
-According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html):
+According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html) website, number codes in the mask file refer to Ocean basins as follows:  
 
 1 - Atlantic Ocean
 10 - Southern Ocean, between 63°W and 20°E longitudes
@@ -63,29 +61,45 @@ The Pacific:
 
 The Indian:
 3 - Indian Ocean
-10 - Southern Ocean, between 20°E and 147°E. 
+10 - Southern Ocean, between 20°E and 147°E.  
 
-```{r basins}
+From this, the Atlantik and the Indo-Pcific were labeled.
+
+```{r assign_basin_labels}
 
 basinmask_01 <- basinmask_01 %>% 
-  filter(Basin_0m %in% c("1", "2", "3", "10"))
-  #mutate(Basin_0m = if_else(Basin_0m %in% c("1", "2", "3", "10"), Basin_0m, "NA"))
+  filter(Basin_0m %in% c("1", "2", "3", "10")) %>% 
+  mutate(basin = if_else(Basin_0m == "10" & Longitude >= -63 & Longitude < 20,
+                         "Atlantic", "Indo-Pacific"),
+         basin = if_else(Basin_0m == "1",
+                         "Atlantic", basin)) %>% 
+  select(-Basin_0m)
 
 ```
 
+## Plot world map
 
+```{r map_basin_mask_WOA}
 
-## Plot
-
-```{r basin_mask}
+mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 basinmask_01 %>% 
-  ggplot(aes(Longitude, Latitude, fill=Basin_0m))+
+  ggplot(aes(Longitude, Latitude, fill=basin))+
+  mapWorld+
   geom_raster()+
-  coord_quickmap()
+  coord_quickmap(expand = 0)
 
 ```
 
+## Write file
+
+```{r write_basin_mask_file}
+
+basinmask_01 %>% 
+  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "basin_mask_WOA18.csv"))
+
+```
 
 
 # Read/plot ncdf files
