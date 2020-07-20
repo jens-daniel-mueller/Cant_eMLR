@@ -31,7 +31,7 @@ theme_set(theme_bw())
 
 - Data source: `GLODAPv2.2020_Merged_Master_File.csv` from [glodap.info](https://www.glodap.info/)
 
-```{r read_GLODAPv2_2020_merged_master_file, eval=FALSE}
+```{r read_GLODAPv2_2020_merged_master_file}
 
 GLODAP <- read_csv(here::here("data/GLODAPv2_2020/Merged_data_product",
                               "GLODAPv2.2020_Merged_Master_File.csv"),
@@ -57,30 +57,24 @@ GLODAP <- GLODAP %>%
 
 # Data preparation
 
-## Define subsetting criteria
+## Flags and missing data
 
-```{r subsetting_rules}
+```{r cleaning_criteria}
 
 flag_f <- 2
 flag_qc <- 1
-min_depth <- 150
-max_lat <- 65
 
 ```
 
 Only samples with all relevant parameters determined were selected.
-The following subsetting parameters were defined:
+The following flagging criteria were defined:
 
 - flag f:     `r flag_f`
 - flag qc:    `r flag_qc`
-- minimum depth:  `r min_depth`m
-- maximum latitude:  `r max_lat`°N
   
 Summary statistics were calculated during cleaning process
 
-## Subset rows
-
-```{r clean_GLODAP_master_file, eval=FALSE}
+```{r clean_GLODAP_master_file}
 
 GLODAP_stats <- GLODAP %>% 
   summarise(total = n())
@@ -218,7 +212,32 @@ GLODAP_stats_temp <- GLODAP %>%
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
 
-##
+```
+
+```{r remove_cleaning_flags}
+
+rm(flag_f, flag_qc)
+
+```
+
+
+## Spatial boundaries
+
+```{r define_spatial_boundaries}
+
+min_depth <- 150
+max_lat <- 65
+
+```
+
+Only observations with:
+
+- minimum depth:  `r min_depth`m
+- maximum latitude:  `r max_lat`°N
+
+were taken into consideration.
+
+```{r apply_spatial_boundaries}
 
 GLODAP <- GLODAP %>% 
   filter(depth >= min_depth)
@@ -248,11 +267,17 @@ GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_dat
                                              "GLODAPv2.2020_stats.csv"))
 
 rm(GLODAP_stats_long, GLODAP_stats)
-rm(flag_f, flag_qc, min_depth)
+rm(min_depth, max_lat)
+```
+
+```{r remove_spatial_boundaries}
+
+rm(min_depth, max_lat)
 
 ```
 
-## Assign reference eras
+
+## Reference eras
 
 ```{r define_eras}
 
@@ -266,10 +291,10 @@ Samples were assigned to following eras:
 
 - JGOFS/WOCE: `r start` - `r JGOFS`
 - GO-SHIP:    `r JGOFS+1` - `r GOSHIP`
-- new_era:    `r GOSHIP+1` - `r GOSHIP`
+- new_era:    > `r GOSHIP+1`
 
 
-```{r assigne_eras, eval=FALSE}
+```{r assigne_eras}
 
 GLODAP <- GLODAP %>%
   filter(year >= start) %>% 
@@ -287,10 +312,12 @@ rm(start, JGOFS, GOSHIP)
 
 ## Write summary file 
  
-```{r write_clean_data_file, eval=FALSE}
+```{r write_clean_data_file}
 
 GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                   "GLODAPv2.2020_clean.csv"))
+
+rm(GLODAP)
 
 ```
 
