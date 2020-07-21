@@ -323,10 +323,10 @@ basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files"
 ```{r grid_spatially_1x1}
 
 GLODAP <- GLODAP %>% 
-  mutate(Latitude = cut(latitude, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
-         Latitude = as.numeric(as.character(Latitude)),
-         Longitude = cut(longitude, seq(-180, 180, 1), seq(-179.5, 179.5, 1)),
-         Longitude = as.numeric(as.character(Longitude))) %>% 
+  mutate(lat = cut(latitude, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
+         lat = as.numeric(as.character(lat)),
+         lon = cut(longitude, seq(-180, 180, 1), seq(-179.5, 179.5, 1)),
+         lon = as.numeric(as.character(lon))) %>% 
   arrange(date) %>% 
   select(-c(latitude,longitude))
 
@@ -335,6 +335,8 @@ GLODAP <- GLODAP %>%
 ```{r join_basin_mask}
 
 GLODAP <- inner_join(GLODAP, basinmask)
+
+rm(basinmask)
 
 ```
 
@@ -390,18 +392,18 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 ```{r grid_spatially_5x5}
 
 GLODAP <- GLODAP %>% 
-  mutate(lat_grid = cut(Latitude, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
+  mutate(lat_grid = cut(lat, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
          lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(Longitude, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = cut(lon, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
          lon_grid = as.numeric(as.character(lon_grid))) %>% 
   arrange(date)
 
 ```
 
 
-## Histogram latitudes
+## Histogram lats
 
-```{r histogramm_latitude_observations}
+```{r histogramm_lat_observations}
 
 GLODAP_histogram_lat <- GLODAP %>% 
   group_by(era, lat_grid, basin) %>% 
@@ -475,7 +477,7 @@ rm(GLODAP_hovmoeller_year)
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 GLODAP_map_era <- GLODAP %>% 
-  group_by(era, Latitude, Longitude) %>% 
+  group_by(era, lat, lon) %>% 
   tally() %>% 
   ungroup()
 
@@ -483,7 +485,7 @@ GLODAP_map_era <- GLODAP_map_era %>%
   mutate(era = factor(era, c("JGOFS/WOCE", "GO-SHIP", "new_era")))
 
 GLODAP_map_era %>%
-  ggplot(aes(Longitude, Latitude, fill=log10(n)))+
+  ggplot(aes(lon, lat, fill=log10(n)))+
   mapWorld+
   geom_tile()+
   scale_fill_viridis_c(option = "magma", direction = -1)+
@@ -529,7 +531,7 @@ cruises_cruise <- cruises %>%
   filter(cruise == i_cruise)
   
 map <- GLODAP_cruise %>%
-  ggplot(aes(longitude, latitude))+
+  ggplot(aes(lon, lat))+
   mapWorld+
   geom_point(aes(col=date))+
   geom_path()+
@@ -541,7 +543,7 @@ map <- GLODAP_cruise %>%
 
 
 lon_section <- GLODAP_cruise %>%
-  ggplot(aes(longitude, depth))+
+  ggplot(aes(lon, depth))+
   scale_y_reverse()+
   scale_color_viridis_c()
 
@@ -556,7 +558,7 @@ lon_phosphate <- lon_section+
 
 
 lat_section <- GLODAP_cruise %>%
-  ggplot(aes(latitude, depth))+
+  ggplot(aes(lat, depth))+
   scale_y_reverse()+
   scale_color_viridis_c()
 

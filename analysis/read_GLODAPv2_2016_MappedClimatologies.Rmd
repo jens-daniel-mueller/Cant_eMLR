@@ -56,11 +56,12 @@ map_clim_stars <- clim_stars %>% select(all_of(parameter))
 
 map_clim_stars %>% 
   as_tibble() %>% 
+  rename(lat = y, lon = x, depth = depth_surface) %>% 
   write_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                        paste(parameter,".csv", sep = "")))
 
 map_clim_stars_horizons <- map_clim_stars %>% 
-  filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
+  filter(depth_surface %in% c(0,100,500,2000))
 
 print(
 ggplot()+
@@ -68,32 +69,28 @@ ggplot()+
   geom_vline(xintercept = c(190.5,335.5), col="white")+
   scale_fill_viridis_b(n.breaks = 8)+
   labs(title = file)+
-  facet_wrap(~depth_surface, ncol = 3)+
-  theme(#axis.text = element_blank(),
-        axis.title = element_blank(),
-        axis.ticks = element_blank())+
+  facet_wrap(~depth_surface, ncol = 2)+
   coord_quickmap(expand = 0)
 )
 
 Atl_section <- map_clim_stars %>% 
   as_tibble() %>% 
-  filter(x == 335.5)
-
-names(Atl_section) <- c("x","y","depth_surface","parameter")
+  rename(lat = y, lon = x, depth = depth_surface, parameter = 4) %>% 
+  filter(lon == 335.5)
 
 Atl_section_bathy <- Atl_section %>% 
   filter(is.na(parameter)) %>% 
-  group_by(y) %>% 
-  summarise(depth_surface = min(depth_surface)) %>% 
+  group_by(lat) %>% 
+  summarise(bottom_depth = min(depth)) %>% 
   ungroup()
 
 p_Atl_section <-
 ggplot()+
   geom_contour_fill(data = Atl_section,
-                    aes(y, depth_surface, z=parameter),
+                    aes(lat, depth, z=parameter),
                     na.fill = TRUE)+
   geom_ribbon(data = Atl_section_bathy,
-              aes(x = y, ymin = depth_surface, ymax = 5500),
+              aes(x = lat, ymin = bottom_depth, ymax = 5500),
               fill = "grey80",
               col="black")+
   labs(title = "Atlantic ocean N-S section")+
@@ -104,23 +101,22 @@ ggplot()+
 
 Pac_section <- map_clim_stars %>% 
   as_tibble() %>% 
-  filter(x == 190.5)
-
-names(Pac_section) <- c("x","y","depth_surface","parameter")
+  rename(lat = y, lon = x, depth = depth_surface, parameter = 4) %>% 
+  filter(lon == 190.5)
 
 Pac_section_bathy <- Pac_section %>% 
   filter(is.na(parameter)) %>% 
-  group_by(y) %>% 
-  summarise(depth_surface = min(depth_surface)) %>% 
+  group_by(lat) %>% 
+  summarise(bottom_depth = min(depth)) %>% 
   ungroup()
 
 p_Pac_section <-
 ggplot()+
   geom_contour_fill(data = Pac_section,
-                    aes(y, depth_surface, z=parameter),
+                    aes(lat, depth, z=parameter),
                     na.fill = TRUE)+
   geom_ribbon(data = Pac_section_bathy,
-              aes(x = y, ymin = depth_surface, ymax = 5500),
+              aes(x = lat, ymin = bottom_depth, ymax = 5500),
               fill = "grey80",
               col="black")+
   labs(title = "Pacific ocean N-S section")+

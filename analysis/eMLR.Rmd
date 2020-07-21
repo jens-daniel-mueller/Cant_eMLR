@@ -27,7 +27,9 @@ library(patchwork)
 theme_set(theme_bw())
 ```
 
-# Open clean data set
+# Open required data sets
+
+## GLODAP
 
 ```{r reopen_GLODAP}
 
@@ -35,6 +37,15 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                               "GLODAPv2.2020_clean.csv"))
 
 ```
+
+## GLODAP Cant climatology
+
+```{r open_GLODAP_Cant_climatology}
+
+Cant_clim <- read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+                                 "Cant.csv"))
+```
+
 
 
 # C*
@@ -87,7 +98,7 @@ GLODAP_cruise <- GLODAP %>%
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 map <- GLODAP_cruise %>%
-  ggplot(aes(longitude, latitude))+
+  ggplot(aes(lon, lat))+
   mapWorld+
   geom_point(aes(col=date))+
   geom_path()+
@@ -95,7 +106,7 @@ map <- GLODAP_cruise %>%
   scale_color_viridis_c(trans = "date")
 
 lat_section <- GLODAP_cruise %>%
-  ggplot(aes(latitude, depth))+
+  ggplot(aes(lat, depth))+
   scale_y_reverse()+
   scale_color_viridis_c()
 
@@ -132,6 +143,14 @@ rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star)
 
 The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX.
 Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator.
+
+## Merge data sets
+
+```{r merge_Cstar_Cant_pCO2}
+
+```
+
+## Perform adjustment
 
 ```{r adjust_reference_year, eval=FALSE}
 

@@ -45,9 +45,9 @@ basinmask_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
 
 basinmask_01 <- basinmask_01 %>% 
   select(Latitude:Basin_0m) %>% 
-  mutate(Basin_0m = as.factor(Basin_0m))
-
-
+  mutate(Basin_0m = as.factor(Basin_0m)) %>% 
+  rename(lat = Latitude, lon = Longitude)
+  
 ```
 
 ## Basin labels
@@ -64,7 +64,7 @@ From this, the Atlantik and the Indo-Pacific were labeled.
 
 basinmask_01 <- basinmask_01 %>% 
   filter(Basin_0m %in% c("1", "2", "3", "10")) %>% 
-  mutate(basin = if_else(Basin_0m == "10" & Longitude >= -63 & Longitude < 20,
+  mutate(basin = if_else(Basin_0m == "10" & lon >= -63 & lon < 20,
                          "Atlantic", "Indo-Pacific"),
          basin = if_else(Basin_0m == "1",
                          "Atlantic", basin)) %>% 
@@ -79,7 +79,7 @@ basinmask_01 <- basinmask_01 %>%
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 basinmask_01 %>% 
-  ggplot(aes(Longitude, Latitude, fill=basin))+
+  ggplot(aes(lon, lat, fill=basin))+
   mapWorld+
   geom_raster()+
   scale_fill_brewer(palette = "Dark2")+
