@@ -95,10 +95,11 @@ ggplot()+
               aes(x = y, ymin = depth_surface, ymax = 5500),
               fill = "grey30",
               col="black")+
+  labs(title = "Atlantic ocean N-S section")+
   scale_y_reverse()+
-  scale_fill_viridis_b(breaks = seq(0,100,10),
-                       name = parameter)+
-  coord_cartesian(expand = 0)
+  scale_fill_viridis_b(name = parameter)+
+  coord_fixed(ratio = 2,
+              expand = 0)
 )
 
 
