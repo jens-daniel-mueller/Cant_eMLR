@@ -22,6 +22,7 @@ library(lubridate)
 library(tidync)
 library(stars)
 library(metR)
+library(patchwork)
 ```
 
 
@@ -64,11 +65,11 @@ map_clim_stars_horizons <- map_clim_stars %>%
 print(
 ggplot()+
   geom_stars(data = map_clim_stars_horizons)+
-  geom_vline(xintercept = 335, col="white")+
+  geom_vline(xintercept = c(190.5,335.5), col="white")+
   scale_fill_viridis_b(n.breaks = 8)+
   labs(title = file)+
   facet_wrap(~depth_surface, ncol = 3)+
-  theme(axis.text = element_blank(),
+  theme(#axis.text = element_blank(),
         axis.title = element_blank(),
         axis.ticks = element_blank())+
   coord_quickmap(expand = 0)
@@ -86,22 +87,51 @@ Atl_section_bathy <- Atl_section %>%
   summarise(depth_surface = min(depth_surface)) %>% 
   ungroup()
 
-print(
+p_Atl_section <-
 ggplot()+
   geom_contour_fill(data = Atl_section,
                     aes(y, depth_surface, z=parameter),
                     na.fill = TRUE)+
   geom_ribbon(data = Atl_section_bathy,
               aes(x = y, ymin = depth_surface, ymax = 5500),
-              fill = "grey30",
+              fill = "grey80",
               col="black")+
   labs(title = "Atlantic ocean N-S section")+
   scale_y_reverse()+
   scale_fill_viridis_b(name = parameter,
                        n.breaks = 8)+
   coord_cartesian(expand = 0)
-)
 
+Pac_section <- map_clim_stars %>% 
+  as_tibble() %>% 
+  filter(x == 190.5)
+
+names(Pac_section) <- c("x","y","depth_surface","parameter")
+
+Pac_section_bathy <- Pac_section %>% 
+  filter(is.na(parameter)) %>% 
+  group_by(y) %>% 
+  summarise(depth_surface = min(depth_surface)) %>% 
+  ungroup()
+
+p_Pac_section <-
+ggplot()+
+  geom_contour_fill(data = Pac_section,
+                    aes(y, depth_surface, z=parameter),
+                    na.fill = TRUE)+
+  geom_ribbon(data = Pac_section_bathy,
+              aes(x = y, ymin = depth_surface, ymax = 5500),
+              fill = "grey80",
+              col="black")+
+  labs(title = "Pacific ocean N-S section")+
+  scale_y_reverse()+
+  scale_fill_viridis_b(name = parameter,
+                       n.breaks = 8)+
+  coord_cartesian(expand = 0)
+
+print(
+p_Atl_section / p_Pac_section
+)
 
 # clim_tidync <- tidync(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
 #                                  file))
