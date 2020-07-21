@@ -58,7 +58,7 @@ According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html) webs
 - 2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)
 - 3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)
 
-From this, the Atlantik and the Indo-Pcific were labeled.
+From this, the Atlantik and the Indo-Pacific were labeled.
 
 ```{r assign_basin_labels}
 

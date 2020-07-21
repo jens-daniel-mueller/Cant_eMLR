@@ -52,6 +52,11 @@ parameter <- str_split(parameter, pattern = ".nc", simplify = TRUE)[1]
 
 map_clim_stars <- clim_stars %>% select(all_of(parameter))
 
+map_clim_stars %>% 
+  as_tibble() %>% 
+  write_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+                       paste(parameter,".csv", sep = "")))
+
 map_clim_stars <- map_clim_stars %>% 
   filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
 
@@ -86,6 +91,7 @@ ggplot()+
 
 
 ```
+
 
 
 # Open tasks
