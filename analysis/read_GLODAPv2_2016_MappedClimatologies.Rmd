@@ -65,7 +65,7 @@ print(
 ggplot()+
   geom_stars(data = map_clim_stars_horizons)+
   geom_vline(xintercept = 335, col="white")+
-  scale_fill_viridis_b()+
+  scale_fill_viridis_b(n.breaks = 8)+
   labs(title = file)+
   facet_wrap(~depth_surface, ncol = 3)+
   theme(axis.text = element_blank(),
