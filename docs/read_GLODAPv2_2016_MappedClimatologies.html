@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5def7e8542b5981d9ef9994869036240100895datargetblank5def7e8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5def7e8542b5981d9ef9994869036240100895da" target="_blank">5def7e8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee3d90cd0342ba364917583edc7e67a4981b21fc7targetblanke3d90cda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e3d90cd0342ba364917583edc7e67a4981b21fc7" target="_blank">e3d90cd</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5def7e8542b5981d9ef9994869036240100895datargetblank5def7e8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee3d90cd0342ba364917583edc7e67a4981b21fc7targetblanke3d90cda" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5def7e8542b5981d9ef9994869036240100895da" target="_blank">5def7e8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e3d90cd0342ba364917583edc7e67a4981b21fc7" target="_blank">e3d90cd</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/e3d90cd0342ba364917583edc7e67a4981b21fc7/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">e3d90cd</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+added section plots atlantik
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/97dbf5bcc3e6abd0f5167fc79c78b724407fb81b/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">97dbf5b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -872,9 +906,10 @@ added Rmd for MappedClimatologies
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(tidync)
-library(stars)</code></pre>
-<div id="readplot-ncdf-files" class="section level1">
-<h1><span class="header-section-number">1</span> Read/plot ncdf files</h1>
+library(stars)
+library(metR)</code></pre>
+<div id="read-ncdf-write-csv-plot" class="section level1">
+<h1><span class="header-section-number">1</span> Read ncdf, write csv, plot</h1>
 <ul>
 <li>Data source: <a href="https://www.glodap.info/">glodap.info</a></li>
 </ul>
@@ -905,12 +940,12 @@ map_clim_stars %&gt;%
   write_csv(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies/_summarized_files&quot;,
                        paste(parameter,&quot;.csv&quot;, sep = &quot;&quot;)))
 
-map_clim_stars &lt;- map_clim_stars %&gt;% 
+map_clim_stars_horizons &lt;- map_clim_stars %&gt;% 
   filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
 
 print(
 ggplot()+
-  geom_stars(data = map_clim_stars)+
+  geom_stars(data = map_clim_stars_horizons)+
   geom_vline(xintercept = 335, col=&quot;white&quot;)+
   scale_fill_viridis_b()+
   labs(title = file)+
@@ -920,6 +955,31 @@ ggplot()+
         axis.ticks = element_blank())+
   coord_quickmap(expand = 0)
 )
+
+Atl_section &lt;- map_clim_stars %&gt;% 
+  as_tibble() %&gt;% 
+  filter(x == 335.5)
+
+names(Atl_section) &lt;- c(&quot;x&quot;,&quot;y&quot;,&quot;depth_surface&quot;,&quot;parameter&quot;)
+
+Atl_section_bathy &lt;- Atl_section %&gt;% 
+  filter(is.na(parameter)) %&gt;% 
+  group_by(y) %&gt;% 
+  summarise(depth_surface = min(depth_surface)) %&gt;% 
+  ungroup()
+
+ggplot()+
+  geom_contour_fill(data = Atl_section,
+                    aes(y, depth_surface, z=parameter),
+                    na.fill = TRUE)+
+  geom_ribbon(data = Atl_section_bathy,
+              aes(x = y, ymin = depth_surface, ymax = 5500),
+              fill = &quot;grey30&quot;,
+              col=&quot;black&quot;)+
+  scale_y_reverse()+
+  scale_fill_viridis_b(breaks = seq(0,100,10),
+                       name = parameter)+
+  coord_cartesian(expand = 0)
 
 
 # clim_tidync &lt;- tidync(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
@@ -955,14 +1015,40 @@ ggplot()+
 <pre><code>temperature, temperature_error, Input_mean, Input_std, Input_N, temperature_relerr, </code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-9.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="plot-cant-section" class="section level1">
+<h1><span class="header-section-number">2</span> Plot Cant section</h1>
+<pre class="r"><code>Cant &lt;-   read_csv(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies/_summarized_files&quot;,
+                              &quot;Cant.csv&quot;))
+
+Cant_Atl_section &lt;- Cant %&gt;% 
+  filter(x == 335.5)
+
+Cant_Atl_section_bathy &lt;- Cant_Atl_section %&gt;% 
+  filter(is.na(Cant)) %&gt;% 
+  group_by(y) %&gt;% 
+  summarise(depth_surface = min(depth_surface)) %&gt;% 
+  ungroup()
+
+ggplot()+
+  geom_contour_fill(data = Cant_Atl_section,
+                    aes(y, depth_surface, z=Cant),
+                    na.fill = TRUE)+
+  geom_ribbon(data = Cant_Atl_section_bathy,
+              aes(x = y, ymin = depth_surface, ymax = 5500),
+              fill = &quot;grey30&quot;,
+              col=&quot;black&quot;)+
+  scale_y_reverse()+
+  scale_fill_viridis_b(breaks = seq(0,100,10))+
+  coord_cartesian(expand = 0)</code></pre>
+</div>
 <div id="open-tasks" class="section level1">
-<h1><span class="header-section-number">2</span> Open tasks</h1>
+<h1><span class="header-section-number">3</span> Open tasks</h1>
 <ul>
 <li>none</li>
 </ul>
 </div>
 <div id="questions" class="section level1">
-<h1><span class="header-section-number">3</span> Questions</h1>
+<h1><span class="header-section-number">4</span> Questions</h1>
 <ul>
 <li>none</li>
 </ul>
@@ -989,10 +1075,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] stars_0.4-3     sf_0.9-4        abind_1.4-5     tidync_0.2.4   
- [5] lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0   dplyr_1.0.0    
- [9] purrr_0.3.4     readr_1.3.1     tidyr_1.1.0     tibble_3.0.3   
-[13] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
+ [1] metR_0.7.0      stars_0.4-3     sf_0.9-4        abind_1.4-5    
+ [5] tidync_0.2.4    lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0  
+ [9] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
+[13] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5         whisker_0.4        knitr_1.29         xml2_1.3.2        
@@ -1007,12 +1093,12 @@ loaded via a namespace (and not attached):
 [37] cellranger_1.1.0   pillar_1.4.6       scales_1.1.1       backports_1.1.5   
 [41] generics_0.0.2     classInt_0.4-3     jsonlite_1.7.0     httpuv_1.5.4      
 [45] pkgconfig_2.0.3    rstudioapi_0.11    munsell_0.5.0      blob_1.2.1        
-[49] httr_1.4.1         tools_3.6.3        grid_3.6.3         gtable_0.3.0      
-[53] KernSmooth_2.23-16 DBI_1.1.0          cli_2.0.2          readxl_1.3.1      
-[57] yaml_2.2.1         lwgeom_0.2-5       crayon_1.3.4       farver_2.0.3      
-[61] later_1.1.0.1      promises_1.1.1     fs_1.4.2           vctrs_0.3.1       
-[65] ncdf4_1.17         glue_1.4.1         evaluate_0.14      labeling_0.3      
-[69] reprex_0.3.0       stringi_1.4.6     </code></pre>
+[49] httr_1.4.1         tools_3.6.3        grid_3.6.3         data.table_1.12.8 
+[53] checkmate_2.0.0    gtable_0.3.0       KernSmooth_2.23-16 DBI_1.1.0         
+[57] cli_2.0.2          readxl_1.3.1       yaml_2.2.1         lwgeom_0.2-5      
+[61] crayon_1.3.4       farver_2.0.3       later_1.1.0.1      promises_1.1.1    
+[65] fs_1.4.2           vctrs_0.3.1        ncdf4_1.17         glue_1.4.1        
+[69] evaluate_0.14      labeling_0.3       reprex_0.3.0       stringi_1.4.6     </code></pre>
 </div>
 </div>
 
