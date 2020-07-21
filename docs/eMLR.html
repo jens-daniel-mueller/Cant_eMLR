@@ -430,7 +430,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Data base</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">19 July, 2020</h4>
+<h4 class="date">21 July, 2020</h4>
 
 </div>
 
@@ -455,7 +455,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-19
+<strong>Last updated:</strong> 2020-07-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee688d6e84510f9f385769da85d26ef92812b4d26targetblanke688d6ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e688d6e84510f9f385769da85d26ef92812b4d26" target="_blank">e688d6e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed2ed0f8d134eaeec211d3d09df9b3abcf89217detargetblankd2ed0f8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d2ed0f8d134eaeec211d3d09df9b3abcf89217de" target="_blank">d2ed0f8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee688d6e84510f9f385769da85d26ef92812b4d26targetblanke688d6ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed2ed0f8d134eaeec211d3d09df9b3abcf89217detargetblankd2ed0f8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e688d6e84510f9f385769da85d26ef92812b4d26" target="_blank">e688d6e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d2ed0f8d134eaeec211d3d09df9b3abcf89217de" target="_blank">d2ed0f8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/d2ed0f8d134eaeec211d3d09df9b3abcf89217de/analysis/eMLR.Rmd" target="_blank">d2ed0f8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+harmonied lat lon labeling
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/e1488e699c42bc2f8f0b23d0a8e69270777a35ee/docs/eMLR.html" target="_blank">e1488e6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -940,10 +974,18 @@ added Cstar calculation
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(patchwork)</code></pre>
-<div id="open-clean-data-set" class="section level1">
-<h1><span class="header-section-number">1</span> Open clean data set</h1>
+<div id="open-required-data-sets" class="section level1">
+<h1><span class="header-section-number">1</span> Open required data sets</h1>
+<div id="glodap" class="section level2">
+<h2><span class="header-section-number">1.1</span> GLODAP</h2>
 <pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                               &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
+</div>
+<div id="glodap-cant-climatology" class="section level2">
+<h2><span class="header-section-number">1.2</span> GLODAP Cant climatology</h2>
+<pre class="r"><code>Cant_clim &lt;- read_csv(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies/_summarized_files&quot;,
+                                 &quot;Cant.csv&quot;))</code></pre>
+</div>
 </div>
 <div id="c" class="section level1">
 <h1><span class="header-section-number">2</span> C*</h1>
@@ -981,7 +1023,7 @@ GLODAP_cruise &lt;- GLODAP %&gt;%
 <pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray60&quot;, fill=&quot;gray60&quot;)
 
 map &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(longitude, latitude))+
+  ggplot(aes(lon, lat))+
   mapWorld+
   geom_point(aes(col=date))+
   geom_path()+
@@ -989,7 +1031,7 @@ map &lt;- GLODAP_cruise %&gt;%
   scale_color_viridis_c(trans = &quot;date&quot;)
 
 lat_section &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(latitude, depth))+
+  ggplot(aes(lat, depth))+
   scale_y_reverse()+
   scale_color_viridis_c()
 
@@ -1021,10 +1063,16 @@ map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_
 <div id="reference-year-adjustment" class="section level1">
 <h1><span class="header-section-number">4</span> Reference year adjustment</h1>
 <p>The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX. Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator.</p>
+<div id="merge-data-sets" class="section level2">
+<h2><span class="header-section-number">4.1</span> Merge data sets</h2>
+</div>
+<div id="perform-adjustment" class="section level2">
+<h2><span class="header-section-number">4.2</span> Perform adjustment</h2>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   mutate(C_star_ref = C_star - 
            ( (pCO2_atm(year) - pCO2_atm(year_ref)) / 
                (pCO2_atm(year_ref) - pCO2_atm(year_pi) ) * Cant_ref)</code></pre>
+</div>
 </div>
 <div id="mlr-fitting" class="section level1">
 <h1><span class="header-section-number">5</span> MLR fitting</h1>

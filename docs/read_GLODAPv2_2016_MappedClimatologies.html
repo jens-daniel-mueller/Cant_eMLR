@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree48de3ae2edf3e26f191044cc3abdbbbfe6ce687ctargetblank48de3aea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/48de3ae2edf3e26f191044cc3abdbbbfe6ce687c" target="_blank">48de3ae</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed2ed0f8d134eaeec211d3d09df9b3abcf89217detargetblankd2ed0f8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d2ed0f8d134eaeec211d3d09df9b3abcf89217de" target="_blank">d2ed0f8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree48de3ae2edf3e26f191044cc3abdbbbfe6ce687ctargetblank48de3aea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed2ed0f8d134eaeec211d3d09df9b3abcf89217detargetblankd2ed0f8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/48de3ae2edf3e26f191044cc3abdbbbfe6ce687c" target="_blank">48de3ae</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d2ed0f8d134eaeec211d3d09df9b3abcf89217de" target="_blank">d2ed0f8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/d2ed0f8d134eaeec211d3d09df9b3abcf89217de/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">d2ed0f8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+harmonied lat lon labeling
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/a268aced650937e1601a7de3401f733271410087/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">a268ace</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1142,11 +1176,12 @@ map_clim_stars &lt;- clim_stars %&gt;% select(all_of(parameter))
 
 map_clim_stars %&gt;% 
   as_tibble() %&gt;% 
+  rename(lat = y, lon = x, depth = depth_surface) %&gt;% 
   write_csv(here::here(&quot;data/GLODAPv2_2016b_MappedClimatologies/_summarized_files&quot;,
                        paste(parameter,&quot;.csv&quot;, sep = &quot;&quot;)))
 
 map_clim_stars_horizons &lt;- map_clim_stars %&gt;% 
-  filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
+  filter(depth_surface %in% c(0,100,500,2000))
 
 print(
 ggplot()+
@@ -1154,32 +1189,28 @@ ggplot()+
   geom_vline(xintercept = c(190.5,335.5), col=&quot;white&quot;)+
   scale_fill_viridis_b(n.breaks = 8)+
   labs(title = file)+
-  facet_wrap(~depth_surface, ncol = 3)+
-  theme(#axis.text = element_blank(),
-        axis.title = element_blank(),
-        axis.ticks = element_blank())+
+  facet_wrap(~depth_surface, ncol = 2)+
   coord_quickmap(expand = 0)
 )
 
 Atl_section &lt;- map_clim_stars %&gt;% 
   as_tibble() %&gt;% 
-  filter(x == 335.5)
-
-names(Atl_section) &lt;- c(&quot;x&quot;,&quot;y&quot;,&quot;depth_surface&quot;,&quot;parameter&quot;)
+  rename(lat = y, lon = x, depth = depth_surface, parameter = 4) %&gt;% 
+  filter(lon == 335.5)
 
 Atl_section_bathy &lt;- Atl_section %&gt;% 
   filter(is.na(parameter)) %&gt;% 
-  group_by(y) %&gt;% 
-  summarise(depth_surface = min(depth_surface)) %&gt;% 
+  group_by(lat) %&gt;% 
+  summarise(bottom_depth = min(depth)) %&gt;% 
   ungroup()
 
 p_Atl_section &lt;-
 ggplot()+
   geom_contour_fill(data = Atl_section,
-                    aes(y, depth_surface, z=parameter),
+                    aes(lat, depth, z=parameter),
                     na.fill = TRUE)+
   geom_ribbon(data = Atl_section_bathy,
-              aes(x = y, ymin = depth_surface, ymax = 5500),
+              aes(x = lat, ymin = bottom_depth, ymax = 5500),
               fill = &quot;grey80&quot;,
               col=&quot;black&quot;)+
   labs(title = &quot;Atlantic ocean N-S section&quot;)+
@@ -1190,23 +1221,22 @@ ggplot()+
 
 Pac_section &lt;- map_clim_stars %&gt;% 
   as_tibble() %&gt;% 
-  filter(x == 190.5)
-
-names(Pac_section) &lt;- c(&quot;x&quot;,&quot;y&quot;,&quot;depth_surface&quot;,&quot;parameter&quot;)
+  rename(lat = y, lon = x, depth = depth_surface, parameter = 4) %&gt;% 
+  filter(lon == 190.5)
 
 Pac_section_bathy &lt;- Pac_section %&gt;% 
   filter(is.na(parameter)) %&gt;% 
-  group_by(y) %&gt;% 
-  summarise(depth_surface = min(depth_surface)) %&gt;% 
+  group_by(lat) %&gt;% 
+  summarise(bottom_depth = min(depth)) %&gt;% 
   ungroup()
 
 p_Pac_section &lt;-
 ggplot()+
   geom_contour_fill(data = Pac_section,
-                    aes(y, depth_surface, z=parameter),
+                    aes(lat, depth, z=parameter),
                     na.fill = TRUE)+
   geom_ribbon(data = Pac_section_bathy,
-              aes(x = y, ymin = depth_surface, ymax = 5500),
+              aes(x = lat, ymin = bottom_depth, ymax = 5500),
               fill = &quot;grey80&quot;,
               col=&quot;black&quot;)+
   labs(title = &quot;Pacific ocean N-S section&quot;)+
