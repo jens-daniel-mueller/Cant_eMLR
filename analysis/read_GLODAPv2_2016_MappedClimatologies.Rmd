@@ -98,8 +98,7 @@ ggplot()+
   labs(title = "Atlantic ocean N-S section")+
   scale_y_reverse()+
   scale_fill_viridis_b(name = parameter)+
-  coord_fixed(ratio = 2,
-              expand = 0)
+  coord_cartesian(expand = 0)
 )
 
 
