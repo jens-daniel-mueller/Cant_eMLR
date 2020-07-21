@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee3d90cd0342ba364917583edc7e67a4981b21fc7targetblanke3d90cda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e3d90cd0342ba364917583edc7e67a4981b21fc7" target="_blank">e3d90cd</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreef9548b047683776bf342d9340fe019c5e7cec814targetblankf9548b0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/f9548b047683776bf342d9340fe019c5e7cec814" target="_blank">f9548b0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee3d90cd0342ba364917583edc7e67a4981b21fc7targetblanke3d90cda" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreef9548b047683776bf342d9340fe019c5e7cec814targetblankf9548b0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e3d90cd0342ba364917583edc7e67a4981b21fc7" target="_blank">e3d90cd</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/f9548b047683776bf342d9340fe019c5e7cec814" target="_blank">f9548b0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/f9548b047683776bf342d9340fe019c5e7cec814/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">f9548b0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+added section plots atlantik
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/21eb4f34f5fb8e154c19f424eb5b36a84343eab3/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">21eb4f3</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -968,6 +1002,7 @@ Atl_section_bathy &lt;- Atl_section %&gt;%
   summarise(depth_surface = min(depth_surface)) %&gt;% 
   ungroup()
 
+print(
 ggplot()+
   geom_contour_fill(data = Atl_section,
                     aes(y, depth_surface, z=parameter),
@@ -980,6 +1015,7 @@ ggplot()+
   scale_fill_viridis_b(breaks = seq(0,100,10),
                        name = parameter)+
   coord_cartesian(expand = 0)
+)
 
 
 # clim_tidync &lt;- tidync(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
@@ -997,23 +1033,23 @@ ggplot()+
 
 }</code></pre>
 <pre><code>Cant, Cant_error, Input_mean, Input_std, Input_N, Cant_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>NO3, NO3_error, Input_mean, Input_std, Input_N, NO3_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>oxygen, oxygen_error, Input_mean, Input_std, Input_N, oxygen_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>PO4, PO4_error, Input_mean, Input_std, Input_N, PO4_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>salinity, salinity_error, Input_mean, Input_std, Input_N, salinity_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>silicate, silicate_error, Input_mean, Input_std, Input_N, silicate_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-12.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>TAlk, TAlk_error, Input_mean, Input_std, Input_N, TAlk_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-14.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>TCO2, TCO2_error, Input_mean, Input_std, Input_N, TCO2_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-16.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>temperature, temperature_error, Input_mean, Input_std, Input_N, temperature_relerr, </code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/read_GLODAPv2_2016_Mappedclimatologies_netcdfs-18.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="plot-cant-section" class="section level1">
 <h1><span class="header-section-number">2</span> Plot Cant section</h1>
@@ -1083,22 +1119,23 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5         whisker_0.4        knitr_1.29         xml2_1.3.2        
  [5] magrittr_1.5       units_0.6-7        hms_0.5.3          rvest_0.3.5       
- [9] tidyselect_1.1.0   viridisLite_0.3.0  here_0.1           colorspace_1.4-1  
-[13] R6_2.4.1           rlang_0.4.7        fansi_0.4.1        parallel_3.6.3    
-[17] broom_0.7.0        xfun_0.15          e1071_1.7-3        ncmeta_0.2.5      
-[21] cubelyr_1.0.0      dbplyr_1.4.4       modelr_0.1.8       withr_2.2.0       
-[25] git2r_0.27.1       ellipsis_0.3.1     htmltools_0.5.0    class_7.3-17      
-[29] assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25      lifecycle_0.2.0   
-[33] RNetCDF_2.3-1      haven_2.3.1        rmarkdown_2.3      compiler_3.6.3    
-[37] cellranger_1.1.0   pillar_1.4.6       scales_1.1.1       backports_1.1.5   
-[41] generics_0.0.2     classInt_0.4-3     jsonlite_1.7.0     httpuv_1.5.4      
-[45] pkgconfig_2.0.3    rstudioapi_0.11    munsell_0.5.0      blob_1.2.1        
-[49] httr_1.4.1         tools_3.6.3        grid_3.6.3         data.table_1.12.8 
-[53] checkmate_2.0.0    gtable_0.3.0       KernSmooth_2.23-16 DBI_1.1.0         
-[57] cli_2.0.2          readxl_1.3.1       yaml_2.2.1         lwgeom_0.2-5      
-[61] crayon_1.3.4       farver_2.0.3       later_1.1.0.1      promises_1.1.1    
-[65] fs_1.4.2           vctrs_0.3.1        ncdf4_1.17         glue_1.4.1        
-[69] evaluate_0.14      labeling_0.3       reprex_0.3.0       stringi_1.4.6     </code></pre>
+ [9] tidyselect_1.1.0   lattice_0.20-41    viridisLite_0.3.0  here_0.1          
+[13] colorspace_1.4-1   R6_2.4.1           rlang_0.4.7        fansi_0.4.1       
+[17] parallel_3.6.3     broom_0.7.0        xfun_0.15          e1071_1.7-3       
+[21] ncmeta_0.2.5       cubelyr_1.0.0      dbplyr_1.4.4       modelr_0.1.8      
+[25] withr_2.2.0        git2r_0.27.1       ellipsis_0.3.1     htmltools_0.5.0   
+[29] class_7.3-17       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25     
+[33] lifecycle_0.2.0    RNetCDF_2.3-1      haven_2.3.1        rmarkdown_2.3     
+[37] sp_1.4-2           compiler_3.6.3     cellranger_1.1.0   pillar_1.4.6      
+[41] scales_1.1.1       backports_1.1.5    generics_0.0.2     classInt_0.4-3    
+[45] jsonlite_1.7.0     httpuv_1.5.4       pkgconfig_2.0.3    rstudioapi_0.11   
+[49] munsell_0.5.0      plyr_1.8.6         blob_1.2.1         httr_1.4.1        
+[53] tools_3.6.3        grid_3.6.3         data.table_1.12.8  checkmate_2.0.0   
+[57] gtable_0.3.0       KernSmooth_2.23-16 DBI_1.1.0          cli_2.0.2         
+[61] readxl_1.3.1       yaml_2.2.1         lwgeom_0.2-5       crayon_1.3.4      
+[65] farver_2.0.3       later_1.1.0.1      promises_1.1.1     fs_1.4.2          
+[69] vctrs_0.3.1        ncdf4_1.17         memoise_1.1.0      glue_1.4.1        
+[73] evaluate_0.14      labeling_0.3       reprex_0.3.0       stringi_1.4.6     </code></pre>
 </div>
 </div>
 
