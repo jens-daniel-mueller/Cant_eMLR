@@ -21,6 +21,7 @@ library(tidyverse)
 library(lubridate)
 library(tidync)
 library(stars)
+library(metR)
 ```
 
 
@@ -28,7 +29,7 @@ library(stars)
 theme_set(theme_bw())
 ```
 
-# Read/plot ncdf files
+# Read ncdf, write csv, plot
 
 - Data source: [glodap.info](https://www.glodap.info/)
 
@@ -57,12 +58,12 @@ map_clim_stars %>%
   write_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                        paste(parameter,".csv", sep = "")))
 
-map_clim_stars <- map_clim_stars %>% 
+map_clim_stars_horizons <- map_clim_stars %>% 
   filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
 
 print(
 ggplot()+
-  geom_stars(data = map_clim_stars)+
+  geom_stars(data = map_clim_stars_horizons)+
   geom_vline(xintercept = 335, col="white")+
   scale_fill_viridis_b()+
   labs(title = file)+
@@ -72,6 +73,31 @@ ggplot()+
         axis.ticks = element_blank())+
   coord_quickmap(expand = 0)
 )
+
+Atl_section <- map_clim_stars %>% 
+  as_tibble() %>% 
+  filter(x == 335.5)
+
+names(Atl_section) <- c("x","y","depth_surface","parameter")
+
+Atl_section_bathy <- Atl_section %>% 
+  filter(is.na(parameter)) %>% 
+  group_by(y) %>% 
+  summarise(depth_surface = min(depth_surface)) %>% 
+  ungroup()
+
+ggplot()+
+  geom_contour_fill(data = Atl_section,
+                    aes(y, depth_surface, z=parameter),
+                    na.fill = TRUE)+
+  geom_ribbon(data = Atl_section_bathy,
+              aes(x = y, ymin = depth_surface, ymax = 5500),
+              fill = "grey30",
+              col="black")+
+  scale_y_reverse()+
+  scale_fill_viridis_b(breaks = seq(0,100,10),
+                       name = parameter)+
+  coord_cartesian(expand = 0)
 
 
 # clim_tidync <- tidync(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
@@ -92,6 +118,36 @@ ggplot()+
 
 ```
 
+# Plot Cant section
+
+```{r Cant_section, eval=FALSE}
+
+Cant <-   read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+                              "Cant.csv"))
+
+Cant_Atl_section <- Cant %>% 
+  filter(x == 335.5)
+
+Cant_Atl_section_bathy <- Cant_Atl_section %>% 
+  filter(is.na(Cant)) %>% 
+  group_by(y) %>% 
+  summarise(depth_surface = min(depth_surface)) %>% 
+  ungroup()
+
+ggplot()+
+  geom_contour_fill(data = Cant_Atl_section,
+                    aes(y, depth_surface, z=Cant),
+                    na.fill = TRUE)+
+  geom_ribbon(data = Cant_Atl_section_bathy,
+              aes(x = y, ymin = depth_surface, ymax = 5500),
+              fill = "grey30",
+              col="black")+
+  scale_y_reverse()+
+  scale_fill_viridis_b(breaks = seq(0,100,10))+
+  coord_cartesian(expand = 0)
+
+
+```
 
 
 # Open tasks
