@@ -86,6 +86,7 @@ Atl_section_bathy <- Atl_section %>%
   summarise(depth_surface = min(depth_surface)) %>% 
   ungroup()
 
+print(
 ggplot()+
   geom_contour_fill(data = Atl_section,
                     aes(y, depth_surface, z=parameter),
@@ -98,6 +99,7 @@ ggplot()+
   scale_fill_viridis_b(breaks = seq(0,100,10),
                        name = parameter)+
   coord_cartesian(expand = 0)
+)
 
 
 # clim_tidync <- tidync(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
