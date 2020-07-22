@@ -282,7 +282,7 @@ lat_section+
 
 # map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_Cstar / lat_Cstar_tref
 # 
-# rm(map, lat_tco2, lat_talk, lat_phosphate, lat_Cstar, lat_Cstar_tref)
+rm(mapWorld, lat_section, GLODAP_cruise, cruises_meridional)
 
 ```
 
@@ -334,6 +334,22 @@ The following boundaries for isoneutral slabs were defined:
 
 - Atlantic: `r slabs_Atl`
 - Indo-Pacific: `r slabs_Ind_Pac`
+
+```{r cut_isoneutral_slabs}
+
+GLODAP_Atl <- GLODAP %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slabs = cut(gamma, slabs_Atl))
+
+GLODAP_Ind_Pac <- GLODAP %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slabs = cut(gamma, slabs_Ind_Pac))
+
+GLODAP <- bind_rows(GLODAP_Atl, GLODAP_Ind_Pac)
+rm(GLODAP_Atl, GLODAP_Ind_Pac)
+
+```
+
 
 ```{r predictor_variables, eval=FALSE}
 
