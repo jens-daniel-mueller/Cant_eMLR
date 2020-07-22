@@ -20,6 +20,8 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 library(tidyverse)
 library(lubridate)
 library(patchwork)
+library(broom)
+
 ```
 
 
@@ -282,7 +284,7 @@ lat_section+
 
 # map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_Cstar / lat_Cstar_tref
 # 
-rm(mapWorld, lat_section, GLODAP_cruise, cruises_meridional)
+rm(mapWorld, lat_section, GLODAP_cruise)
 
 ```
 
@@ -339,16 +341,94 @@ The following boundaries for isoneutral slabs were defined:
 
 GLODAP_Atl <- GLODAP %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slabs = cut(gamma, slabs_Atl))
+  mutate(gamma_slab = cut(gamma, slabs_Atl))
 
 GLODAP_Ind_Pac <- GLODAP %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slabs = cut(gamma, slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, slabs_Ind_Pac))
 
 GLODAP <- bind_rows(GLODAP_Atl, GLODAP_Ind_Pac)
 rm(GLODAP_Atl, GLODAP_Ind_Pac)
 
 ```
+
+```{r isoneutral_slabs_section}
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% cruises_meridional)
+
+lat_section <- 
+GLODAP_cruise %>%
+  ggplot(aes(lat, depth))+
+  scale_y_reverse()
+
+lat_section+
+  geom_point(aes(col=gamma))+
+  scale_color_viridis_c()
+
+lat_section+
+  geom_point(aes(col=gamma_slab))+
+  scale_color_viridis_d()
+
+# GLODAP_cruise %>%
+#   ggplot(aes(lat, depth, z=tco2))+
+#   geom_contour_fill(na.fill = TRUE)+
+#   scale_y_reverse()
+
+```
+
+```{r calculate_phosphate_star}
+
+GLODAP <- GLODAP %>% 
+  mutate(phosphate_star = phosphate - 16*nitrate + 29)
+
+```
+
+
+```{r eMLR_fitting}
+
+regressions <- GLODAP %>%
+  nest(data = -c(basin, era, gamma_slab)) %>% 
+  mutate(
+    fit = map(data, ~ lm(Cstar ~ salinity + temperature + aou + oxygen + silicate + phosphate + phosphate_star,
+                         data = .x)),
+    tidied = map(fit, tidy),
+    glanced = map(fit, glance),
+    augmented = map(fit, augment)
+  )
+
+regressions_tidied <- regressions %>% 
+  unnest(tidied)
+
+regressions_tidied
+
+regressions_tidied <- regressions_tidied %>% 
+  select(era, basin, gamma_slab, term, estimate, p.value)
+
+regressions_tidied %>% 
+  ggplot(aes(p.value, term, col=gamma_slab))+
+  geom_point()+
+  facet_grid(basin~era)
+
+regressions_tidied %>% 
+  filter(p.value < 0.05) %>% 
+  ggplot(aes(p.value, term, col=gamma_slab))+
+  geom_point()+
+  facet_grid(basin~era)
+
+regressions_tidied %>% 
+  ggplot(aes(p.value, term))+
+  geom_boxplot()+
+  facet_grid(basin~era)
+
+regressions %>% 
+  unnest(glanced)
+
+regressions %>% 
+  unnest(augmented)
+
+```
+
 
 
 ```{r predictor_variables, eval=FALSE}
