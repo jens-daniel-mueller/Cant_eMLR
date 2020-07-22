@@ -204,7 +204,7 @@ GLODAP %>%
 ```
 
 
-## Selected section plots
+# Selected section plots
 
 Selected sections are plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.
 
@@ -277,7 +277,7 @@ lat_section+
 
 #lat_Cstar_tref <- 
 lat_section+
-  geom_point(aes(col=Cstar_tref_delta))
+  geom_point(aes(col=-Cstar_tref_delta))
 
 
 # map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_Cstar / lat_Cstar_tref
