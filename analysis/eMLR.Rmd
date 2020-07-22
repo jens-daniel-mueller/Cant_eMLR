@@ -212,11 +212,12 @@ GLODAP_cruise <- GLODAP %>%
 
 ```
 
-```{r meridional_sections, fig.asp=3}
+```{r meridional_sections}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
-map <- GLODAP_cruise %>%
+#map <- 
+GLODAP_cruise %>%
   ggplot(aes(lon, lat))+
   mapWorld+
   geom_point(aes(col=date))+
@@ -224,38 +225,51 @@ map <- GLODAP_cruise %>%
   coord_quickmap(expand = FALSE)+
   scale_color_viridis_c(trans = "date")
 
-lat_section <- GLODAP_cruise %>%
+lat_section <- 
+GLODAP_cruise %>%
   ggplot(aes(lat, depth))+
   scale_y_reverse()+
   scale_color_viridis_c()
 
-lat_tco2 <- lat_section+
+#lat_tco2 <- 
+lat_section+
   geom_point(aes(col=tco2))
 
-lat_talk <- lat_section+
+#lat_talk <- 
+lat_section+
   geom_point(aes(col=talk))
 
-lat_phosphate <- lat_section+
+#lat_phosphate <- 
+lat_section+
   geom_point(aes(col=phosphate))
 
-lat_rCP_phosphate <- lat_section+
+#lat_rCP_phosphate <- 
+lat_section+
   geom_point(aes(col=rCP_phosphate))
 
-lat_talk_05 <- lat_section+
+#lat_talk_05 <- 
+lat_section+
   geom_point(aes(col=talk_05))
 
-lat_rNP_phosphate_05 <- lat_section+
+#lat_rNP_phosphate_05 <- 
+lat_section+
   geom_point(aes(col=rNP_phosphate_05))
 
-lat_C_star <- lat_section+
+#lat_C_star <- 
+lat_section+
   geom_point(aes(col=C_star))
 
-lat_C_star_tref <- lat_section+
+lat_section+
+  geom_point(aes(col=Cant))
+
+#lat_C_star_tref <- 
+lat_section+
   geom_point(aes(col=C_star_tref_delta))
 
-map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_C_star / lat_C_star_tref
 
-rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star, lat_C_star_tref)
+# map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_C_star / lat_C_star_tref
+# 
+# rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star, lat_C_star_tref)
 
 ```
 
