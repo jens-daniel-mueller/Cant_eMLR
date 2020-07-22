@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec398496918dcb63c2287c93c2299c8fe003358c0targetblankc398496a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c398496918dcb63c2287c93c2299c8fe003358c0" target="_blank">c398496</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree48cf01f1f108399e5545f451e10ecc40fcbc41cbtargetblank48cf01fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/48cf01f1f108399e5545f451e10ecc40fcbc41cb" target="_blank">48cf01f</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec398496918dcb63c2287c93c2299c8fe003358c0targetblankc398496a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree48cf01f1f108399e5545f451e10ecc40fcbc41cbtargetblank48cf01fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c398496918dcb63c2287c93c2299c8fe003358c0" target="_blank">c398496</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/48cf01f1f108399e5545f451e10ecc40fcbc41cb" target="_blank">48cf01f</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/48cf01f1f108399e5545f451e10ecc40fcbc41cb/analysis/eMLR.Rmd" target="_blank">48cf01f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-22
+</td>
+<td>
+defined isoneutral slabs
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/32ed280bcb90a4acb0a3cf3e3ff990cb6606f4cf/analysis/eMLR.Rmd" target="_blank">32ed280</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-22
+</td>
+<td>
+sign in Cstar delta plot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/44334f8a696c9b354c226cfcf50da2a6d2c30189/docs/eMLR.html" target="_blank">44334f8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1281,8 +1332,9 @@ GLODAP &lt;- GLODAP %&gt;%
   labs(title = &quot;random subsample 1e4&quot;)</code></pre>
 <p><img src="figure/eMLR.Rmd/Cstar_reference_year_adjustment_vs_time_difference_Cant-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="selected-section-plots" class="section level2">
-<h2><span class="header-section-number">3.4</span> Selected section plots</h2>
+</div>
+<div id="selected-section-plots" class="section level1">
+<h1><span class="header-section-number">4</span> Selected section plots</h1>
 <p>Selected sections are plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.</p>
 <pre class="r"><code>cruises_meridional &lt;- c(&quot;1041&quot;)
 
@@ -1346,15 +1398,52 @@ lat_section+
 <p><img src="figure/eMLR.Rmd/meridional_sections-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#lat_Cstar_tref &lt;- 
 lat_section+
-  geom_point(aes(col=Cstar_tref_delta))</code></pre>
+  geom_point(aes(col=-Cstar_tref_delta))</code></pre>
 <p><img src="figure/eMLR.Rmd/meridional_sections-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_Cstar / lat_Cstar_tref
 # 
 # rm(map, lat_tco2, lat_talk, lat_phosphate, lat_Cstar, lat_Cstar_tref)</code></pre>
 </div>
-</div>
 <div id="mlr-fitting" class="section level1">
-<h1><span class="header-section-number">4</span> MLR fitting</h1>
+<h1><span class="header-section-number">5</span> MLR fitting</h1>
+<div id="isoneutral-slabs" class="section level2">
+<h2><span class="header-section-number">5.1</span> Isoneutral slabs</h2>
+<pre class="r"><code>slabs_Atl &lt;- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+28.15,
+28.20,
+Inf)
+
+slabs_Ind_Pac &lt;- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+Inf)</code></pre>
+<p>The following boundaries for isoneutral slabs were defined:</p>
+<ul>
+<li>Atlantic: -, 26, 26.5, 26.75, 27, 27.25, 27.5, 27.75, 27.85, 27.95, 28.05, 28.1, 28.15, 28.2, </li>
+<li>Indo-Pacific: -, 26, 26.5, 26.75, 27, 27.25, 27.5, 27.75, 27.85, 27.95, 28.05, 28.1, </li>
+</ul>
 <pre class="r"><code>temperature
 salinity
 phosphate
@@ -1416,6 +1505,7 @@ loaded via a namespace (and not attached):
 [53] viridisLite_0.3.0  httpuv_1.5.4       scales_1.1.1       crayon_1.3.4      
 [57] glue_1.4.1         rlang_0.4.7        rvest_0.3.5        promises_1.1.1    
 [61] grid_3.6.3        </code></pre>
+</div>
 </div>
 </div>
 
