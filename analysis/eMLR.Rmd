@@ -384,7 +384,7 @@ GLODAP <- GLODAP %>%
 ```
 
 
-```{r eMLR_fitting}
+```{r eMLR_fitting, eval=FALSE}
 
 regressions <- GLODAP %>%
   nest(data = -c(basin, era, gamma_slab)) %>% 
