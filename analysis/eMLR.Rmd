@@ -186,10 +186,8 @@ GLODAP <- GLODAP %>%
 ```{r Cstar_reference_year_adjustment_histogram}
 
 GLODAP %>% 
-  sample_n(10000) %>% 
-  ggplot(aes(year - tref, Cstar_tref_delta, col=Cant))+
-  geom_point()+
-  scale_color_viridis_c()
+  ggplot(aes(Cstar_tref_delta))+
+  geom_histogram()
 
 ```
 
@@ -206,7 +204,7 @@ GLODAP %>%
 ```
 
 
-# Selected section plots
+## Selected section plots
 
 Selected sections are plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.
 
@@ -231,12 +229,14 @@ mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 #map <- 
 GLODAP_cruise %>%
+  arrange(date) %>% 
   ggplot(aes(lon, lat))+
   mapWorld+
-  geom_point(aes(col=date))+
   geom_path()+
+  geom_point(aes(col=date))+
   coord_quickmap(expand = FALSE)+
-  scale_color_viridis_c(trans = "date")
+  scale_color_viridis_c(trans = "date")+
+  labs(title = mean(date))
 
 lat_section <- 
 GLODAP_cruise %>%
