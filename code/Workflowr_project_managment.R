@@ -112,7 +112,7 @@ wflow_publish("analysis/*", message = "XXX")
 wflow_publish(all = TRUE, message = "XXX")
 
 # commit changes including _site.yml (locally) and rebuild site
-wflow_publish(c("analysis/*"), message = "XXX", republish = TRUE)
+wflow_publish(c("analysis/*Rmd"), message = "XXX", republish = TRUE)
 
 
 
