@@ -236,7 +236,7 @@ GLODAP_cruise %>%
   geom_point(aes(col=date))+
   coord_quickmap(expand = FALSE)+
   scale_color_viridis_c(trans = "date")+
-  labs(title = mean(date))
+  labs(title = paste("Cruise year:", mean(GLODAP_cruise$year)))
 
 lat_section <- 
 GLODAP_cruise %>%
