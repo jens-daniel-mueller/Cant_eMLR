@@ -291,6 +291,50 @@ lat_section+
 
 # MLR fitting
 
+## Isoneutral slabs
+
+```{r define_isoneutral_slabs}
+
+slabs_Atl <- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+28.15,
+28.20,
+Inf)
+
+slabs_Ind_Pac <- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+Inf)
+
+
+```
+
+The following boundaries for isoneutral slabs were defined:
+
+- Atlantic: `r slabs_Atl`
+- Indo-Pacific: `r slabs_Ind_Pac`
+
 ```{r predictor_variables, eval=FALSE}
 
 temperature
