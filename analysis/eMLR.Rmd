@@ -46,6 +46,21 @@ Cant_clim <- read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summa
                                  "Cant.csv"))
 ```
 
+```{r adjust_lon_scales}
+
+Cant_clim <- Cant_clim %>% 
+  mutate(lon = if_else(lon>180, lon - 360, lon))
+
+```
+
+## Atmospheric pCO2
+
+```{r open_atm_pCO2}
+
+co2_atm <- read_csv(here::here("data/pCO2_atmosphere/_summarized_data_files",
+                               "co2_atm.csv"))
+
+```
 
 
 # C*
@@ -75,6 +90,110 @@ GLODAP <- GLODAP %>%
          C_star = tco2 + rCP_phosphate + talk_05 + rNP_phosphate_05)
 
 ```
+
+
+# Reference year adjustment
+
+The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX.
+Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator.
+
+## Merge data sets
+
+### Cant
+
+```{r merge_Cstar_Cant}
+
+Cant_clim <- Cant_clim %>% 
+  drop_na()
+
+GLODAP_Cant_full <- full_join(GLODAP, Cant_clim)
+
+```
+
+```{r interpolate_Cant_to_observations}
+
+GLODAP_Cant_observations_available <- GLODAP_Cant_full %>% 
+  group_by(lat, lon) %>% 
+  mutate(n_GLODAP = sum(!is.na(C_star))) %>% 
+  ungroup() %>% 
+  filter(n_GLODAP > 0) %>% 
+  select(-n_GLODAP)
+
+rm(GLODAP_Cant_full)
+
+GLODAP_Cant_observations_available <- GLODAP_Cant_observations_available %>% 
+  group_by(lat, lon) %>% 
+  arrange(depth) %>% 
+  mutate(Cant_int = approxfun(depth, Cant, rule = 2)(depth)) %>% 
+  ungroup()
+
+ggplot()+
+  geom_point(data = GLODAP_Cant_observations_available %>% 
+              filter(lat == 48.5, lon == 165.5),
+            aes(Cant_int, depth, col="interpolated"))+
+  geom_path(data = GLODAP_Cant_observations_available %>% 
+              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
+              arrange(depth),
+            aes(Cant, depth, col="mapped"))+
+  geom_point(data = GLODAP_Cant_observations_available %>% 
+              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
+              arrange(depth),
+            aes(Cant, depth, col="mapped"))+
+  scale_y_reverse()
+
+GLODAP <- GLODAP_Cant_observations_available %>% 
+  filter(!is.na(C_star)) %>% 
+  mutate(Cant = Cant_int) %>% 
+  select(-Cant_int)
+
+rm(GLODAP_Cant_observations_available, Cant_clim)
+
+```
+
+### Atm pCO2
+
+
+```{r merge_Cstar_pCO2}
+
+GLODAP <- full_join(GLODAP, co2_atm)
+#rm(co2_atm)
+
+```
+
+
+## Perform adjustment
+
+```{r adjust_reference_year}
+
+GLODAP <- GLODAP %>% 
+  group_by(era) %>% 
+  mutate(tref = median(year)) %>% 
+  ungroup()
+
+tref <- GLODAP %>% 
+  filter(!is.na(era)) %>% 
+  group_by(era) %>% 
+  summarise(year = median(year)) %>% 
+  ungroup()
+
+co2_atm_tref <- right_join(co2_atm, tref) %>% 
+  select(-year) %>% 
+  rename(pCO2_tref = pCO2)
+
+GLODAP <- full_join(GLODAP, co2_atm_tref)
+
+GLODAP <- GLODAP %>% 
+  mutate(C_star_tref_delta = 
+           ( (pCO2 - pCO2_tref) / (pCO2_tref - 280) ) * Cant,
+         C_star_tref = C_star - C_star_tref_delta)
+
+GLODAP %>% 
+  ggplot(aes(C_star_tref_delta))+
+  geom_histogram()
+
+```
+
+
 
 # Selected section plots
 
@@ -131,35 +250,17 @@ lat_rNP_phosphate_05 <- lat_section+
 lat_C_star <- lat_section+
   geom_point(aes(col=C_star))
 
-map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_C_star
+lat_C_star_tref <- lat_section+
+  geom_point(aes(col=C_star_tref_delta))
 
-rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star)
+map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_C_star / lat_C_star_tref
 
-```
-
-
-
-# Reference year adjustment
-
-The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX.
-Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator.
-
-## Merge data sets
-
-```{r merge_Cstar_Cant_pCO2}
+rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star, lat_C_star_tref)
 
 ```
 
-## Perform adjustment
 
-```{r adjust_reference_year, eval=FALSE}
 
-GLODAP <- GLODAP %>% 
-  mutate(C_star_ref = C_star - 
-           ( (pCO2_atm(year) - pCO2_atm(year_ref)) / 
-               (pCO2_atm(year_ref) - pCO2_atm(year_pi) ) * Cant_ref)
-
-```
 
 # MLR fitting
 
