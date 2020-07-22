@@ -93,7 +93,13 @@ Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the d
 Cant_clim <- Cant_clim %>% 
   drop_na()
 
-GLODAP_Cant_full <- full_join(GLODAP, Cant_clim)
+# GLODAP_Cant_full <- full_join(GLODAP, Cant_clim)
+# 
+# GLODAP_Cant_full %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+#                                           "GLODAP_Cant_full.csv"))
+
+GLODAP_Cant_full <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                          "GLODAP_Cant_full.csv"))
 
 ```
 
@@ -384,7 +390,7 @@ GLODAP <- GLODAP %>%
 ```
 
 
-```{r eMLR_fitting, eval=FALSE}
+```{r eMLR_fitting}
 
 regressions <- GLODAP %>%
   nest(data = -c(basin, era, gamma_slab)) %>% 
