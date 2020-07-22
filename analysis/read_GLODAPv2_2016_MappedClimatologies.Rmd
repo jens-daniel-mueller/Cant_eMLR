@@ -57,6 +57,7 @@ map_clim_stars <- clim_stars %>% select(all_of(parameter))
 map_clim_stars %>% 
   as_tibble() %>% 
   rename(lat = y, lon = x, depth = depth_surface) %>% 
+  mutate(lon = if_else(lon>180, lon - 360, lon)) %>% 
   write_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                        paste(parameter,".csv", sep = "")))
 

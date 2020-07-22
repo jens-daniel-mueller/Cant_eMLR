@@ -27,45 +27,30 @@ library(patchwork)
 theme_set(theme_bw())
 ```
 
-# Open required data sets
+# Required data
 
-## GLODAP
+Required are: 
 
-```{r reopen_GLODAP}
+- clean version of GLODAPGLODAPv2.2020
+- C_ant from GLODAPv2_2016b_MappedClimatologies
+- annual mean atmospheric pCO~2~ 
+
+```{r load_required_data_sets}
 
 GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                               "GLODAPv2.2020_clean.csv"))
 
-```
-
-## GLODAP Cant climatology
-
-```{r open_GLODAP_Cant_climatology}
-
 Cant_clim <- read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                                  "Cant.csv"))
-```
-
-```{r adjust_lon_scales}
-
-Cant_clim <- Cant_clim %>% 
-  mutate(lon = if_else(lon>180, lon - 360, lon))
-
-```
-
-## Atmospheric pCO2
-
-```{r open_atm_pCO2}
 
 co2_atm <- read_csv(here::here("data/pCO2_atmosphere/_summarized_data_files",
                                "co2_atm.csv"))
 
 ```
 
-
 # C*
 
-## stoichiometric ratios
+## Stoichiometric ratios
 
 ```{r set_stoichiometric_ratios}
 
@@ -81,25 +66,26 @@ The stoichiometric nutrient ratios for the production and mineralization of orga
 
 ## Calculation
 
-```{r calculate_C_star}
+```{r calculate_Cstar}
 
 GLODAP <- GLODAP %>% 
   mutate(rCP_phosphate = - rCP * phosphate,
          talk_05 = - 0.5 * talk,
          rNP_phosphate_05 = - 0.5 * rNP * phosphate,
-         C_star = tco2 + rCP_phosphate + talk_05 + rNP_phosphate_05)
+         Cstar = tco2 + rCP_phosphate + talk_05 + rNP_phosphate_05)
 
 ```
 
 
 # Reference year adjustment
 
-The scaling factor Cant_apriori at a given location and depth was estimated for each reference year from XXX.
-Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator.
+The scaling factor for the reference year adjustment is an apriori estiamte of Cant at a given location and depth. Here, Cant from the GLODAP mapped Climatology was used.  
 
-## Merge data sets
+Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
 
-### Cant
+## Merge GLODAP data set with...
+
+### ... Cant
 
 ```{r merge_Cstar_Cant}
 
@@ -110,11 +96,16 @@ GLODAP_Cant_full <- full_join(GLODAP, Cant_clim)
 
 ```
 
+The mapped Cant product was merged with GLODAP observation by:
+
+- using an identical 1x1° horizontal grid
+- linear interpolation of Cant from standard to sampling depth
+
 ```{r interpolate_Cant_to_observations}
 
 GLODAP_Cant_observations_available <- GLODAP_Cant_full %>% 
   group_by(lat, lon) %>% 
-  mutate(n_GLODAP = sum(!is.na(C_star))) %>% 
+  mutate(n_GLODAP = sum(!is.na(Cstar))) %>% 
   ungroup() %>% 
   filter(n_GLODAP > 0) %>% 
   select(-n_GLODAP)
@@ -128,21 +119,23 @@ GLODAP_Cant_observations_available <- GLODAP_Cant_observations_available %>%
   ungroup()
 
 ggplot()+
+    geom_path(data = GLODAP_Cant_observations_available %>% 
+              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
+              arrange(depth),
+            aes(Cant, depth, col="mapped"))+
   geom_point(data = GLODAP_Cant_observations_available %>% 
-              filter(lat == 48.5, lon == 165.5),
+              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
+              arrange(depth),
+            aes(Cant, depth, col="mapped"))+
+  geom_point(data = GLODAP_Cant_observations_available %>% 
+              filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
             aes(Cant_int, depth, col="interpolated"))+
-  geom_path(data = GLODAP_Cant_observations_available %>% 
-              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
-              arrange(depth),
-            aes(Cant, depth, col="mapped"))+
-  geom_point(data = GLODAP_Cant_observations_available %>% 
-              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
-              arrange(depth),
-            aes(Cant, depth, col="mapped"))+
-  scale_y_reverse()
+  scale_y_reverse()+
+  scale_color_brewer(palette = "Dark2", name="")+
+  labs(title = "Cant interpolation to sampling depth - example profile")
 
 GLODAP <- GLODAP_Cant_observations_available %>% 
-  filter(!is.na(C_star)) %>% 
+  filter(!is.na(Cstar)) %>% 
   mutate(Cant = Cant_int) %>% 
   select(-Cant_int)
 
@@ -150,18 +143,16 @@ rm(GLODAP_Cant_observations_available, Cant_clim)
 
 ```
 
-### Atm pCO2
-
+### ... Atmospheric pCO2
 
 ```{r merge_Cstar_pCO2}
 
-GLODAP <- full_join(GLODAP, co2_atm)
-#rm(co2_atm)
+GLODAP <- left_join(GLODAP, co2_atm)
 
 ```
 
 
-## Perform adjustment
+## Calculate adjustment
 
 ```{r adjust_reference_year}
 
@@ -171,7 +162,6 @@ GLODAP <- GLODAP %>%
   ungroup()
 
 tref <- GLODAP %>% 
-  filter(!is.na(era)) %>% 
   group_by(era) %>% 
   summarise(year = median(year)) %>% 
   ungroup()
@@ -182,20 +172,43 @@ co2_atm_tref <- right_join(co2_atm, tref) %>%
 
 GLODAP <- full_join(GLODAP, co2_atm_tref)
 
+rm(co2_atm, co2_atm_tref, tref)
+
 GLODAP <- GLODAP %>% 
-  mutate(C_star_tref_delta = 
+  mutate(Cstar_tref_delta = 
            ( (pCO2 - pCO2_tref) / (pCO2_tref - 280) ) * Cant,
-         C_star_tref = C_star - C_star_tref_delta)
+         Cstar_tref = Cstar - Cstar_tref_delta)
+
+```
+
+## Control plots
+
+```{r Cstar_reference_year_adjustment_histogram}
 
 GLODAP %>% 
-  ggplot(aes(C_star_tref_delta))+
-  geom_histogram()
+  sample_n(10000) %>% 
+  ggplot(aes(year - tref, Cstar_tref_delta, col=Cant))+
+  geom_point()+
+  scale_color_viridis_c()
 
 ```
 
 
+```{r Cstar_reference_year_adjustment_vs_time_difference_Cant}
+
+GLODAP %>% 
+  sample_n(10000) %>% 
+  ggplot(aes(year - tref, Cstar_tref_delta, col=Cant))+
+  geom_point()+
+  scale_color_viridis_c()+
+  labs(title = "random subsample 1e4")
+
+```
+
 
 # Selected section plots
+
+Selected sections are plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.
 
 ```{r select_cruises}
 
@@ -255,21 +268,21 @@ lat_section+
 lat_section+
   geom_point(aes(col=rNP_phosphate_05))
 
-#lat_C_star <- 
+#lat_Cstar <- 
 lat_section+
-  geom_point(aes(col=C_star))
+  geom_point(aes(col=Cstar))
 
 lat_section+
   geom_point(aes(col=Cant))
 
-#lat_C_star_tref <- 
+#lat_Cstar_tref <- 
 lat_section+
-  geom_point(aes(col=C_star_tref_delta))
+  geom_point(aes(col=Cstar_tref_delta))
 
 
-# map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_C_star / lat_C_star_tref
+# map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_Cstar / lat_Cstar_tref
 # 
-# rm(map, lat_tco2, lat_talk, lat_phosphate, lat_C_star, lat_C_star_tref)
+# rm(map, lat_tco2, lat_talk, lat_phosphate, lat_Cstar, lat_Cstar_tref)
 
 ```
 
