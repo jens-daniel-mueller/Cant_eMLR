@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcftargetblank1ce10e7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcf" target="_blank">1ce10e7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeffd46daebaab829c1b842431b5b35a161b0ccb0ctargetblankffd46daa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ffd46daebaab829c1b842431b5b35a161b0ccb0c" target="_blank">ffd46da</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcftargetblank1ce10e7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeffd46daebaab829c1b842431b5b35a161b0ccb0ctargetblankffd46daa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcf" target="_blank">1ce10e7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ffd46daebaab829c1b842431b5b35a161b0ccb0c" target="_blank">ffd46da</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -563,12 +563,17 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
     Ignored:    data/World_Ocean_Atlas_2018/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    output/plots/
+    Ignored:    output/figure/
+
+Unstaged changes:
+    Modified:   analysis/eMLR.Rmd
+    Modified:   analysis/read_GLODAPv2_2020.Rmd
 
 </code></pre>
 <p>
@@ -607,6 +612,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/ffd46daebaab829c1b842431b5b35a161b0ccb0c/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">ffd46da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+WOA18 read in
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/556e6cc43f8c05fdbab8277adb218d26d02ba872/docs/read_World_Ocean_Atlas_2018.html" target="_blank">556e6cc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -989,67 +1028,147 @@ basinmask_01 %&gt;%
   scale_fill_brewer(palette = &quot;Dark2&quot;)+
   coord_quickmap(expand = 0)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/map_basin_mask_WOA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(mapWorld)</code></pre>
 </div>
 <div id="write-file" class="section level2">
 <h2><span class="header-section-number">2.4</span> Write file</h2>
 <pre class="r"><code>basinmask_01 %&gt;% 
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                       &quot;basin_mask_WOA18.csv&quot;))</code></pre>
+                       &quot;basin_mask_WOA18.csv&quot;))
+
+rm(basinmask_01)</code></pre>
 </div>
 </div>
 <div id="readplot-ncdf-files" class="section level1">
 <h1><span class="header-section-number">3</span> Read/plot ncdf files</h1>
+<p>File naming conventions: [PREF]<em>[DDDD]</em>[V][TT][FF][GG].[EXT], where:</p>
+<pre><code>[PREF] - prefix
+[DDDD] - decade
+[V] - variable
+[TT] - time period
+[FF] - field type
+[GG] - grid (5deg- 5°, 01- 1°, 04 - 1/4°)
+[EXT] - file extention</code></pre>
+<p>Note: ‘.dat’ - ASCII; ‘.csv’ - comma separated value; ‘.dbf’, ‘.shp’, ‘.shx’ - ArcGIS shape files; ‘.nc’ - netCDF files</p>
+<p>Short description of the statistical fields in WOA</p>
 <ul>
-<li>read-in not yet started</li>
+<li>Objectively analyzed climatologies are the objectively interpolated mean fields for oceanographic variables at standard - depth levels for the World Ocean.</li>
+<li>The statistical mean is the average of all unflagged interpolated values at each standard depth level for each variable - in each 1° square which contains at least one measurement for the given oceanographic variable.</li>
+<li>The number of observations of each variable in each 1° square of the World Ocean at each standard depth level.</li>
+<li>The standard deviation about the statistical mean of each variable in each 1° square at each standard depth level.</li>
+<li>The standard error of the mean of each variable in each 1° square at each standard depth level.</li>
+<li>The seasonal or monthly climatology minus the annual climatology at each 1° square at each standard depth.</li>
+<li>The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.</li>
+<li>The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.</li>
 </ul>
-<pre class="r"><code>file_list &lt;- list.files(path= &quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;, pattern = &quot;*.nc&quot;)
+<pre class="r"><code>WOA_tem &lt;- tidync(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
+                                 &quot;woa18_decav_t00_01.nc&quot;))
 
-print(&quot;files used:&quot;)
-print(file_list)
+print(WOA_tem)</code></pre>
+<pre><code>
+Data Source (1): woa18_decav_t00_01.nc ...
 
-#file &lt;- file_list[1]
+Grids (10) &lt;dimension family&gt; : &lt;associated variables&gt; 
 
-for (file in file_list) {
- 
-clim_stars &lt;- read_stars(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
-                          file))
+[1]   D2,D1,D3,D4 : t_an, t_mn, t_dd, t_sd, t_se, t_oa, t_gp    **ACTIVE GRID** ( 6609600  values per variable)
+[2]   D0,D1       : lat_bnds
+[3]   D0,D2       : lon_bnds
+[4]   D0,D3       : depth_bnds
+[5]   D0,D4       : climatology_bounds
+[6]   D1          : lat
+[7]   D2          : lon
+[8]   D3          : depth
+[9]   D4          : time
+[10]   S           : crs
 
-parameter &lt;- str_split(file, pattern = &quot;6b.&quot;, simplify = TRUE)[2]
-parameter &lt;- str_split(parameter, pattern = &quot;.nc&quot;, simplify = TRUE)[1]
+Dimensions 5 (4 active): 
+  
+  dim   name  length    min    max start count   dmin   dmax unlim coord_dim 
+  &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
+1 D1    lat      180  -89.5   89.5     1   180  -89.5   89.5 FALSE TRUE      
+2 D2    lon      360 -180.   180.      1   360 -180.   180.  FALSE TRUE      
+3 D3    depth    102    0   5500       1   102    0   5500   FALSE TRUE      
+4 D4    time       1 4326   4326       1     1 4326   4326   FALSE TRUE      
+  
+Inactive dimensions:
+  
+  dim   name    length   min   max unlim coord_dim 
+  &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
+1 D0    nbounds      2     1     2 FALSE FALSE     </code></pre>
+<pre class="r"><code>WOA_tem_tibble &lt;- WOA_tem %&gt;% hyper_tibble()
 
-map_clim_stars &lt;- clim_stars %&gt;% select(all_of(parameter))
+WOA_tem_tibble &lt;- WOA_tem_tibble  %&gt;% 
+  select(t_an, lon, lat, depth) %&gt;% 
+  drop_na()
 
-map_clim_stars &lt;- map_clim_stars %&gt;% 
-  filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
+WOA_tem_tibble %&gt;% 
+  filter(depth == 0) %&gt;% 
+  ggplot(aes(lon, lat, fill=t_an))+
+  geom_raster()+
+  coord_quickmap()+
+  scale_fill_viridis_c()</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_netcdfs-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>WOA_tem_tibble %&gt;% 
+  filter(lon == -20.5) %&gt;% 
+  ggplot(aes(lat, depth, z=t_an))+
+  geom_contour_filled()+
+  scale_y_reverse()+
+  coord_cartesian(expand = 0)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_netcdfs-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>WOA_sal &lt;- tidync(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
+                                 &quot;woa18_decav_s00_01.nc&quot;))
 
-print(
-ggplot()+
-  geom_stars(data = map_clim_stars)+
-  geom_vline(xintercept = 335, col=&quot;white&quot;)+
-  scale_fill_viridis_b()+
-  labs(title = file)+
-  facet_wrap(~depth_surface, ncol = 3)+
-  theme(axis.text = element_blank(),
-        axis.title = element_blank(),
-        axis.ticks = element_blank())+
-  coord_quickmap(expand = 0)
-)
+print(WOA_sal)</code></pre>
+<pre><code>
+Data Source (1): woa18_decav_s00_01.nc ...
 
+Grids (10) &lt;dimension family&gt; : &lt;associated variables&gt; 
 
-# clim_tidync &lt;- tidync(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
-#                                  file))
-# print(clim_tidync)
-# 
-# Atl_sec_clim &lt;- clim_tidync %&gt;% hyper_filter(lon = lon == 335.5)
-# Atl_sec_clim_tibble &lt;- Atl_sec_clim %&gt;% hyper_tibble()
-# 
-# Atl_sec_clim_tibble %&gt;% 
-#   ggplot(aes(lat, depth_surface, fill=Cant))+
-#   geom_point()+
-#   scale_y_reverse()+
-#   scale_fill_viridis_b()
+[1]   D2,D1,D3,D4 : s_an, s_mn, s_dd, s_sd, s_se, s_oa, s_gp    **ACTIVE GRID** ( 6609600  values per variable)
+[2]   D0,D1       : lat_bnds
+[3]   D0,D2       : lon_bnds
+[4]   D0,D3       : depth_bnds
+[5]   D0,D4       : climatology_bounds
+[6]   D1          : lat
+[7]   D2          : lon
+[8]   D3          : depth
+[9]   D4          : time
+[10]   S           : crs
 
-}</code></pre>
+Dimensions 5 (4 active): 
+  
+  dim   name  length    min    max start count   dmin   dmax unlim coord_dim 
+  &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
+1 D1    lat      180  -89.5   89.5     1   180  -89.5   89.5 FALSE TRUE      
+2 D2    lon      360 -180.   180.      1   360 -180.   180.  FALSE TRUE      
+3 D3    depth    102    0   5500       1   102    0   5500   FALSE TRUE      
+4 D4    time       1 4326   4326       1     1 4326   4326   FALSE TRUE      
+  
+Inactive dimensions:
+  
+  dim   name    length   min   max unlim coord_dim 
+  &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt;     
+1 D0    nbounds      2     1     2 FALSE FALSE     </code></pre>
+<pre class="r"><code>WOA_sal_tibble &lt;- WOA_sal %&gt;% hyper_tibble()
+
+WOA_sal_tibble &lt;- WOA_sal_tibble  %&gt;% 
+  select(s_an, lon, lat, depth) %&gt;% 
+  drop_na()
+
+WOA_sal_tibble %&gt;% 
+  filter(depth == 0) %&gt;% 
+  ggplot(aes(lon, lat, fill=s_an))+
+  geom_raster()+
+  coord_quickmap()+
+  scale_fill_viridis_c()</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_netcdfs-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>WOA_sal_tibble %&gt;% 
+  filter(lon == -20.5) %&gt;% 
+  ggplot(aes(lat, depth, z=s_an))+
+  geom_contour_filled()+
+  scale_y_reverse()+
+  coord_cartesian(expand = 0)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_netcdfs-4.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="open-tasks" class="section level1">
 <h1><span class="header-section-number">4</span> Open tasks</h1>
@@ -1093,22 +1212,23 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5         whisker_0.4        knitr_1.29         xml2_1.3.2        
  [5] magrittr_1.5       maps_3.3.0         units_0.6-7        hms_0.5.3         
- [9] rvest_0.3.5        tidyselect_1.1.0   here_0.1           colorspace_1.4-1  
-[13] R6_2.4.1           rlang_0.4.7        fansi_0.4.1        parallel_3.6.3    
-[17] broom_0.7.0        xfun_0.15          e1071_1.7-3        ncmeta_0.2.5      
-[21] dbplyr_1.4.4       modelr_0.1.8       withr_2.2.0        git2r_0.27.1      
-[25] ellipsis_0.3.1     htmltools_0.5.0    class_7.3-17       assertthat_0.2.1  
-[29] rprojroot_1.3-2    digest_0.6.25      lifecycle_0.2.0    RNetCDF_2.3-1     
-[33] haven_2.3.1        rmarkdown_2.3      compiler_3.6.3     cellranger_1.1.0  
-[37] pillar_1.4.6       scales_1.1.1       backports_1.1.5    generics_0.0.2    
-[41] classInt_0.4-3     jsonlite_1.7.0     httpuv_1.5.4       pkgconfig_2.0.3   
-[45] rstudioapi_0.11    munsell_0.5.0      blob_1.2.1         httr_1.4.1        
-[49] tools_3.6.3        grid_3.6.3         gtable_0.3.0       KernSmooth_2.23-16
-[53] DBI_1.1.0          cli_2.0.2          readxl_1.3.1       yaml_2.2.1        
-[57] lwgeom_0.2-5       crayon_1.3.4       farver_2.0.3       RColorBrewer_1.1-2
-[61] later_1.1.0.1      promises_1.1.1     fs_1.4.2           vctrs_0.3.1       
-[65] ncdf4_1.17         glue_1.4.1         evaluate_0.14      labeling_0.3      
-[69] reprex_0.3.0       stringi_1.4.6     </code></pre>
+ [9] rvest_0.3.5        tidyselect_1.1.0   viridisLite_0.3.0  here_0.1          
+[13] colorspace_1.4-1   R6_2.4.1           rlang_0.4.7        fansi_0.4.1       
+[17] parallel_3.6.3     broom_0.7.0        xfun_0.15          e1071_1.7-3       
+[21] ncmeta_0.2.5       dbplyr_1.4.4       modelr_0.1.8       withr_2.2.0       
+[25] git2r_0.27.1       ellipsis_0.3.1     htmltools_0.5.0    class_7.3-17      
+[29] assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25      lifecycle_0.2.0   
+[33] RNetCDF_2.3-1      haven_2.3.1        rmarkdown_2.3      compiler_3.6.3    
+[37] cellranger_1.1.0   pillar_1.4.6       scales_1.1.1       backports_1.1.5   
+[41] generics_0.0.2     classInt_0.4-3     jsonlite_1.7.0     httpuv_1.5.4      
+[45] pkgconfig_2.0.3    rstudioapi_0.11    munsell_0.5.0      blob_1.2.1        
+[49] httr_1.4.1         tools_3.6.3        grid_3.6.3         gtable_0.3.0      
+[53] utf8_1.1.4         KernSmooth_2.23-16 DBI_1.1.0          cli_2.0.2         
+[57] readxl_1.3.1       yaml_2.2.1         lwgeom_0.2-5       crayon_1.3.4      
+[61] farver_2.0.3       RColorBrewer_1.1-2 later_1.1.0.1      promises_1.1.1    
+[65] fs_1.4.2           vctrs_0.3.1        isoband_0.2.2      ncdf4_1.17        
+[69] glue_1.4.1         evaluate_0.14      labeling_0.3       reprex_0.3.0      
+[73] stringi_1.4.6     </code></pre>
 </div>
 </div>
 
