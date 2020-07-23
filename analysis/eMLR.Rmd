@@ -232,7 +232,7 @@ GLODAP_cruise <- GLODAP %>%
 
 ```
 
-```{r meridional_sections}
+```{r meridional_sections, fig.asp=0.5}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
@@ -395,7 +395,7 @@ GLODAP <- GLODAP %>%
 
 ## Predictor correlation
 
-```{r predictor_correlation_all}
+```{r predictor_correlation_all, fig.asp=1}
 
 GLODAP %>% 
   sample_n(1e3) %>% 
