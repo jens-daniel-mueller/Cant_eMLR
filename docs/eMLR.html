@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcftargetblank1ce10e7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcf" target="_blank">1ce10e7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree26bdc0a8a85728286c5aa0c512950db0e05e0d94targetblank26bdc0aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/26bdc0a8a85728286c5aa0c512950db0e05e0d94" target="_blank">26bdc0a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcftargetblank1ce10e7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree26bdc0a8a85728286c5aa0c512950db0e05e0d94targetblank26bdc0aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1ce10e70d38ea5e7bd668c0bda9aeaf04add5bcf" target="_blank">1ce10e7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/26bdc0a8a85728286c5aa0c512950db0e05e0d94" target="_blank">26bdc0a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -568,7 +568,7 @@ Ignored files:
     Ignored:    data/World_Ocean_Atlas_2018/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    output/plots/
+    Ignored:    output/figure/
 
 </code></pre>
 <p>
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/26bdc0a8a85728286c5aa0c512950db0e05e0d94/analysis/eMLR.Rmd" target="_blank">26bdc0a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+new era label, predictor correlation check started
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/556e6cc43f8c05fdbab8277adb218d26d02ba872/docs/eMLR.html" target="_blank">556e6cc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1314,7 +1348,8 @@ added Cstar calculation
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(patchwork)
-library(broom)</code></pre>
+library(broom)
+library(GGally)</code></pre>
 <div id="required-data" class="section level1">
 <h1><span class="header-section-number">1</span> Required data</h1>
 <p>Required are:</p>
@@ -1600,9 +1635,38 @@ lat_section+
 #   ggplot(aes(lat, depth, z=tco2))+
 #   geom_contour_fill(na.fill = TRUE)+
 #   scale_y_reverse()</code></pre>
+</div>
+<div id="po4-calculation" class="section level2">
+<h2><span class="header-section-number">5.2</span> PO<sub>4</sub>* calculation</h2>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   mutate(phosphate_star = phosphate - 16*nitrate + 29)</code></pre>
-<pre class="r"><code>regressions &lt;- GLODAP %&gt;%
+</div>
+<div id="predictor-correlation" class="section level2">
+<h2><span class="header-section-number">5.3</span> Predictor correlation</h2>
+<pre class="r"><code>for (i_basin in unique(GLODAP$basin)) {
+  for (i_era in unique(GLODAP$era)) {
+
+# i_basin &lt;- unique(GLODAP$basin)[1]
+# i_era   &lt;- unique(GLODAP$era)[1]
+print(i_basin)
+print(i_era)
+ 
+GLODAP %&gt;% 
+  filter(basin == i_basin, era == i_era) %&gt;% 
+  ggpairs(columns = c(&quot;salinity&quot;,&quot;temperature&quot;, &quot;aou&quot;, &quot;oxygen&quot;, &quot;silicate&quot;, &quot;phosphate&quot;, &quot;phosphate_star&quot;),
+          ggplot2::aes(col = gamma_slab, fill = gamma_slab))+
+      scale_fill_viridis_d()+
+      scale_color_viridis_d()+
+      labs(title = paste(&quot;Basin:&quot;, i_basin, &quot;| era:&quot;, i_era))+
+      theme(text = element_text(size=30))
+
+ggsave(here::here(&quot;output/figure/eMLR/predictor_correlation&quot;,
+                   paste(&quot;predictor_correlation&quot;, i_basin, i_era, &quot;.png&quot;, sep = &quot;_&quot;)),
+                  width = 20, height = 20)
+   
+  }
+}</code></pre>
+<pre class="r"><code>MLRs &lt;- GLODAP %&gt;%
   nest(data = -c(basin, era, gamma_slab)) %&gt;% 
   mutate(
     fit = map(data, ~ lm(Cstar ~ salinity + temperature + aou + oxygen + silicate + phosphate + phosphate_star,
@@ -1612,10 +1676,10 @@ lat_section+
     augmented = map(fit, augment)
   )
 
-regressions_tidied &lt;- regressions %&gt;% 
+MLRs_tidied &lt;- MLRs %&gt;% 
   unnest(tidied)
 
-regressions_tidied</code></pre>
+MLRs_tidied</code></pre>
 <pre><code># A tibble: 624 x 12
    era   basin gamma_slab data  fit   term  estimate std.error statistic
    &lt;chr&gt; &lt;chr&gt; &lt;fct&gt;      &lt;lis&gt; &lt;lis&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
@@ -1631,26 +1695,31 @@ regressions_tidied</code></pre>
 10 JGOF~ Atla~ (27.25,27~ &lt;tib~ &lt;lm&gt;  sali~  9.62e+0    1.74       5.52 
 # ... with 614 more rows, and 3 more variables: p.value &lt;dbl&gt;, glanced &lt;list&gt;,
 #   augmented &lt;list&gt;</code></pre>
-<pre class="r"><code>regressions_tidied &lt;- regressions_tidied %&gt;% 
+<pre class="r"><code>MLRs_tidied &lt;- MLRs_tidied %&gt;% 
   select(era, basin, gamma_slab, term, estimate, p.value)
 
-regressions_tidied %&gt;% 
+MLRs_tidied_wide &lt;- MLRs_tidied %&gt;% 
+  select(-p.value) %&gt;% 
+  pivot_wider(names_from = era, values_from = estimate, names_prefix = &quot;coeff_&quot;)
+
+
+MLRs_tidied %&gt;% 
   ggplot(aes(p.value, term, col=gamma_slab))+
   geom_point()+
   facet_grid(basin~era)</code></pre>
 <p><img src="figure/eMLR.Rmd/eMLR_fitting-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>regressions_tidied %&gt;% 
+<pre class="r"><code>MLRs_tidied %&gt;% 
   filter(p.value &lt; 0.05) %&gt;% 
   ggplot(aes(p.value, term, col=gamma_slab))+
   geom_point()+
   facet_grid(basin~era)</code></pre>
 <p><img src="figure/eMLR.Rmd/eMLR_fitting-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>regressions_tidied %&gt;% 
+<pre class="r"><code>MLRs_tidied %&gt;% 
   ggplot(aes(p.value, term))+
   geom_boxplot()+
   facet_grid(basin~era)</code></pre>
 <p><img src="figure/eMLR.Rmd/eMLR_fitting-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>regressions %&gt;% 
+<pre class="r"><code>MLRs %&gt;% 
   unnest(glanced)</code></pre>
 <pre><code># A tibble: 78 x 19
    era   basin gamma_slab data  fit   tidied r.squared adj.r.squared sigma
@@ -1668,7 +1737,7 @@ regressions_tidied %&gt;%
 # ... with 68 more rows, and 10 more variables: statistic &lt;dbl&gt;, p.value &lt;dbl&gt;,
 #   df &lt;dbl&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;, BIC &lt;dbl&gt;, deviance &lt;dbl&gt;,
 #   df.residual &lt;int&gt;, nobs &lt;int&gt;, augmented &lt;list&gt;</code></pre>
-<pre class="r"><code>regressions %&gt;% 
+<pre class="r"><code>MLRs %&gt;% 
   unnest(augmented)</code></pre>
 <pre><code># A tibble: 177,773 x 21
    era   basin gamma_slab data  fit   tidied glanced Cstar salinity temperature
@@ -1726,28 +1795,28 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] broom_0.7.0     patchwork_1.0.1 lubridate_1.7.9 forcats_0.5.0  
- [5] stringr_1.4.0   dplyr_1.0.0     purrr_0.3.4     readr_1.3.1    
- [9] tidyr_1.1.0     tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0
-[13] workflowr_1.6.2
+ [1] GGally_2.0.0    broom_0.7.0     patchwork_1.0.1 lubridate_1.7.9
+ [5] forcats_0.5.0   stringr_1.4.0   dplyr_1.0.0     purrr_0.3.4    
+ [9] readr_1.3.1     tidyr_1.1.0     tibble_3.0.3    ggplot2_3.3.2  
+[13] tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] RColorBrewer_1.1-2 jsonlite_1.7.0     rstudioapi_0.11    generics_0.0.2    
  [5] magrittr_1.5       farver_2.0.3       gtable_0.3.0       rmarkdown_2.3     
  [9] vctrs_0.3.1        fs_1.4.2           hms_0.5.3          utf8_1.1.4        
 [13] xml2_1.3.2         pillar_1.4.6       htmltools_0.5.0    haven_2.3.1       
-[17] later_1.1.0.1      cellranger_1.1.0   tidyselect_1.1.0   knitr_1.29        
-[21] git2r_0.27.1       whisker_0.4        lifecycle_0.2.0    pkgconfig_2.0.3   
-[25] R6_2.4.1           digest_0.6.25      xfun_0.15          colorspace_1.4-1  
-[29] rprojroot_1.3-2    stringi_1.4.6      yaml_2.2.1         evaluate_0.14     
-[33] labeling_0.3       fansi_0.4.1        httr_1.4.1         compiler_3.6.3    
-[37] here_0.1           cli_2.0.2          withr_2.2.0        backports_1.1.5   
-[41] munsell_0.5.0      DBI_1.1.0          modelr_0.1.8       Rcpp_1.0.5        
-[45] readxl_1.3.1       maps_3.3.0         dbplyr_1.4.4       ellipsis_0.3.1    
-[49] assertthat_0.2.1   blob_1.2.1         tools_3.6.3        reprex_0.3.0      
-[53] viridisLite_0.3.0  httpuv_1.5.4       scales_1.1.1       crayon_1.3.4      
-[57] glue_1.4.1         rlang_0.4.7        rvest_0.3.5        promises_1.1.1    
-[61] grid_3.6.3        </code></pre>
+[17] later_1.1.0.1      cellranger_1.1.0   tidyselect_1.1.0   plyr_1.8.6        
+[21] knitr_1.29         git2r_0.27.1       whisker_0.4        lifecycle_0.2.0   
+[25] pkgconfig_2.0.3    R6_2.4.1           digest_0.6.25      reshape_0.8.8     
+[29] xfun_0.15          colorspace_1.4-1   rprojroot_1.3-2    stringi_1.4.6     
+[33] yaml_2.2.1         evaluate_0.14      labeling_0.3       fansi_0.4.1       
+[37] httr_1.4.1         compiler_3.6.3     here_0.1           cli_2.0.2         
+[41] withr_2.2.0        backports_1.1.5    munsell_0.5.0      DBI_1.1.0         
+[45] modelr_0.1.8       Rcpp_1.0.5         readxl_1.3.1       maps_3.3.0        
+[49] dbplyr_1.4.4       ellipsis_0.3.1     assertthat_0.2.1   blob_1.2.1        
+[53] tools_3.6.3        reprex_0.3.0       viridisLite_0.3.0  httpuv_1.5.4      
+[57] scales_1.1.1       crayon_1.3.4       glue_1.4.1         rlang_0.4.7       
+[61] rvest_0.3.5        promises_1.1.1     grid_3.6.3        </code></pre>
 </div>
 </div>
 </div>
