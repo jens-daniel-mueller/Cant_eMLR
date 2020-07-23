@@ -298,9 +298,9 @@ Samples were assigned to following eras:
 
 GLODAP <- GLODAP %>%
   filter(year >= start) %>% 
-  mutate(era = "JGOFS-WOCE",
-         era = if_else(year > JGOFS, "GO-SHIP", era),
-         era = if_else(year > GOSHIP, "new-era", era))
+  mutate(era = "JGOFS_WOCE",
+         era = if_else(year > JGOFS, "GO_SHIP", era),
+         era = if_else(year > GOSHIP, "new_era", era))
 
 ```
 
@@ -478,7 +478,7 @@ mapWorld <- borders("world", colour="gray60", fill="gray60")
 
 
 GLODAP <- GLODAP %>% 
-  mutate(era = factor(era, c("JGOFS-WOCE", "GO-SHIP", "new-era")))
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
 
 GLODAP %>%
   ggplot(aes(lon, lat))+
