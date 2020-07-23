@@ -21,6 +21,8 @@ library(tidyverse)
 library(lubridate)
 library(patchwork)
 library(broom)
+library(GGally)
+
 ```
 
 
@@ -382,6 +384,8 @@ lat_section+
 
 ```
 
+## PO~4~* calculation 
+
 ```{r calculate_phosphate_star}
 
 GLODAP <- GLODAP %>% 
@@ -389,10 +393,41 @@ GLODAP <- GLODAP %>%
 
 ```
 
+## Predictor correlation
+
+```{r predictor_correlation, eval=FALSE}
+
+
+for (i_basin in unique(GLODAP$basin)) {
+  for (i_era in unique(GLODAP$era)) {
+
+# i_basin <- unique(GLODAP$basin)[1]
+# i_era   <- unique(GLODAP$era)[1]
+print(i_basin)
+print(i_era)
+ 
+GLODAP %>% 
+  filter(basin == i_basin, era == i_era) %>% 
+  ggpairs(columns = c("salinity","temperature", "aou", "oxygen", "silicate", "phosphate", "phosphate_star"),
+          ggplot2::aes(col = gamma_slab, fill = gamma_slab))+
+      scale_fill_viridis_d()+
+      scale_color_viridis_d()+
+      labs(title = paste("Basin:", i_basin, "| era:", i_era))+
+      theme(text = element_text(size=30))
+
+ggsave(here::here("output/figure/eMLR/predictor_correlation",
+                   paste("predictor_correlation", i_basin, i_era, ".png", sep = "_")),
+                  width = 20, height = 20)
+   
+  }
+}
+
+```
+
 
 ```{r eMLR_fitting}
 
-regressions <- GLODAP %>%
+MLRs <- GLODAP %>%
   nest(data = -c(basin, era, gamma_slab)) %>% 
   mutate(
     fit = map(data, ~ lm(Cstar ~ salinity + temperature + aou + oxygen + silicate + phosphate + phosphate_star,
@@ -402,34 +437,39 @@ regressions <- GLODAP %>%
     augmented = map(fit, augment)
   )
 
-regressions_tidied <- regressions %>% 
+MLRs_tidied <- MLRs %>% 
   unnest(tidied)
 
-regressions_tidied
+MLRs_tidied
 
-regressions_tidied <- regressions_tidied %>% 
+MLRs_tidied <- MLRs_tidied %>% 
   select(era, basin, gamma_slab, term, estimate, p.value)
 
-regressions_tidied %>% 
+MLRs_tidied_wide <- MLRs_tidied %>% 
+  select(-p.value) %>% 
+  pivot_wider(names_from = era, values_from = estimate, names_prefix = "coeff_")
+
+
+MLRs_tidied %>% 
   ggplot(aes(p.value, term, col=gamma_slab))+
   geom_point()+
   facet_grid(basin~era)
 
-regressions_tidied %>% 
+MLRs_tidied %>% 
   filter(p.value < 0.05) %>% 
   ggplot(aes(p.value, term, col=gamma_slab))+
   geom_point()+
   facet_grid(basin~era)
 
-regressions_tidied %>% 
+MLRs_tidied %>% 
   ggplot(aes(p.value, term))+
   geom_boxplot()+
   facet_grid(basin~era)
 
-regressions %>% 
+MLRs %>% 
   unnest(glanced)
 
-regressions %>% 
+MLRs %>% 
   unnest(augmented)
 
 ```

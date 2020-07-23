@@ -289,18 +289,18 @@ GOSHIP <- 2012
 
 Samples were assigned to following eras:
 
-- JGOFS/WOCE: `r start` - `r JGOFS`
+- JGOFS-WOCE: `r start` - `r JGOFS`
 - GO-SHIP:    `r JGOFS+1` - `r GOSHIP`
-- new_era:    > `r GOSHIP+1`
+- new-era:    > `r GOSHIP+1`
 
 
 ```{r assigne_eras}
 
 GLODAP <- GLODAP %>%
   filter(year >= start) %>% 
-  mutate(era = "JGOFS/WOCE",
+  mutate(era = "JGOFS-WOCE",
          era = if_else(year > JGOFS, "GO-SHIP", era),
-         era = if_else(year > GOSHIP, "new_era", era))
+         era = if_else(year > GOSHIP, "new-era", era))
 
 ```
 
@@ -575,7 +575,7 @@ map /
 ((lat_tco2 / lat_talk / lat_phosphate) |
 (lon_tco2 / lon_talk / lon_phosphate))
 
-ggsave(here::here("output/plots/data/all_cruises_clean",
+ggsave(here::here("output/figure/data/all_cruises_clean",
                   paste("GLODAP_cruise_date",
                         cruises_cruise$date_mean,
                         "n",
