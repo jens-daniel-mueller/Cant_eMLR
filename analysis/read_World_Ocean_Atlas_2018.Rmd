@@ -85,6 +85,8 @@ basinmask_01 %>%
   scale_fill_brewer(palette = "Dark2")+
   coord_quickmap(expand = 0)
 
+rm(mapWorld)
+
 ```
 
 ## Write file
@@ -95,63 +97,93 @@ basinmask_01 %>%
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                        "basin_mask_WOA18.csv"))
 
+rm(basinmask_01)
+
 ```
 
 
 # Read/plot ncdf files
 
-- read-in not yet started
+File naming conventions: [PREF]_[DDDD]_[V][TT][FF][GG].[EXT], where:
 
-```{r read_GLODAPv2_2016_Mappedclimatologies_netcdfs, eval=FALSE}
+    [PREF] - prefix
+    [DDDD] - decade
+    [V] - variable
+    [TT] - time period
+    [FF] - field type
+    [GG] - grid (5deg- 5°, 01- 1°, 04 - 1/4°)
+    [EXT] - file extention
 
-file_list <- list.files(path= "data/GLODAPv2_2016b_Mappedclimatologies", pattern = "*.nc")
-
-print("files used:")
-print(file_list)
-
-#file <- file_list[1]
-
-for (file in file_list) {
- 
-clim_stars <- read_stars(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
-                          file))
-
-parameter <- str_split(file, pattern = "6b.", simplify = TRUE)[2]
-parameter <- str_split(parameter, pattern = ".nc", simplify = TRUE)[1]
-
-map_clim_stars <- clim_stars %>% select(all_of(parameter))
-
-map_clim_stars <- map_clim_stars %>% 
-  filter(depth_surface %in% c(0,50,100,200,500,1000,2000,3000,5000))
-
-print(
-ggplot()+
-  geom_stars(data = map_clim_stars)+
-  geom_vline(xintercept = 335, col="white")+
-  scale_fill_viridis_b()+
-  labs(title = file)+
-  facet_wrap(~depth_surface, ncol = 3)+
-  theme(axis.text = element_blank(),
-        axis.title = element_blank(),
-        axis.ticks = element_blank())+
-  coord_quickmap(expand = 0)
-)
+Note: '.dat' - ASCII; '.csv' - comma separated value; '.dbf', '.shp', '.shx' - ArcGIS shape files; '.nc' - netCDF files
 
 
-# clim_tidync <- tidync(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
-#                                  file))
-# print(clim_tidync)
-# 
-# Atl_sec_clim <- clim_tidync %>% hyper_filter(lon = lon == 335.5)
-# Atl_sec_clim_tibble <- Atl_sec_clim %>% hyper_tibble()
-# 
-# Atl_sec_clim_tibble %>% 
-#   ggplot(aes(lat, depth_surface, fill=Cant))+
-#   geom_point()+
-#   scale_y_reverse()+
-#   scale_fill_viridis_b()
+Short description of the statistical fields in WOA
 
-}
+- Objectively analyzed climatologies are the objectively interpolated mean fields for oceanographic variables at standard - depth levels for the World Ocean.
+- The statistical mean is the average of all unflagged interpolated values at each standard depth level for each variable - in each 1° square which contains at least one measurement for the given oceanographic variable.
+- The number of observations of each variable in each 1° square of the World Ocean at each standard depth level.
+- The standard deviation about the statistical mean of each variable in each 1° square at each standard depth level.
+- The standard error of the mean of each variable in each 1° square at each standard depth level.
+- The seasonal or monthly climatology minus the annual climatology at each 1° square at each standard depth.
+- The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.
+- The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.
+
+
+
+
+```{r read_WOA18_netcdfs, fig.asp=0.5}
+
+WOA_tem <- tidync(here::here("data/World_Ocean_Atlas_2018",
+                                 "woa18_decav_t00_01.nc"))
+
+print(WOA_tem)
+
+WOA_tem_tibble <- WOA_tem %>% hyper_tibble()
+
+WOA_tem_tibble <- WOA_tem_tibble  %>% 
+  select(t_an, lon, lat, depth) %>% 
+  drop_na()
+
+WOA_tem_tibble %>% 
+  filter(depth == 0) %>% 
+  ggplot(aes(lon, lat, fill=t_an))+
+  geom_raster()+
+  coord_quickmap()+
+  scale_fill_viridis_c()
+
+WOA_tem_tibble %>% 
+  filter(lon == -20.5) %>% 
+  ggplot(aes(lat, depth, z=t_an))+
+  geom_contour_filled()+
+  scale_y_reverse()+
+  coord_cartesian(expand = 0)
+
+
+WOA_sal <- tidync(here::here("data/World_Ocean_Atlas_2018",
+                                 "woa18_decav_s00_01.nc"))
+
+print(WOA_sal)
+
+WOA_sal_tibble <- WOA_sal %>% hyper_tibble()
+
+WOA_sal_tibble <- WOA_sal_tibble  %>% 
+  select(s_an, lon, lat, depth) %>% 
+  drop_na()
+
+WOA_sal_tibble %>% 
+  filter(depth == 0) %>% 
+  ggplot(aes(lon, lat, fill=s_an))+
+  geom_raster()+
+  coord_quickmap()+
+  scale_fill_viridis_c()
+
+WOA_sal_tibble %>% 
+  filter(lon == -20.5) %>% 
+  ggplot(aes(lat, depth, z=s_an))+
+  geom_contour_filled()+
+  scale_y_reverse()+
+  coord_cartesian(expand = 0)
+
 
 
 ```
