@@ -232,18 +232,17 @@ GLODAP_cruise <- GLODAP %>%
 
 ```
 
-```{r meridional_sections, fig.asp=0.5}
+```{r meridional_sections, fig.asp=0.6}
 
 mapWorld <- borders("world", colour="gray60", fill="gray60")
 
-#map <- 
 GLODAP_cruise %>%
   arrange(date) %>% 
   ggplot(aes(lon, lat))+
   mapWorld+
   geom_path()+
   geom_point(aes(col=date))+
-  coord_quickmap(expand = FALSE)+
+  coord_quickmap(expand = 0)+
   scale_color_viridis_c(trans = "date")+
   labs(title = paste("Cruise year:", mean(GLODAP_cruise$year)))
 
@@ -251,46 +250,37 @@ lat_section <-
 GLODAP_cruise %>%
   ggplot(aes(lat, depth))+
   scale_y_reverse()+
-  scale_color_viridis_c()
+  scale_color_viridis_c()+
+  theme(legend.position = "bottom")
 
-#lat_tco2 <- 
 lat_section+
   geom_point(aes(col=tco2))
 
-#lat_talk <- 
 lat_section+
   geom_point(aes(col=talk))
 
-#lat_phosphate <- 
 lat_section+
   geom_point(aes(col=phosphate))
 
-#lat_rCP_phosphate <- 
 lat_section+
   geom_point(aes(col=rCP_phosphate))
 
-#lat_talk_05 <- 
 lat_section+
   geom_point(aes(col=talk_05))
 
-#lat_rNP_phosphate_05 <- 
 lat_section+
   geom_point(aes(col=rNP_phosphate_05))
 
-#lat_Cstar <- 
 lat_section+
   geom_point(aes(col=Cstar))
 
 lat_section+
   geom_point(aes(col=Cant))
 
-#lat_Cstar_tref <- 
 lat_section+
   geom_point(aes(col=-Cstar_tref_delta))
 
 
-# map / lat_tco2 / lat_talk / lat_phosphate / lat_rCP_phosphate /lat_talk_05 /lat_rNP_phosphate_05 / lat_Cstar / lat_Cstar_tref
-# 
 rm(mapWorld, lat_section, GLODAP_cruise)
 
 ```
@@ -298,7 +288,7 @@ rm(mapWorld, lat_section, GLODAP_cruise)
 
 
 
-# MLR fitting
+# MLR
 
 ## Isoneutral slabs
 
@@ -359,7 +349,7 @@ rm(GLODAP_Atl, GLODAP_Ind_Pac)
 
 ```
 
-```{r isoneutral_slabs_section}
+```{r isoneutral_slabs_section, fig.asp=0.6}
 
 GLODAP_cruise <- GLODAP %>% 
   filter(cruise %in% cruises_meridional)
@@ -367,7 +357,8 @@ GLODAP_cruise <- GLODAP %>%
 lat_section <- 
 GLODAP_cruise %>%
   ggplot(aes(lat, depth))+
-  scale_y_reverse()
+  scale_y_reverse()+
+  theme(legend.position = "bottom")
 
 lat_section+
   geom_point(aes(col=gamma))+
@@ -377,10 +368,6 @@ lat_section+
   geom_point(aes(col=gamma_slab))+
   scale_color_viridis_d()
 
-# GLODAP_cruise %>%
-#   ggplot(aes(lat, depth, z=tco2))+
-#   geom_contour_fill(na.fill = TRUE)+
-#   scale_y_reverse()
 
 ```
 
@@ -398,7 +385,7 @@ GLODAP <- GLODAP %>%
 ```{r predictor_correlation_all, fig.asp=1}
 
 GLODAP %>% 
-  sample_n(1e3) %>% 
+  sample_frac(0.1) %>% 
   ggpairs(columns = c("Cstar",
                       "salinity",
                       "temperature",
@@ -410,10 +397,12 @@ GLODAP %>%
           ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01))+
       scale_fill_viridis_d()+
       scale_color_viridis_d()+
-      labs(title = paste("Basin: all | era: all | subsample size: 10^3"))
+      labs(title = paste("Basin: all | era: all | subsample size: 10 %"))
 
 
 ```
+
+Individual correlation plots for each basin and era are available upon request.
 
 ```{r predictor_correlation_basin_era, eval=FALSE}
 
@@ -428,12 +417,12 @@ print(i_era)
 
 p <- GLODAP %>% 
   filter(basin == i_basin, era == i_era) %>% 
-  sample_n(1e3) %>% 
+  sample_frac(0.1) %>% 
   ggpairs(columns = c("salinity","temperature", "aou", "oxygen", "silicate", "phosphate", "phosphate_star"),
           ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01))+
       scale_fill_viridis_d()+
       scale_color_viridis_d()+
-      labs(title = paste("Basin:", i_basin, "| era:", i_era, "| subsample size: 10^3"))+
+      labs(title = paste("Basin:", i_basin, "| era:", i_era, "| subsample size: 10%"))+
       theme(text = element_text(size=20))
   
 png(here::here("output/figure/eMLR/predictor_correlation",
@@ -449,6 +438,7 @@ dev.off()
 
 ```
 
+## Model fitting
 
 ```{r eMLR_fitting}
 
@@ -474,6 +464,10 @@ MLRs_tidied_wide <- MLRs_tidied %>%
   select(-p.value) %>% 
   pivot_wider(names_from = era, values_from = estimate, names_prefix = "coeff_")
 
+MLRs_tidied_wide <- MLRs_tidied_wide %>% 
+  mutate(delta_coeff_J_G = coeff_GO_SHIP - coeff_JGOFS_WOCE,
+         delta_coeff_G_n = coeff_new_era - coeff_GO_SHIP,
+         delta_coeff_n_G = coeff_new_era - coeff_JGOFS_WOCE)
 
 MLRs_tidied %>% 
   ggplot(aes(p.value, term, col=gamma_slab))+
@@ -499,6 +493,18 @@ MLRs %>%
 
 ```
 
+```{r predictor_combinations_test, eval=FALSE}
+
+mtcars <- mtcars %>% 
+  select(mpg, disp, hp) %>% 
+  as_tibble()
+
+model <- "disp + hp"
+
+lm(data = mtcars, mpg ~ model)
+
+
+```
 
 
 ```{r predictor_variables, eval=FALSE}
