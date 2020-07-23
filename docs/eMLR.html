@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree26bdc0a8a85728286c5aa0c512950db0e05e0d94targetblank26bdc0aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/26bdc0a8a85728286c5aa0c512950db0e05e0d94" target="_blank">26bdc0a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3b6658bf14f548755cdd50ad12fe247f20b77037targetblank3b6658ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3b6658bf14f548755cdd50ad12fe247f20b77037" target="_blank">3b6658b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree26bdc0a8a85728286c5aa0c512950db0e05e0d94targetblank26bdc0aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3b6658bf14f548755cdd50ad12fe247f20b77037targetblank3b6658ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/26bdc0a8a85728286c5aa0c512950db0e05e0d94" target="_blank">26bdc0a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3b6658bf14f548755cdd50ad12fe247f20b77037" target="_blank">3b6658b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/3b6658bf14f548755cdd50ad12fe247f20b77037/analysis/eMLR.Rmd" target="_blank">3b6658b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+predictor correlation plots, bin2d map plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/2e3691aaac97be9458d4383f6595757dac9c8b93/docs/eMLR.html" target="_blank">2e3691a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1643,6 +1677,21 @@ lat_section+
 </div>
 <div id="predictor-correlation" class="section level2">
 <h2><span class="header-section-number">5.3</span> Predictor correlation</h2>
+<pre class="r"><code>GLODAP %&gt;% 
+  sample_n(1e3) %&gt;% 
+  ggpairs(columns = c(&quot;Cstar&quot;,
+                      &quot;salinity&quot;,
+                      &quot;temperature&quot;,
+                      &quot;aou&quot;,
+                      &quot;oxygen&quot;,
+                      &quot;silicate&quot;,
+                      &quot;phosphate&quot;,
+                      &quot;phosphate_star&quot;),
+          ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01))+
+      scale_fill_viridis_d()+
+      scale_color_viridis_d()+
+      labs(title = paste(&quot;Basin: all | era: all | subsample size: 10^3&quot;))</code></pre>
+<p><img src="figure/eMLR.Rmd/predictor_correlation_all-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
 
@@ -1650,20 +1699,25 @@ lat_section+
 # i_era   &lt;- unique(GLODAP$era)[1]
 print(i_basin)
 print(i_era)
- 
-GLODAP %&gt;% 
+
+p &lt;- GLODAP %&gt;% 
   filter(basin == i_basin, era == i_era) %&gt;% 
+  sample_n(1e3) %&gt;% 
   ggpairs(columns = c(&quot;salinity&quot;,&quot;temperature&quot;, &quot;aou&quot;, &quot;oxygen&quot;, &quot;silicate&quot;, &quot;phosphate&quot;, &quot;phosphate_star&quot;),
-          ggplot2::aes(col = gamma_slab, fill = gamma_slab))+
+          ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01))+
       scale_fill_viridis_d()+
       scale_color_viridis_d()+
-      labs(title = paste(&quot;Basin:&quot;, i_basin, &quot;| era:&quot;, i_era))+
-      theme(text = element_text(size=30))
+      labs(title = paste(&quot;Basin:&quot;, i_basin, &quot;| era:&quot;, i_era, &quot;| subsample size: 10^3&quot;))+
+      theme(text = element_text(size=20))
+  
+png(here::here(&quot;output/figure/eMLR/predictor_correlation&quot;,
+               paste(&quot;predictor_correlation&quot;, i_basin, i_era, &quot;.png&quot;, sep = &quot;_&quot;)),
+    width = 20, height = 20, units = &quot;in&quot;, res = 300)
 
-ggsave(here::here(&quot;output/figure/eMLR/predictor_correlation&quot;,
-                   paste(&quot;predictor_correlation&quot;, i_basin, i_era, &quot;.png&quot;, sep = &quot;_&quot;)),
-                  width = 20, height = 20)
-   
+print(p)
+
+dev.off()
+
   }
 }</code></pre>
 <pre class="r"><code>MLRs &lt;- GLODAP %&gt;%
