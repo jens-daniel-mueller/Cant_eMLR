@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3b6658bf14f548755cdd50ad12fe247f20b77037targetblank3b6658ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3b6658bf14f548755cdd50ad12fe247f20b77037" target="_blank">3b6658b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreefa350cf9d2defb458dac9bc331d7ebcbb37a0b8atargetblankfa350cfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/fa350cf9d2defb458dac9bc331d7ebcbb37a0b8a" target="_blank">fa350cf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3b6658bf14f548755cdd50ad12fe247f20b77037targetblank3b6658ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreefa350cf9d2defb458dac9bc331d7ebcbb37a0b8atargetblankfa350cfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3b6658bf14f548755cdd50ad12fe247f20b77037" target="_blank">3b6658b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/fa350cf9d2defb458dac9bc331d7ebcbb37a0b8a" target="_blank">fa350cf</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -607,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/fa350cf9d2defb458dac9bc331d7ebcbb37a0b8a/analysis/read_GLODAPv2_2020.Rmd" target="_blank">fa350cf</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+predictor correlation plots, bin2d map plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/9d1d67dc69f2ce92e37f51c371d8a6df85b24cec/docs/read_GLODAPv2_2020.html" target="_blank">9d1d67d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1458,31 +1492,9 @@ GLODAP_hovmoeller_year %&gt;%
 <h2><span class="header-section-number">3.6</span> Maps by era</h2>
 <pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray60&quot;, fill=&quot;gray60&quot;)
 
-GLODAP_map_era &lt;- GLODAP %&gt;% 
-  group_by(era, lat, lon) %&gt;% 
-  tally() %&gt;% 
-  ungroup()
-
-GLODAP_map_era &lt;- GLODAP_map_era %&gt;% 
-  mutate(era = factor(era, c(&quot;JGOFS/WOCE&quot;, &quot;GO-SHIP&quot;, &quot;new_era&quot;)))
-
-GLODAP_map_era %&gt;%
-  ggplot(aes(lon, lat, fill=log10(n)))+
-  mapWorld+
-  geom_tile()+
-  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1)+
-  scale_x_continuous(breaks = seq(-180, 180, 30))+
-  scale_y_continuous(breaks = seq(-90, 90, 30))+
-  coord_quickmap(expand = FALSE)+
-  facet_wrap(~era, ncol=1)</code></pre>
-<p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_maps_era-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(GLODAP_map_era,
-   mapWorld)</code></pre>
-<pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray60&quot;, fill=&quot;gray60&quot;)
-
 
 GLODAP &lt;- GLODAP %&gt;% 
-  mutate(era = factor(era, c(&quot;JGOFS/WOCE&quot;, &quot;GO-SHIP&quot;, &quot;new_era&quot;)))
+  mutate(era = factor(era, c(&quot;JGOFS-WOCE&quot;, &quot;GO-SHIP&quot;, &quot;new-era&quot;)))
 
 GLODAP %&gt;%
   ggplot(aes(lon, lat))+
