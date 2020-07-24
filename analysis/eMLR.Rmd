@@ -490,6 +490,14 @@ dev.off()
 
 ## Model fitting
 
+```{r write_csv_GLODAP_used_for_fitting}
+
+GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                "GLODAP_MLR_fitting_ready.csv"))
+
+```
+
+
 ```{r eMLR_fitting}
 
 MLRs <- GLODAP %>%

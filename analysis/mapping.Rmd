@@ -19,6 +19,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lubridate)
+library(oce)
 ```
 
 
@@ -165,6 +166,51 @@ N_Atl %>%
   geom_point() +
   scale_y_reverse() +
   facet_wrap(~parameter, scales = "free_x")
+
+```
+
+# Neutral density slabs
+
+```{r calculate_neutral_density_test, fig.asp=0.5}
+
+GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                "GLODAP_MLR_fitting_ready.csv"))
+
+cruises_meridional <- c("1041")
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% cruises_meridional)
+
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(gamma_calc = swRho(salinity = salinity,
+                            temperature = temperature,
+                            pressure = depth,
+                            longitude = lon,
+                            latitude = lat,
+                            eos = "gsw"))
+
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(gamma_calc = gamma_calc - 1000,
+         delta_gamma = gamma - gamma_calc)
+
+
+lat_section <- 
+GLODAP_cruise %>%
+  ggplot(aes(lat, depth)) +
+  scale_y_reverse() +
+  scale_color_viridis_c() +
+  theme(legend.position = "bottom")
+
+lat_section +
+  geom_point(aes(col = gamma))
+
+lat_section +
+  geom_point(aes(col = gamma_calc))
+
+lat_section +
+  geom_point(aes(col = delta_gamma))
 
 ```
 
