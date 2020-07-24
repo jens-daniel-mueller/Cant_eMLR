@@ -15,6 +15,8 @@ navbar:
       href: read_CO2_atm.html
   - text: eMLR
     href: eMLR.html
+  - text: Mapping
+    href: mapping.html
   - text: License
     href: license.html
   right:
