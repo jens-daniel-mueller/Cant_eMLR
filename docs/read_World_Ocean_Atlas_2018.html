@@ -430,7 +430,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">World Ocean Atlas 2018</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">23 July, 2020</h4>
+<h4 class="date">24 July, 2020</h4>
 
 </div>
 
@@ -455,7 +455,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-23
+<strong>Last updated:</strong> 2020-07-24
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -546,16 +546,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeffd46daebaab829c1b842431b5b35a161b0ccb0ctargetblankffd46daa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ffd46daebaab829c1b842431b5b35a161b0ccb0c" target="_blank">ffd46da</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree864a6e3f8d98ee439ecc8a90e046d6f99e840596targetblank864a6e3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/864a6e3f8d98ee439ecc8a90e046d6f99e840596" target="_blank">864a6e3</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeffd46daebaab829c1b842431b5b35a161b0ccb0ctargetblankffd46daa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree864a6e3f8d98ee439ecc8a90e046d6f99e840596targetblank864a6e3a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ffd46daebaab829c1b842431b5b35a161b0ccb0c" target="_blank">ffd46da</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/864a6e3f8d98ee439ecc8a90e046d6f99e840596" target="_blank">864a6e3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -563,7 +563,6 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
     Ignored:    data/World_Ocean_Atlas_2018/
@@ -571,9 +570,8 @@ Ignored files:
     Ignored:    dump/
     Ignored:    output/figure/
 
-Unstaged changes:
-    Modified:   analysis/eMLR.Rmd
-    Modified:   analysis/read_GLODAPv2_2020.Rmd
+Untracked files:
+    Untracked:  analysis/mapping.Rmd
 
 </code></pre>
 <p>
@@ -612,6 +610,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/864a6e3f8d98ee439ecc8a90e046d6f99e840596/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">864a6e3</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-24
+</td>
+<td>
+merged predictor data sets
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/eb716cef1ac48a6e36346723a39646324ebe755a/docs/read_World_Ocean_Atlas_2018.html" target="_blank">eb716ce</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1041,14 +1073,16 @@ rm(basinmask_01)</code></pre>
 </div>
 <div id="readplot-ncdf-files" class="section level1">
 <h1><span class="header-section-number">3</span> Read/plot ncdf files</h1>
-<p>File naming conventions: [PREF]<em>[DDDD]</em>[V][TT][FF][GG].[EXT], where:</p>
-<pre><code>[PREF] - prefix
-[DDDD] - decade
-[V] - variable
-[TT] - time period
-[FF] - field type
-[GG] - grid (5deg- 5°, 01- 1°, 04 - 1/4°)
-[EXT] - file extention</code></pre>
+<p>File naming conventions: PREF_DDDD_VTTFFGG.EXT, where:</p>
+<ul>
+<li>PREF: prefix</li>
+<li>DDDD: decade</li>
+<li>V: variable</li>
+<li>TT: time period</li>
+<li>FF: field type</li>
+<li>GG: grid (5deg- 5°, 01- 1°, 04 - 1/4°)</li>
+<li>EXT: file extention</li>
+</ul>
 <p>Note: ‘.dat’ - ASCII; ‘.csv’ - comma separated value; ‘.dbf’, ‘.shp’, ‘.shx’ - ArcGIS shape files; ‘.nc’ - netCDF files</p>
 <p>Short description of the statistical fields in WOA</p>
 <ul>
@@ -1169,6 +1203,16 @@ WOA_sal_tibble %&gt;%
   scale_y_reverse()+
   coord_cartesian(expand = 0)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_netcdfs-4.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="write-files" class="section level2">
+<h2><span class="header-section-number">3.1</span> Write files</h2>
+<pre class="r"><code>WOA18_predictors &lt;- full_join(WOA_sal_tibble, WOA_tem_tibble)
+
+WOA18_predictors %&gt;% 
+  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA18_predictors.csv&quot;))
+
+rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)</code></pre>
+</div>
 </div>
 <div id="open-tasks" class="section level1">
 <h1><span class="header-section-number">4</span> Open tasks</h1>
