@@ -104,15 +104,15 @@ rm(basinmask_01)
 
 # Read/plot ncdf files
 
-File naming conventions: [PREF]_[DDDD]_[V][TT][FF][GG].[EXT], where:
+File naming conventions: PREF_DDDD_VTTFFGG.EXT, where:
 
-    [PREF] - prefix
-    [DDDD] - decade
-    [V] - variable
-    [TT] - time period
-    [FF] - field type
-    [GG] - grid (5deg- 5°, 01- 1°, 04 - 1/4°)
-    [EXT] - file extention
+- PREF: prefix
+- DDDD: decade
+- V: variable
+- TT: time period
+- FF: field type
+- GG: grid (5deg- 5°, 01- 1°, 04 - 1/4°)
+- EXT: file extention
 
 Note: '.dat' - ASCII; '.csv' - comma separated value; '.dbf', '.shp', '.shx' - ArcGIS shape files; '.nc' - netCDF files
 
@@ -187,6 +187,21 @@ WOA_sal_tibble %>%
 
 
 ```
+
+## Write files
+
+```{r write_WOA_predictor_file}
+
+WOA18_predictors <- full_join(WOA_sal_tibble, WOA_tem_tibble)
+
+WOA18_predictors %>% 
+  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "WOA18_predictors.csv"))
+
+rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)
+
+```
+
 
 
 # Open tasks
