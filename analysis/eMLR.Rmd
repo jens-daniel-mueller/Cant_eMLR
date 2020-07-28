@@ -24,6 +24,8 @@ library(patchwork)
 library(broom)
 library(GGally)
 library(olsrr)
+library(knitr)
+library(kableExtra)
 ```
 
 
@@ -638,7 +640,17 @@ lm_best <- all_lm_stats_wide %>%
   slice_min(rmse_sum, n = 10) %>% 
   ungroup()
 
-knitr::kable(lm_best)
+kable(lm_best) %>%
+  add_header_above() %>%
+  scroll_box(width = "100%", height = "400px")
+
+```
+
+```{r fit_best_models, eval=FALSE}
+
+lm_best <- lm_best %>% 
+  mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
+         lm)
 
 ```
 
