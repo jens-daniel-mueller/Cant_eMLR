@@ -26,6 +26,7 @@ library(GGally)
 library(olsrr)
 library(knitr)
 library(kableExtra)
+library(broom)
 ```
 
 
@@ -506,9 +507,6 @@ GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 
 ```{r eMLR_fitting_predictor_selection, eval=FALSE}
 
-# library(devtools)
-# install_github("rsquaredacademy/olsrr", ref = "develop")
-
 # gamma_slab_max <- GLODAP %>%
 #   filter(basin == "Atlantic", era == "new_era") %>% 
 #   group_by(gamma_slab) %>% 
@@ -642,7 +640,10 @@ lm_best <- all_lm_stats_wide %>%
 
 kable(lm_best) %>%
   add_header_above() %>%
+  kable_styling() %>%
   scroll_box(width = "100%", height = "400px")
+
+rm(n_predictors_max, n_predictors_min)
 
 ```
 
@@ -650,7 +651,90 @@ kable(lm_best) %>%
 
 lm_best <- lm_best %>% 
   mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
-         lm)
+         lm_coeff = paste("Cstar ~", lm_coeff))
+
+# test_lm <- lm_best %>% 
+#   slice_min(rmse_sum) %>% 
+#   select(lm_coeff) %>% 
+#   pull()
+# 
+# class(test_lm)
+# test_lm_formula <- as.formula(test_lm)
+# class(test_lm_formula)
+
+for (i_basin in unique(GLODAP$basin)) {
+  for (i_era in unique(GLODAP$era)) {
+    
+    # i_basin <- unique(GLODAP$basin)[1]
+    # i_era   <- unique(GLODAP$era)[1]
+    
+    print(i_basin) 
+    print(i_era  )
+    
+    GLODAP_basin_era <- GLODAP %>%
+      filter(basin == i_basin, era == i_era)
+
+    lm_best_basin <- lm_best %>%
+      filter(basin == i_basin)
+
+    for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
+
+      # i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[1]
+      print(i_gamma_slab)
+      
+      GLODAP_basin_era_slab <- GLODAP_basin_era %>% 
+        filter(gamma_slab == i_gamma_slab)
+      
+      lm_best_basin_slab <- lm_best_basin %>% 
+        filter(gamma_slab == i_gamma_slab)
+      
+      for (i_rmse_sum in unique(lm_best_basin_slab$rmse_sum)) {
+        
+        # i_rmse_sum <- unique(lm_best_basin_slab$rmse_sum)[2]
+        
+        lm_best_single <- lm_best %>%
+          filter(rmse_sum == i_rmse_sum) %>%
+          select(lm_coeff) %>%
+          pull()
+        
+        lm_formula <- as.formula(lm_best_single)
+        
+        model_single <- lm(lm_formula, 
+              data = GLODAP_basin_era_slab)
+        
+        coefficients <- tidy(model_single)
+        coefficients <- coefficients %>% 
+          mutate(basin = i_basin,
+                 era = i_era,
+                 gamma_slab = i_gamma_slab,
+                 model = lm_best_single,
+                 rmse = i_rmse_sum)
+        
+        print(lm_best_single)
+      
+      if (exists("all_lm")) {
+        all_lm <- bind_rows(all_lm, coefficients)
+      }
+      
+      if (!exists("all_lm")) {
+        all_lm <- coefficients
+      }
+      
+      rm(lm_formula, model_single, coefficients)
+        
+      }
+      
+ 
+    }
+    
+  }
+  
+}
+
+
+all_lm %>%
+  write_csv(here::here("data/eMLR",
+                       "all_lm.csv"))
 
 ```
 
@@ -710,3 +794,7 @@ MLRs %>%
   unnest(augmented)
 
 ```
+
+# Open tasks
+
+-  Check if intercept is modeled
