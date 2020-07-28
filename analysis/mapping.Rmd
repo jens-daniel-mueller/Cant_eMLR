@@ -31,8 +31,9 @@ theme_set(theme_bw())
 
 Required are: 
 
-- GLODAPv2_2016b_MappedClimatologies: 
-- World Ocean Atlas 2018: 
+- GLODAPv2_2016b_MappedClimatologies
+- World Ocean Atlas 2018
+- eMLR model coeffcients
 
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
 
@@ -75,6 +76,15 @@ WOA18_depths <- unique(WOA18_predictors$depth)
 
 
 ```
+
+```{r load_eMLR_coeffcients}
+
+all_lm <- read_csv(here::here("data/eMLR",
+                              "all_lm.csv"))
+
+```
+
+
 
 # Join predictor climatologies
 
@@ -213,4 +223,20 @@ lat_section +
   geom_point(aes(col = delta_gamma))
 
 ```
+
+# Prepare model coefficients
+
+```{r prepare_model_coefficients}
+
+all_lm <- all_lm %>% 
+  select(term, estimate, basin, era, gamma_slab, model)
+
+all_lm_wide <- all_lm %>% 
+  pivot_wider(values_from = estimate, names_from=term)
+
+
+```
+
+
+
 
