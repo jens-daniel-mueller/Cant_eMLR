@@ -550,16 +550,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeda498d05c34c648373c204ec3574272d41a91fcftargetblankda498d0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/da498d05c34c648373c204ec3574272d41a91fcf" target="_blank">da498d0</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5dce9156be954466163cdc901b0bff66032ce99etargetblank5dce915a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5dce9156be954466163cdc901b0bff66032ce99e" target="_blank">5dce915</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeda498d05c34c648373c204ec3574272d41a91fcftargetblankda498d0a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5dce9156be954466163cdc901b0bff66032ce99etargetblank5dce915a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/da498d05c34c648373c204ec3574272d41a91fcf" target="_blank">da498d0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5dce9156be954466163cdc901b0bff66032ce99e" target="_blank">5dce915</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -567,7 +567,6 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
     Ignored:    data/World_Ocean_Atlas_2018/
@@ -613,6 +612,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/5dce9156be954466163cdc901b0bff66032ce99e/analysis/eMLR.Rmd" target="_blank">5dce915</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-28
+</td>
+<td>
+fit top 10 models
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/35f1cd433a2d60e2e57824d0590bd3e37ba365dc/docs/eMLR.html" target="_blank">35f1cd4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1613,7 +1646,8 @@ library(broom)
 library(GGally)
 library(olsrr)
 library(knitr)
-library(kableExtra)</code></pre>
+library(kableExtra)
+library(broom)</code></pre>
 <div id="required-data" class="section level1">
 <h1><span class="header-section-number">1</span> Required data</h1>
 <p>Required are:</p>
@@ -1988,10 +2022,7 @@ dev.off()
                                 &quot;GLODAP_MLR_fitting_ready.csv&quot;))</code></pre>
 <div id="predictor-selection" class="section level3">
 <h3><span class="header-section-number">5.4.1</span> Predictor selection</h3>
-<pre class="r"><code># library(devtools)
-# install_github(&quot;rsquaredacademy/olsrr&quot;, ref = &quot;develop&quot;)
-
-# gamma_slab_max &lt;- GLODAP %&gt;%
+<pre class="r"><code># gamma_slab_max &lt;- GLODAP %&gt;%
 #   filter(basin == &quot;Atlantic&quot;, era == &quot;new_era&quot;) %&gt;% 
 #   group_by(gamma_slab) %&gt;% 
 #   count() %&gt;% 
@@ -2109,9 +2140,10 @@ lm_best &lt;- all_lm_stats_wide %&gt;%
 
 kable(lm_best) %&gt;%
   add_header_above() %&gt;%
+  kable_styling() %&gt;%
   scroll_box(width = &quot;100%&quot;, height = &quot;400px&quot;)</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table>
+<table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
@@ -2149,16 +2181,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-7.550032
+7.233104
 </td>
 <td style="text-align:right;">
-6.771520
+6.424028
 </td>
 <td style="text-align:right;">
-2.907022
+2.765130
 </td>
 <td style="text-align:right;">
-17.228574
+16.422262
 </td>
 </tr>
 <tr>
@@ -2172,16 +2204,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.555904
+7.238731
 </td>
 <td style="text-align:right;">
-6.867631
+6.515207
 </td>
 <td style="text-align:right;">
-2.808769
+2.671672
 </td>
 <td style="text-align:right;">
-17.232305
+16.425610
 </td>
 </tr>
 <tr>
@@ -2195,16 +2227,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.664601
+7.342865
 </td>
 <td style="text-align:right;">
-6.711614
+6.367196
 </td>
 <td style="text-align:right;">
-2.875001
+2.734672
 </td>
 <td style="text-align:right;">
-17.251217
+16.444733
 </td>
 </tr>
 <tr>
@@ -2218,16 +2250,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-7.685800
+7.363174
 </td>
 <td style="text-align:right;">
-6.594802
+6.256378
 </td>
 <td style="text-align:right;">
-3.022896
+2.875347
 </td>
 <td style="text-align:right;">
-17.303497
+16.494899
 </td>
 </tr>
 <tr>
@@ -2241,16 +2273,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-7.563621
+7.246124
 </td>
 <td style="text-align:right;">
-6.750918
+6.404483
 </td>
 <td style="text-align:right;">
-2.999168
+2.852778
 </td>
 <td style="text-align:right;">
-17.313707
+16.503385
 </td>
 </tr>
 <tr>
@@ -2264,16 +2296,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-7.595077
+7.276259
 </td>
 <td style="text-align:right;">
-6.714718
+6.370141
 </td>
 <td style="text-align:right;">
-3.004446
+2.857798
 </td>
 <td style="text-align:right;">
-17.314241
+16.504198
 </td>
 </tr>
 <tr>
@@ -2287,16 +2319,16 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.723956
+7.399728
 </td>
 <td style="text-align:right;">
-6.731337
+6.385907
 </td>
 <td style="text-align:right;">
-2.885566
+2.744721
 </td>
 <td style="text-align:right;">
-17.340859
+16.530356
 </td>
 </tr>
 <tr>
@@ -2310,16 +2342,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-7.364808
+7.055656
 </td>
 <td style="text-align:right;">
-7.157006
+6.789733
 </td>
 <td style="text-align:right;">
-2.908741
+2.766765
 </td>
 <td style="text-align:right;">
-17.430556
+16.612154
 </td>
 </tr>
 <tr>
@@ -2333,16 +2365,16 @@ Atlantic
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.927230
+7.594469
 </td>
 <td style="text-align:right;">
-6.665964
+6.323889
 </td>
 <td style="text-align:right;">
-2.850838
+2.711688
 </td>
 <td style="text-align:right;">
-17.444033
+16.630046
 </td>
 </tr>
 <tr>
@@ -2356,16 +2388,16 @@ Atlantic
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.972526
+7.637863
 </td>
 <td style="text-align:right;">
-6.621701
+6.281897
 </td>
 <td style="text-align:right;">
-2.857167
+2.717708
 </td>
 <td style="text-align:right;">
-17.451394
+16.637469
 </td>
 </tr>
 <tr>
@@ -2379,16 +2411,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.398902
+5.363576
 </td>
 <td style="text-align:right;">
-6.820094
+6.786906
 </td>
 <td style="text-align:right;">
-3.177855
+3.120245
 </td>
 <td style="text-align:right;">
-15.396850
+15.270727
 </td>
 </tr>
 <tr>
@@ -2402,39 +2434,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.473276
+5.437464
 </td>
 <td style="text-align:right;">
-6.852965
+6.819617
 </td>
 <td style="text-align:right;">
-3.239556
+3.180828
 </td>
 <td style="text-align:right;">
-15.565797
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(26,26.5]
-</td>
-<td style="text-align:left;">
-temperature aou oxygen phosphate
-</td>
-<td style="text-align:right;">
-5.486390
-</td>
-<td style="text-align:right;">
-6.865377
-</td>
-<td style="text-align:right;">
-3.229777
-</td>
-<td style="text-align:right;">
-15.581544
+15.437908
 </td>
 </tr>
 <tr>
@@ -2448,16 +2457,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-5.489555
+5.453636
 </td>
 <td style="text-align:right;">
-6.870833
+6.837398
 </td>
 <td style="text-align:right;">
-3.223062
+3.164633
 </td>
 <td style="text-align:right;">
-15.583450
+15.455668
 </td>
 </tr>
 <tr>
@@ -2471,16 +2480,39 @@ Atlantic
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.430215
+5.394684
 </td>
 <td style="text-align:right;">
-6.925799
+6.892097
 </td>
 <td style="text-align:right;">
-3.236708
+3.178032
 </td>
 <td style="text-align:right;">
-15.592722
+15.464813
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(26,26.5]
+</td>
+<td style="text-align:left;">
+temperature aou oxygen phosphate
+</td>
+<td style="text-align:right;">
+5.456491
+</td>
+<td style="text-align:right;">
+6.837548
+</td>
+<td style="text-align:right;">
+3.181060
+</td>
+<td style="text-align:right;">
+15.475099
 </td>
 </tr>
 <tr>
@@ -2494,16 +2526,16 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.466691
+5.430921
 </td>
 <td style="text-align:right;">
-6.989282
+6.955271
 </td>
 <td style="text-align:right;">
-3.252681
+3.193715
 </td>
 <td style="text-align:right;">
-15.708654
+15.579907
 </td>
 </tr>
 <tr>
@@ -2517,16 +2549,16 @@ Atlantic
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.479773
+5.443918
 </td>
 <td style="text-align:right;">
-6.975226
+6.941283
 </td>
 <td style="text-align:right;">
-3.255250
+3.196238
 </td>
 <td style="text-align:right;">
-15.710249
+15.581438
 </td>
 </tr>
 <tr>
@@ -2540,16 +2572,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.468046
+5.432267
 </td>
 <td style="text-align:right;">
-7.007722
+6.973621
 </td>
 <td style="text-align:right;">
-3.241181
+3.182424
 </td>
 <td style="text-align:right;">
-15.716949
+15.588312
 </td>
 </tr>
 <tr>
@@ -2563,16 +2595,16 @@ Atlantic
 aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.497291
+5.467333
 </td>
 <td style="text-align:right;">
-6.971558
+6.943299
 </td>
 <td style="text-align:right;">
-3.255337
+3.206234
 </td>
 <td style="text-align:right;">
-15.724186
+15.616865
 </td>
 </tr>
 <tr>
@@ -2586,16 +2618,16 @@ Atlantic
 aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.468817
+5.439014
 </td>
 <td style="text-align:right;">
-7.030064
+7.001567
 </td>
 <td style="text-align:right;">
-3.233732
+3.184956
 </td>
 <td style="text-align:right;">
-15.732613
+15.625537
 </td>
 </tr>
 <tr>
@@ -2609,16 +2641,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.240758
+5.219837
 </td>
 <td style="text-align:right;">
-5.609909
+5.589322
 </td>
 <td style="text-align:right;">
-3.750329
+3.704869
 </td>
 <td style="text-align:right;">
-14.600997
+14.514028
 </td>
 </tr>
 <tr>
@@ -2632,16 +2664,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-5.176759
+5.156094
 </td>
 <td style="text-align:right;">
-5.604248
+5.583682
 </td>
 <td style="text-align:right;">
-3.852231
+3.805535
 </td>
 <td style="text-align:right;">
-14.633238
+14.545311
 </td>
 </tr>
 <tr>
@@ -2655,16 +2687,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.166316
+5.145692
 </td>
 <td style="text-align:right;">
-5.586914
+5.566412
 </td>
 <td style="text-align:right;">
-3.885304
+3.838208
 </td>
 <td style="text-align:right;">
-14.638534
+14.550311
 </td>
 </tr>
 <tr>
@@ -2678,16 +2710,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.232327
+5.211439
 </td>
 <td style="text-align:right;">
-5.605703
+5.585131
 </td>
 <td style="text-align:right;">
-3.804564
+3.758446
 </td>
 <td style="text-align:right;">
-14.642593
+14.555017
 </td>
 </tr>
 <tr>
@@ -2701,16 +2733,16 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.249031
+5.228077
 </td>
 <td style="text-align:right;">
-5.624508
+5.603867
 </td>
 <td style="text-align:right;">
-3.776055
+3.730283
 </td>
 <td style="text-align:right;">
-14.649594
+14.562227
 </td>
 </tr>
 <tr>
@@ -2724,16 +2756,16 @@ Atlantic
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.284625
+5.263529
 </td>
 <td style="text-align:right;">
-5.664621
+5.643834
 </td>
 <td style="text-align:right;">
-3.745130
+3.699733
 </td>
 <td style="text-align:right;">
-14.694376
+14.607095
 </td>
 </tr>
 <tr>
@@ -2747,16 +2779,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.222671
+5.201822
 </td>
 <td style="text-align:right;">
-5.661309
+5.640533
 </td>
 <td style="text-align:right;">
-3.816031
+3.769774
 </td>
 <td style="text-align:right;">
-14.700011
+14.612130
 </td>
 </tr>
 <tr>
@@ -2770,16 +2802,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-5.380562
+5.359083
 </td>
 <td style="text-align:right;">
-5.581626
+5.561143
 </td>
 <td style="text-align:right;">
-3.749224
+3.703778
 </td>
 <td style="text-align:right;">
-14.711413
+14.624004
 </td>
 </tr>
 <tr>
@@ -2793,16 +2825,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.419142
+5.397508
 </td>
 <td style="text-align:right;">
-5.601064
+5.580509
 </td>
 <td style="text-align:right;">
-3.691602
+3.646853
 </td>
 <td style="text-align:right;">
-14.711807
+14.624871
 </td>
 </tr>
 <tr>
@@ -2813,19 +2845,19 @@ Atlantic
 (26.5,26.75]
 </td>
 <td style="text-align:left;">
-temperature oxygen silicate phosphate
+salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.247199
+5.369848
 </td>
 <td style="text-align:right;">
-5.629379
+5.574805
 </td>
 <td style="text-align:right;">
-3.881238
+3.734403
 </td>
 <td style="text-align:right;">
-14.757816
+14.679057
 </td>
 </tr>
 <tr>
@@ -2839,16 +2871,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.700839
+4.683879
 </td>
 <td style="text-align:right;">
-5.102621
+5.085526
 </td>
 <td style="text-align:right;">
-3.644433
+3.618918
 </td>
 <td style="text-align:right;">
-13.447893
+13.388323
 </td>
 </tr>
 <tr>
@@ -2862,16 +2894,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.720364
+4.703334
 </td>
 <td style="text-align:right;">
-5.111618
+5.094493
 </td>
 <td style="text-align:right;">
-3.655405
+3.629813
 </td>
 <td style="text-align:right;">
-13.487387
+13.427639
 </td>
 </tr>
 <tr>
@@ -2885,16 +2917,16 @@ Atlantic
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.746831
+4.729705
 </td>
 <td style="text-align:right;">
-5.164122
+5.146821
 </td>
 <td style="text-align:right;">
-3.644079
+3.618566
 </td>
 <td style="text-align:right;">
-13.555032
+13.495093
 </td>
 </tr>
 <tr>
@@ -2908,16 +2940,62 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.751633
+4.734490
 </td>
 <td style="text-align:right;">
-5.151702
+5.134443
 </td>
 <td style="text-align:right;">
-3.658999
+3.633381
 </td>
 <td style="text-align:right;">
-13.562333
+13.502314
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(26.75,27]
+</td>
+<td style="text-align:left;">
+salinity temperature aou phosphate phosphate_star
+</td>
+<td style="text-align:right;">
+4.749608
+</td>
+<td style="text-align:right;">
+5.152628
+</td>
+<td style="text-align:right;">
+3.629477
+</td>
+<td style="text-align:right;">
+13.531713
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(26.75,27]
+</td>
+<td style="text-align:left;">
+salinity temperature aou oxygen phosphate
+</td>
+<td style="text-align:right;">
+4.742004
+</td>
+<td style="text-align:right;">
+5.170997
+</td>
+<td style="text-align:right;">
+3.622653
+</td>
+<td style="text-align:right;">
+13.535654
 </td>
 </tr>
 <tr>
@@ -2931,62 +3009,16 @@ Atlantic
 salinity temperature oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.756606
+4.742309
 </td>
 <td style="text-align:right;">
-5.185535
+5.171062
 </td>
 <td style="text-align:right;">
-3.644426
+3.623176
 </td>
 <td style="text-align:right;">
-13.586567
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(26.75,27]
-</td>
-<td style="text-align:left;">
-salinity temperature aou phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-4.766806
-</td>
-<td style="text-align:right;">
-5.169948
-</td>
-<td style="text-align:right;">
-3.655067
-</td>
-<td style="text-align:right;">
-13.591822
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(26.75,27]
-</td>
-<td style="text-align:left;">
-salinity temperature aou oxygen phosphate
-</td>
-<td style="text-align:right;">
-4.759175
-</td>
-<td style="text-align:right;">
-5.188378
-</td>
-<td style="text-align:right;">
-3.648195
-</td>
-<td style="text-align:right;">
-13.595748
+13.536547
 </td>
 </tr>
 <tr>
@@ -3000,16 +3032,39 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.778898
+4.761655
 </td>
 <td style="text-align:right;">
-5.158062
+5.140782
 </td>
 <td style="text-align:right;">
-3.673369
+3.647651
 </td>
 <td style="text-align:right;">
-13.610329
+13.550089
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(26.75,27]
+</td>
+<td style="text-align:left;">
+temperature aou oxygen phosphate phosphate_star
+</td>
+<td style="text-align:right;">
+4.757625
+</td>
+<td style="text-align:right;">
+5.161932
+</td>
+<td style="text-align:right;">
+3.641829
+</td>
+<td style="text-align:right;">
+13.561385
 </td>
 </tr>
 <tr>
@@ -3023,39 +3078,16 @@ Atlantic
 salinity temperature aou phosphate
 </td>
 <td style="text-align:right;">
-4.772399
+4.758055
 </td>
 <td style="text-align:right;">
-5.187778
+5.173299
 </td>
 <td style="text-align:right;">
-3.655341
+3.634027
 </td>
 <td style="text-align:right;">
-13.615519
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(26.75,27]
-</td>
-<td style="text-align:left;">
-temperature oxygen phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-4.776784
-</td>
-<td style="text-align:right;">
-5.176718
-</td>
-<td style="text-align:right;">
-3.666207
-</td>
-<td style="text-align:right;">
-13.619709
+13.565381
 </td>
 </tr>
 <tr>
@@ -3069,16 +3101,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.161665
+5.150199
 </td>
 <td style="text-align:right;">
-4.932551
+4.920376
 </td>
 <td style="text-align:right;">
-4.442953
+4.425074
 </td>
 <td style="text-align:right;">
-14.537169
+14.495649
 </td>
 </tr>
 <tr>
@@ -3092,16 +3124,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.167431
+5.155952
 </td>
 <td style="text-align:right;">
-4.967836
+4.955575
 </td>
 <td style="text-align:right;">
-4.503975
+4.485850
 </td>
 <td style="text-align:right;">
-14.639242
+14.597377
 </td>
 </tr>
 <tr>
@@ -3115,16 +3147,16 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.212668
+5.201088
 </td>
 <td style="text-align:right;">
-4.968566
+4.956303
 </td>
 <td style="text-align:right;">
-4.466086
+4.448113
 </td>
 <td style="text-align:right;">
-14.647320
+14.605505
 </td>
 </tr>
 <tr>
@@ -3138,16 +3170,16 @@ Atlantic
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.216685
+5.205096
 </td>
 <td style="text-align:right;">
-4.956480
+4.944247
 </td>
 <td style="text-align:right;">
-4.519716
+4.501528
 </td>
 <td style="text-align:right;">
-14.692881
+14.650871
 </td>
 </tr>
 <tr>
@@ -3161,16 +3193,16 @@ Atlantic
 temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.252997
+5.243274
 </td>
 <td style="text-align:right;">
-4.985629
+4.975377
 </td>
 <td style="text-align:right;">
-4.522532
+4.507371
 </td>
 <td style="text-align:right;">
-14.761158
+14.726023
 </td>
 </tr>
 <tr>
@@ -3184,16 +3216,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.037028
+5.025839
 </td>
 <td style="text-align:right;">
-5.054919
+5.042443
 </td>
 <td style="text-align:right;">
-4.684679
+4.665827
 </td>
 <td style="text-align:right;">
-14.776625
+14.734108
 </td>
 </tr>
 <tr>
@@ -3207,39 +3239,16 @@ Atlantic
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.271525
+5.259815
 </td>
 <td style="text-align:right;">
-4.989480
+4.977166
 </td>
 <td style="text-align:right;">
-4.537378
+4.519119
 </td>
 <td style="text-align:right;">
-14.798384
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(27,27.25]
-</td>
-<td style="text-align:left;">
-temperature aou phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-5.303862
-</td>
-<td style="text-align:right;">
-5.020880
-</td>
-<td style="text-align:right;">
-4.541566
-</td>
-<td style="text-align:right;">
-14.866309
+14.756100
 </td>
 </tr>
 <tr>
@@ -3253,16 +3262,39 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-5.098029
+5.086705
 </td>
 <td style="text-align:right;">
-5.076633
+5.064103
 </td>
 <td style="text-align:right;">
-4.695591
+4.676695
 </td>
 <td style="text-align:right;">
-14.870253
+14.827503
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(27,27.25]
+</td>
+<td style="text-align:left;">
+temperature aou phosphate phosphate_star
+</td>
+<td style="text-align:right;">
+5.294046
+</td>
+<td style="text-align:right;">
+5.010556
+</td>
+<td style="text-align:right;">
+4.526341
+</td>
+<td style="text-align:right;">
+14.830943
 </td>
 </tr>
 <tr>
@@ -3276,16 +3308,16 @@ Atlantic
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.352014
+5.340125
 </td>
 <td style="text-align:right;">
-5.059370
+5.046883
 </td>
 <td style="text-align:right;">
-4.495158
+4.477069
 </td>
 <td style="text-align:right;">
-14.906542
+14.864077
 </td>
 </tr>
 <tr>
@@ -3299,16 +3331,16 @@ Atlantic
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.791667
+4.784084
 </td>
 <td style="text-align:right;">
-4.333156
+4.325538
 </td>
 <td style="text-align:right;">
-3.676373
+3.661619
 </td>
 <td style="text-align:right;">
-12.801197
+12.771241
 </td>
 </tr>
 <tr>
@@ -3322,16 +3354,16 @@ Atlantic
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.838668
+4.831010
 </td>
 <td style="text-align:right;">
-4.343075
+4.335440
 </td>
 <td style="text-align:right;">
-3.686797
+3.672001
 </td>
 <td style="text-align:right;">
-12.868540
+12.838450
 </td>
 </tr>
 <tr>
@@ -3345,16 +3377,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.786170
+4.778594
 </td>
 <td style="text-align:right;">
-4.494719
+4.486817
 </td>
 <td style="text-align:right;">
-3.677703
+3.662943
 </td>
 <td style="text-align:right;">
-12.958592
+12.928355
 </td>
 </tr>
 <tr>
@@ -3368,16 +3400,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.823221
+4.815587
 </td>
 <td style="text-align:right;">
-4.472507
+4.464644
 </td>
 <td style="text-align:right;">
-3.666240
+3.651525
 </td>
 <td style="text-align:right;">
-12.961967
+12.931757
 </td>
 </tr>
 <tr>
@@ -3391,16 +3423,16 @@ Atlantic
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.917704
+4.909921
 </td>
 <td style="text-align:right;">
-4.388202
+4.380487
 </td>
 <td style="text-align:right;">
-3.708759
+3.693874
 </td>
 <td style="text-align:right;">
-13.014665
+12.984282
 </td>
 </tr>
 <tr>
@@ -3414,16 +3446,16 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.871895
+4.864184
 </td>
 <td style="text-align:right;">
-4.473997
+4.466131
 </td>
 <td style="text-align:right;">
-3.669087
+3.654361
 </td>
 <td style="text-align:right;">
-13.014978
+12.984677
 </td>
 </tr>
 <tr>
@@ -3437,16 +3469,16 @@ Atlantic
 temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.842862
+4.836475
 </td>
 <td style="text-align:right;">
-4.499322
+4.492731
 </td>
 <td style="text-align:right;">
-3.676179
+3.663888
 </td>
 <td style="text-align:right;">
-13.018363
+12.993095
 </td>
 </tr>
 <tr>
@@ -3460,16 +3492,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.697611
+4.690176
 </td>
 <td style="text-align:right;">
-4.383332
+4.375626
 </td>
 <td style="text-align:right;">
-3.973641
+3.957693
 </td>
 <td style="text-align:right;">
-13.054584
+13.023495
 </td>
 </tr>
 <tr>
@@ -3483,16 +3515,16 @@ Atlantic
 temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.884029
+4.877589
 </td>
 <td style="text-align:right;">
-4.493451
+4.486869
 </td>
 <td style="text-align:right;">
-3.685046
+3.672726
 </td>
 <td style="text-align:right;">
-13.062527
+13.037184
 </td>
 </tr>
 <tr>
@@ -3506,16 +3538,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.793404
+4.785817
 </td>
 <td style="text-align:right;">
-4.377980
+4.370284
 </td>
 <td style="text-align:right;">
-3.904077
+3.888408
 </td>
 <td style="text-align:right;">
-13.075461
+13.044510
 </td>
 </tr>
 <tr>
@@ -3529,16 +3561,16 @@ Atlantic
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.185887
+4.178798
 </td>
 <td style="text-align:right;">
-4.412801
+4.405750
 </td>
 <td style="text-align:right;">
-4.246096
+4.230958
 </td>
 <td style="text-align:right;">
-12.844783
+12.815506
 </td>
 </tr>
 <tr>
@@ -3552,16 +3584,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.178326
+4.171250
 </td>
 <td style="text-align:right;">
-4.426235
+4.419163
 </td>
 <td style="text-align:right;">
-4.249013
+4.233864
 </td>
 <td style="text-align:right;">
-12.853573
+12.824277
 </td>
 </tr>
 <tr>
@@ -3575,16 +3607,16 @@ Atlantic
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.205006
+4.197885
 </td>
 <td style="text-align:right;">
-4.406567
+4.399525
 </td>
 <td style="text-align:right;">
-4.245546
+4.230411
 </td>
 <td style="text-align:right;">
-12.857119
+12.827821
 </td>
 </tr>
 <tr>
@@ -3598,16 +3630,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.186857
+4.179766
 </td>
 <td style="text-align:right;">
-4.401439
+4.394406
 </td>
 <td style="text-align:right;">
-4.339828
+4.324356
 </td>
 <td style="text-align:right;">
-12.928123
+12.898528
 </td>
 </tr>
 <tr>
@@ -3621,16 +3653,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.198828
+4.191718
 </td>
 <td style="text-align:right;">
-4.390050
+4.383035
 </td>
 <td style="text-align:right;">
-4.341896
+4.326416
 </td>
 <td style="text-align:right;">
-12.930774
+12.901169
 </td>
 </tr>
 <tr>
@@ -3644,16 +3676,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.217394
+4.210252
 </td>
 <td style="text-align:right;">
-4.383141
+4.376137
 </td>
 <td style="text-align:right;">
-4.343233
+4.327749
 </td>
 <td style="text-align:right;">
-12.943768
+12.914138
 </td>
 </tr>
 <tr>
@@ -3667,16 +3699,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.190870
+4.183773
 </td>
 <td style="text-align:right;">
-4.416432
+4.409376
 </td>
 <td style="text-align:right;">
-4.359590
+4.344048
 </td>
 <td style="text-align:right;">
-12.966892
+12.937196
 </td>
 </tr>
 <tr>
@@ -3690,16 +3722,16 @@ Atlantic
 temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.203461
+4.197530
 </td>
 <td style="text-align:right;">
-4.424183
+4.418293
 </td>
 <td style="text-align:right;">
-4.358381
+4.345437
 </td>
 <td style="text-align:right;">
-12.986025
+12.961259
 </td>
 </tr>
 <tr>
@@ -3713,16 +3745,16 @@ Atlantic
 temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.192710
+4.186794
 </td>
 <td style="text-align:right;">
-4.437685
+4.431777
 </td>
 <td style="text-align:right;">
-4.356988
+4.344048
 </td>
 <td style="text-align:right;">
-12.987383
+12.962619
 </td>
 </tr>
 <tr>
@@ -3736,16 +3768,16 @@ Atlantic
 aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.225288
+4.219326
 </td>
 <td style="text-align:right;">
-4.418562
+4.412680
 </td>
 <td style="text-align:right;">
-4.361887
+4.348932
 </td>
 <td style="text-align:right;">
-13.005737
+12.980938
 </td>
 </tr>
 <tr>
@@ -3759,16 +3791,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.168058
+4.155188
 </td>
 <td style="text-align:right;">
-4.353189
+4.343314
 </td>
 <td style="text-align:right;">
-6.053166
+6.006423
 </td>
 <td style="text-align:right;">
-14.574414
+14.504925
 </td>
 </tr>
 <tr>
@@ -3782,16 +3814,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.165381
+4.152518
 </td>
 <td style="text-align:right;">
-4.355295
+4.345415
 </td>
 <td style="text-align:right;">
-6.065030
+6.018195
 </td>
 <td style="text-align:right;">
-14.585705
+14.516128
 </td>
 </tr>
 <tr>
@@ -3805,16 +3837,16 @@ Atlantic
 salinity oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.161696
+4.148845
 </td>
 <td style="text-align:right;">
-4.351171
+4.341301
 </td>
 <td style="text-align:right;">
-6.074471
+6.027563
 </td>
 <td style="text-align:right;">
-14.587338
+14.517708
 </td>
 </tr>
 <tr>
@@ -3828,39 +3860,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.169532
+4.156656
 </td>
 <td style="text-align:right;">
-4.358867
+4.348980
 </td>
 <td style="text-align:right;">
-6.066866
+6.020016
 </td>
 <td style="text-align:right;">
-14.595265
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(27.75,27.85]
-</td>
-<td style="text-align:left;">
-salinity oxygen silicate phosphate
-</td>
-<td style="text-align:right;">
-4.175760
-</td>
-<td style="text-align:right;">
-4.355209
-</td>
-<td style="text-align:right;">
-6.066925
-</td>
-<td style="text-align:right;">
-14.597894
+14.525652
 </td>
 </tr>
 <tr>
@@ -3874,16 +3883,39 @@ Atlantic
 salinity aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.154027
+4.141199
 </td>
 <td style="text-align:right;">
-4.369592
+4.359680
 </td>
 <td style="text-align:right;">
-6.083707
+6.036728
 </td>
 <td style="text-align:right;">
-14.607327
+14.537608
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(27.75,27.85]
+</td>
+<td style="text-align:left;">
+salinity oxygen silicate phosphate
+</td>
+<td style="text-align:right;">
+4.165017
+</td>
+<td style="text-align:right;">
+4.346978
+</td>
+<td style="text-align:right;">
+6.027909
+</td>
+<td style="text-align:right;">
+14.539904
 </td>
 </tr>
 <tr>
@@ -3897,16 +3929,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.234760
+4.221683
 </td>
 <td style="text-align:right;">
-4.360738
+4.350846
 </td>
 <td style="text-align:right;">
-6.019074
+5.972594
 </td>
 <td style="text-align:right;">
-14.614572
+14.545123
 </td>
 </tr>
 <tr>
@@ -3920,16 +3952,16 @@ Atlantic
 salinity aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.169620
+4.158893
 </td>
 <td style="text-align:right;">
-4.372567
+4.364303
 </td>
 <td style="text-align:right;">
-6.075928
+6.036854
 </td>
 <td style="text-align:right;">
-14.618115
+14.560050
 </td>
 </tr>
 <tr>
@@ -3943,16 +3975,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.226789
+4.213737
 </td>
 <td style="text-align:right;">
-4.390927
+4.380967
 </td>
 <td style="text-align:right;">
-6.070519
+6.023641
 </td>
 <td style="text-align:right;">
-14.688235
+14.618345
 </td>
 </tr>
 <tr>
@@ -3963,19 +3995,19 @@ Atlantic
 (27.75,27.85]
 </td>
 <td style="text-align:left;">
-temperature oxygen silicate phosphate
+temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.239318
+4.216149
 </td>
 <td style="text-align:right;">
-4.392435
+4.387433
 </td>
 <td style="text-align:right;">
-6.063037
+6.025514
 </td>
 <td style="text-align:right;">
-14.694791
+14.629095
 </td>
 </tr>
 <tr>
@@ -3989,16 +4021,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.732923
+3.727889
 </td>
 <td style="text-align:right;">
-4.177309
+4.172888
 </td>
 <td style="text-align:right;">
-4.860175
+4.843709
 </td>
 <td style="text-align:right;">
-12.770407
+12.744486
 </td>
 </tr>
 <tr>
@@ -4012,16 +4044,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.744942
+3.739892
 </td>
 <td style="text-align:right;">
-4.192348
+4.187911
 </td>
 <td style="text-align:right;">
-4.896203
+4.879615
 </td>
 <td style="text-align:right;">
-12.833494
+12.807418
 </td>
 </tr>
 <tr>
@@ -4035,16 +4067,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.755635
+3.750570
 </td>
 <td style="text-align:right;">
-4.198180
+4.193737
 </td>
 <td style="text-align:right;">
-4.895804
+4.879217
 </td>
 <td style="text-align:right;">
-12.849618
+12.823524
 </td>
 </tr>
 <tr>
@@ -4058,16 +4090,16 @@ Atlantic
 salinity temperature silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.888017
+3.882773
 </td>
 <td style="text-align:right;">
-4.294810
+4.290264
 </td>
 <td style="text-align:right;">
-4.865756
+4.849271
 </td>
 <td style="text-align:right;">
-13.048583
+13.022309
 </td>
 </tr>
 <tr>
@@ -4081,16 +4113,16 @@ Atlantic
 salinity temperature silicate phosphate
 </td>
 <td style="text-align:right;">
-3.985278
+3.980800
 </td>
 <td style="text-align:right;">
-4.294058
+4.290271
 </td>
 <td style="text-align:right;">
-4.893764
+4.879951
 </td>
 <td style="text-align:right;">
-13.173101
+13.151023
 </td>
 </tr>
 <tr>
@@ -4104,16 +4136,16 @@ Atlantic
 salinity oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.776816
+3.771723
 </td>
 <td style="text-align:right;">
-4.417345
+4.412669
 </td>
 <td style="text-align:right;">
-5.337748
+5.319665
 </td>
 <td style="text-align:right;">
-13.531909
+13.504056
 </td>
 </tr>
 <tr>
@@ -4127,16 +4159,16 @@ Atlantic
 salinity oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.792489
+3.788228
 </td>
 <td style="text-align:right;">
-4.446363
+4.442442
 </td>
 <td style="text-align:right;">
-5.347920
+5.332826
 </td>
 <td style="text-align:right;">
-13.586772
+13.563495
 </td>
 </tr>
 <tr>
@@ -4150,16 +4182,16 @@ Atlantic
 salinity aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.901297
+3.896036
 </td>
 <td style="text-align:right;">
-4.605133
+4.600259
 </td>
 <td style="text-align:right;">
-5.397079
+5.378794
 </td>
 <td style="text-align:right;">
-13.903510
+13.875090
 </td>
 </tr>
 <tr>
@@ -4173,16 +4205,16 @@ Atlantic
 salinity aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.928915
+3.924500
 </td>
 <td style="text-align:right;">
-4.620493
+4.616418
 </td>
 <td style="text-align:right;">
-5.398662
+5.383425
 </td>
 <td style="text-align:right;">
-13.948070
+13.924343
 </td>
 </tr>
 <tr>
@@ -4196,16 +4228,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.220447
+4.214755
 </td>
 <td style="text-align:right;">
-4.854776
+4.849638
 </td>
 <td style="text-align:right;">
-5.281030
+5.263138
 </td>
 <td style="text-align:right;">
-14.356253
+14.327531
 </td>
 </tr>
 <tr>
@@ -4219,16 +4251,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.491509
+3.487770
 </td>
 <td style="text-align:right;">
-4.421199
+4.416875
 </td>
 <td style="text-align:right;">
-4.834271
+4.820087
 </td>
 <td style="text-align:right;">
-12.746979
+12.724732
 </td>
 </tr>
 <tr>
@@ -4242,16 +4274,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.502652
+3.498901
 </td>
 <td style="text-align:right;">
-4.440039
+4.435697
 </td>
 <td style="text-align:right;">
-4.925007
+4.910557
 </td>
 <td style="text-align:right;">
-12.867698
+12.845155
 </td>
 </tr>
 <tr>
@@ -4265,16 +4297,16 @@ Atlantic
 salinity oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.574223
+3.570396
 </td>
 <td style="text-align:right;">
-4.437967
+4.433626
 </td>
 <td style="text-align:right;">
-4.889537
+4.875191
 </td>
 <td style="text-align:right;">
-12.901727
+12.879213
 </td>
 </tr>
 <tr>
@@ -4288,16 +4320,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.511879
+3.508118
 </td>
 <td style="text-align:right;">
-4.463824
+4.459459
 </td>
 <td style="text-align:right;">
-4.946326
+4.931814
 </td>
 <td style="text-align:right;">
-12.922029
+12.899391
 </td>
 </tr>
 <tr>
@@ -4311,16 +4343,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.759362
+3.755336
 </td>
 <td style="text-align:right;">
-4.427020
+4.422690
 </td>
 <td style="text-align:right;">
-4.813202
+4.799080
 </td>
 <td style="text-align:right;">
-12.999584
+12.977106
 </td>
 </tr>
 <tr>
@@ -4334,16 +4366,16 @@ Atlantic
 salinity oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.573876
+3.570686
 </td>
 <td style="text-align:right;">
-4.456456
+4.452825
 </td>
 <td style="text-align:right;">
-5.032910
+5.020607
 </td>
 <td style="text-align:right;">
-13.063241
+13.044118
 </td>
 </tr>
 <tr>
@@ -4357,16 +4389,16 @@ Atlantic
 salinity temperature silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.759834
+3.755808
 </td>
 <td style="text-align:right;">
-4.834214
+4.829486
 </td>
 <td style="text-align:right;">
-4.876222
+4.861915
 </td>
 <td style="text-align:right;">
-13.470270
+13.447209
 </td>
 </tr>
 <tr>
@@ -4380,16 +4412,16 @@ Atlantic
 salinity aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.754669
+3.750648
 </td>
 <td style="text-align:right;">
-4.611817
+4.607306
 </td>
 <td style="text-align:right;">
-5.115337
+5.100329
 </td>
 <td style="text-align:right;">
-13.481823
+13.458284
 </td>
 </tr>
 <tr>
@@ -4403,16 +4435,16 @@ Atlantic
 salinity aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.761144
+3.757788
 </td>
 <td style="text-align:right;">
-4.620662
+4.616897
 </td>
 <td style="text-align:right;">
-5.203632
+5.190912
 </td>
 <td style="text-align:right;">
-13.585438
+13.565597
 </td>
 </tr>
 <tr>
@@ -4426,16 +4458,16 @@ Atlantic
 salinity temperature silicate phosphate
 </td>
 <td style="text-align:right;">
-3.761367
+3.758011
 </td>
 <td style="text-align:right;">
-4.839175
+4.835232
 </td>
 <td style="text-align:right;">
-5.001186
+4.988962
 </td>
 <td style="text-align:right;">
-13.601729
+13.582204
 </td>
 </tr>
 <tr>
@@ -4449,16 +4481,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.545352
+3.539499
 </td>
 <td style="text-align:right;">
-4.433851
+4.427871
 </td>
 <td style="text-align:right;">
-4.158947
+4.144983
 </td>
 <td style="text-align:right;">
-12.138150
+12.112354
 </td>
 </tr>
 <tr>
@@ -4472,16 +4504,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.649215
+3.643192
 </td>
 <td style="text-align:right;">
-4.392830
+4.386906
 </td>
 <td style="text-align:right;">
-4.131012
+4.117142
 </td>
 <td style="text-align:right;">
-12.173058
+12.147240
 </td>
 </tr>
 <tr>
@@ -4495,16 +4527,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.743507
+3.737328
 </td>
 <td style="text-align:right;">
-4.523442
+4.517341
 </td>
 <td style="text-align:right;">
-4.200993
+4.186888
 </td>
 <td style="text-align:right;">
-12.467942
+12.441557
 </td>
 </tr>
 <tr>
@@ -4518,16 +4550,16 @@ Atlantic
 temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.743081
+3.737933
 </td>
 <td style="text-align:right;">
-4.525913
+4.520827
 </td>
 <td style="text-align:right;">
-4.240053
+4.228193
 </td>
 <td style="text-align:right;">
-12.509047
+12.486953
 </td>
 </tr>
 <tr>
@@ -4541,16 +4573,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.536949
+3.531111
 </td>
 <td style="text-align:right;">
-4.636055
+4.629803
 </td>
 <td style="text-align:right;">
-4.430167
+4.415293
 </td>
 <td style="text-align:right;">
-12.603171
+12.576206
 </td>
 </tr>
 <tr>
@@ -4564,16 +4596,16 @@ Atlantic
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.560188
+3.554312
 </td>
 <td style="text-align:right;">
-4.690514
+4.684188
 </td>
 <td style="text-align:right;">
-4.370928
+4.356252
 </td>
 <td style="text-align:right;">
-12.621630
+12.594752
 </td>
 </tr>
 <tr>
@@ -4587,16 +4619,16 @@ Atlantic
 salinity oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.554289
+3.548422
 </td>
 <td style="text-align:right;">
-4.637502
+4.631248
 </td>
 <td style="text-align:right;">
-4.462456
+4.447473
 </td>
 <td style="text-align:right;">
-12.654247
+12.627143
 </td>
 </tr>
 <tr>
@@ -4610,16 +4642,16 @@ Atlantic
 salinity temperature oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.561977
+3.557078
 </td>
 <td style="text-align:right;">
-4.693855
+4.688580
 </td>
 <td style="text-align:right;">
-4.428587
+4.416199
 </td>
 <td style="text-align:right;">
-12.684419
+12.661857
 </td>
 </tr>
 <tr>
@@ -4633,16 +4665,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.559984
+3.554108
 </td>
 <td style="text-align:right;">
-4.641394
+4.635135
 </td>
 <td style="text-align:right;">
-4.544670
+4.529410
 </td>
 <td style="text-align:right;">
-12.746048
+12.718653
 </td>
 </tr>
 <tr>
@@ -4656,16 +4688,16 @@ Atlantic
 salinity oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.560364
+3.555467
 </td>
 <td style="text-align:right;">
-4.653964
+4.648734
 </td>
 <td style="text-align:right;">
-4.546951
+4.534233
 </td>
 <td style="text-align:right;">
-12.761279
+12.738434
 </td>
 </tr>
 <tr>
@@ -4679,16 +4711,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.356432
+3.349308
 </td>
 <td style="text-align:right;">
-4.015828
+4.010613
 </td>
 <td style="text-align:right;">
-4.280343
+4.254217
 </td>
 <td style="text-align:right;">
-11.652603
+11.614139
 </td>
 </tr>
 <tr>
@@ -4702,16 +4734,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.447729
+3.440411
 </td>
 <td style="text-align:right;">
-4.014031
+4.008819
 </td>
 <td style="text-align:right;">
-4.237500
+4.211635
 </td>
 <td style="text-align:right;">
-11.699260
+11.660865
 </td>
 </tr>
 <tr>
@@ -4725,16 +4757,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.444103
+3.436793
 </td>
 <td style="text-align:right;">
-4.031144
+4.025910
 </td>
 <td style="text-align:right;">
-4.241949
+4.216057
 </td>
 <td style="text-align:right;">
-11.717195
+11.678759
 </td>
 </tr>
 <tr>
@@ -4748,16 +4780,16 @@ Atlantic
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.437575
+3.430280
 </td>
 <td style="text-align:right;">
-4.046317
+4.041063
 </td>
 <td style="text-align:right;">
-4.269423
+4.243363
 </td>
 <td style="text-align:right;">
-11.753315
+11.714706
 </td>
 </tr>
 <tr>
@@ -4771,16 +4803,16 @@ Atlantic
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.456089
+3.448754
 </td>
 <td style="text-align:right;">
-4.027679
+4.022449
 </td>
 <td style="text-align:right;">
-4.269927
+4.243864
 </td>
 <td style="text-align:right;">
-11.753694
+11.715066
 </td>
 </tr>
 <tr>
@@ -4794,16 +4826,16 @@ Atlantic
 salinity temperature oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.455636
+3.449525
 </td>
 <td style="text-align:right;">
-4.026808
+4.022451
 </td>
 <td style="text-align:right;">
-4.276537
+4.254795
 </td>
 <td style="text-align:right;">
-11.758980
+11.726772
 </td>
 </tr>
 <tr>
@@ -4817,16 +4849,16 @@ Atlantic
 temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.443160
+3.437071
 </td>
 <td style="text-align:right;">
-4.045470
+4.041093
 </td>
 <td style="text-align:right;">
-4.277023
+4.255279
 </td>
 <td style="text-align:right;">
-11.765652
+11.733443
 </td>
 </tr>
 <tr>
@@ -4840,16 +4872,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.398068
+3.390856
 </td>
 <td style="text-align:right;">
-4.082989
+4.077688
 </td>
 <td style="text-align:right;">
-4.345586
+4.319062
 </td>
 <td style="text-align:right;">
-11.826644
+11.787606
 </td>
 </tr>
 <tr>
@@ -4863,16 +4895,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.549823
+3.542289
 </td>
 <td style="text-align:right;">
-4.050865
+4.045605
 </td>
 <td style="text-align:right;">
-4.237309
+4.211446
 </td>
 <td style="text-align:right;">
-11.837997
+11.799340
 </td>
 </tr>
 <tr>
@@ -4886,16 +4918,16 @@ Atlantic
 temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.548580
+3.542305
 </td>
 <td style="text-align:right;">
-4.051012
+4.046629
 </td>
 <td style="text-align:right;">
-4.241648
+4.220084
 </td>
 <td style="text-align:right;">
-11.841240
+11.809018
 </td>
 </tr>
 <tr>
@@ -4909,16 +4941,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.748410
+3.719163
 </td>
 <td style="text-align:right;">
-3.693581
+3.681081
 </td>
 <td style="text-align:right;">
-2.869059
+2.836143
 </td>
 <td style="text-align:right;">
-10.311050
+10.236388
 </td>
 </tr>
 <tr>
@@ -4932,16 +4964,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.769170
+3.739761
 </td>
 <td style="text-align:right;">
-3.711344
+3.698785
 </td>
 <td style="text-align:right;">
-2.867968
+2.835064
 </td>
 <td style="text-align:right;">
-10.348482
+10.273611
 </td>
 </tr>
 <tr>
@@ -4955,16 +4987,16 @@ Atlantic
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.756555
+3.727244
 </td>
 <td style="text-align:right;">
-3.722669
+3.710071
 </td>
 <td style="text-align:right;">
-2.869992
+2.837066
 </td>
 <td style="text-align:right;">
-10.349216
+10.274381
 </td>
 </tr>
 <tr>
@@ -4978,16 +5010,16 @@ Atlantic
 salinity temperature aou phosphate
 </td>
 <td style="text-align:right;">
-3.764604
+3.740143
 </td>
 <td style="text-align:right;">
-3.721539
+3.711047
 </td>
 <td style="text-align:right;">
-2.865151
+2.837785
 </td>
 <td style="text-align:right;">
-10.351295
+10.288975
 </td>
 </tr>
 <tr>
@@ -5001,16 +5033,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.743118
+3.713912
 </td>
 <td style="text-align:right;">
-3.700224
+3.687702
 </td>
 <td style="text-align:right;">
-2.947865
+2.914045
 </td>
 <td style="text-align:right;">
-10.391206
+10.315659
 </td>
 </tr>
 <tr>
@@ -5024,16 +5056,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.804879
+3.775192
 </td>
 <td style="text-align:right;">
-3.747416
+3.734735
 </td>
 <td style="text-align:right;">
-2.869334
+2.836415
 </td>
 <td style="text-align:right;">
-10.421630
+10.346342
 </td>
 </tr>
 <tr>
@@ -5047,16 +5079,16 @@ Atlantic
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.734710
+3.705570
 </td>
 <td style="text-align:right;">
-3.700811
+3.688287
 </td>
 <td style="text-align:right;">
-2.989692
+2.955392
 </td>
 <td style="text-align:right;">
-10.425213
+10.349249
 </td>
 </tr>
 <tr>
@@ -5070,16 +5102,39 @@ Atlantic
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.743542
+3.719217
 </td>
 <td style="text-align:right;">
-3.698807
+3.688379
 </td>
 <td style="text-align:right;">
-2.984987
+2.956477
 </td>
 <td style="text-align:right;">
-10.427336
+10.364073
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(28.15,28.2]
+</td>
+<td style="text-align:left;">
+salinity temperature oxygen phosphate phosphate_star
+</td>
+<td style="text-align:right;">
+3.777038
+</td>
+<td style="text-align:right;">
+3.755312
+</td>
+<td style="text-align:right;">
+2.835243
+</td>
+<td style="text-align:right;">
+10.367592
 </td>
 </tr>
 <tr>
@@ -5093,39 +5148,16 @@ Atlantic
 salinity temperature oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.809201
+3.784450
 </td>
 <td style="text-align:right;">
-3.767791
+3.757169
 </td>
 <td style="text-align:right;">
-2.864056
+2.836701
 </td>
 <td style="text-align:right;">
-10.441049
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(28.15,28.2]
-</td>
-<td style="text-align:left;">
-salinity temperature oxygen phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-3.806740
-</td>
-<td style="text-align:right;">
-3.768063
-</td>
-<td style="text-align:right;">
-2.868148
-</td>
-<td style="text-align:right;">
-10.442951
+10.378319
 </td>
 </tr>
 <tr>
@@ -5139,16 +5171,16 @@ Atlantic
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.352629
+3.337999
 </td>
 <td style="text-align:right;">
-3.148306
+3.143686
 </td>
 <td style="text-align:right;">
-2.699303
+2.685083
 </td>
 <td style="text-align:right;">
-9.200238
+9.166769
 </td>
 </tr>
 <tr>
@@ -5162,16 +5194,16 @@ Atlantic
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.373039
+3.358320
 </td>
 <td style="text-align:right;">
-3.149671
+3.145049
 </td>
 <td style="text-align:right;">
-2.782183
+2.767527
 </td>
 <td style="text-align:right;">
-9.304892
+9.270896
 </td>
 </tr>
 <tr>
@@ -5185,16 +5217,16 @@ Atlantic
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.440574
+3.425561
 </td>
 <td style="text-align:right;">
-3.153620
+3.148993
 </td>
 <td style="text-align:right;">
-2.710786
+2.696506
 </td>
 <td style="text-align:right;">
-9.304980
+9.271059
 </td>
 </tr>
 <tr>
@@ -5208,16 +5240,16 @@ Atlantic
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.391320
+3.376522
 </td>
 <td style="text-align:right;">
-3.145670
+3.141055
 </td>
 <td style="text-align:right;">
-2.778563
+2.763926
 </td>
 <td style="text-align:right;">
-9.315553
+9.281502
 </td>
 </tr>
 <tr>
@@ -5231,16 +5263,16 @@ Atlantic
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.390428
+3.378104
 </td>
 <td style="text-align:right;">
-3.148922
+3.145072
 </td>
 <td style="text-align:right;">
-2.779740
+2.767543
 </td>
 <td style="text-align:right;">
-9.319090
+9.290719
 </td>
 </tr>
 <tr>
@@ -5254,16 +5286,16 @@ Atlantic
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.486242
+3.471029
 </td>
 <td style="text-align:right;">
-3.148366
+3.143746
 </td>
 <td style="text-align:right;">
-2.707038
+2.692778
 </td>
 <td style="text-align:right;">
-9.341645
+9.307553
 </td>
 </tr>
 <tr>
@@ -5277,16 +5309,16 @@ Atlantic
 salinity temperature aou phosphate
 </td>
 <td style="text-align:right;">
-3.485391
+3.472721
 </td>
 <td style="text-align:right;">
-3.153036
+3.149181
 </td>
 <td style="text-align:right;">
-2.712623
+2.700720
 </td>
 <td style="text-align:right;">
-9.351050
+9.322622
 </td>
 </tr>
 <tr>
@@ -5300,16 +5332,16 @@ Atlantic
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.517692
+3.502342
 </td>
 <td style="text-align:right;">
-3.148889
+3.144268
 </td>
 <td style="text-align:right;">
-2.690216
+2.676045
 </td>
 <td style="text-align:right;">
-9.356797
+9.322655
 </td>
 </tr>
 <tr>
@@ -5323,16 +5355,16 @@ Atlantic
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.376309
+3.361576
 </td>
 <td style="text-align:right;">
-3.283318
+3.278500
 </td>
 <td style="text-align:right;">
-2.750970
+2.736479
 </td>
 <td style="text-align:right;">
-9.410597
+9.376555
 </td>
 </tr>
 <tr>
@@ -5346,16 +5378,16 @@ Atlantic
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.398888
+3.384056
 </td>
 <td style="text-align:right;">
-3.288530
+3.283704
 </td>
 <td style="text-align:right;">
-2.765985
+2.751414
 </td>
 <td style="text-align:right;">
-9.453403
+9.419175
 </td>
 </tr>
 <tr>
@@ -5369,16 +5401,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-11.679808
+11.652593
 </td>
 <td style="text-align:right;">
-6.878602
+6.872465
 </td>
 <td style="text-align:right;">
-4.752588
+4.747255
 </td>
 <td style="text-align:right;">
-23.310998
+23.272313
 </td>
 </tr>
 <tr>
@@ -5392,16 +5424,16 @@ Indo-Pacific
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-11.752734
+11.725349
 </td>
 <td style="text-align:right;">
-6.855660
+6.849543
 </td>
 <td style="text-align:right;">
-4.973656
+4.968075
 </td>
 <td style="text-align:right;">
-23.582050
+23.542968
 </td>
 </tr>
 <tr>
@@ -5415,16 +5447,16 @@ Indo-Pacific
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-11.798821
+11.771329
 </td>
 <td style="text-align:right;">
-6.889825
+6.883678
 </td>
 <td style="text-align:right;">
-5.120278
+5.114532
 </td>
 <td style="text-align:right;">
-23.808924
+23.769539
 </td>
 </tr>
 <tr>
@@ -5438,16 +5470,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-11.618898
+11.591824
 </td>
 <td style="text-align:right;">
-7.152857
+7.146475
 </td>
 <td style="text-align:right;">
-5.651239
+5.644898
 </td>
 <td style="text-align:right;">
-24.422994
+24.383197
 </td>
 </tr>
 <tr>
@@ -5461,16 +5493,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-11.689896
+11.662658
 </td>
 <td style="text-align:right;">
-7.227921
+7.221472
 </td>
 <td style="text-align:right;">
-5.855383
+5.848813
 </td>
 <td style="text-align:right;">
-24.773201
+24.732943
 </td>
 </tr>
 <tr>
@@ -5484,16 +5516,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate_star
 </td>
 <td style="text-align:right;">
-12.561723
+12.532453
 </td>
 <td style="text-align:right;">
-7.054391
+7.048097
 </td>
 <td style="text-align:right;">
-5.311407
+5.305447
 </td>
 <td style="text-align:right;">
-24.927521
+24.885997
 </td>
 </tr>
 <tr>
@@ -5507,16 +5539,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-11.728485
+11.701156
 </td>
 <td style="text-align:right;">
-7.276577
+7.270085
 </td>
 <td style="text-align:right;">
-5.956206
+5.949523
 </td>
 <td style="text-align:right;">
-24.961268
+24.920764
 </td>
 </tr>
 <tr>
@@ -5530,16 +5562,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate_star
 </td>
 <td style="text-align:right;">
-12.593593
+12.564249
 </td>
 <td style="text-align:right;">
-7.061270
+7.054970
 </td>
 <td style="text-align:right;">
-5.325542
+5.319566
 </td>
 <td style="text-align:right;">
-24.980405
+24.938785
 </td>
 </tr>
 <tr>
@@ -5553,16 +5585,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-12.622435
+12.593023
 </td>
 <td style="text-align:right;">
-7.099325
+7.092992
 </td>
 <td style="text-align:right;">
-5.276542
+5.270621
 </td>
 <td style="text-align:right;">
-24.998302
+24.956636
 </td>
 </tr>
 <tr>
@@ -5576,16 +5608,16 @@ Indo-Pacific
 salinity temperature oxygen phosphate_star
 </td>
 <td style="text-align:right;">
-12.598682
+12.574223
 </td>
 <td style="text-align:right;">
-7.060238
+7.054989
 </td>
 <td style="text-align:right;">
-5.387041
+5.382004
 </td>
 <td style="text-align:right;">
-25.045961
+25.011216
 </td>
 </tr>
 <tr>
@@ -5599,16 +5631,16 @@ Indo-Pacific
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.902856
+7.884709
 </td>
 <td style="text-align:right;">
-5.135704
+5.129658
 </td>
 <td style="text-align:right;">
-3.999979
+3.991869
 </td>
 <td style="text-align:right;">
-17.038540
+17.006237
 </td>
 </tr>
 <tr>
@@ -5622,16 +5654,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.843708
+7.825697
 </td>
 <td style="text-align:right;">
-5.238508
+5.232341
 </td>
 <td style="text-align:right;">
-3.958904
+3.950876
 </td>
 <td style="text-align:right;">
-17.041120
+17.008915
 </td>
 </tr>
 <tr>
@@ -5645,16 +5677,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-7.881970
+7.863872
 </td>
 <td style="text-align:right;">
-5.222068
+5.215921
 </td>
 <td style="text-align:right;">
-3.944595
+3.936596
 </td>
 <td style="text-align:right;">
-17.048633
+17.016389
 </td>
 </tr>
 <tr>
@@ -5668,16 +5700,16 @@ Indo-Pacific
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-7.944019
+7.925778
 </td>
 <td style="text-align:right;">
-5.128035
+5.121998
 </td>
 <td style="text-align:right;">
-4.032629
+4.024452
 </td>
 <td style="text-align:right;">
-17.104682
+17.072228
 </td>
 </tr>
 <tr>
@@ -5691,16 +5723,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-7.954072
+7.935808
 </td>
 <td style="text-align:right;">
-5.177186
+5.171091
 </td>
 <td style="text-align:right;">
-4.022052
+4.013896
 </td>
 <td style="text-align:right;">
-17.153309
+17.120795
 </td>
 </tr>
 <tr>
@@ -5714,16 +5746,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-7.991307
+7.972957
 </td>
 <td style="text-align:right;">
-5.185264
+5.179160
 </td>
 <td style="text-align:right;">
-4.061772
+4.053536
 </td>
 <td style="text-align:right;">
-17.238343
+17.205653
 </td>
 </tr>
 <tr>
@@ -5737,16 +5769,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-7.988096
+7.969753
 </td>
 <td style="text-align:right;">
-5.317348
+5.311089
 </td>
 <td style="text-align:right;">
-4.257663
+4.249030
 </td>
 <td style="text-align:right;">
-17.563107
+17.529872
 </td>
 </tr>
 <tr>
@@ -5760,16 +5792,16 @@ Indo-Pacific
 salinity temperature aou phosphate
 </td>
 <td style="text-align:right;">
-8.036145
+8.020770
 </td>
 <td style="text-align:right;">
-5.329061
+5.323834
 </td>
 <td style="text-align:right;">
-4.298276
+4.291014
 </td>
 <td style="text-align:right;">
-17.663482
+17.635619
 </td>
 </tr>
 <tr>
@@ -5783,16 +5815,16 @@ Indo-Pacific
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-7.985356
+7.970078
 </td>
 <td style="text-align:right;">
-5.419577
+5.414262
 </td>
 <td style="text-align:right;">
-4.261810
+4.254610
 </td>
 <td style="text-align:right;">
-17.666743
+17.638950
 </td>
 </tr>
 <tr>
@@ -5806,16 +5838,16 @@ Indo-Pacific
 salinity temperature oxygen phosphate
 </td>
 <td style="text-align:right;">
-8.066654
+8.051221
 </td>
 <td style="text-align:right;">
-5.317791
+5.312575
 </td>
 <td style="text-align:right;">
-4.318958
+4.311661
 </td>
 <td style="text-align:right;">
-17.703403
+17.675457
 </td>
 </tr>
 <tr>
@@ -5829,16 +5861,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.655385
+5.643270
 </td>
 <td style="text-align:right;">
-5.447647
+5.441635
 </td>
 <td style="text-align:right;">
-4.212061
+4.201758
 </td>
 <td style="text-align:right;">
-15.315092
+15.286663
 </td>
 </tr>
 <tr>
@@ -5852,16 +5884,16 @@ Indo-Pacific
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.757033
+5.744701
 </td>
 <td style="text-align:right;">
-5.487665
+5.481610
 </td>
 <td style="text-align:right;">
-4.295824
+4.285316
 </td>
 <td style="text-align:right;">
-15.540522
+15.511626
 </td>
 </tr>
 <tr>
@@ -5875,16 +5907,16 @@ Indo-Pacific
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.822489
+5.810017
 </td>
 <td style="text-align:right;">
-5.528282
+5.522181
 </td>
 <td style="text-align:right;">
-4.358296
+4.347636
 </td>
 <td style="text-align:right;">
-15.709068
+15.679835
 </td>
 </tr>
 <tr>
@@ -5898,16 +5930,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.918262
+5.905584
 </td>
 <td style="text-align:right;">
-5.708633
+5.702333
 </td>
 <td style="text-align:right;">
-4.573728
+4.562541
 </td>
 <td style="text-align:right;">
-16.200623
+16.170458
 </td>
 </tr>
 <tr>
@@ -5921,16 +5953,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-5.999784
+5.986932
 </td>
 <td style="text-align:right;">
-5.715331
+5.709024
 </td>
 <td style="text-align:right;">
-4.631003
+4.619676
 </td>
 <td style="text-align:right;">
-16.346119
+16.315632
 </td>
 </tr>
 <tr>
@@ -5944,16 +5976,16 @@ Indo-Pacific
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-5.999648
+5.988940
 </td>
 <td style="text-align:right;">
-5.714319
+5.709065
 </td>
 <td style="text-align:right;">
-4.645399
+4.635932
 </td>
 <td style="text-align:right;">
-16.359366
+16.333936
 </td>
 </tr>
 <tr>
@@ -5967,16 +5999,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-6.061567
+6.048583
 </td>
 <td style="text-align:right;">
-5.725621
+5.719303
 </td>
 <td style="text-align:right;">
-4.672385
+4.660956
 </td>
 <td style="text-align:right;">
-16.459573
+16.428842
 </td>
 </tr>
 <tr>
@@ -5990,16 +6022,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.151174
+6.137998
 </td>
 <td style="text-align:right;">
-5.859143
+5.852677
 </td>
 <td style="text-align:right;">
-4.461169
+4.450257
 </td>
 <td style="text-align:right;">
-16.471486
+16.440932
 </td>
 </tr>
 <tr>
@@ -6013,16 +6045,16 @@ Indo-Pacific
 salinity temperature aou phosphate
 </td>
 <td style="text-align:right;">
-6.085950
+6.075088
 </td>
 <td style="text-align:right;">
-5.751212
+5.745923
 </td>
 <td style="text-align:right;">
-4.726262
+4.716630
 </td>
 <td style="text-align:right;">
-16.563424
+16.537642
 </td>
 </tr>
 <tr>
@@ -6036,16 +6068,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.128002
+6.114876
 </td>
 <td style="text-align:right;">
-5.856886
+5.850423
 </td>
 <td style="text-align:right;">
-4.584253
+4.573040
 </td>
 <td style="text-align:right;">
-16.569141
+16.538338
 </td>
 </tr>
 <tr>
@@ -6059,16 +6091,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.520099
+6.512153
 </td>
 <td style="text-align:right;">
-4.911494
+4.907927
 </td>
 <td style="text-align:right;">
-4.035967
+4.030310
 </td>
 <td style="text-align:right;">
-15.467561
+15.450390
 </td>
 </tr>
 <tr>
@@ -6082,16 +6114,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.570269
+6.562262
 </td>
 <td style="text-align:right;">
-4.960798
+4.957194
 </td>
 <td style="text-align:right;">
-4.051595
+4.045916
 </td>
 <td style="text-align:right;">
-15.582662
+15.565373
 </td>
 </tr>
 <tr>
@@ -6105,16 +6137,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.527727
+6.519772
 </td>
 <td style="text-align:right;">
-4.962537
+4.958933
 </td>
 <td style="text-align:right;">
-4.160584
+4.154753
 </td>
 <td style="text-align:right;">
-15.650849
+15.633458
 </td>
 </tr>
 <tr>
@@ -6128,16 +6160,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-6.533602
+6.525639
 </td>
 <td style="text-align:right;">
-4.986911
+4.983289
 </td>
 <td style="text-align:right;">
-4.227738
+4.221813
 </td>
 <td style="text-align:right;">
-15.748251
+15.730741
 </td>
 </tr>
 <tr>
@@ -6151,16 +6183,16 @@ Indo-Pacific
 aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.605000
+6.598292
 </td>
 <td style="text-align:right;">
-5.009974
+5.006942
 </td>
 <td style="text-align:right;">
-4.159642
+4.154785
 </td>
 <td style="text-align:right;">
-15.774616
+15.760018
 </td>
 </tr>
 <tr>
@@ -6174,16 +6206,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-6.557687
+6.549695
 </td>
 <td style="text-align:right;">
-5.023923
+5.020274
 </td>
 <td style="text-align:right;">
-4.255122
+4.249159
 </td>
 <td style="text-align:right;">
-15.836732
+15.819127
 </td>
 </tr>
 <tr>
@@ -6197,16 +6229,16 @@ Indo-Pacific
 temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-6.559604
+6.552943
 </td>
 <td style="text-align:right;">
-5.023885
+5.020844
 </td>
 <td style="text-align:right;">
-4.267899
+4.262915
 </td>
 <td style="text-align:right;">
-15.851387
+15.836701
 </td>
 </tr>
 <tr>
@@ -6220,16 +6252,16 @@ Indo-Pacific
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.560470
+6.552474
 </td>
 <td style="text-align:right;">
-5.029899
+5.026245
 </td>
 <td style="text-align:right;">
-4.295971
+4.289949
 </td>
 <td style="text-align:right;">
-15.886339
+15.868669
 </td>
 </tr>
 <tr>
@@ -6243,16 +6275,16 @@ Indo-Pacific
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.597774
+6.589732
 </td>
 <td style="text-align:right;">
-5.095217
+5.091516
 </td>
 <td style="text-align:right;">
-4.390161
+4.384008
 </td>
 <td style="text-align:right;">
-16.083151
+16.065256
 </td>
 </tr>
 <tr>
@@ -6266,16 +6298,16 @@ Indo-Pacific
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.685734
+6.677586
 </td>
 <td style="text-align:right;">
-5.139998
+5.136264
 </td>
 <td style="text-align:right;">
-4.258430
+4.252461
 </td>
 <td style="text-align:right;">
-16.084162
+16.066312
 </td>
 </tr>
 <tr>
@@ -6289,16 +6321,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-6.065616
+6.057890
 </td>
 <td style="text-align:right;">
-4.535328
+4.532863
 </td>
 <td style="text-align:right;">
-4.052257
+4.048207
 </td>
 <td style="text-align:right;">
-14.653201
+14.638960
 </td>
 </tr>
 <tr>
@@ -6312,16 +6344,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-6.091714
+6.083955
 </td>
 <td style="text-align:right;">
-4.609945
+4.607439
 </td>
 <td style="text-align:right;">
-4.170312
+4.166144
 </td>
 <td style="text-align:right;">
-14.871971
+14.857539
 </td>
 </tr>
 <tr>
@@ -6335,16 +6367,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.121036
+6.113241
 </td>
 <td style="text-align:right;">
-4.650595
+4.648067
 </td>
 <td style="text-align:right;">
-4.167652
+4.163487
 </td>
 <td style="text-align:right;">
-14.939284
+14.924795
 </td>
 </tr>
 <tr>
@@ -6358,16 +6390,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-6.439912
+6.431710
 </td>
 <td style="text-align:right;">
-4.543484
+4.541014
 </td>
 <td style="text-align:right;">
-4.111556
+4.107446
 </td>
 <td style="text-align:right;">
-15.094952
+15.080171
 </td>
 </tr>
 <tr>
@@ -6381,16 +6413,16 @@ Indo-Pacific
 temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-6.122177
+6.115680
 </td>
 <td style="text-align:right;">
-4.749343
+4.747192
 </td>
 <td style="text-align:right;">
-4.308191
+4.304603
 </td>
 <td style="text-align:right;">
-15.179711
+15.167475
 </td>
 </tr>
 <tr>
@@ -6404,16 +6436,16 @@ Indo-Pacific
 salinity aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.517835
+6.509533
 </td>
 <td style="text-align:right;">
-4.547063
+4.544592
 </td>
 <td style="text-align:right;">
-4.125890
+4.121767
 </td>
 <td style="text-align:right;">
-15.190788
+15.175892
 </td>
 </tr>
 <tr>
@@ -6427,16 +6459,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-6.570996
+6.562627
 </td>
 <td style="text-align:right;">
-4.550858
+4.548385
 </td>
 <td style="text-align:right;">
-4.123600
+4.119478
 </td>
 <td style="text-align:right;">
-15.245454
+15.230490
 </td>
 </tr>
 <tr>
@@ -6450,16 +6482,16 @@ Indo-Pacific
 salinity aou silicate phosphate
 </td>
 <td style="text-align:right;">
-6.583865
+6.576878
 </td>
 <td style="text-align:right;">
-4.550790
+4.548729
 </td>
 <td style="text-align:right;">
-4.129562
+4.126122
 </td>
 <td style="text-align:right;">
-15.264217
+15.251729
 </td>
 </tr>
 <tr>
@@ -6473,16 +6505,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-6.439483
+6.431281
 </td>
 <td style="text-align:right;">
-4.711625
+4.709064
 </td>
 <td style="text-align:right;">
-4.178804
+4.174627
 </td>
 <td style="text-align:right;">
-15.329912
+15.314973
 </td>
 </tr>
 <tr>
@@ -6496,16 +6528,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-6.685272
+6.676758
 </td>
 <td style="text-align:right;">
-4.586264
+4.583771
 </td>
 <td style="text-align:right;">
-4.150925
+4.146776
 </td>
 <td style="text-align:right;">
-15.422461
+15.407305
 </td>
 </tr>
 <tr>
@@ -6519,16 +6551,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.841218
+4.835968
 </td>
 <td style="text-align:right;">
-3.916010
+3.913969
 </td>
 <td style="text-align:right;">
-3.530880
+3.527790
 </td>
 <td style="text-align:right;">
-12.288107
+12.277728
 </td>
 </tr>
 <tr>
@@ -6542,16 +6574,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.257220
+5.251519
 </td>
 <td style="text-align:right;">
-3.926327
+3.924282
 </td>
 <td style="text-align:right;">
-3.245921
+3.243081
 </td>
 <td style="text-align:right;">
-12.429469
+12.418882
 </td>
 </tr>
 <tr>
@@ -6565,16 +6597,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.868344
+4.863065
 </td>
 <td style="text-align:right;">
-4.086460
+4.084331
 </td>
 <td style="text-align:right;">
-3.650709
+3.647515
 </td>
 <td style="text-align:right;">
-12.605514
+12.594911
 </td>
 </tr>
 <tr>
@@ -6588,16 +6620,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.867472
+4.862194
 </td>
 <td style="text-align:right;">
-4.133336
+4.131183
 </td>
 <td style="text-align:right;">
-3.630354
+3.627177
 </td>
 <td style="text-align:right;">
-12.631162
+12.620554
 </td>
 </tr>
 <tr>
@@ -6611,16 +6643,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-5.584223
+5.578168
 </td>
 <td style="text-align:right;">
-3.947857
+3.945800
 </td>
 <td style="text-align:right;">
-3.249995
+3.247152
 </td>
 <td style="text-align:right;">
-12.782075
+12.771119
 </td>
 </tr>
 <tr>
@@ -6634,16 +6666,16 @@ Indo-Pacific
 temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.870920
+4.866519
 </td>
 <td style="text-align:right;">
-4.179279
+4.177465
 </td>
 <td style="text-align:right;">
-3.731984
+3.729263
 </td>
 <td style="text-align:right;">
-12.782184
+12.773247
 </td>
 </tr>
 <tr>
@@ -6657,16 +6689,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.207749
+5.202101
 </td>
 <td style="text-align:right;">
-4.191345
+4.189161
 </td>
 <td style="text-align:right;">
-3.567629
+3.564507
 </td>
 <td style="text-align:right;">
-12.966722
+12.955770
 </td>
 </tr>
 <tr>
@@ -6680,16 +6712,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-5.808036
+5.801738
 </td>
 <td style="text-align:right;">
-3.977963
+3.975890
 </td>
 <td style="text-align:right;">
-3.256766
+3.253916
 </td>
 <td style="text-align:right;">
-13.042765
+13.031545
 </td>
 </tr>
 <tr>
@@ -6703,16 +6735,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.236794
+5.231115
 </td>
 <td style="text-align:right;">
-4.181692
+4.179514
 </td>
 <td style="text-align:right;">
-3.682324
+3.679102
 </td>
 <td style="text-align:right;">
-13.100811
+13.089731
 </td>
 </tr>
 <tr>
@@ -6726,16 +6758,16 @@ Indo-Pacific
 salinity aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-5.932029
+5.925597
 </td>
 <td style="text-align:right;">
-3.954509
+3.952449
 </td>
 <td style="text-align:right;">
-3.242725
+3.239888
 </td>
 <td style="text-align:right;">
-13.129264
+13.117934
 </td>
 </tr>
 <tr>
@@ -6749,16 +6781,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.693275
+4.688828
 </td>
 <td style="text-align:right;">
-3.619777
+3.618102
 </td>
 <td style="text-align:right;">
-2.970406
+2.968149
 </td>
 <td style="text-align:right;">
-11.283458
+11.275080
 </td>
 </tr>
 <tr>
@@ -6772,16 +6804,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.862598
+4.857991
 </td>
 <td style="text-align:right;">
-3.617869
+3.616196
 </td>
 <td style="text-align:right;">
-2.968836
+2.966581
 </td>
 <td style="text-align:right;">
-11.449303
+11.440767
 </td>
 </tr>
 <tr>
@@ -6795,16 +6827,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.418208
+4.414022
 </td>
 <td style="text-align:right;">
-3.843072
+3.841294
 </td>
 <td style="text-align:right;">
-3.293463
+3.290961
 </td>
 <td style="text-align:right;">
-11.554743
+11.546277
 </td>
 </tr>
 <tr>
@@ -6818,16 +6850,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.991071
+4.986342
 </td>
 <td style="text-align:right;">
-3.620774
+3.619099
 </td>
 <td style="text-align:right;">
-2.968221
+2.965966
 </td>
 <td style="text-align:right;">
-11.580066
+11.571407
 </td>
 </tr>
 <tr>
@@ -6841,16 +6873,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.441116
+4.436909
 </td>
 <td style="text-align:right;">
-3.850782
+3.849001
 </td>
 <td style="text-align:right;">
-3.373574
+3.371011
 </td>
 <td style="text-align:right;">
-11.665472
+11.656920
 </td>
 </tr>
 <tr>
@@ -6864,16 +6896,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.440141
+4.435934
 </td>
 <td style="text-align:right;">
-3.913280
+3.911470
 </td>
 <td style="text-align:right;">
-3.407639
+3.405050
 </td>
 <td style="text-align:right;">
-11.761060
+11.752454
 </td>
 </tr>
 <tr>
@@ -6887,16 +6919,16 @@ Indo-Pacific
 temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.440675
+4.437170
 </td>
 <td style="text-align:right;">
-3.917782
+3.916272
 </td>
 <td style="text-align:right;">
-3.432064
+3.429891
 </td>
 <td style="text-align:right;">
-11.790521
+11.783332
 </td>
 </tr>
 <tr>
@@ -6910,16 +6942,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.694050
+4.689603
 </td>
 <td style="text-align:right;">
-3.837486
+3.835711
 </td>
 <td style="text-align:right;">
-3.337105
+3.334569
 </td>
 <td style="text-align:right;">
-11.868640
+11.859882
 </td>
 </tr>
 <tr>
@@ -6933,16 +6965,16 @@ Indo-Pacific
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.693475
+4.689770
 </td>
 <td style="text-align:right;">
-3.853069
+3.851583
 </td>
 <td style="text-align:right;">
-3.374671
+3.372534
 </td>
 <td style="text-align:right;">
-11.921214
+11.913887
 </td>
 </tr>
 <tr>
@@ -6956,16 +6988,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.698962
+4.694510
 </td>
 <td style="text-align:right;">
-3.841924
+3.840147
 </td>
 <td style="text-align:right;">
-3.411853
+3.409260
 </td>
 <td style="text-align:right;">
-11.952738
+11.943917
 </td>
 </tr>
 <tr>
@@ -6979,16 +7011,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.278143
+4.269432
 </td>
 <td style="text-align:right;">
-3.244478
+3.241574
 </td>
 <td style="text-align:right;">
-2.908123
+2.903747
 </td>
 <td style="text-align:right;">
-10.430744
+10.414753
 </td>
 </tr>
 <tr>
@@ -7002,16 +7034,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.317601
+4.308811
 </td>
 <td style="text-align:right;">
-3.261432
+3.258512
 </td>
 <td style="text-align:right;">
-2.869333
+2.865015
 </td>
 <td style="text-align:right;">
-10.448366
+10.432338
 </td>
 </tr>
 <tr>
@@ -7025,16 +7057,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.294410
+4.285667
 </td>
 <td style="text-align:right;">
-3.284752
+3.281811
 </td>
 <td style="text-align:right;">
-2.880603
+2.876268
 </td>
 <td style="text-align:right;">
-10.459765
+10.443746
 </td>
 </tr>
 <tr>
@@ -7048,16 +7080,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.270839
+4.262144
 </td>
 <td style="text-align:right;">
-3.323292
+3.320317
 </td>
 <td style="text-align:right;">
-2.901283
+2.896917
 </td>
 <td style="text-align:right;">
-10.495415
+10.479378
 </td>
 </tr>
 <tr>
@@ -7071,16 +7103,16 @@ Indo-Pacific
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.309318
+4.300544
 </td>
 <td style="text-align:right;">
-3.274149
+3.271219
 </td>
 <td style="text-align:right;">
-2.923397
+2.918998
 </td>
 <td style="text-align:right;">
-10.506865
+10.490761
 </td>
 </tr>
 <tr>
@@ -7094,16 +7126,39 @@ Indo-Pacific
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.335599
+4.326772
 </td>
 <td style="text-align:right;">
-3.257267
+3.254352
 </td>
 <td style="text-align:right;">
-2.915604
+2.911216
 </td>
 <td style="text-align:right;">
-10.508470
+10.492339
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indo-Pacific
+</td>
+<td style="text-align:left;">
+(27.75,27.85]
+</td>
+<td style="text-align:left;">
+aou oxygen silicate phosphate phosphate_star
+</td>
+<td style="text-align:right;">
+4.272132
+</td>
+<td style="text-align:right;">
+3.304968
+</td>
+<td style="text-align:right;">
+2.938537
+</td>
+<td style="text-align:right;">
+10.515636
 </td>
 </tr>
 <tr>
@@ -7117,39 +7172,16 @@ Indo-Pacific
 temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.335195
+4.327841
 </td>
 <td style="text-align:right;">
-3.273812
+3.271370
 </td>
 <td style="text-align:right;">
-2.920241
+2.916579
 </td>
 <td style="text-align:right;">
-10.529248
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Indo-Pacific
-</td>
-<td style="text-align:left;">
-(27.75,27.85]
-</td>
-<td style="text-align:left;">
-aou oxygen silicate phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-4.280847
-</td>
-<td style="text-align:right;">
-3.307929
-</td>
-<td style="text-align:right;">
-2.942966
-</td>
-<td style="text-align:right;">
-10.531741
+10.515790
 </td>
 </tr>
 <tr>
@@ -7163,16 +7195,16 @@ Indo-Pacific
 temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.309718
+4.302407
 </td>
 <td style="text-align:right;">
-3.295848
+3.293390
 </td>
 <td style="text-align:right;">
-2.928408
+2.924736
 </td>
 <td style="text-align:right;">
-10.533974
+10.520533
 </td>
 </tr>
 <tr>
@@ -7183,19 +7215,19 @@ Indo-Pacific
 (27.75,27.85]
 </td>
 <td style="text-align:left;">
-aou oxygen silicate phosphate
+temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.283486
+4.261066
 </td>
 <td style="text-align:right;">
-3.341136
+3.299139
 </td>
 <td style="text-align:right;">
-2.949406
+3.000201
 </td>
 <td style="text-align:right;">
-10.574027
+10.560406
 </td>
 </tr>
 <tr>
@@ -7209,16 +7241,16 @@ Indo-Pacific
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.309933
+4.303730
 </td>
 <td style="text-align:right;">
-2.966634
+2.964754
 </td>
 <td style="text-align:right;">
-2.892318
+2.889269
 </td>
 <td style="text-align:right;">
-10.168885
+10.157754
 </td>
 </tr>
 <tr>
@@ -7232,16 +7264,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.295068
+4.288887
 </td>
 <td style="text-align:right;">
-2.969242
+2.967361
 </td>
 <td style="text-align:right;">
-2.906313
+2.903249
 </td>
 <td style="text-align:right;">
-10.170623
+10.159496
 </td>
 </tr>
 <tr>
@@ -7255,16 +7287,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.327341
+4.321113
 </td>
 <td style="text-align:right;">
-2.981912
+2.980023
 </td>
 <td style="text-align:right;">
-2.881707
+2.878668
 </td>
 <td style="text-align:right;">
-10.190959
+10.179804
 </td>
 </tr>
 <tr>
@@ -7278,16 +7310,16 @@ Indo-Pacific
 temperature oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.329210
+4.322979
 </td>
 <td style="text-align:right;">
-2.973958
+2.972074
 </td>
 <td style="text-align:right;">
-2.889385
+2.886339
 </td>
 <td style="text-align:right;">
-10.192553
+10.181392
 </td>
 </tr>
 <tr>
@@ -7301,16 +7333,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.314291
+4.308082
 </td>
 <td style="text-align:right;">
-2.988913
+2.987020
 </td>
 <td style="text-align:right;">
-2.899495
+2.896438
 </td>
 <td style="text-align:right;">
-10.202700
+10.191540
 </td>
 </tr>
 <tr>
@@ -7324,16 +7356,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.321050
+4.314832
 </td>
 <td style="text-align:right;">
-2.984927
+2.983036
 </td>
 <td style="text-align:right;">
-2.899397
+2.896340
 </td>
 <td style="text-align:right;">
-10.205374
+10.194207
 </td>
 </tr>
 <tr>
@@ -7347,16 +7379,16 @@ Indo-Pacific
 salinity temperature oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.346842
+4.340586
 </td>
 <td style="text-align:right;">
-2.986146
+2.984254
 </td>
 <td style="text-align:right;">
-2.873721
+2.870691
 </td>
 <td style="text-align:right;">
-10.206708
+10.195531
 </td>
 </tr>
 <tr>
@@ -7370,16 +7402,16 @@ Indo-Pacific
 temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.331510
+4.326316
 </td>
 <td style="text-align:right;">
-2.984930
+2.983354
 </td>
 <td style="text-align:right;">
-2.901647
+2.899097
 </td>
 <td style="text-align:right;">
-10.218087
+10.208768
 </td>
 </tr>
 <tr>
@@ -7393,16 +7425,16 @@ Indo-Pacific
 aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.320048
+4.314868
 </td>
 <td style="text-align:right;">
-2.990887
+2.989308
 </td>
 <td style="text-align:right;">
-2.916180
+2.913618
 </td>
 <td style="text-align:right;">
-10.227115
+10.217794
 </td>
 </tr>
 <tr>
@@ -7413,19 +7445,19 @@ Indo-Pacific
 (27.85,27.95]
 </td>
 <td style="text-align:left;">
-temperature oxygen silicate phosphate
+salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.349862
+4.271402
 </td>
 <td style="text-align:right;">
-2.991024
+2.998071
 </td>
 <td style="text-align:right;">
-2.898898
+2.959829
 </td>
 <td style="text-align:right;">
-10.239784
+10.229302
 </td>
 </tr>
 <tr>
@@ -7439,16 +7471,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.384212
+4.380825
 </td>
 <td style="text-align:right;">
-2.853432
+2.852408
 </td>
 <td style="text-align:right;">
-3.080293
+3.078449
 </td>
 <td style="text-align:right;">
-10.317938
+10.311682
 </td>
 </tr>
 <tr>
@@ -7462,16 +7494,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.384878
+4.381490
 </td>
 <td style="text-align:right;">
-2.879670
+2.878636
 </td>
 <td style="text-align:right;">
-3.078285
+3.076442
 </td>
 <td style="text-align:right;">
-10.342833
+10.336569
 </td>
 </tr>
 <tr>
@@ -7485,16 +7517,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.401889
+4.398487
 </td>
 <td style="text-align:right;">
-2.861672
+2.860645
 </td>
 <td style="text-align:right;">
-3.081149
+3.079305
 </td>
 <td style="text-align:right;">
-10.344710
+10.338437
 </td>
 </tr>
 <tr>
@@ -7508,16 +7540,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.402695
+4.399293
 </td>
 <td style="text-align:right;">
-2.876874
+2.875842
 </td>
 <td style="text-align:right;">
-3.069677
+3.067839
 </td>
 <td style="text-align:right;">
-10.349246
+10.342974
 </td>
 </tr>
 <tr>
@@ -7531,16 +7563,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.402567
+4.399165
 </td>
 <td style="text-align:right;">
-2.872553
+2.871522
 </td>
 <td style="text-align:right;">
-3.078151
+3.076308
 </td>
 <td style="text-align:right;">
-10.353271
+10.346995
 </td>
 </tr>
 <tr>
@@ -7554,16 +7586,16 @@ Indo-Pacific
 aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.402619
+4.399784
 </td>
 <td style="text-align:right;">
-2.879546
+2.878684
 </td>
 <td style="text-align:right;">
-3.081615
+3.080077
 </td>
 <td style="text-align:right;">
-10.363779
+10.358546
 </td>
 </tr>
 <tr>
@@ -7577,16 +7609,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.385068
+4.381680
 </td>
 <td style="text-align:right;">
-2.873275
+2.872244
 </td>
 <td style="text-align:right;">
-3.111865
+3.110001
 </td>
 <td style="text-align:right;">
-10.370208
+10.363925
 </td>
 </tr>
 <tr>
@@ -7600,16 +7632,16 @@ Indo-Pacific
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.384682
+4.381858
 </td>
 <td style="text-align:right;">
-2.882738
+2.881876
 </td>
 <td style="text-align:right;">
-3.111732
+3.110180
 </td>
 <td style="text-align:right;">
-10.379152
+10.373914
 </td>
 </tr>
 <tr>
@@ -7623,16 +7655,16 @@ Indo-Pacific
 temperature aou silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.425899
+4.422479
 </td>
 <td style="text-align:right;">
-2.886963
+2.885926
 </td>
 <td style="text-align:right;">
-3.070568
+3.068729
 </td>
 <td style="text-align:right;">
-10.383430
+10.377135
 </td>
 </tr>
 <tr>
@@ -7646,16 +7678,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.405736
+4.402331
 </td>
 <td style="text-align:right;">
-2.869466
+2.868436
 </td>
 <td style="text-align:right;">
-3.114205
+3.112341
 </td>
 <td style="text-align:right;">
-10.389406
+10.383108
 </td>
 </tr>
 <tr>
@@ -7669,16 +7701,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.238669
+4.234297
 </td>
 <td style="text-align:right;">
-2.859254
+2.857998
 </td>
 <td style="text-align:right;">
-2.802493
+2.800839
 </td>
 <td style="text-align:right;">
-9.900416
+9.893134
 </td>
 </tr>
 <tr>
@@ -7692,16 +7724,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.235834
+4.231465
 </td>
 <td style="text-align:right;">
-2.844283
+2.843034
 </td>
 <td style="text-align:right;">
-2.830734
+2.829063
 </td>
 <td style="text-align:right;">
-9.910851
+9.903562
 </td>
 </tr>
 <tr>
@@ -7715,16 +7747,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.234966
+4.230598
 </td>
 <td style="text-align:right;">
-2.862710
+2.861453
 </td>
 <td style="text-align:right;">
-2.821564
+2.819898
 </td>
 <td style="text-align:right;">
-9.919240
+9.911949
 </td>
 </tr>
 <tr>
@@ -7738,16 +7770,16 @@ Indo-Pacific
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-4.237943
+4.234300
 </td>
 <td style="text-align:right;">
-2.865337
+2.864288
 </td>
 <td style="text-align:right;">
-2.833072
+2.831678
 </td>
 <td style="text-align:right;">
-9.936351
+9.930266
 </td>
 </tr>
 <tr>
@@ -7761,16 +7793,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.236934
+4.232564
 </td>
 <td style="text-align:right;">
-2.872678
+2.871417
 </td>
 <td style="text-align:right;">
-2.828336
+2.826666
 </td>
 <td style="text-align:right;">
-9.937948
+9.930646
 </td>
 </tr>
 <tr>
@@ -7784,16 +7816,16 @@ Indo-Pacific
 temperature aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.236481
+4.232111
 </td>
 <td style="text-align:right;">
-2.874074
+2.872811
 </td>
 <td style="text-align:right;">
-2.845730
+2.844050
 </td>
 <td style="text-align:right;">
-9.956285
+9.948973
 </td>
 </tr>
 <tr>
@@ -7807,16 +7839,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-4.276033
+4.271623
 </td>
 <td style="text-align:right;">
-2.849368
+2.848117
 </td>
 <td style="text-align:right;">
-2.840025
+2.838349
 </td>
 <td style="text-align:right;">
-9.965426
+9.958088
 </td>
 </tr>
 <tr>
@@ -7830,16 +7862,16 @@ Indo-Pacific
 aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-4.241251
+4.237606
 </td>
 <td style="text-align:right;">
-2.874233
+2.873181
 </td>
 <td style="text-align:right;">
-2.852937
+2.851534
 </td>
 <td style="text-align:right;">
-9.968421
+9.962321
 </td>
 </tr>
 <tr>
@@ -7853,16 +7885,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.236219
+4.231850
 </td>
 <td style="text-align:right;">
-2.882845
+2.881579
 </td>
 <td style="text-align:right;">
-2.865152
+2.863461
 </td>
 <td style="text-align:right;">
-9.984216
+9.976889
 </td>
 </tr>
 <tr>
@@ -7876,16 +7908,16 @@ Indo-Pacific
 aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-4.237200
+4.233558
 </td>
 <td style="text-align:right;">
-2.884407
+2.883351
 </td>
 <td style="text-align:right;">
-2.873998
+2.872585
 </td>
 <td style="text-align:right;">
-9.995605
+9.989494
 </td>
 </tr>
 <tr>
@@ -7899,16 +7931,16 @@ Indo-Pacific
 salinity aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.569638
+3.567664
 </td>
 <td style="text-align:right;">
-3.091921
+3.090883
 </td>
 <td style="text-align:right;">
-2.619994
+2.618254
 </td>
 <td style="text-align:right;">
-9.281553
+9.276801
 </td>
 </tr>
 <tr>
@@ -7922,16 +7954,16 @@ Indo-Pacific
 temperature aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.601736
+3.599744
 </td>
 <td style="text-align:right;">
-3.043659
+3.042637
 </td>
 <td style="text-align:right;">
-2.655522
+2.653758
 </td>
 <td style="text-align:right;">
-9.300917
+9.296139
 </td>
 </tr>
 <tr>
@@ -7945,16 +7977,16 @@ Indo-Pacific
 aou oxygen silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.635094
+3.633084
 </td>
 <td style="text-align:right;">
-2.983323
+2.982321
 </td>
 <td style="text-align:right;">
-2.699737
+2.697944
 </td>
 <td style="text-align:right;">
-9.318155
+9.313349
 </td>
 </tr>
 <tr>
@@ -7968,16 +8000,16 @@ Indo-Pacific
 aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-3.640649
+3.638971
 </td>
 <td style="text-align:right;">
-3.092133
+3.091267
 </td>
 <td style="text-align:right;">
-2.708284
+2.706785
 </td>
 <td style="text-align:right;">
-9.441066
+9.437024
 </td>
 </tr>
 <tr>
@@ -7991,16 +8023,16 @@ Indo-Pacific
 salinity aou oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.598957
+3.596967
 </td>
 <td style="text-align:right;">
-3.203759
+3.202683
 </td>
 <td style="text-align:right;">
-2.653400
+2.651638
 </td>
 <td style="text-align:right;">
-9.456116
+9.451287
 </td>
 </tr>
 <tr>
@@ -8014,16 +8046,16 @@ Indo-Pacific
 salinity temperature aou phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.539298
+3.537341
 </td>
 <td style="text-align:right;">
-3.235596
+3.234509
 </td>
 <td style="text-align:right;">
-2.703041
+2.701246
 </td>
 <td style="text-align:right;">
-9.477935
+9.473096
 </td>
 </tr>
 <tr>
@@ -8037,16 +8069,16 @@ Indo-Pacific
 salinity temperature aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.539485
+3.537528
 </td>
 <td style="text-align:right;">
-3.315882
+3.314768
 </td>
 <td style="text-align:right;">
-2.642918
+2.641163
 </td>
 <td style="text-align:right;">
-9.498285
+9.493459
 </td>
 </tr>
 <tr>
@@ -8060,16 +8092,16 @@ Indo-Pacific
 salinity aou oxygen phosphate
 </td>
 <td style="text-align:right;">
-3.598983
+3.597324
 </td>
 <td style="text-align:right;">
-3.321210
+3.320281
 </td>
 <td style="text-align:right;">
-2.654396
+2.652926
 </td>
 <td style="text-align:right;">
-9.574589
+9.570531
 </td>
 </tr>
 <tr>
@@ -8083,16 +8115,16 @@ Indo-Pacific
 salinity temperature aou silicate phosphate
 </td>
 <td style="text-align:right;">
-3.540788
+3.538830
 </td>
 <td style="text-align:right;">
-3.349413
+3.348288
 </td>
 <td style="text-align:right;">
-2.714054
+2.712252
 </td>
 <td style="text-align:right;">
-9.604255
+9.599369
 </td>
 </tr>
 <tr>
@@ -8106,24 +8138,108 @@ Indo-Pacific
 salinity temperature oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
-3.592795
+3.590808
 </td>
 <td style="text-align:right;">
-3.276352
+3.275252
 </td>
 <td style="text-align:right;">
-2.763254
+2.761419
 </td>
 <td style="text-align:right;">
-9.632402
+9.627479
 </td>
 </tr>
 </tbody>
 </table>
 </div>
+<pre class="r"><code>rm(n_predictors_max, n_predictors_min)</code></pre>
 <pre class="r"><code>lm_best &lt;- lm_best %&gt;% 
   mutate(lm_coeff = str_replace_all(predictors, &quot; &quot;, &quot; + &quot;),
-         lm)</code></pre>
+         lm_coeff = paste(&quot;Cstar ~&quot;, lm_coeff))
+
+# test_lm &lt;- lm_best %&gt;% 
+#   slice_min(rmse_sum) %&gt;% 
+#   select(lm_coeff) %&gt;% 
+#   pull()
+# 
+# class(test_lm)
+# test_lm_formula &lt;- as.formula(test_lm)
+# class(test_lm_formula)
+
+for (i_basin in unique(GLODAP$basin)) {
+  for (i_era in unique(GLODAP$era)) {
+    
+    # i_basin &lt;- unique(GLODAP$basin)[1]
+    # i_era   &lt;- unique(GLODAP$era)[1]
+    
+    print(i_basin) 
+    print(i_era  )
+    
+    GLODAP_basin_era &lt;- GLODAP %&gt;%
+      filter(basin == i_basin, era == i_era)
+
+    lm_best_basin &lt;- lm_best %&gt;%
+      filter(basin == i_basin)
+
+    for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
+
+      # i_gamma_slab &lt;- unique(GLODAP_basin_era$gamma_slab)[1]
+      print(i_gamma_slab)
+      
+      GLODAP_basin_era_slab &lt;- GLODAP_basin_era %&gt;% 
+        filter(gamma_slab == i_gamma_slab)
+      
+      lm_best_basin_slab &lt;- lm_best_basin %&gt;% 
+        filter(gamma_slab == i_gamma_slab)
+      
+      for (i_rmse_sum in unique(lm_best_basin_slab$rmse_sum)) {
+        
+        # i_rmse_sum &lt;- unique(lm_best_basin_slab$rmse_sum)[2]
+        
+        lm_best_single &lt;- lm_best %&gt;%
+          filter(rmse_sum == i_rmse_sum) %&gt;%
+          select(lm_coeff) %&gt;%
+          pull()
+        
+        lm_formula &lt;- as.formula(lm_best_single)
+        
+        model_single &lt;- lm(lm_formula, 
+              data = GLODAP_basin_era_slab)
+        
+        coefficients &lt;- tidy(model_single)
+        coefficients &lt;- coefficients %&gt;% 
+          mutate(basin = i_basin,
+                 era = i_era,
+                 gamma_slab = i_gamma_slab,
+                 model = lm_best_single,
+                 rmse = i_rmse_sum)
+        
+        print(lm_best_single)
+      
+      if (exists(&quot;all_lm&quot;)) {
+        all_lm &lt;- bind_rows(all_lm, coefficients)
+      }
+      
+      if (!exists(&quot;all_lm&quot;)) {
+        all_lm &lt;- coefficients
+      }
+      
+      rm(lm_formula, model_single, coefficients)
+        
+      }
+      
+ 
+    }
+    
+  }
+  
+}
+
+
+all_lm %&gt;%
+  write_csv(here::here(&quot;data/eMLR&quot;,
+                       &quot;all_lm.csv&quot;))</code></pre>
 </div>
 <div id="all-predictors" class="section level3">
 <h3><span class="header-section-number">5.4.2</span> All predictors</h3>
@@ -8175,6 +8291,14 @@ MLRs %&gt;%
 
 MLRs %&gt;% 
   unnest(augmented)</code></pre>
+</div>
+</div>
+</div>
+<div id="open-tasks" class="section level1">
+<h1><span class="header-section-number">6</span> Open tasks</h1>
+<ul>
+<li>Check if intercept is modeled</li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -8224,8 +8348,6 @@ loaded via a namespace (and not attached):
 [65] httpuv_1.5.4       cellranger_1.1.0   gtable_0.3.0       reshape_0.8.8     
 [69] assertthat_0.2.1   xfun_0.16          openxlsx_4.1.5     later_1.1.0.1     
 [73] viridisLite_0.3.0  ellipsis_0.3.1     here_0.1          </code></pre>
-</div>
-</div>
 </div>
 </div>
 
