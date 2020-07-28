@@ -13,7 +13,8 @@ editor_options:
 ---
 
 ```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
@@ -22,7 +23,7 @@ library(lubridate)
 library(patchwork)
 library(broom)
 library(GGally)
-
+library(olsrr)
 ```
 
 
@@ -72,9 +73,9 @@ The stoichiometric nutrient ratios for the production and mineralization of orga
 ```{r calculate_Cstar}
 
 GLODAP <- GLODAP %>% 
-  mutate(rCP_phosphate = - rCP * phosphate,
-         talk_05 = - 0.5 * talk,
-         rNP_phosphate_05 = - 0.5 * rNP * phosphate,
+  mutate(rCP_phosphate = -rCP * phosphate,
+         talk_05 = -0.5 * talk,
+         rNP_phosphate_05 = -0.5 * rNP * phosphate,
          Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05)
 
 ```
@@ -131,16 +132,16 @@ ggplot() +
     geom_path(data = GLODAP_Cant_observations_available %>% 
               filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
               arrange(depth),
-            aes(Cant, depth, col="mapped")) +
+            aes(Cant, depth, col = "mapped")) +
   geom_point(data = GLODAP_Cant_observations_available %>% 
               filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
               arrange(depth),
-            aes(Cant, depth, col="mapped")) +
+            aes(Cant, depth, col = "mapped")) +
   geom_point(data = GLODAP_Cant_observations_available %>% 
               filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
-            aes(Cant_int, depth, col="interpolated")) +
+            aes(Cant_int, depth, col = "interpolated")) +
   scale_y_reverse() +
-  scale_color_brewer(palette = "Dark2", name="") +
+  scale_color_brewer(palette = "Dark2", name = "") +
   labs(title = "Cant interpolation to sampling depth - example profile")
 
 GLODAP <- GLODAP_Cant_observations_available %>% 
@@ -185,7 +186,7 @@ rm(co2_atm, co2_atm_tref, tref)
 
 GLODAP <- GLODAP %>% 
   mutate(Cstar_tref_delta = 
-           ( (pCO2 - pCO2_tref) / (pCO2_tref - 280) ) * Cant,
+           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * Cant,
          Cstar_tref = Cstar - Cstar_tref_delta)
 
 ```
@@ -283,14 +284,14 @@ ggplot(df, aes(x = X, y = Y, fill = Z, z = Z))  +
 
 ```{r meridional_sections, fig.asp=0.6}
 
-mapWorld <- borders("world", colour="gray60", fill="gray60")
+mapWorld <- borders("world", colour = "gray60", fill = "gray60")
 
 GLODAP_cruise %>%
   arrange(date) %>% 
   ggplot(aes(lon, lat)) +
   mapWorld +
   geom_path() +
-  geom_point(aes(col=date)) +
+  geom_point(aes(col = date)) +
   coord_quickmap(expand = 0) +
   scale_color_viridis_c(trans = "date") +
   labs(title = paste("Cruise year:", mean(GLODAP_cruise$year))) +
@@ -304,31 +305,31 @@ GLODAP_cruise %>%
   theme(legend.position = "bottom")
 
 lat_section +
-  geom_point(aes(col=tco2))
+  geom_point(aes(col = tco2))
 
 lat_section +
-  geom_point(aes(col=talk))
+  geom_point(aes(col = talk))
 
 lat_section +
-  geom_point(aes(col=phosphate))
+  geom_point(aes(col = phosphate))
 
 lat_section +
-  geom_point(aes(col=rCP_phosphate))
+  geom_point(aes(col = rCP_phosphate))
 
 lat_section +
-  geom_point(aes(col=talk_05))
+  geom_point(aes(col = talk_05))
 
 lat_section +
-  geom_point(aes(col=rNP_phosphate_05))
+  geom_point(aes(col = rNP_phosphate_05))
 
 lat_section +
-  geom_point(aes(col=Cstar))
+  geom_point(aes(col = Cstar))
 
 lat_section +
-  geom_point(aes(col=Cant))
+  geom_point(aes(col = Cant))
 
 lat_section +
-  geom_point(aes(col=-Cstar_tref_delta))
+  geom_point(aes(col = -Cstar_tref_delta))
 
 
 rm(mapWorld, lat_section, GLODAP_cruise)
@@ -411,17 +412,19 @@ GLODAP_cruise %>%
   theme(legend.position = "bottom")
 
 lat_section +
-  geom_point(aes(col=gamma)) +
+  geom_point(aes(col = gamma)) +
   scale_color_viridis_c()
 
 lat_section +
-  geom_point(aes(col=gamma_slab)) +
+  geom_point(aes(col = gamma_slab)) +
   scale_color_viridis_d()
 
 
 ```
 
 ## PO~4~* calculation 
+
+Currently, PO~4~* is calculated according to Gruber et al. (2019), ie based on nitrate rather than oxygen.
 
 ```{r calculate_phosphate_star}
 
@@ -447,7 +450,7 @@ GLODAP %>%
           ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01)) +
       scale_fill_viridis_d() +
       scale_color_viridis_d() +
-      labs(title = paste("Basin: all | era: all | subsample size: 10 %"))
+      labs(title = paste("Basin: all | era: all | subsample size: 10 % of", nrow(GLODAP)))
 
 
 ```
@@ -490,15 +493,160 @@ dev.off()
 
 ## Model fitting
 
-```{r write_csv_GLODAP_used_for_fitting}
+```{r write_csv_GLODAP_used_for_fitting, eval = FALSE}
 
 GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                 "GLODAP_MLR_fitting_ready.csv"))
 
 ```
 
+### Predictor selection
 
-```{r eMLR_fitting}
+```{r eMLR_fitting_predictor_selection, eval=FALSE}
+
+# library(devtools)
+# install_github("rsquaredacademy/olsrr", ref = "develop")
+
+# gamma_slab_max <- GLODAP %>%
+#   filter(basin == "Atlantic", era == "new_era") %>% 
+#   group_by(gamma_slab) %>% 
+#   count() %>% 
+#   ungroup() %>% 
+#   filter(n == max(n)) %>% 
+#   pull(1)
+
+
+for (i_basin in unique(GLODAP$basin)) {
+  for (i_era in unique(GLODAP$era)) {
+    
+    # i_basin <- unique(GLODAP$basin)[1]
+    # i_era   <- unique(GLODAP$era)[1]
+    
+    print(i_basin) 
+    print(i_era  )
+    
+    GLODAP_basin_era <- GLODAP %>%
+      filter(basin == i_basin, era == i_era)
+
+    for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
+
+      # i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[1]
+      print(i_gamma_slab)
+      
+      GLODAP_basin_era_slab <- GLODAP_basin_era %>% 
+        filter(gamma_slab == i_gamma_slab)
+      
+      lm_full <- lm(Cstar ~ 
+                salinity  + 
+                temperature  + 
+                aou  + 
+                oxygen  + 
+                silicate  + 
+                phosphate  + 
+                phosphate_star, 
+              data = GLODAP_basin_era_slab)
+      
+      lm_all <- ols_step_all_possible(lm_full)
+      
+      temp <- as_tibble(lm_all$result)
+      
+      temp <- temp %>% 
+        mutate(basin = i_basin,
+               era = i_era,
+               gamma_slab = i_gamma_slab)
+      
+      if (exists("all_lm_stats")) {
+        all_lm_stats <- bind_rows(all_lm_stats, temp)
+      }
+      
+      if (!exists("all_lm_stats")) {
+        all_lm_stats <- temp
+      }
+      
+      rm(lm_full, lm_all, temp)
+      
+    }
+    
+  }
+  
+}
+
+all_lm_stats %>%
+  write_csv(here::here("data/eMLR",
+                       "all_lm_stats.csv"))
+
+```
+
+```{r eMLR_predictor_model_quality, fig.asp=2}
+
+all_lm_stats <- read_csv(here::here("data/eMLR",
+                                    "all_lm_stats.csv"))
+
+
+# all_lm_stats <- all_lm_stats %>% 
+#   rename(sigma = rmse)
+
+all_lm_stats %>% 
+  ggplot(aes(n, rmse, col = basin)) +
+  geom_hline(yintercept = 10) + 
+  geom_point(shape = 21) +
+  facet_grid(gamma_slab~era) +
+  scale_color_brewer(palette = "Set1")
+
+all_lm_stats %>% 
+  ggplot(aes(n, adjr, col = basin)) +
+  geom_point(shape = 21) +
+  facet_grid(gamma_slab~era) +
+  scale_color_brewer(palette = "Set1")
+
+all_lm_stats %>% 
+  ggplot(aes(n, aic, col = basin)) +
+  geom_point(shape = 21) +
+  facet_grid(gamma_slab~era) +
+  scale_color_brewer(palette = "Set1")
+
+ 
+# all_lm_stats %>% 
+#   ggplot(aes(rmse, predictors, col = gamma_slab)) +
+#   geom_point(shape = 21) +
+#   facet_grid(.~basin)
+  
+
+```
+
+
+
+
+```{r predictor_selection}
+
+n_predictors_max <- 5
+n_predictors_min <- 2
+
+all_lm_stats <- all_lm_stats %>% 
+  filter(n >= n_predictors_min,
+         n <= n_predictors_max) %>% 
+  select(basin, era, gamma_slab, predictors, rmse)
+
+all_lm_stats_wide <- all_lm_stats %>% 
+  pivot_wider(names_from = era, values_from = rmse, names_prefix = "rmse_")
+
+all_lm_stats_wide <- all_lm_stats_wide %>% 
+  mutate(rmse_sum = rmse_JGOFS_WOCE + rmse_GO_SHIP + rmse_new_era)
+
+lm_best <- all_lm_stats_wide %>% 
+  group_by(basin, gamma_slab) %>% 
+  slice_min(rmse_sum, n = 10) %>% 
+  ungroup()
+
+knitr::kable(lm_best)
+
+```
+
+
+
+### All predictors
+
+```{r eMLR_fitting_full_model, eval=FALSE}
 
 MLRs <- GLODAP %>%
   nest(data = -c(basin, era, gamma_slab)) %>% 
@@ -528,13 +676,13 @@ MLRs_tidied_wide <- MLRs_tidied_wide %>%
          delta_coeff_n_G = coeff_new_era - coeff_JGOFS_WOCE)
 
 MLRs_tidied %>% 
-  ggplot(aes(p.value, term, col=gamma_slab)) +
+  ggplot(aes(p.value, term, col = gamma_slab)) +
   geom_point() +
   facet_grid(basin~era)
 
 MLRs_tidied %>% 
   filter(p.value < 0.05) %>% 
-  ggplot(aes(p.value, term, col=gamma_slab)) +
+  ggplot(aes(p.value, term, col = gamma_slab)) +
   geom_point() +
   facet_grid(basin~era)
 
@@ -548,47 +696,5 @@ MLRs %>%
 
 MLRs %>% 
   unnest(augmented)
-
-```
-
-```{r predictor_combinations_test, eval=FALSE}
-
-mtcars <- mtcars %>% 
-  select(mpg, disp, hp) %>% 
-  as_tibble()
-
-model <- "disp  + hp"
-
-lm(data = mtcars, mpg ~ model)
-
-
-```
-
-
-```{r predictor_variables, eval=FALSE}
-
-temperature
-salinity
-phosphate
-silicate
-phosphate_star = phosphate  + (oxygen / 170) - 1.95
-oxygen
-aou
-
-
-```
-
-```{r estimate_MLR_models, eval=FALSE}
-
-basins <- c("Atlantic", "Indo_Pacific")
-slabs <- c("")
-
-for (i_basin in basins) {
-  for (i_slab in slabs) {
-    
-    
-  }
-  
-}
 
 ```
