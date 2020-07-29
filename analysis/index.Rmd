@@ -1,7 +1,7 @@
 ---
 title: "Home"
 author: "Jens Daniel Müller"
-date:  "`r format(Sys.time(), '%d %B, %Y')`"
+date:  "`r format(Sys.time(), '%B %Y')`"
 output: 
   workflowr::wflow_html:
     number_sections: true
@@ -19,13 +19,27 @@ On this website we present our ongoing ambition to quantify anthropogenic CO~2~ 
 Navigate trough the navbar on top to take a look at the various chapters of this project.
 The links in the upper right corner bring you to the source code of this project and to Jens' homepage.  
 
-Dr. Jens Daniel Müller, last update `r format(Sys.time(), '%B %Y')`
-
-# Nomenclature used in this project
+# Nomenclature, worklflow and folder structure used in this project
 
 ## Variables
+
+Original variable names from source data files are maintained to the highest degree possible. When required for merging, following variable names were used:
+
+- lat
+- lon
+- depth
 
 ## Data sets / objects
 
 ## Chunk labels
 
+- read_xxx: open new data set
+- set_criteria_xxx: definition of subsetting criteria, thresholds, grids, etc
+- clean_xxx: subset rows of a data set
+- write_xxx: write summarized data file to disk
+
+## folder structure
+
+- data: contains all data, not synced to Github
+  - subfolder for each data product
+    - _summarized_data_files: data sets created along analysis
