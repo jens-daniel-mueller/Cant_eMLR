@@ -31,7 +31,7 @@ theme_set(theme_bw())
 
 # Read source files
 
-- Data source: Globally mapped climatologies from Lauvset et al. (2016) downloaded in June 2020 from [glodap.info](https://www.glodap.info/).
+Data source: Globally mapped climatologies from Lauvset et al. (2016) downloaded in June 2020 from [glodap.info](https://www.glodap.info/).
 
 Following files were used: 
 
