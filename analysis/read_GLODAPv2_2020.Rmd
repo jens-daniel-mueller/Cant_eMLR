@@ -610,6 +610,11 @@ rm(map,
 }
 
 
+```
+
+```{r map_projection, eval=FALSE}
+
+
 # library("rnaturalearth")
 # library("rnaturalearthdata")
 # library("sf")
@@ -631,10 +636,13 @@ rm(map,
 # https://gist.github.com/clauswilke/783e1a8ee3233775c9c3b8bfe531e28a
 # https://twitter.com/clauswilke/status/1066024436208406529
 # https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html
+
 ```
+
+
 
 # Open tasks
 
-- move A16 cruises from new_era to GO-SHIP era
+- move A16 cruises in 2013 from new_era to GO_SHIP era
 
 # Questions

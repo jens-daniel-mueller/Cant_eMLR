@@ -1,5 +1,5 @@
 ---
-title: "GLODAPv2_2016_Mappedclimatologies"
+title: "GLODAPv2_2016: Mapped Climatologies"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -13,13 +13,12 @@ editor_options:
 ---
 
 ```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lubridate)
-library(tidync)
 library(stars)
 library(metR)
 library(patchwork)
@@ -30,17 +29,22 @@ library(patchwork)
 theme_set(theme_bw())
 ```
 
-# Read ncdf, write csv, plot
+# Read source files
 
-- Data source: [glodap.info](https://www.glodap.info/)
+- Data source: Globally mapped climatologies from Lauvset et al. (2016) downloaded in June 2020 from [glodap.info](https://www.glodap.info/).
 
+Following files were used: 
 
-```{r read_GLODAPv2_2016_Mappedclimatologies_netcdfs}
+```{r GLODAPv2_2016_Mappedclimatologies_file_list}
 
-file_list <- list.files(path= "data/GLODAPv2_2016b_Mappedclimatologies", pattern = "*.nc")
-
-print("files used:")
+file_list <- list.files(path = "data/GLODAPv2_2016b_Mappedclimatologies", pattern = "*.nc")
 print(file_list)
+
+```
+
+# Plot data and write csv
+
+```{r GLODAPv2_2016_Mappedclimatologies}
 
 #file <- file_list[1]
 
@@ -49,30 +53,40 @@ for (file in file_list) {
 clim_stars <- read_stars(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
                           file))
 
+# extract parameter name
+
 parameter <- str_split(file, pattern = "6b.", simplify = TRUE)[2]
 parameter <- str_split(parameter, pattern = ".nc", simplify = TRUE)[1]
+
+# extract parameter of interest and write csv
 
 map_clim_stars <- clim_stars %>% select(all_of(parameter))
 
 map_clim_stars %>% 
   as_tibble() %>% 
   rename(lat = y, lon = x, depth = depth_surface) %>% 
-  mutate(lon = if_else(lon>180, lon - 360, lon)) %>% 
+  mutate(lon = if_else(lon > 180, lon - 360, lon)) %>% 
   write_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                        paste(parameter,".csv", sep = "")))
+
+# subset depth horizons for overview map plots
 
 map_clim_stars_horizons <- map_clim_stars %>% 
   filter(depth_surface %in% c(0,100,500,2000))
 
+# plot maps
+
 print(
-ggplot()+
-  geom_stars(data = map_clim_stars_horizons)+
-  geom_vline(xintercept = c(190.5,335.5), col="white")+
-  scale_fill_viridis_b(n.breaks = 8)+
-  labs(title = file)+
-  facet_wrap(~depth_surface, ncol = 2)+
+ggplot() +
+  geom_stars(data = map_clim_stars_horizons) +
+  geom_vline(xintercept = c(190.5,335.5), col = "white") +
+  scale_fill_viridis_b(n.breaks = 8) +
+  labs(title = file) +
+  facet_wrap(~depth_surface, ncol = 2) +
   coord_quickmap(expand = 0)
 )
+
+# plot sections
 
 Atl_section <- map_clim_stars %>% 
   as_tibble() %>% 
@@ -86,18 +100,18 @@ Atl_section_bathy <- Atl_section %>%
   ungroup()
 
 p_Atl_section <-
-ggplot()+
+ggplot() +
   geom_contour_fill(data = Atl_section,
-                    aes(lat, depth, z=parameter),
-                    na.fill = TRUE)+
+                    aes(lat, depth, z = parameter),
+                    na.fill = TRUE) +
   geom_ribbon(data = Atl_section_bathy,
               aes(x = lat, ymin = bottom_depth, ymax = 5500),
               fill = "grey80",
-              col="black")+
-  labs(title = "Atlantic ocean N-S section")+
-  scale_y_reverse()+
+              col = "black") +
+  labs(title = "Atlantic ocean N-S section") +
+  scale_y_reverse() +
   scale_fill_viridis_b(name = parameter,
-                       n.breaks = 8)+
+                       n.breaks = 8) +
   coord_cartesian(expand = 0)
 
 Pac_section <- map_clim_stars %>% 
@@ -112,73 +126,28 @@ Pac_section_bathy <- Pac_section %>%
   ungroup()
 
 p_Pac_section <-
-ggplot()+
+ggplot() +
   geom_contour_fill(data = Pac_section,
-                    aes(lat, depth, z=parameter),
-                    na.fill = TRUE)+
+                    aes(lat, depth, z = parameter),
+                    na.fill = TRUE) +
   geom_ribbon(data = Pac_section_bathy,
               aes(x = lat, ymin = bottom_depth, ymax = 5500),
               fill = "grey80",
-              col="black")+
-  labs(title = "Pacific ocean N-S section")+
-  scale_y_reverse()+
+              col = "black") +
+  labs(title = "Pacific ocean N-S section") +
+  scale_y_reverse() +
   scale_fill_viridis_b(name = parameter,
-                       n.breaks = 8)+
+                       n.breaks = 8) +
   coord_cartesian(expand = 0)
 
 print(
 p_Atl_section / p_Pac_section
 )
 
-# clim_tidync <- tidync(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
-#                                  file))
-# print(clim_tidync)
-# 
-# Atl_sec_clim <- clim_tidync %>% hyper_filter(lon = lon == 335.5)
-# Atl_sec_clim_tibble <- Atl_sec_clim %>% hyper_tibble()
-# 
-# Atl_sec_clim_tibble %>% 
-#   ggplot(aes(lat, depth_surface, fill=Cant))+
-#   geom_point()+
-#   scale_y_reverse()+
-#   scale_fill_viridis_b()
-
 }
 
 
 ```
-
-# Plot Cant section
-
-```{r Cant_section, eval=FALSE}
-
-Cant <-   read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
-                              "Cant.csv"))
-
-Cant_Atl_section <- Cant %>% 
-  filter(x == 335.5)
-
-Cant_Atl_section_bathy <- Cant_Atl_section %>% 
-  filter(is.na(Cant)) %>% 
-  group_by(y) %>% 
-  summarise(depth_surface = min(depth_surface)) %>% 
-  ungroup()
-
-ggplot()+
-  geom_contour_fill(data = Cant_Atl_section,
-                    aes(y, depth_surface, z=Cant),
-                    na.fill = TRUE)+
-  geom_ribbon(data = Cant_Atl_section_bathy,
-              aes(x = y, ymin = depth_surface, ymax = 5500),
-              fill = "grey30",
-              col="black")+
-  scale_y_reverse()+
-  scale_fill_viridis_b(breaks = seq(0,100,10))+
-  coord_cartesian(expand = 0)
-
-
-```
-
 
 # Open tasks
 
