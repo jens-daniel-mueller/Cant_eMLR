@@ -39,13 +39,17 @@ theme_set(theme_bw())
 Required are: 
 
 - clean version of GLODAPGLODAPv2.2020
+- observations grid of clean version of GLODAPGLODAPv2.2020
 - C_ant from GLODAPv2_2016b_MappedClimatologies
 - annual mean atmospheric pCO~2~ 
 
-```{r load_required_data_sets}
+```{r read_required_data_sets}
 
 GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                               "GLODAPv2.2020_clean.csv"))
+
+GLODAP_obs_grid <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                           "GLODAPv2.2020_clean_obs_grid.csv"))
 
 Cant_clim <- read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                                  "Cant.csv"))
@@ -57,9 +61,15 @@ co2_atm <- read_csv(here::here("data/pCO2_atmosphere/_summarized_data_files",
 
 # C*
 
+C* serves as a conservative tracer of anthropogenic CO~2~ uptake. It is derived from measured DIC by removing the impact of 
+- organic matter formation and respiration
+- calcification and calcium carbonate dissolution
+
+Contributions of those processes are estimated from phosphate and alkalinity concentrations.
+
 ## Stoichiometric ratios
 
-```{r set_stoichiometric_ratios}
+```{r set_criteria_stoichiometric_ratios}
 
 rCP <- 117
 rNP <- 16
@@ -75,6 +85,8 @@ The stoichiometric nutrient ratios for the production and mineralization of orga
 
 ```{r calculate_Cstar}
 
+print("Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05")
+
 GLODAP <- GLODAP %>% 
   mutate(rCP_phosphate = -rCP * phosphate,
          talk_05 = -0.5 * talk,
@@ -83,29 +95,33 @@ GLODAP <- GLODAP %>%
 
 ```
 
-
 # Reference year adjustment
 
 The scaling factor for the reference year adjustment is an apriori estiamte of Cant at a given location and depth. Here, Cant from the GLODAP mapped Climatology was used.  
 
 Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
 
-## Merge GLODAP data set with...
-
-### ... Cant
+## Merge GLODAP + Cant
 
 ```{r merge_Cstar_Cant}
 
 Cant_clim <- Cant_clim %>% 
   drop_na()
 
-# GLODAP_Cant_full <- full_join(GLODAP, Cant_clim)
-# 
+Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim) %>% 
+  select(-n)
+
+rm(Cant_clim, GLODAP_obs_grid)
+
+GLODAP_Cant_obs <- full_join(GLODAP, Cant_clim_obs)
+
+rm(Cant_clim_obs)
+
 # GLODAP_Cant_full %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 #                                           "GLODAP_Cant_full.csv"))
-
-GLODAP_Cant_full <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                          "GLODAP_Cant_full.csv"))
+# 
+# GLODAP_Cant_full <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+#                                           "GLODAP_Cant_full.csv"))
 
 ```
 
@@ -116,47 +132,38 @@ The mapped Cant product was merged with GLODAP observation by:
 
 ```{r interpolate_Cant_to_observations}
 
-GLODAP_Cant_observations_available <- GLODAP_Cant_full %>% 
-  group_by(lat, lon) %>% 
-  mutate(n_GLODAP = sum(!is.na(Cstar))) %>% 
-  ungroup() %>% 
-  filter(n_GLODAP > 0) %>% 
-  select(-n_GLODAP)
-
-rm(GLODAP_Cant_full)
-
-GLODAP_Cant_observations_available <- GLODAP_Cant_observations_available %>% 
+GLODAP_Cant_obs <- GLODAP_Cant_obs %>% 
   group_by(lat, lon) %>% 
   arrange(depth) %>% 
   mutate(Cant_int = approxfun(depth, Cant, rule = 2)(depth)) %>% 
   ungroup()
 
 ggplot() +
-    geom_path(data = GLODAP_Cant_observations_available %>% 
+    geom_path(data = GLODAP_Cant_obs %>% 
               filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
               arrange(depth),
             aes(Cant, depth, col = "mapped")) +
-  geom_point(data = GLODAP_Cant_observations_available %>% 
+  geom_point(data = GLODAP_Cant_obs %>% 
               filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
               arrange(depth),
             aes(Cant, depth, col = "mapped")) +
-  geom_point(data = GLODAP_Cant_observations_available %>% 
+  geom_point(data = GLODAP_Cant_obs %>% 
               filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
             aes(Cant_int, depth, col = "interpolated")) +
   scale_y_reverse() +
   scale_color_brewer(palette = "Dark2", name = "") +
   labs(title = "Cant interpolation to sampling depth - example profile")
 
-GLODAP <- GLODAP_Cant_observations_available %>% 
+GLODAP <- GLODAP_Cant_obs %>% 
   filter(!is.na(Cstar)) %>% 
   mutate(Cant = Cant_int) %>% 
   select(-Cant_int)
 
-rm(GLODAP_Cant_observations_available, Cant_clim)
+rm(GLODAP_Cant_obs)
 
 ```
 
-### ... Atmospheric pCO2
+## Merge GLODAP + atmospheric pCO~2~
 
 ```{r merge_Cstar_pCO2}
 
@@ -209,7 +216,7 @@ GLODAP %>%
 
 GLODAP %>% 
   sample_n(10000) %>% 
-  ggplot(aes(year - tref, Cstar_tref_delta, col=Cant)) +
+  ggplot(aes(year, Cstar_tref_delta, col = Cant)) +
   geom_point() +
   scale_color_viridis_c() +
   labs(title = "random subsample 1e4")
@@ -224,12 +231,6 @@ Selected sections are plotted to demonstrate the magnitude of various parameters
 ```{r select_cruises}
 
 cruises_meridional <- c("1041")
-
-# cruises_meridional <- c("1041","1042", "260",
-#                         "2011", "393", "1031", "394", "395",
-#                         "1088", "983")
-
-# cruises_zonal <- c()
 
 GLODAP_cruise <- GLODAP %>% 
   filter(cruise %in% cruises_meridional)

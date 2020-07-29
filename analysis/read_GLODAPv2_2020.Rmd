@@ -357,15 +357,29 @@ rm(basinmask)
 
 ```
 
+## Observations grid
 
-## Write summary file 
+```{r GLODAP_clean_observations_grid}
+
+GLODAP_obs_grid <- GLODAP %>% 
+  group_by(lat, lon) %>% 
+  summarise(n = n()) %>% 
+  ungroup()
+
+```
+
+
+## Write summary filea 
  
-```{r write_clean_data_file}
+```{r write_clean_data_files}
+
+GLODAP_obs_grid  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                           "GLODAPv2.2020_clean_obs_grid.csv"))
 
 GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                   "GLODAPv2.2020_clean.csv"))
 
-rm(GLODAP)
+rm(GLODAP, GLODAP_obs_grid)
 
 ```
 
