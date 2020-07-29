@@ -7,11 +7,11 @@ navbar:
     menu:
     - text: GLODAPv2_2020
       href: read_GLODAPv2_2020.html
-    - text: GLODAPv2_2016_MappedClimatologies
+    - text: GLODAPv2_2016 Mapped Climatologies
       href: read_GLODAPv2_2016_MappedClimatologies.html
-    - text: World_Ocean_Atlas_2018
+    - text: World Ocean Atlas
       href: read_World_Ocean_Atlas_2018.html
-    - text: CO2 atmosphere
+    - text: Atmospheric CO2
       href: read_CO2_atm.html
   - text: eMLR
     href: eMLR.html
