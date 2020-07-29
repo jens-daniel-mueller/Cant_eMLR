@@ -2,6 +2,7 @@
 title: "Home"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%B %Y')`"
+site: workflowr::wflow_site
 output: 
   workflowr::wflow_html:
     number_sections: true

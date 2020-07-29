@@ -463,7 +463,7 @@ GLODAP %>%
 
 Individual correlation plots for each basin, era and neutral density (gamma) slab are available upon request.
 
-```{r predictor_correlation_basin_era_per_slab}
+```{r predictor_correlation_basin_era_per_slab, eval=FALSE}
 
 
 for (i_basin in unique(GLODAP$basin)) {
