@@ -95,6 +95,18 @@ GLODAP <- GLODAP %>%
 
 ```
 
+## PO~4~* calculation 
+
+Currently, PO~4~* is calculated according to Gruber et al. (2019), ie based on nitrate rather than oxygen.
+
+```{r calculate_phosphate_star}
+
+GLODAP <- GLODAP %>% 
+  mutate(phosphate_star = phosphate - 16*nitrate  + 29)
+
+```
+
+
 # Reference year adjustment
 
 The scaling factor for the reference year adjustment is an apriori estiamte of Cant at a given location and depth. Here, Cant from the GLODAP mapped Climatology was used.  
@@ -426,23 +438,13 @@ lat_section +
 
 ```
 
-## PO~4~* calculation 
-
-Currently, PO~4~* is calculated according to Gruber et al. (2019), ie based on nitrate rather than oxygen.
-
-```{r calculate_phosphate_star}
-
-GLODAP <- GLODAP %>% 
-  mutate(phosphate_star = phosphate - 16*nitrate  + 29)
-
-```
 
 ## Predictor correlation
 
 ```{r predictor_correlation_all, fig.asp=1}
 
 GLODAP %>% 
-  sample_frac(0.1) %>% 
+  sample_frac(0.01) %>% 
   ggpairs(columns = c("Cstar",
                       "salinity",
                       "temperature",
@@ -454,14 +456,14 @@ GLODAP %>%
           ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01)) +
       scale_fill_viridis_d() +
       scale_color_viridis_d() +
-      labs(title = paste("Basin: all | era: all | subsample size: 10 % of", nrow(GLODAP)))
+      labs(title = paste("Basin: all | era: all | subsample size: 1 % of", nrow(GLODAP)))
 
 
 ```
 
-Individual correlation plots for each basin and era are available upon request.
+Individual correlation plots for each basin, era and neutral density (gamma) slab are available upon request.
 
-```{r predictor_correlation_basin_era, eval=FALSE}
+```{r predictor_correlation_basin_era_per_slab}
 
 
 for (i_basin in unique(GLODAP$basin)) {
@@ -469,31 +471,59 @@ for (i_basin in unique(GLODAP$basin)) {
 
 # i_basin <- unique(GLODAP$basin)[1]
 # i_era   <- unique(GLODAP$era)[1]
+
 print(i_basin)
 print(i_era)
 
-p <- GLODAP %>% 
-  filter(basin == i_basin, era == i_era) %>% 
-  sample_frac(0.1) %>% 
-  ggpairs(columns = c("salinity","temperature", "aou", "oxygen", "silicate", "phosphate", "phosphate_star"),
-          ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01)) +
-      scale_fill_viridis_d() +
-      scale_color_viridis_d() +
-      labs(title = paste("Basin:", i_basin, "| era:", i_era, "| subsample size: 10%")) +
-      theme(text = element_text(size=20))
+GLODAP_basin_era <- GLODAP %>% 
+  filter(basin == i_basin,
+         era == i_era)
+
+for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
   
+  #i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[5]
+  print(i_gamma_slab)
+  
+  GLODAP_highlight <- GLODAP_basin_era %>% 
+  mutate(gamma_highlight = if_else(gamma_slab == i_gamma_slab,
+                                   "slab", "other slab")) %>% 
+    arrange(gamma_highlight)
+  
+p <- GLODAP_highlight %>% 
+  ggpairs(columns = c("Cstar",
+                      "salinity",
+                      "temperature",
+                      "aou",
+                      "oxygen",
+                      "silicate",
+                      "phosphate",
+                      "phosphate_star"),
+          ggplot2::aes(col = gamma_highlight, fill = gamma_highlight, alpha = 0.01)) +
+      scale_fill_manual(values = c("grey", "red")) +
+      scale_color_manual(values = c("grey", "red")) +
+      labs(title = paste(i_basin,
+                         "| ", i_era,
+                         "| Gamma slab", i_gamma_slab,
+                         "| total nr", nrow(GLODAP_basin_era),
+                         "| slab nr", nrow(GLODAP_highlight %>% 
+                                             filter(gamma_highlight == "slab"))))
+  
+
 png(here::here("output/figure/eMLR/predictor_correlation",
-               paste("predictor_correlation", i_basin, i_era, ".png", sep = "_")),
-    width = 20, height = 20, units = "in", res = 300)
+               paste("predictor_correlation", i_basin, i_era, i_gamma_slab, ".png", sep = "_")),
+    width = 15, height = 15, units = "in", res = 300)
 
 print(p)
 
 dev.off()
-
+  
+    }
   }
 }
 
+
 ```
+
 
 ## Model fitting
 
