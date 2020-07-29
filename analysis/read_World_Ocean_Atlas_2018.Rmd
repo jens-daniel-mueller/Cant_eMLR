@@ -13,7 +13,7 @@ editor_options:
 ---
 
 ```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
@@ -37,7 +37,7 @@ theme_set(theme_bw())
 
 The surface mask (0m) with 1x1° resolution from the file `basinmask_01.msk` was used.
 
-```{r read_basin_mask}
+```{r read_basinmask}
 
 basinmask_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
                                     "basinmask_01.msk"),
@@ -72,18 +72,19 @@ basinmask_01 <- basinmask_01 %>%
 
 ```
 
-## Plot world map
+## Plot map
 
-```{r map_basin_mask_WOA}
+```{r basinmask_WOA18_map}
 
-mapWorld <- borders("world", colour="gray60", fill="gray60")
+mapWorld <- borders("world", col = "gray60", fill = "gray60")
 
 basinmask_01 %>% 
-  ggplot(aes(lon, lat, fill=basin))+
-  mapWorld+
-  geom_raster()+
-  scale_fill_brewer(palette = "Dark2")+
-  coord_quickmap(expand = 0)
+  ggplot(aes(lon, lat, fill = basin)) +
+  mapWorld +
+  geom_raster() +
+  scale_fill_brewer(palette = "Dark2") +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top")
 
 rm(mapWorld)
 
@@ -91,7 +92,7 @@ rm(mapWorld)
 
 ## Write file
 
-```{r write_basin_mask_file}
+```{r write_basinmask_file}
 
 basinmask_01 %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -102,9 +103,11 @@ rm(basinmask_01)
 ```
 
 
-# Read/plot ncdf files
+# WOA18 data
 
-File naming conventions: PREF_DDDD_VTTFFGG.EXT, where:
+Copied from the WOA FAQ website, the file naming conventions is:  
+
+PREF_DDDD_VTTFFGG.EXT, where:
 
 - PREF: prefix
 - DDDD: decade
@@ -113,9 +116,6 @@ File naming conventions: PREF_DDDD_VTTFFGG.EXT, where:
 - FF: field type
 - GG: grid (5deg- 5°, 01- 1°, 04 - 1/4°)
 - EXT: file extention
-
-Note: '.dat' - ASCII; '.csv' - comma separated value; '.dbf', '.shp', '.shx' - ArcGIS shape files; '.nc' - netCDF files
-
 
 Short description of the statistical fields in WOA
 
@@ -128,15 +128,16 @@ Short description of the statistical fields in WOA
 - The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.
 - The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.
 
+Here, we use the objectively analyzed climatologies.
 
+## Read ncdfs
 
+```{r read_WOA18}
 
-```{r read_WOA18_netcdfs, fig.asp=0.5}
+# temperature
 
 WOA_tem <- tidync(here::here("data/World_Ocean_Atlas_2018",
                                  "woa18_decav_t00_01.nc"))
-
-print(WOA_tem)
 
 WOA_tem_tibble <- WOA_tem %>% hyper_tibble()
 
@@ -144,25 +145,10 @@ WOA_tem_tibble <- WOA_tem_tibble  %>%
   select(t_an, lon, lat, depth) %>% 
   drop_na()
 
-WOA_tem_tibble %>% 
-  filter(depth == 0) %>% 
-  ggplot(aes(lon, lat, fill=t_an))+
-  geom_raster()+
-  coord_quickmap()+
-  scale_fill_viridis_c()
-
-WOA_tem_tibble %>% 
-  filter(lon == -20.5) %>% 
-  ggplot(aes(lat, depth, z=t_an))+
-  geom_contour_filled()+
-  scale_y_reverse()+
-  coord_cartesian(expand = 0)
-
+# salinity
 
 WOA_sal <- tidync(here::here("data/World_Ocean_Atlas_2018",
                                  "woa18_decav_s00_01.nc"))
-
-print(WOA_sal)
 
 WOA_sal_tibble <- WOA_sal %>% hyper_tibble()
 
@@ -170,25 +156,75 @@ WOA_sal_tibble <- WOA_sal_tibble  %>%
   select(s_an, lon, lat, depth) %>% 
   drop_na()
 
-WOA_sal_tibble %>% 
+```
+
+## Temperature plots
+
+### Surface map
+
+```{r temperature_surface_WOA18_map}
+
+section_lon <- -25.5
+
+WOA_tem_tibble %>% 
   filter(depth == 0) %>% 
-  ggplot(aes(lon, lat, fill=s_an))+
-  geom_raster()+
-  coord_quickmap()+
+  ggplot(aes(lon, lat, fill = t_an)) +
+  geom_raster() +
+  geom_vline(xintercept = section_lon, col = "red") + 
+  coord_quickmap(expand = 0) +
   scale_fill_viridis_c()
-
-WOA_sal_tibble %>% 
-  filter(lon == -20.5) %>% 
-  ggplot(aes(lat, depth, z=s_an))+
-  geom_contour_filled()+
-  scale_y_reverse()+
-  coord_cartesian(expand = 0)
-
 
 
 ```
 
-## Write files
+### Section
+
+```{r temperature_section_WOA18_map}
+
+WOA_tem_tibble %>% 
+  filter(lon == section_lon) %>% 
+  ggplot(aes(lat, depth, z = t_an)) +
+  geom_contour_filled() +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0)
+
+```
+
+
+
+
+## Salinity plots
+
+### Surface map
+
+```{r salinity_surface_WOA18_map}
+
+WOA_sal_tibble %>% 
+  filter(depth == 0) %>% 
+  ggplot(aes(lon, lat, fill = s_an)) +
+  geom_raster() +
+  geom_vline(xintercept = section_lon, col = "red") + 
+  coord_quickmap(expand = 0) +
+  scale_fill_viridis_c()
+
+```
+
+
+### Section
+
+```{r salinity_section_WOA18_map}
+
+WOA_sal_tibble %>% 
+  filter(lon == section_lon) %>% 
+  ggplot(aes(lat, depth, z = s_an)) +
+  geom_contour_filled() +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0)
+
+```
+
+
+## Write file
 
 ```{r write_WOA_predictor_file}
 
@@ -203,10 +239,9 @@ rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)
 ```
 
 
-
 # Open tasks
 
-- none
+- basin mask not yet applied to WOA18 data
 
 # Questions
 

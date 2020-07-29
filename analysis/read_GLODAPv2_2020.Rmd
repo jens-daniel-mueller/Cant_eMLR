@@ -337,7 +337,7 @@ GLODAP_obs <- GLODAP %>%
 mapWorld <- borders("world", col = "gray60", fill = "gray60") 
 
 ggplot() +
-  #mapWorld +
+  mapWorld +
   geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
   geom_raster(data = GLODAP_obs, aes(lon, lat)) +
   scale_fill_brewer(palette = "Dark2") +
