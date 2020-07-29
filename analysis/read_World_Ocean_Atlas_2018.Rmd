@@ -172,7 +172,8 @@ WOA_tem_tibble %>%
   geom_raster() +
   geom_vline(xintercept = section_lon, col = "red") + 
   coord_quickmap(expand = 0) +
-  scale_fill_viridis_c()
+  scale_fill_viridis_c() +
+  theme(legend.position = "top")
 
 
 ```
@@ -184,9 +185,10 @@ WOA_tem_tibble %>%
 WOA_tem_tibble %>% 
   filter(lon == section_lon) %>% 
   ggplot(aes(lat, depth, z = t_an)) +
-  geom_contour_filled() +
+  geom_contour_filled(name = "t_an") +
   scale_y_reverse() +
-  coord_cartesian(expand = 0)
+  coord_cartesian(expand = 0) +
+  theme(legend.position = "top")
 
 ```
 
@@ -205,7 +207,8 @@ WOA_sal_tibble %>%
   geom_raster() +
   geom_vline(xintercept = section_lon, col = "red") + 
   coord_quickmap(expand = 0) +
-  scale_fill_viridis_c()
+  scale_fill_viridis_c() +
+  theme(legend.position = "top")
 
 ```
 
@@ -217,9 +220,10 @@ WOA_sal_tibble %>%
 WOA_sal_tibble %>% 
   filter(lon == section_lon) %>% 
   ggplot(aes(lat, depth, z = s_an)) +
-  geom_contour_filled() +
+  geom_contour_filled(name = "s_an") +
   scale_y_reverse() +
-  coord_cartesian(expand = 0)
+  coord_cartesian(expand = 0) +
+  theme(legend.position = "top")
 
 ```
 
