@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree82db96923474b4c031161e411723c859cf429a23targetblank82db969a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/82db96923474b4c031161e411723c859cf429a23" target="_blank">82db969</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreef6d4d926eed8591168659ce57b9eab176958c1e0targetblankf6d4d92a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/f6d4d926eed8591168659ce57b9eab176958c1e0" target="_blank">f6d4d92</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree82db96923474b4c031161e411723c859cf429a23targetblank82db969a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreef6d4d926eed8591168659ce57b9eab176958c1e0targetblankf6d4d92a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/82db96923474b4c031161e411723c859cf429a23" target="_blank">82db969</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/f6d4d926eed8591168659ce57b9eab176958c1e0" target="_blank">f6d4d92</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -612,6 +612,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/f6d4d926eed8591168659ce57b9eab176958c1e0/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">f6d4d92</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-29
+</td>
+<td>
+format and plots revised
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/8d71a5601041a5e1a484f48471ba3b0cc44d9996/docs/read_World_Ocean_Atlas_2018.html" target="_blank">8d71a56</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1186,7 +1220,8 @@ WOA_tem_tibble %&gt;%
   geom_raster() +
   geom_vline(xintercept = section_lon, col = &quot;red&quot;) + 
   coord_quickmap(expand = 0) +
-  scale_fill_viridis_c()</code></pre>
+  scale_fill_viridis_c() +
+  theme(legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="section" class="section level3">
@@ -1194,9 +1229,10 @@ WOA_tem_tibble %&gt;%
 <pre class="r"><code>WOA_tem_tibble %&gt;% 
   filter(lon == section_lon) %&gt;% 
   ggplot(aes(lat, depth, z = t_an)) +
-  geom_contour_filled() +
+  geom_contour_filled(name = &quot;t_an&quot;) +
   scale_y_reverse() +
-  coord_cartesian(expand = 0)</code></pre>
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_section_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -1210,7 +1246,8 @@ WOA_tem_tibble %&gt;%
   geom_raster() +
   geom_vline(xintercept = section_lon, col = &quot;red&quot;) + 
   coord_quickmap(expand = 0) +
-  scale_fill_viridis_c()</code></pre>
+  scale_fill_viridis_c() +
+  theme(legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="section-1" class="section level3">
@@ -1218,9 +1255,10 @@ WOA_tem_tibble %&gt;%
 <pre class="r"><code>WOA_sal_tibble %&gt;% 
   filter(lon == section_lon) %&gt;% 
   ggplot(aes(lat, depth, z = s_an)) +
-  geom_contour_filled() +
+  geom_contour_filled(name = &quot;s_an&quot;) +
   scale_y_reverse() +
-  coord_cartesian(expand = 0)</code></pre>
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_section_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
