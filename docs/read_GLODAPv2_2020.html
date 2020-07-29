@@ -433,7 +433,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">GLODAPv2_2020</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">24 July, 2020</h4>
+<h4 class="date">29 July, 2020</h4>
 
 </div>
 
@@ -458,7 +458,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-24
+<strong>Last updated:</strong> 2020-07-29
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree84065c6d1652f7df04608a8f46cebb9487c678fdtargetblank84065c6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/84065c6d1652f7df04608a8f46cebb9487c678fd" target="_blank">84065c6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree26db5979f093e1b2bd6679a9ee216ba5b204517atargetblank26db597a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/26db5979f093e1b2bd6679a9ee216ba5b204517a" target="_blank">26db597</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree84065c6d1652f7df04608a8f46cebb9487c678fdtargetblank84065c6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree26db5979f093e1b2bd6679a9ee216ba5b204517atargetblank26db597a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/84065c6d1652f7df04608a8f46cebb9487c678fd" target="_blank">84065c6</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/26db5979f093e1b2bd6679a9ee216ba5b204517a" target="_blank">26db597</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -569,6 +569,7 @@ Ignored files:
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
     Ignored:    data/World_Ocean_Atlas_2018/
+    Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
     Ignored:    output/figure/
@@ -610,6 +611,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/26db5979f093e1b2bd6679a9ee216ba5b204517a/analysis/read_GLODAPv2_2020.Rmd" target="_blank">26db597</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-29
+</td>
+<td>
+cleaned code and output
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/2e08795c67892e86138efde7c96c5e77ee88b71c/docs/read_GLODAPv2_2020.html" target="_blank">2e08795</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1200,9 +1235,7 @@ library(lubridate)
 library(patchwork)</code></pre>
 <div id="read-master-file" class="section level1">
 <h1><span class="header-section-number">1</span> Read master file</h1>
-<ul>
-<li>Data source: <code>GLODAPv2.2020_Merged_Master_File.csv</code> from <a href="https://www.glodap.info/">glodap.info</a></li>
-</ul>
+<p>Main data source for this project is <code>GLODAPv2.2020_Merged_Master_File.csv</code> downloaded from <a href="https://www.glodap.info/">glodap.info</a> in June 2020.</p>
 <pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/Merged_data_product&quot;,
                               &quot;GLODAPv2.2020_Merged_Master_File.csv&quot;),
                    na = &quot;-9999&quot;,
@@ -1229,12 +1262,12 @@ GLODAP &lt;- GLODAP %&gt;%
 <h2><span class="header-section-number">2.1</span> Flags and missing data</h2>
 <pre class="r"><code>flag_f &lt;- 2
 flag_qc &lt;- 1</code></pre>
-<p>Only samples with all relevant parameters determined were selected. The following flagging criteria were defined:</p>
+<p>Only rows (samples) for which all relevant parameters are available were selected. In additions, following flagging criteria were applied:</p>
 <ul>
 <li>flag f: 2</li>
 <li>flag qc: 1</li>
 </ul>
-<p>Summary statistics were calculated during cleaning process</p>
+<p>Summary statistics were calculated during cleaning process.</p>
 <pre class="r"><code>GLODAP_stats &lt;- GLODAP %&gt;% 
   summarise(total = n())
 
@@ -1369,16 +1402,19 @@ GLODAP_stats_temp &lt;- GLODAP %&gt;%
   summarise(eMLR_variables = n())
 
 GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)</code></pre>
-<pre class="r"><code>rm(flag_f, flag_qc)</code></pre>
+
+rm(GLODAP_stats_temp)
+rm(flag_f, flag_qc)</code></pre>
 </div>
 <div id="spatial-boundaries" class="section level2">
 <h2><span class="header-section-number">2.2</span> Spatial boundaries</h2>
 <pre class="r"><code>min_depth &lt;- 150
+min_bottomdepth &lt;- 500
 max_lat &lt;- 65</code></pre>
 <p>Only observations with:</p>
 <ul>
-<li>minimum depth: 150m</li>
+<li>minimum sampling depth: 150m</li>
+<li>minimum bottom depth: 500m</li>
 <li>maximum latitude: 65°N</li>
 </ul>
 <p>were taken into consideration.</p>
@@ -1396,8 +1432,11 @@ rm(GLODAP_stats_temp)
 GLODAP &lt;- GLODAP %&gt;% 
   filter(latitude &lt;= max_lat)
 
+GLODAP &lt;- GLODAP %&gt;% 
+  filter(bottomdepth &gt;= min_bottomdepth)
+
 GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(eMLR_variables_150m_65N = n())
+  summarise(eMLR_variables_150m_65N_500m = n())
 
 GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -1410,8 +1449,7 @@ GLODAP_stats_long  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summar
                                              &quot;GLODAPv2.2020_stats.csv&quot;))
 
 rm(GLODAP_stats_long, GLODAP_stats)
-rm(min_depth, max_lat)</code></pre>
-<pre class="r"><code>rm(min_depth, max_lat)</code></pre>
+rm(min_depth, max_lat, min_bottomdepth)</code></pre>
 </div>
 <div id="reference-eras" class="section level2">
 <h2><span class="header-section-number">2.3</span> Reference eras</h2>
@@ -1429,12 +1467,13 @@ GOSHIP &lt;- 2012</code></pre>
   mutate(era = &quot;JGOFS_WOCE&quot;,
          era = if_else(year &gt; JGOFS, &quot;GO_SHIP&quot;, era),
          era = if_else(year &gt; GOSHIP, &quot;new_era&quot;, era))</code></pre>
-<pre class="r"><code># rm(start, JGOFS, GOSHIP)</code></pre>
 </div>
-<div id="basin-mask" class="section level2">
-<h2><span class="header-section-number">2.4</span> Basin mask</h2>
-<pre class="r"><code>basinmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                                 &quot;basin_mask_WOA18.csv&quot;))</code></pre>
+<div id="horizontal-gridding" class="section level2">
+<h2><span class="header-section-number">2.4</span> Horizontal gridding</h2>
+<p>For merging with other data sets, all observations were grouped into latitude intervals of:</p>
+<ul>
+<li>1° x 1°</li>
+</ul>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   mutate(lat = cut(latitude, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
          lat = as.numeric(as.character(lat)),
@@ -1442,12 +1481,33 @@ GOSHIP &lt;- 2012</code></pre>
          lon = as.numeric(as.character(lon))) %&gt;% 
   arrange(date) %&gt;% 
   select(-c(latitude,longitude))</code></pre>
-<pre class="r"><code>GLODAP &lt;- inner_join(GLODAP, basinmask)
+</div>
+<div id="basin-mask" class="section level2">
+<h2><span class="header-section-number">2.5</span> Basin mask</h2>
+<p>The basin mask from the World Ocean Atlas was used. For details consult the data base section for WOA18 data <a href="/read_World_Ocean_Atlas_2018.Rmd">Link</a>.</p>
+<pre class="r"><code>basinmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                                 &quot;basin_mask_WOA18.csv&quot;))</code></pre>
+<pre class="r"><code>GLODAP_obs &lt;- GLODAP %&gt;% 
+  group_by(lat, lon) %&gt;% 
+  summarise(n = n()) %&gt;% 
+  ungroup()
 
+mapWorld &lt;- borders(&quot;world&quot;, col = &quot;gray60&quot;, fill = &quot;gray60&quot;) 
+
+ggplot() +
+  #mapWorld +
+  geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
+  geom_raster(data = GLODAP_obs, aes(lon, lat)) +
+  scale_fill_brewer(palette = &quot;Dark2&quot;) +
+  coord_quickmap(expand = 0)</code></pre>
+<p><img src="figure/read_GLODAPv2_2020.Rmd/WOA_basin_mask_GLODAP_observations_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(mapWorld, GLODAP_obs)</code></pre>
+<p>Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis.</p>
+<pre class="r"><code>GLODAP &lt;- inner_join(GLODAP, basinmask)
 rm(basinmask)</code></pre>
 </div>
 <div id="write-summary-file" class="section level2">
-<h2><span class="header-section-number">2.5</span> Write summary file</h2>
+<h2><span class="header-section-number">2.6</span> Write summary file</h2>
 <pre class="r"><code>GLODAP  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                   &quot;GLODAPv2.2020_clean.csv&quot;))
 
@@ -1465,12 +1525,12 @@ GLODAP_stats_long &lt;- GLODAP_stats_long %&gt;%
   mutate(parameter = fct_reorder(parameter, n))
 
 GLODAP_stats_long %&gt;% 
-  ggplot(aes(parameter, n/1000))+
-  geom_col()+
-  coord_flip()+
-  labs(y=&quot;n (1000)&quot;)+
+  ggplot(aes(parameter, n/1000)) +
+  geom_col() +
+  coord_flip() +
+  labs(y = &quot;n (1000)&quot;) +
   theme(axis.title.y = element_blank())</code></pre>
-<p><img src="figure/read_GLODAPv2_2020.Rmd/GLODAP_stats_barplot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2020.Rmd/GLODAP_cleaning_stats-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_stats_long)</code></pre>
 </div>
 <div id="assign-coarse-spatial-grid" class="section level2">
@@ -1485,25 +1545,25 @@ GLODAP_stats_long %&gt;%
          lon_grid = as.numeric(as.character(lon_grid))) %&gt;% 
   arrange(date)</code></pre>
 </div>
-<div id="histogram-lats" class="section level2">
-<h2><span class="header-section-number">3.3</span> Histogram lats</h2>
+<div id="histogram-zonal-coverage" class="section level2">
+<h2><span class="header-section-number">3.3</span> Histogram Zonal coverage</h2>
 <pre class="r"><code>GLODAP_histogram_lat &lt;- GLODAP %&gt;% 
   group_by(era, lat_grid, basin) %&gt;% 
   tally() %&gt;% 
   ungroup()
 
 GLODAP_histogram_lat %&gt;% 
-  ggplot(aes(lat_grid, n, fill=era))+
-  geom_col()+
-  scale_x_continuous(breaks = seq(-87.5,90,10))+
-  scale_fill_brewer(palette = &quot;Dark2&quot;)+
-  facet_wrap(~basin)+
+  ggplot(aes(lat_grid, n, fill = era)) +
+  geom_col() +
+  scale_x_continuous(breaks = seq(-87.5,90,10)) +
+  scale_fill_brewer(palette = &quot;Dark2&quot;) +
+  facet_wrap(~basin) +
   coord_flip(expand = 0)</code></pre>
-<p><img src="figure/read_GLODAPv2_2020.Rmd/histogramm_lat_observations-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_histogram_zonal-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_histogram_lat)</code></pre>
 </div>
-<div id="histogram-year" class="section level2">
-<h2><span class="header-section-number">3.4</span> Histogram year</h2>
+<div id="histogram-temporal-coverage" class="section level2">
+<h2><span class="header-section-number">3.4</span> Histogram temporal coverage</h2>
 <pre class="r"><code>GLODAP_histogram_year &lt;- GLODAP %&gt;% 
   group_by(year, basin) %&gt;% 
   tally() %&gt;% 
@@ -1515,35 +1575,35 @@ era_median_year &lt;- GLODAP %&gt;%
   ungroup()
 
 GLODAP_histogram_year %&gt;% 
-  ggplot()+
-  geom_vline(xintercept = c(JGOFS+0.5, GOSHIP+0.5))+
-  geom_col(aes(year, n, fill=basin))+
-  geom_point(data = era_median_year, aes(t_ref,0, shape=&quot;Median year&quot;), size=2, fill=&quot;white&quot;)+
-  scale_fill_brewer(palette = &quot;Dark2&quot;)+
-  scale_shape_manual(values = 24)+
+  ggplot() +
+  geom_vline(xintercept = c(JGOFS+0.5, GOSHIP+0.5)) +
+  geom_col(aes(year, n, fill=basin)) +
+  geom_point(data = era_median_year, aes(t_ref,0, shape=&quot;Median year&quot;), size=2, fill=&quot;white&quot;) +
+  scale_fill_brewer(palette = &quot;Dark2&quot;) +
+  scale_shape_manual(values = 24) +
   coord_cartesian(expand = 0)</code></pre>
-<p><img src="figure/read_GLODAPv2_2020.Rmd/histogramm_year_observations-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_histogram_temporal-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_histogram_year,
    era_median_year)</code></pre>
 </div>
-<div id="hovmoeller-lat-vs-year" class="section level2">
-<h2><span class="header-section-number">3.5</span> Hovmoeller (lat vs year)</h2>
+<div id="zonal-temporal-coverage-hovmoeller" class="section level2">
+<h2><span class="header-section-number">3.5</span> Zonal temporal coverage (Hovmoeller)</h2>
 <pre class="r"><code>GLODAP_hovmoeller_year &lt;- GLODAP %&gt;% 
   group_by(year, lat_grid, basin) %&gt;% 
   tally() %&gt;% 
   ungroup()
 
 GLODAP_hovmoeller_year %&gt;% 
-  ggplot(aes(year, lat_grid, fill=log10(n)))+
-  geom_tile()+
-  geom_vline(xintercept = c(1999.5, 2012.5))+
-  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1)+
+  ggplot(aes(year, lat_grid, fill=log10(n))) +
+  geom_tile() +
+  geom_vline(xintercept = c(1999.5, 2012.5)) +
+  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1) +
   facet_wrap(~basin, ncol=1)</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_hovmoeller-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_hovmoeller_year)</code></pre>
 </div>
-<div id="maps-by-era" class="section level2">
-<h2><span class="header-section-number">3.6</span> Maps by era</h2>
+<div id="coverage-maps-by-era" class="section level2">
+<h2><span class="header-section-number">3.6</span> Coverage maps by era</h2>
 <pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray60&quot;, fill=&quot;gray60&quot;)
 
 
@@ -1551,15 +1611,15 @@ GLODAP &lt;- GLODAP %&gt;%
   mutate(era = factor(era, c(&quot;JGOFS_WOCE&quot;, &quot;GO_SHIP&quot;, &quot;new_era&quot;)))
 
 GLODAP %&gt;%
-  ggplot(aes(lon, lat))+
-  mapWorld+
-  geom_bin2d(binwidth = c(1,1))+
-  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;)+
-  scale_x_continuous(breaks = seq(-180, 180, 30))+
-  scale_y_continuous(breaks = seq(-90, 90, 30))+
-  coord_quickmap(expand = FALSE)+
-  facet_wrap(~era, ncol=1)</code></pre>
-<p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_maps_era_bin2d-1.png" width="672" style="display: block; margin: auto;" /></p>
+  ggplot(aes(lon, lat)) +
+  mapWorld +
+  geom_bin2d(binwidth = c(1,1)) +
+  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;) +
+  scale_x_continuous(breaks = seq(-180, 180, 30)) +
+  scale_y_continuous(breaks = seq(-90, 90, 30)) +
+  coord_quickmap(expand = FALSE) +
+  facet_wrap(~era, ncol = 1)</code></pre>
+<p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_maps_era-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(mapWorld)</code></pre>
 </div>
 </div>
@@ -1592,20 +1652,20 @@ cruises_cruise &lt;- cruises %&gt;%
   filter(cruise == i_cruise)
   
 map &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(lon, lat))+
+  ggplot(aes(lon, lat)) +
   mapWorld+
-  geom_point(aes(col=date))+
-  geom_path()+
-  coord_quickmap(expand = FALSE)+
-  scale_color_viridis_c(trans = &quot;date&quot;)+
+  geom_point(aes(col=date)) +
+  geom_path() +
+  coord_quickmap(expand = FALSE) +
+  scale_color_viridis_c(trans = &quot;date&quot;) +
   labs(title = paste(&quot;Mean date:&quot;, cruises_cruise$date_mean,
                      &quot;| cruise:&quot;, cruises_cruise$cruise,
                      &quot;| n(samples):&quot;, cruises_cruise$n))
 
 
 lon_section &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(lon, depth))+
-  scale_y_reverse()+
+  ggplot(aes(lon, depth)) +
+  scale_y_reverse() +
   scale_color_viridis_c()
 
 lon_tco2 &lt;- lon_section+
@@ -1619,8 +1679,8 @@ lon_phosphate &lt;- lon_section+
 
 
 lat_section &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(lat, depth))+
-  scale_y_reverse()+
+  ggplot(aes(lat, depth)) +
+  scale_y_reverse() +
   scale_color_viridis_c()
 
 lat_tco2 &lt;- lat_section+
@@ -1668,8 +1728,8 @@ rm(map,
 #   ungroup()
 # 
 # ggplot() +
-#   geom_raster(data = GLODAP_map, aes(lon_grid, lat_grid))+
-#   geom_sf(data = world)+
+#   geom_raster(data = GLODAP_map, aes(lon_grid, lat_grid)) +
+#   geom_sf(data = world) +
 #   coord_sf(crs = &quot;+proj=robin +lat_0=0 +lon_0=0 +x0=0 +y0=0&quot;)
 
 
@@ -1680,15 +1740,11 @@ rm(map,
 <div id="open-tasks" class="section level1">
 <h1><span class="header-section-number">5</span> Open tasks</h1>
 <ul>
-<li>remove marginal seas</li>
 <li>move A16 cruises from new_era to GO-SHIP era</li>
 </ul>
 </div>
 <div id="questions" class="section level1">
 <h1><span class="header-section-number">6</span> Questions</h1>
-<ul>
-<li>exclude coastal area in general?</li>
-</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1697,8 +1753,8 @@ rm(map,
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.3 (2020-02-29)
-Platform: i386-w64-mingw32/i386 (32-bit)
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 10 x64 (build 18363)
 
 Matrix products: default
@@ -1717,22 +1773,22 @@ other attached packages:
  [9] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] RColorBrewer_1.1-2 jsonlite_1.7.0     rstudioapi_0.11    generics_0.0.2    
- [5] magrittr_1.5       farver_2.0.3       gtable_0.3.0       rmarkdown_2.3     
- [9] vctrs_0.3.1        fs_1.4.2           hms_0.5.3          xml2_1.3.2        
-[13] pillar_1.4.6       htmltools_0.5.0    haven_2.3.1        later_1.1.0.1     
-[17] broom_0.7.0        cellranger_1.1.0   tidyselect_1.1.0   knitr_1.29        
-[21] git2r_0.27.1       whisker_0.4        lifecycle_0.2.0    pkgconfig_2.0.3   
-[25] R6_2.4.1           digest_0.6.25      xfun_0.15          colorspace_1.4-1  
-[29] rprojroot_1.3-2    stringi_1.4.6      yaml_2.2.1         evaluate_0.14     
-[33] labeling_0.3       fansi_0.4.1        httr_1.4.1         compiler_3.6.3    
-[37] here_0.1           cli_2.0.2          withr_2.2.0        backports_1.1.5   
-[41] munsell_0.5.0      DBI_1.1.0          modelr_0.1.8       Rcpp_1.0.5        
-[45] readxl_1.3.1       maps_3.3.0         dbplyr_1.4.4       ellipsis_0.3.1    
-[49] assertthat_0.2.1   blob_1.2.1         tools_3.6.3        reprex_0.3.0      
-[53] viridisLite_0.3.0  httpuv_1.5.4       scales_1.1.1       crayon_1.3.4      
-[57] glue_1.4.1         rlang_0.4.7        rvest_0.3.5        promises_1.1.1    
-[61] grid_3.6.3        </code></pre>
+ [1] Rcpp_1.0.5         here_0.1           assertthat_0.2.1   rprojroot_1.3-2   
+ [5] digest_0.6.25      R6_2.4.1           cellranger_1.1.0   backports_1.1.8   
+ [9] reprex_0.3.0       evaluate_0.14      httr_1.4.2         pillar_1.4.6      
+[13] rlang_0.4.7        readxl_1.3.1       rstudioapi_0.11    whisker_0.4       
+[17] blob_1.2.1         rmarkdown_2.3      labeling_0.3       munsell_0.5.0     
+[21] broom_0.7.0        compiler_4.0.2     httpuv_1.5.4       modelr_0.1.8      
+[25] xfun_0.16          pkgconfig_2.0.3    htmltools_0.5.0    tidyselect_1.1.0  
+[29] viridisLite_0.3.0  fansi_0.4.1        crayon_1.3.4       dbplyr_1.4.4      
+[33] withr_2.2.0        later_1.1.0.1      grid_4.0.2         jsonlite_1.7.0    
+[37] gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          git2r_0.27.1      
+[41] magrittr_1.5       scales_1.1.1       cli_2.0.2          stringi_1.4.6     
+[45] farver_2.0.3       fs_1.4.2           promises_1.1.1     xml2_1.3.2        
+[49] ellipsis_0.3.1     generics_0.0.2     vctrs_0.3.2        RColorBrewer_1.1-2
+[53] tools_4.0.2        glue_1.4.1         maps_3.3.0         hms_0.5.3         
+[57] yaml_2.2.1         colorspace_1.4-1   rvest_0.3.6        knitr_1.29        
+[61] haven_2.3.1       </code></pre>
 </div>
 </div>
 
