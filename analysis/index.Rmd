@@ -12,4 +12,5 @@ On this website we present our ongoing ambition to quantify anthropogenic CO~2~ 
 
 Navigate trough the navbar on top to take a look at the various chapters of this project.
 The links in the upper right corner bring you to the source code of this project and to Jens' homepage.  
-(c) Dr. Jens Daniel Müller, 2020
+
+by Dr. Jens Daniel Müller, last update "`r format(Sys.time(), '%d %B, %Y')`"
