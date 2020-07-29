@@ -13,7 +13,7 @@ editor_options:
 ---
 
 ```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
@@ -226,13 +226,12 @@ max_lat <- 65
 
 ```
 
-Only observations with:
+Only observations were taken into consideration with:
 
 - minimum sampling depth:  `r min_depth`m
 - minimum bottom depth:  `r min_bottomdepth`m
 - maximum latitude:  `r max_lat`°N
 
-were taken into consideration.
 
 ```{r apply_spatial_boundaries}
 
@@ -342,7 +341,8 @@ ggplot() +
   geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
   geom_raster(data = GLODAP_obs, aes(lon, lat)) +
   scale_fill_brewer(palette = "Dark2") +
-  coord_quickmap(expand = 0)
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top")
 
 rm(mapWorld, GLODAP_obs)
 
@@ -396,7 +396,8 @@ rm(GLODAP_stats_long)
 
 ## Assign coarse spatial grid
 
-For the following plots, the cleaned data set was re-opened and observations were gridded spatially to 5°x5° intervals.
+For the following plots, the cleaned data set was re-opened and observations were gridded spatially to intervals of:  
+- 5° x 5°
 
 
 ```{r read_GLODAP_clean}
@@ -433,7 +434,8 @@ GLODAP_histogram_lat %>%
   scale_x_continuous(breaks = seq(-87.5,90,10)) +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(~basin) +
-  coord_flip(expand = 0)
+  coord_flip(expand = 0) +
+  theme(legend.position = "top")
 
 rm(GLODAP_histogram_lat)
 
@@ -455,12 +457,14 @@ era_median_year <- GLODAP %>%
 
 GLODAP_histogram_year %>% 
   ggplot() +
-  geom_vline(xintercept = c(JGOFS+0.5, GOSHIP+0.5)) +
-  geom_col(aes(year, n, fill=basin)) +
-  geom_point(data = era_median_year, aes(t_ref,0, shape="Median year"), size=2, fill="white") +
+  geom_vline(xintercept = c(JGOFS + 0.5, GOSHIP + 0.5)) +
+  geom_col(aes(year, n, fill = basin)) +
+  geom_point(data = era_median_year, aes(t_ref,0, shape = "Median year"), size = 2, fill = "white") +
   scale_fill_brewer(palette = "Dark2") +
-  scale_shape_manual(values = 24) +
-  coord_cartesian(expand = 0)
+  scale_shape_manual(values = 24, name = "") +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = "top",
+        legend.direction = "vertical")
 
 rm(GLODAP_histogram_year,
    era_median_year)
@@ -477,11 +481,12 @@ GLODAP_hovmoeller_year <- GLODAP %>%
   ungroup()
 
 GLODAP_hovmoeller_year %>% 
-  ggplot(aes(year, lat_grid, fill=log10(n))) +
+  ggplot(aes(year, lat_grid, fill = log10(n))) +
   geom_tile() +
   geom_vline(xintercept = c(1999.5, 2012.5)) +
   scale_fill_viridis_c(option = "magma", direction = -1) +
-  facet_wrap(~basin, ncol=1)
+  facet_wrap(~basin, ncol = 1) +
+  theme(legend.position = "top")
 
 rm(GLODAP_hovmoeller_year)
 
@@ -491,8 +496,7 @@ rm(GLODAP_hovmoeller_year)
 
 ```{r coverage_maps_era, fig.asp=1.5}
 
-mapWorld <- borders("world", colour="gray60", fill="gray60")
-
+mapWorld <- borders("world", colour = "gray60", fill = "gray60")
 
 GLODAP <- GLODAP %>% 
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
@@ -505,7 +509,8 @@ GLODAP %>%
   scale_x_continuous(breaks = seq(-180, 180, 30)) +
   scale_y_continuous(breaks = seq(-90, 90, 30)) +
   coord_quickmap(expand = FALSE) +
-  facet_wrap(~era, ncol = 1)
+  facet_wrap(~era, ncol = 1) +
+  theme(legend.position = "top")
 
 rm(mapWorld)
 
@@ -546,7 +551,6 @@ map <- GLODAP_cruise %>%
   ggplot(aes(lon, lat)) +
   mapWorld+
   geom_point(aes(col=date)) +
-  geom_path() +
   coord_quickmap(expand = FALSE) +
   scale_color_viridis_c(trans = "date") +
   labs(title = paste("Mean date:", cruises_cruise$date_mean,
