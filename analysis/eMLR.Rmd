@@ -85,6 +85,10 @@ The stoichiometric nutrient ratios for the production and mineralization of orga
 
 ## Calculation
 
+C* is calculated as:  
+
+
+
 ```{r calculate_Cstar}
 
 print("Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05")
@@ -97,14 +101,21 @@ GLODAP <- GLODAP %>%
 
 ```
 
-## PO~4~* calculation 
+# PO~4~* calculation 
 
-Currently, PO~4~* is calculated according to Gruber et al. (2019), ie based on nitrate rather than oxygen.
+Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
 
-```{r calculate_phosphate_star}
+```{r calculate_phosphate_star_clement}
 
 GLODAP <- GLODAP %>% 
-  mutate(phosphate_star = phosphate - 16*nitrate  + 29)
+  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
+
+```
+
+```{r calculate_phosphate_star_gruber, eval=FALSE}
+
+GLODAP <- GLODAP %>% 
+  mutate(phosphate_star = phosphate - 16*nitrate  + 2.9)
 
 ```
 
@@ -115,7 +126,9 @@ The scaling factor for the reference year adjustment is an apriori estiamte of C
 
 Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
 
-## Merge GLODAP + Cant
+## Merge data sets
+
+### GLODAP + Cant
 
 ```{r merge_Cstar_Cant}
 
@@ -177,7 +190,7 @@ rm(GLODAP_Cant_obs)
 
 ```
 
-## Merge GLODAP + atmospheric pCO~2~
+### GLODAP + atm. pCO~2~
 
 ```{r merge_Cstar_pCO2}
 
@@ -217,6 +230,8 @@ GLODAP <- GLODAP %>%
 
 ## Control plots
 
+### Histogram
+
 ```{r Cstar_reference_year_adjustment_histogram}
 
 GLODAP %>% 
@@ -225,6 +240,7 @@ GLODAP %>%
 
 ```
 
+### Time series
 
 ```{r Cstar_reference_year_adjustment_vs_time_difference_Cant}
 
@@ -443,7 +459,7 @@ lat_section +
 
 ## Predictor correlation
 
-### Without grouping
+### Overview
 
 ```{r predictor_correlation_all, fig.asp=1}
 
@@ -532,7 +548,9 @@ dev.off()
 
 ### Correlation coeffcients
 
-```{r calculate_correlation_coefficients}
+#### Calculation of correlation coeffcients
+
+```{r calculate_correlation_coefficients, eval=FALSE}
 
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -623,8 +641,13 @@ rm(cor_predictors_temp, cor_Cstar_predictor_temp)
 
 ```
 
+#### Predictor pairs
 
 ```{r predictors_correlation_coefficient, fig.asp=2}
+
+cor_predictors <-
+  read_csv(here::here("data/eMLR",
+                       "cor_predictors.csv"))
 
 cor_predictors_stats <- cor_predictors %>% 
   group_by(pair, basin, gamma_slab) %>% 
@@ -646,11 +669,22 @@ cor_predictors_stats %>%
   labs(x = "correlation coefficient", y = "") +
   theme(legend.position = "top")
 
+kable(cor_predictors) %>%
+  add_header_above() %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = "400px")
+
+rm(cor_predictors, cor_predictors_stats)
 
 ```
 
+#### C* vs individual predictors
 
 ```{r Cstar_predictor_correlation_coefficient, fig.asp=1.5}
+
+cor_Cstar_predictor <-
+  read_csv(here::here("data/eMLR",
+                       "cor_Cstar_predictor.csv"))
 
 cor_Cstar_predictor_stats <- cor_Cstar_predictor %>% 
   group_by(rowname, basin, gamma_slab) %>% 
@@ -672,6 +706,12 @@ cor_Cstar_predictor_stats %>%
   labs(x = "correlation coefficient", y = "") +
   theme(legend.position = "top")
 
+kable(cor_Cstar_predictor) %>%
+  add_header_above() %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = "400px")
+
+rm(cor_Cstar_predictor, cor_Cstar_predictor_stats)
 
 ```
 
