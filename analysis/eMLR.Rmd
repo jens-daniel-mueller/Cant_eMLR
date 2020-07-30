@@ -461,7 +461,7 @@ lat_section +
 
 ### Overview
 
-```{r predictor_correlation_all, fig.asp=1}
+```{r predictor_correlation_overview, fig.asp=1}
 
 GLODAP %>% 
   sample_frac(0.01) %>% 
@@ -485,7 +485,7 @@ GLODAP %>%
 
 Individual correlation plots for each basin, era and neutral density (gamma) slab are available upon request.
 
-```{r predictor_correlation_basin_era_per_slab, eval=FALSE}
+```{r predictor_correlation_per_basin_era_slab, eval=FALSE}
 
 
 for (i_basin in unique(GLODAP$basin)) {
@@ -643,7 +643,7 @@ rm(cor_predictors_temp, cor_Cstar_predictor_temp)
 
 #### Predictor pairs
 
-```{r predictors_correlation_coefficient, fig.asp=1.8}
+```{r correlation_predictor_pairs, fig.asp=1.8}
 
 cor_predictors <-
   read_csv(here::here("data/eMLR",
@@ -680,7 +680,7 @@ rm(cor_predictors, cor_predictors_stats)
 
 #### C* vs individual predictors
 
-```{r Cstar_predictor_correlation_coefficient, fig.asp=1.5}
+```{r correlation_predictors, fig.asp=1.5}
 
 cor_Cstar_predictor <-
   read_csv(here::here("data/eMLR",
