@@ -52,7 +52,7 @@ basinmask_01 <- basinmask_01 %>%
 
 ## Basin labels
 
-According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html) website, number codes in the mask file refer to Ocean basins as follows:  
+According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website, number codes in the mask file refer to Ocean basins as follows:  
 
 - 1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)
 - 2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)

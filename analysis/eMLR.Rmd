@@ -40,8 +40,9 @@ theme_set(theme_bw())
 
 Required are: 
 
-- clean version of GLODAPGLODAPv2.2020
-- observations grid of clean version of GLODAPGLODAPv2.2020
+- GLODAPv2.2020
+  - cleaned data file
+  - horizontal grid of sampling coordinates
 - C_ant from GLODAPv2_2016b_MappedClimatologies
 - annual mean atmospheric pCO~2~ 
 
@@ -63,7 +64,8 @@ co2_atm <- read_csv(here::here("data/pCO2_atmosphere/_summarized_data_files",
 
 # C*
 
-C* serves as a conservative tracer of anthropogenic CO~2~ uptake. It is derived from measured DIC by removing the impact of 
+C* serves as a conservative tracer of anthropogenic CO~2~ uptake. It is derived from measured DIC by removing the impact of  
+
 - organic matter formation and respiration
 - calcification and calcium carbonate dissolution
 
@@ -122,7 +124,7 @@ GLODAP <- GLODAP %>%
 
 # Reference year adjustment
 
-The scaling factor for the reference year adjustment is an apriori estiamte of Cant at a given location and depth. Here, Cant from the GLODAP mapped Climatology was used.  
+The reference year adjustment relies on an apriori estimate of Cant at a given location and depth, which is used as a scaling factor for the concurrent change in atmospheric CO~2~. The underlying assumption is a transient steady state for the oceanic Cant uptake. Here, Cant from the GLODAP mapped Climatology was used.  
 
 Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
 
@@ -191,6 +193,8 @@ rm(GLODAP_Cant_obs)
 ```
 
 ### GLODAP + atm. pCO~2~
+
+GLODAP observations were merged with mean annual atmospheric pCO~2~ levels by year.
 
 ```{r merge_Cstar_pCO2}
 
