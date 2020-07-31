@@ -44,6 +44,24 @@ print(file_list)
 
 # Plot data and write csv
 
+```{r set_criteria_horizons_sections}
+
+depth_surface_selection <- c(0,100,500,2000)
+Atl_lon <- 335.5
+Pac_lon <- 190.5
+
+```
+
+Below, following subsets of the climatologies are plotted:
+- Horizontal planes at `r depth_surface_selection`m
+- Meridional sections at longitudes:
+  - Atlantic: `r Atl_lon`
+  - Pacific: `r Pac_lon`
+
+Section locations are indicated as white lines in the maps.
+
+Please note that longitudes in the climatologies range from 20.5 - 379.5. For later merging with GLODAP observational data this will be projected to -179.5 - 179.5.
+
 ```{r GLODAPv2_2016_Mappedclimatologies}
 
 #file <- file_list[1]
@@ -72,14 +90,14 @@ map_clim_stars %>%
 # subset depth horizons for overview map plots
 
 map_clim_stars_horizons <- map_clim_stars %>% 
-  filter(depth_surface %in% c(0,100,500,2000))
+  filter(depth_surface %in% depth_surface_selection)
 
 # plot maps
 
 print(
 ggplot() +
   geom_stars(data = map_clim_stars_horizons) +
-  geom_vline(xintercept = c(190.5,335.5), col = "white") +
+  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
   scale_fill_viridis_b(n.breaks = 8) +
   labs(title = file) +
   facet_wrap(~depth_surface, ncol = 2) +
@@ -91,7 +109,7 @@ ggplot() +
 Atl_section <- map_clim_stars %>% 
   as_tibble() %>% 
   rename(lat = y, lon = x, depth = depth_surface, parameter = 4) %>% 
-  filter(lon == 335.5)
+  filter(lon == Atl_lon)
 
 Atl_section_bathy <- Atl_section %>% 
   filter(is.na(parameter)) %>% 
@@ -117,7 +135,7 @@ ggplot() +
 Pac_section <- map_clim_stars %>% 
   as_tibble() %>% 
   rename(lat = y, lon = x, depth = depth_surface, parameter = 4) %>% 
-  filter(lon == 190.5)
+  filter(lon == Pac_lon)
 
 Pac_section_bathy <- Pac_section %>% 
   filter(is.na(parameter)) %>% 
