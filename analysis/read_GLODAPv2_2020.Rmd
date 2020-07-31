@@ -536,9 +536,10 @@ rm(mapWorld)
 
 # Individual cruise sections
 
-Zonal and meridional section plots are produce for each cruise individually and stored locally.
+Zonal and meridional section plots are produce for each cruise individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/data/all_cruises_clean){target="_blank"}.
 
 ```{r individual_cruises_clean_triplicates, eval = FALSE}
+
 
 cruises <- GLODAP %>% 
   group_by(cruise) %>% 
