@@ -433,7 +433,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">GLODAPv2_2020</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">29 July, 2020</h4>
+<h4 class="date">31 July, 2020</h4>
 
 </div>
 
@@ -458,7 +458,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-29
+<strong>Last updated:</strong> 2020-07-31
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebf5ea88c55f0acdc09c778a5dadfcbbd99eb43adtargetblankbf5ea88a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bf5ea88c55f0acdc09c778a5dadfcbbd99eb43ad" target="_blank">bf5ea88</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree977782e12464f4a943c11ee5818d089f7b0e331ctargetblank977782ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/977782e12464f4a943c11ee5818d089f7b0e331c" target="_blank">977782e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebf5ea88c55f0acdc09c778a5dadfcbbd99eb43adtargetblankbf5ea88a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree977782e12464f4a943c11ee5818d089f7b0e331ctargetblank977782ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bf5ea88c55f0acdc09c778a5dadfcbbd99eb43ad" target="_blank">bf5ea88</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/977782e12464f4a943c11ee5818d089f7b0e331c" target="_blank">977782e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -572,7 +572,9 @@ Ignored files:
     Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    output/figure/
+
+Untracked files:
+    Untracked:  output/
 
 </code></pre>
 <p>
@@ -611,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/977782e12464f4a943c11ee5818d089f7b0e331c/analysis/read_GLODAPv2_2020.Rmd" target="_blank">977782e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+minor plot update, open questions added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/9dc5d7f756031140c2ca072b06ff9c85f9b46eb8/docs/read_GLODAPv2_2020.html" target="_blank">9dc5d7f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1669,7 +1705,8 @@ ggplot() +
   geom_raster(data = GLODAP_obs, aes(lon, lat)) +
   scale_fill_brewer(palette = &quot;Dark2&quot;) +
   coord_quickmap(expand = 0) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
+  theme(legend.position = &quot;top&quot;,
+        legend.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/WOA_basin_mask_GLODAP_observations_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(mapWorld, GLODAP_obs)</code></pre>
 <p>Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis.</p>
@@ -1740,7 +1777,8 @@ GLODAP_histogram_lat %&gt;%
   scale_fill_brewer(palette = &quot;Dark2&quot;) +
   facet_wrap(~basin) +
   coord_flip(expand = 0) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
+  theme(legend.position = &quot;top&quot;,
+        legend.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_histogram_zonal-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_histogram_lat)</code></pre>
 </div>
@@ -1765,7 +1803,8 @@ GLODAP_histogram_year %&gt;%
   scale_shape_manual(values = 24, name = &quot;&quot;) +
   coord_cartesian(expand = 0) +
   theme(legend.position = &quot;top&quot;,
-        legend.direction = &quot;vertical&quot;)</code></pre>
+        legend.direction = &quot;vertical&quot;,
+        legend.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_histogram_temporal-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_histogram_year,
    era_median_year)</code></pre>
@@ -1798,7 +1837,8 @@ GLODAP %&gt;%
   ggplot(aes(lon, lat)) +
   mapWorld +
   geom_bin2d(binwidth = c(1,1)) +
-  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;) +
+  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;,
+                       name = &quot;log10(n)&quot;) +
   scale_x_continuous(breaks = seq(-180, 180, 30)) +
   scale_y_continuous(breaks = seq(-90, 90, 30)) +
   coord_quickmap(expand = FALSE) +
@@ -1927,6 +1967,15 @@ rm(map,
 </div>
 <div id="questions" class="section level1">
 <h1><span class="header-section-number">6</span> Questions</h1>
+<ul>
+<li>Apply coastal filter?</li>
+<li>Keep horizontal gridding to 1°x1° (thereby discarding some horizontal information)?</li>
+<li>Quality of WOA18 basin mask
+<ul>
+<li>excluded areas (e.g. Bay of Bengal, South Norwegian Sea, Sea of Japan)</li>
+<li>Pacific-Atlantic boundary</li>
+</ul></li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
