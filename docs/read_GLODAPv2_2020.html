@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree977782e12464f4a943c11ee5818d089f7b0e331ctargetblank977782ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/977782e12464f4a943c11ee5818d089f7b0e331c" target="_blank">977782e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb4fa5a8077a2992d38743789960c38d6a1e5abbctargetblankb4fa5a8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b4fa5a8077a2992d38743789960c38d6a1e5abbc" target="_blank">b4fa5a8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree977782e12464f4a943c11ee5818d089f7b0e331ctargetblank977782ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb4fa5a8077a2992d38743789960c38d6a1e5abbctargetblankb4fa5a8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/977782e12464f4a943c11ee5818d089f7b0e331c" target="_blank">977782e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b4fa5a8077a2992d38743789960c38d6a1e5abbc" target="_blank">b4fa5a8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -572,9 +572,6 @@ Ignored files:
     Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-
-Untracked files:
-    Untracked:  output/
 
 </code></pre>
 <p>
@@ -613,6 +610,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/b4fa5a8077a2992d38743789960c38d6a1e5abbc/analysis/read_GLODAPv2_2020.Rmd" target="_blank">b4fa5a8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+link to all cruise plots included
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/243f31cfb31ebdb1e1c360658e441d86e8d7ef6a/docs/read_GLODAPv2_2020.html" target="_blank">243f31c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1850,7 +1881,7 @@ GLODAP %&gt;%
 </div>
 <div id="individual-cruise-sections" class="section level1">
 <h1><span class="header-section-number">4</span> Individual cruise sections</h1>
-<p>Zonal and meridional section plots are produce for each cruise individually and stored locally.</p>
+<p>Zonal and meridional section plots are produce for each cruise individually and can be downloaded <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/data/all_cruises_clean" target="_blank">here</a>.</p>
 <pre class="r"><code>cruises &lt;- GLODAP %&gt;% 
   group_by(cruise) %&gt;% 
   summarise(date_mean = mean(date, na.rm = TRUE),
