@@ -29,7 +29,7 @@ theme_set(theme_bw())
 ```
 
 # Data source
-- Data source: [World Ocean Atlas 2018](https://www.nodc.noaa.gov/OC5/woa18/woa18data.html)
+- Data source: [World Ocean Atlas 2018](https://www.nodc.noaa.gov/OC5/woa18/woa18data.html){target="_blank"}
 
 # Basin mask
 
@@ -128,7 +128,11 @@ Short description of the statistical fields in WOA
 - The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.
 - The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.
 
-Here, we use the objectively analyzed climatologies.
+Here, we use  
+
+- Fields: objectively analyzed mean
+- Decades: all decades
+- Grid: 1 deg resolution
 
 ## Read ncdfs
 
@@ -158,19 +162,39 @@ WOA_sal_tibble <- WOA_sal_tibble  %>%
 
 ```
 
+
+```{r set_criteria_horizons_sections}
+
+depth_surface_selection <- c(0)
+Atl_lon <- 335.5 - 360 # subtract 360 from value used for GLODAP climatology
+Pac_lon <- 190.5 - 360 # subtract 360 from value used for GLODAP climatology
+
+```
+
+Below, following subsets of the climatologies are plotted for all relevant parameters:  
+
+- Horizontal planes at `r depth_surface_selection`m
+- Meridional sections at longitudes:
+  - Atlantic: `r Atl_lon`
+  - Pacific: `r Pac_lon`
+
+Section locations are indicated as white lines in maps.
+
+Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
+
+
+
 ## Temperature plots
 
 ### Surface map
 
 ```{r temperature_surface_WOA18_map}
 
-section_lon <- -25.5
-
 WOA_tem_tibble %>% 
   filter(depth == 0) %>% 
   ggplot(aes(lon, lat, fill = t_an)) +
   geom_raster() +
-  geom_vline(xintercept = section_lon, col = "red") + 
+  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
   coord_quickmap(expand = 0) +
   scale_fill_viridis_c() +
   theme(legend.position = "top")
@@ -183,9 +207,9 @@ WOA_tem_tibble %>%
 ```{r temperature_section_WOA18_map}
 
 WOA_tem_tibble %>% 
-  filter(lon == section_lon) %>% 
+  filter(lon == Atl_lon) %>% 
   ggplot(aes(lat, depth, z = t_an)) +
-  geom_contour_filled(name = "t_an") +
+  geom_contour_filled() +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top")
@@ -205,7 +229,7 @@ WOA_sal_tibble %>%
   filter(depth == 0) %>% 
   ggplot(aes(lon, lat, fill = s_an)) +
   geom_raster() +
-  geom_vline(xintercept = section_lon, col = "red") + 
+  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
   coord_quickmap(expand = 0) +
   scale_fill_viridis_c() +
   theme(legend.position = "top")
@@ -218,9 +242,9 @@ WOA_sal_tibble %>%
 ```{r salinity_section_WOA18_map}
 
 WOA_sal_tibble %>% 
-  filter(lon == section_lon) %>% 
+  filter(lon == Pac_lon) %>% 
   ggplot(aes(lat, depth, z = s_an)) +
-  geom_contour_filled(name = "s_an") +
+  geom_contour_filled() +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top")
@@ -249,4 +273,8 @@ rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)
 
 # Questions
 
-- none
+- Which version of the WOA to be used
+  - Fields (currently: objectively analyzed mean)
+  - Decades (currently: oall decades)
+  - Grid (currently: o1 deg resolution)
+- How to merge with GLODAP climatology (currently interpolated to GLODAP depth)
