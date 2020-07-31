@@ -43,7 +43,7 @@ Required are:
 - GLODAPv2.2020
   - cleaned data file
   - horizontal grid of sampling coordinates
-- C_ant from GLODAPv2_2016b_MappedClimatologies
+- Cant from GLODAPv2_2016b_MappedClimatologies
 - annual mean atmospheric pCO~2~ 
 
 ```{r read_required_data_sets}
@@ -126,7 +126,7 @@ GLODAP <- GLODAP %>%
 
 The reference year adjustment relies on an apriori estimate of Cant at a given location and depth, which is used as a scaling factor for the concurrent change in atmospheric CO~2~. The underlying assumption is a transient steady state for the oceanic Cant uptake. Here, Cant from the GLODAP mapped Climatology was used.  
 
-Note that eq. 6 in Clement and Gruber (2018) misses pCO2 pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
+Note that eq. 6 in Clement and Gruber (2018) misses pCO~2~ pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
 
 ## Merge data sets
 
@@ -487,7 +487,7 @@ GLODAP %>%
 
 ### Grouped for basin, era, slab
 
-Individual correlation plots for each basin, era and neutral density (gamma) slab are available upon request.
+Individual correlation plots for each basin, era and neutral density (gamma) slab are available [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/eMLR/predictor_correlation){target="_blank"}.
 
 ```{r predictor_correlation_per_basin_era_slab, eval=FALSE}
 
@@ -547,6 +547,7 @@ dev.off()
   }
 }
 
+p
 
 ```
 
