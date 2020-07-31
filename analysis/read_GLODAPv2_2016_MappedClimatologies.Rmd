@@ -52,13 +52,14 @@ Pac_lon <- 190.5
 
 ```
 
-Below, following subsets of the climatologies are plotted:
+Below, following subsets of the climatologies are plotted for all relevant parameters:  
+
 - Horizontal planes at `r depth_surface_selection`m
 - Meridional sections at longitudes:
   - Atlantic: `r Atl_lon`
   - Pacific: `r Pac_lon`
 
-Section locations are indicated as white lines in the maps.
+Section locations are indicated as white lines in maps.
 
 Please note that longitudes in the climatologies range from 20.5 - 379.5. For later merging with GLODAP observational data this will be projected to -179.5 - 179.5.
 
