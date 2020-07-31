@@ -433,7 +433,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">World Ocean Atlas 2018</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">29 July, 2020</h4>
+<h4 class="date">31 July, 2020</h4>
 
 </div>
 
@@ -458,7 +458,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-29
+<strong>Last updated:</strong> 2020-07-31
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebf5ea88c55f0acdc09c778a5dadfcbbd99eb43adtargetblankbf5ea88a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bf5ea88c55f0acdc09c778a5dadfcbbd99eb43ad" target="_blank">bf5ea88</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreedea0eafbb6de450bbf41e341467a02942631fbd9targetblankdea0eafa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/dea0eafbb6de450bbf41e341467a02942631fbd9" target="_blank">dea0eaf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebf5ea88c55f0acdc09c778a5dadfcbbd99eb43adtargetblankbf5ea88a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreedea0eafbb6de450bbf41e341467a02942631fbd9targetblankdea0eafa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bf5ea88c55f0acdc09c778a5dadfcbbd99eb43ad" target="_blank">bf5ea88</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/dea0eafbb6de450bbf41e341467a02942631fbd9" target="_blank">dea0eaf</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -572,7 +572,6 @@ Ignored files:
     Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    output/figure/
 
 </code></pre>
 <p>
@@ -611,6 +610,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/dea0eafbb6de450bbf41e341467a02942631fbd9/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">dea0eaf</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+alligned plots with GLODAP climatology
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/9dc5d7f756031140c2ca072b06ff9c85f9b46eb8/docs/read_World_Ocean_Atlas_2018.html" target="_blank">9dc5d7f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1135,7 +1168,7 @@ library(stars)</code></pre>
 <div id="data-source" class="section level1">
 <h1><span class="header-section-number">1</span> Data source</h1>
 <ul>
-<li>Data source: <a href="https://www.nodc.noaa.gov/OC5/woa18/woa18data.html">World Ocean Atlas 2018</a></li>
+<li>Data source: <a href="https://www.nodc.noaa.gov/OC5/woa18/woa18data.html" target="_blank">World Ocean Atlas 2018</a></li>
 </ul>
 </div>
 <div id="basin-mask" class="section level1">
@@ -1216,7 +1249,12 @@ rm(basinmask_01)</code></pre>
 <li>The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.</li>
 <li>The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.</li>
 </ul>
-<p>Here, we use the objectively analyzed climatologies.</p>
+<p>Here, we use</p>
+<ul>
+<li>Fields: objectively analyzed mean</li>
+<li>Decades: all decades</li>
+<li>Grid: 1 deg resolution</li>
+</ul>
 <div id="read-ncdfs" class="section level2">
 <h2><span class="header-section-number">3.1</span> Read ncdfs</h2>
 <pre class="r"><code># temperature
@@ -1240,18 +1278,30 @@ WOA_sal_tibble &lt;- WOA_sal %&gt;% hyper_tibble()
 WOA_sal_tibble &lt;- WOA_sal_tibble  %&gt;% 
   select(s_an, lon, lat, depth) %&gt;% 
   drop_na()</code></pre>
+<pre class="r"><code>depth_surface_selection &lt;- c(0)
+Atl_lon &lt;- 335.5 - 360 # subtract 360 from value used for GLODAP climatology
+Pac_lon &lt;- 190.5 - 360 # subtract 360 from value used for GLODAP climatology</code></pre>
+<p>Below, following subsets of the climatologies are plotted for all relevant parameters:</p>
+<ul>
+<li>Horizontal planes at 0m</li>
+<li>Meridional sections at longitudes:
+<ul>
+<li>Atlantic: -24.5</li>
+<li>Pacific: -169.5</li>
+</ul></li>
+</ul>
+<p>Section locations are indicated as white lines in maps.</p>
+<p>Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.</p>
 </div>
 <div id="temperature-plots" class="section level2">
 <h2><span class="header-section-number">3.2</span> Temperature plots</h2>
 <div id="surface-map" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Surface map</h3>
-<pre class="r"><code>section_lon &lt;- -25.5
-
-WOA_tem_tibble %&gt;% 
+<pre class="r"><code>WOA_tem_tibble %&gt;% 
   filter(depth == 0) %&gt;% 
   ggplot(aes(lon, lat, fill = t_an)) +
   geom_raster() +
-  geom_vline(xintercept = section_lon, col = &quot;red&quot;) + 
+  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = &quot;white&quot;) +
   coord_quickmap(expand = 0) +
   scale_fill_viridis_c() +
   theme(legend.position = &quot;top&quot;)</code></pre>
@@ -1260,9 +1310,9 @@ WOA_tem_tibble %&gt;%
 <div id="section" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Section</h3>
 <pre class="r"><code>WOA_tem_tibble %&gt;% 
-  filter(lon == section_lon) %&gt;% 
+  filter(lon == Atl_lon) %&gt;% 
   ggplot(aes(lat, depth, z = t_an)) +
-  geom_contour_filled(name = &quot;t_an&quot;) +
+  geom_contour_filled() +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = &quot;top&quot;)</code></pre>
@@ -1277,7 +1327,7 @@ WOA_tem_tibble %&gt;%
   filter(depth == 0) %&gt;% 
   ggplot(aes(lon, lat, fill = s_an)) +
   geom_raster() +
-  geom_vline(xintercept = section_lon, col = &quot;red&quot;) + 
+  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = &quot;white&quot;) +
   coord_quickmap(expand = 0) +
   scale_fill_viridis_c() +
   theme(legend.position = &quot;top&quot;)</code></pre>
@@ -1286,9 +1336,9 @@ WOA_tem_tibble %&gt;%
 <div id="section-1" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Section</h3>
 <pre class="r"><code>WOA_sal_tibble %&gt;% 
-  filter(lon == section_lon) %&gt;% 
+  filter(lon == Pac_lon) %&gt;% 
   ggplot(aes(lat, depth, z = s_an)) +
-  geom_contour_filled(name = &quot;s_an&quot;) +
+  geom_contour_filled() +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = &quot;top&quot;)</code></pre>
@@ -1315,7 +1365,13 @@ rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)</code></p
 <div id="questions" class="section level1">
 <h1><span class="header-section-number">5</span> Questions</h1>
 <ul>
-<li>none</li>
+<li>Which version of the WOA to be used
+<ul>
+<li>Fields (currently: objectively analyzed mean)</li>
+<li>Decades (currently: oall decades)</li>
+<li>Grid (currently: o1 deg resolution)</li>
+</ul></li>
+<li>How to merge with GLODAP climatology (currently interpolated to GLODAP depth)</li>
 </ul>
 <br>
 <p>
