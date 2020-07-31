@@ -342,7 +342,8 @@ ggplot() +
   geom_raster(data = GLODAP_obs, aes(lon, lat)) +
   scale_fill_brewer(palette = "Dark2") +
   coord_quickmap(expand = 0) +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.title = element_blank())
 
 rm(mapWorld, GLODAP_obs)
 
@@ -449,7 +450,8 @@ GLODAP_histogram_lat %>%
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(~basin) +
   coord_flip(expand = 0) +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.title = element_blank())
 
 rm(GLODAP_histogram_lat)
 
@@ -478,7 +480,8 @@ GLODAP_histogram_year %>%
   scale_shape_manual(values = 24, name = "") +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top",
-        legend.direction = "vertical")
+        legend.direction = "vertical",
+        legend.title = element_blank())
 
 rm(GLODAP_histogram_year,
    era_median_year)
@@ -519,7 +522,8 @@ GLODAP %>%
   ggplot(aes(lon, lat)) +
   mapWorld +
   geom_bin2d(binwidth = c(1,1)) +
-  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10") +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
+                       name = "log10(n)") +
   scale_x_continuous(breaks = seq(-180, 180, 30)) +
   scale_y_continuous(breaks = seq(-90, 90, 30)) +
   coord_quickmap(expand = FALSE) +
@@ -660,3 +664,9 @@ rm(map,
 - move A16 cruises in 2013 from new_era to GO_SHIP era
 
 # Questions
+
+- Apply coastal filter?
+- Keep horizontal gridding to 1°x1° (thereby discarding some horizontal information)?
+- Quality of WOA18 basin mask
+  - excluded areas (e.g. Bay of Bengal, South Norwegian Sea, Sea of Japan)
+  - Pacific-Atlantic boundary
