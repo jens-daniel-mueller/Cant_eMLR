@@ -101,6 +101,8 @@ GLODAP <- GLODAP %>%
          rNP_phosphate_05 = -0.5 * rNP * phosphate,
          Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05)
 
+rm(rCP, rNP)
+
 ```
 
 # PO~4~* calculation 
@@ -144,13 +146,7 @@ rm(Cant_clim, GLODAP_obs_grid)
 
 GLODAP_Cant_obs <- full_join(GLODAP, Cant_clim_obs)
 
-rm(Cant_clim_obs)
-
-# GLODAP_Cant_full %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-#                                           "GLODAP_Cant_full.csv"))
-# 
-# GLODAP_Cant_full <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-#                                           "GLODAP_Cant_full.csv"))
+rm(Cant_clim_obs, GLODAP)
 
 ```
 
@@ -249,7 +245,7 @@ GLODAP %>%
 ```{r Cstar_reference_year_adjustment_vs_time_difference_Cant}
 
 GLODAP %>% 
-  sample_n(10000) %>% 
+  sample_n(1e4) %>% 
   ggplot(aes(year, Cstar_tref_delta, col = Cant)) +
   geom_point() +
   scale_color_viridis_c() +
@@ -257,10 +253,9 @@ GLODAP %>%
 
 ```
 
-
 # Selected section plots
 
-Selected sections are plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.
+A selected section is plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.
 
 ```{r select_cruises}
 
@@ -270,54 +265,6 @@ GLODAP_cruise <- GLODAP %>%
   filter(cruise %in% cruises_meridional)
 
 ```
-
-```{r interpolate_raster_section, eval=FALSE}
-
-bbox <- c(
-  "xmin" = min(GLODAP_cruise$lat),
-  "ymin" = min(GLODAP_cruise$depth),
-  "xmax" = max(GLODAP_cruise$lat),
-  "ymax" = max(GLODAP_cruise$depth)
-)
-
-grd_template <- expand.grid(
-  lat = seq(from = bbox["xmin"], to = bbox["xmax"], by = 1),
-  depth = seq(from = bbox["ymin"], to = bbox["ymax"], by = 50) # 20 m resolution
-)
-
-crs_raster_format <- " +proj=utm  +zone=33  +ellps=GRS80  +towgs84=0,0,0,0,0,0,0  +units=m  +no_defs"
-
-grd_template_raster <- grd_template %>% 
-  dplyr::mutate(Z = 0) %>% 
-  raster::rasterFromXYZ( 
-    crs = crs_raster_format)
-
-
-# Generalized Additive Model
-fit_GAM <- mgcv::gam( # using {mgcv}
-  gamma ~ s(lat, depth),      # here come our X/Y/Z data - straightforward enough
-  data = GLODAP_cruise      # specify in which object the data is stored
-)
-
-# Generalized Additive Model
-interp_GAM <- grd_template %>% 
-  mutate(Z = predict(fit_GAM, .)) %>% 
-  raster::rasterFromXYZ(crs = crs_raster_format)
-
-df <- raster::rasterToPoints(interp_GAM) %>% as_tibble()
-colnames(df) <- c("X", "Y", "Z")
-  
-ggplot(df, aes(x = X, y = Y, fill = Z, z = Z))  +
-  geom_raster()  +
-  geom_contour(col="white")  +
-  ggtitle(label = "interp GAM")  +
-  scale_fill_viridis_c()  +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)
-
-```
-
-
 
 
 ```{r meridional_sections, fig.asp=0.6}
@@ -423,6 +370,8 @@ The following boundaries for isoneutral slabs were defined:
 - Atlantic: `r slabs_Atl`
 - Indo-Pacific: `r slabs_Ind_Pac`
 
+Continous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
+
 ```{r cut_isoneutral_slabs}
 
 GLODAP_Atl <- GLODAP %>% 
@@ -434,11 +383,12 @@ GLODAP_Ind_Pac <- GLODAP %>%
   mutate(gamma_slab = cut(gamma, slabs_Ind_Pac))
 
 GLODAP <- bind_rows(GLODAP_Atl, GLODAP_Ind_Pac)
-rm(GLODAP_Atl, GLODAP_Ind_Pac)
+
+rm(GLODAP_Atl, GLODAP_Ind_Pac, slabs_Atl, slabs_Ind_Pac)
 
 ```
 
-```{r isoneutral_slabs_section, fig.asp=0.6}
+```{r meridional_sections_isoneutral_slabs, fig.asp=0.6}
 
 GLODAP_cruise <- GLODAP %>% 
   filter(cruise %in% cruises_meridional)
@@ -458,6 +408,8 @@ lat_section +
   scale_color_viridis_d()
 
 
+rm(lat_section, GLODAP_cruise, cruises_meridional)
+
 ```
 
 
@@ -475,7 +427,8 @@ were investigated based on:
 
 ### Correlation plots
 
-For an overview, a subset of data from all basins and eras were plotted, with color indicating neutral density slabs.
+For an overview, a random subset of data from all eras was plotted separately 
+for both basins, with color indicating neutral density slabs (high density = dark-purple color).
 
 ```{r predictor_correlation_Atlantic, fig.asp=1}
 
@@ -490,9 +443,10 @@ GLODAP %>%
                       "silicate",
                       "phosphate",
                       "phosphate_star"),
+          upper = "blank",
           ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01)) +
-      scale_fill_viridis_d() +
-      scale_color_viridis_d() +
+      scale_fill_viridis_d(direction = -1) +
+      scale_color_viridis_d(direction = -1) +
       labs(title = paste("Basin: Atlantic | era: all | subsample size: 5 % of",
                          nrow(GLODAP %>% filter(basin == "Atlantic"))))
 
@@ -511,9 +465,10 @@ GLODAP %>%
                       "silicate",
                       "phosphate",
                       "phosphate_star"),
+          upper = "blank",
           ggplot2::aes(col = gamma_slab, fill = gamma_slab, alpha = 0.01)) +
-      scale_fill_viridis_d() +
-      scale_color_viridis_d() +
+      scale_fill_viridis_d(direction = -1) +
+      scale_color_viridis_d(direction = -1) +
       labs(title = paste("Basin: Indo-Pacific | era: all | subsample size: 5 % of",
                          nrow(GLODAP %>% filter(basin == "Indo-Pacific") )))
 
@@ -586,6 +541,8 @@ dev.off()
 ### Correlation assesment
 
 #### Calculation of correlation coeffcients
+
+Correlation coefficients were calculated indivdually within each slabs, era and basin.
 
 ```{r calculate_correlation_coefficients, eval=FALSE}
 
@@ -674,11 +631,15 @@ cor_Cstar_predictor %>%
   write_csv(here::here("data/eMLR",
                        "cor_Cstar_predictor.csv"))
 
-rm(cor_predictors_temp, cor_Cstar_predictor_temp)
+rm(cor_predictors_temp, cor_Cstar_predictor_temp,
+   i_gamma_slab, i_era, i_basin,
+   GLODAP_basin_era, GLODAP_basin_era_slab)
 
 ```
 
 #### Predictor pairs
+
+Below, the range of correlations coefficients for each predictor pair is plotted per basin (facet) and density slab (color). Note that the range indicates the min and max values of in total 3 calculated coefficients (one per era).
 
 ```{r correlation_predictor_pairs, fig.asp=1.8}
 
@@ -717,6 +678,9 @@ rm(cor_predictors, cor_predictors_stats)
 
 #### C* vs individual predictors
 
+
+Below, the range of correlations coefficients for C* with each predictor is plotted per basin (facet) and density slab (color). Note that the range indicates the min and max values of in total 3 calculated coefficients (one per era).
+
 ```{r correlation_predictors, fig.asp=1.5}
 
 cor_Cstar_predictor <-
@@ -754,7 +718,6 @@ rm(cor_Cstar_predictor, cor_Cstar_predictor_stats)
 ```
 
 
-
 ## Model fitting
 
 ```{r write_csv_GLODAP_used_for_fitting, eval = FALSE}
@@ -766,16 +729,9 @@ GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 
 ### Predictor selection
 
+Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.
+
 ```{r eMLR_fitting_predictor_selection, eval=FALSE}
-
-# gamma_slab_max <- GLODAP %>%
-#   filter(basin == "Atlantic", era == "new_era") %>% 
-#   group_by(gamma_slab) %>% 
-#   count() %>% 
-#   ungroup() %>% 
-#   filter(n == max(n)) %>% 
-#   pull(1)
-
 
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -836,16 +792,40 @@ all_lm_stats %>%
   write_csv(here::here("data/eMLR",
                        "all_lm_stats.csv"))
 
+rm(i_gamma_slab, i_era, i_basin,
+   GLODAP_basin_era, GLODAP_basin_era_slab,
+   all_lm_stats)
+
 ```
+
+```{r set_criteria_predictor_number}
+
+n_predictors_max <- 5
+n_predictors_min <- 2
+
+n_predictors_total <- 10
+
+```
+
+
+RMSE was plotted against the number of predictors (limited to `r n_predictors_min` - `r n_predictors_max`).
 
 ```{r eMLR_predictor_model_quality, fig.asp=2}
 
 all_lm_stats <- read_csv(here::here("data/eMLR",
                                     "all_lm_stats.csv"))
 
+# nrow(all_lm_stats)
+# length(unique(all_lm_stats$rmse))
+# length(unique(all_lm_stats$adjr))
+# length(unique(all_lm_stats$rsquare))
+# length(unique(all_lm_stats$cp))
+# length(unique(all_lm_stats$aic))
+# length(unique(all_lm_stats$mindex))
 
-# all_lm_stats <- all_lm_stats %>% 
-#   rename(sigma = rmse)
+all_lm_stats <- all_lm_stats %>% 
+  filter(n >= n_predictors_min,
+         n <= n_predictors_max)
 
 all_lm_stats %>% 
   ggplot(aes(n, rmse, col = basin)) +
@@ -854,38 +834,13 @@ all_lm_stats %>%
   facet_grid(gamma_slab~era) +
   scale_color_brewer(palette = "Set1")
 
-all_lm_stats %>% 
-  ggplot(aes(n, adjr, col = basin)) +
-  geom_point(shape = 21) +
-  facet_grid(gamma_slab~era) +
-  scale_color_brewer(palette = "Set1")
-
-all_lm_stats %>% 
-  ggplot(aes(n, aic, col = basin)) +
-  geom_point(shape = 21) +
-  facet_grid(gamma_slab~era) +
-  scale_color_brewer(palette = "Set1")
-
- 
-# all_lm_stats %>% 
-#   ggplot(aes(rmse, predictors, col = gamma_slab)) +
-#   geom_point(shape = 21) +
-#   facet_grid(.~basin)
-  
-
 ```
 
-
-
+Within each basin and slab, the `r n_predictors_total` linear regression models with lowest summed RMSE across all eras were selected.
 
 ```{r predictor_selection}
 
-n_predictors_max <- 5
-n_predictors_min <- 2
-
 all_lm_stats <- all_lm_stats %>% 
-  filter(n >= n_predictors_min,
-         n <= n_predictors_max) %>% 
   select(basin, era, gamma_slab, predictors, rmse)
 
 all_lm_stats_wide <- all_lm_stats %>% 
@@ -896,7 +851,9 @@ all_lm_stats_wide <- all_lm_stats_wide %>%
 
 lm_best <- all_lm_stats_wide %>% 
   group_by(basin, gamma_slab) %>% 
-  slice_min(rmse_sum, n = 10) %>% 
+  slice_min(order_by = rmse_sum,
+            with_ties = FALSE,
+            n = n_predictors_total) %>% 
   ungroup()
 
 kable(lm_best) %>%
@@ -904,24 +861,25 @@ kable(lm_best) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "400px")
 
-rm(n_predictors_max, n_predictors_min)
+# lm_best_n <-lm_best %>% 
+#   group_by(basin, gamma_slab) %>% 
+#   summarise(n()) %>% 
+#   ungroup()
+
+rm(n_predictors_max, n_predictors_min, 
+   all_lm_stats, all_lm_stats_wide)
 
 ```
+
+### Fitting best models
+
+After selecting `r n_predictors_total` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
 
 ```{r fit_best_models, eval=FALSE}
 
 lm_best <- lm_best %>% 
   mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
          lm_coeff = paste("Cstar ~", lm_coeff))
-
-# test_lm <- lm_best %>% 
-#   slice_min(rmse_sum) %>% 
-#   select(lm_coeff) %>% 
-#   pull()
-# 
-# class(test_lm)
-# test_lm_formula <- as.formula(test_lm)
-# class(test_lm_formula)
 
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -949,13 +907,18 @@ for (i_basin in unique(GLODAP$basin)) {
       lm_best_basin_slab <- lm_best_basin %>% 
         filter(gamma_slab == i_gamma_slab)
       
-      for (i_rmse_sum in unique(lm_best_basin_slab$rmse_sum)) {
+      for (i_predictors in unique(lm_best_basin_slab$predictors)) {
         
-        # i_rmse_sum <- unique(lm_best_basin_slab$rmse_sum)[2]
+        # i_predictors <- unique(lm_best_basin_slab$predictors)[1]
         
-        lm_best_single <- lm_best %>%
-          filter(rmse_sum == i_rmse_sum) %>%
+        lm_best_single <- lm_best_basin_slab %>%
+          filter(predictors == i_predictors) %>%
           select(lm_coeff) %>%
+          pull()
+        
+        i_rmse_sum <- lm_best_basin_slab %>%
+          filter(predictors == i_predictors) %>%
+          select(rmse_sum) %>%
           pull()
         
         lm_formula <- as.formula(lm_best_single)
@@ -981,8 +944,7 @@ for (i_basin in unique(GLODAP$basin)) {
         all_lm <- coefficients
       }
       
-      rm(lm_formula, model_single, coefficients)
-        
+
       }
       
  
@@ -993,6 +955,11 @@ for (i_basin in unique(GLODAP$basin)) {
 }
 
 
+rm(lm_formula, model_single, coefficients, i_rmse_sum,
+   GLODAP_basin_era, GLODAP_basin_era_slab,
+   lm_best, lm_best_basin, lm_best_basin_slab, lm_best_single,
+   i_basin, i_era, i_gamma_slab, i_predictors)
+
 all_lm %>%
   write_csv(here::here("data/eMLR",
                        "all_lm.csv"))
@@ -1001,7 +968,7 @@ all_lm %>%
 
 
 
-### All predictors
+# Old script chunks
 
 ```{r eMLR_fitting_full_model, eval=FALSE}
 
@@ -1058,4 +1025,7 @@ MLRs %>%
 
 # Open tasks
 
--  Check if intercept is modeled
+- combine correlation, rmse and model calculation into one routine, ideally using the purrr map approach
+- select exactly best 10 models, even if same rmse sum appears more than once (currently, selection is set two ten, even if doublicated rmse occur)
+
+# Open questions
