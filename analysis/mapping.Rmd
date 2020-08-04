@@ -32,8 +32,17 @@ theme_set(theme_bw())
 Currently we use following data sets for mapping: 
 
 - GLODAPv2_2016b_MappedClimatologies
-- World Ocean Atlas 2013 neutral densities
+  - Salinity
+  - Temperature
+  - Phosphate
+  - Nitrate
+  - Silicate
+  - oxygen
+- World Ocean Atlas 2013
+  - Neutral densities calculated by D Clement
 - eMLR model coefficients
+
+We aim to use WOA18 instead of WOA13, but still need to implement neutral density calculation.
 
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
 
@@ -41,8 +50,8 @@ variables <- c("salinity", "temperature", "NO3", "oxygen", "PO4", "silicate")
 
 for (i_variable in variables) {
   
-  #i_variable <- variables[2]
-  print(i_variable)
+  # i_variable <- variables[2]
+  # print(i_variable)
   temp <- read_csv(
     here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                paste(i_variable,".csv", sep = "")))
@@ -59,11 +68,10 @@ for (i_variable in variables) {
 
 rm(temp, i_variable, variables)
 
-GLODAP_depths <- unique(GLODAP_predictors$depth)
-
-GLODAP_lon <- unique(GLODAP_predictors$lon)
-min(GLODAP_lon)
-max(GLODAP_lon)
+# GLODAP_depths <- unique(GLODAP_predictors$depth)
+# GLODAP_lon <- unique(GLODAP_predictors$lon)
+# min(GLODAP_lon)
+# max(GLODAP_lon)
 
 ```
 
@@ -76,7 +84,7 @@ WOA18_predictors <-
 WOA18_predictors <- WOA18_predictors %>% 
   rename(salinity = s_an, temperature = t_an)
 
-WOA18_depths <- unique(WOA18_predictors$depth)
+# WOA18_depths <- unique(WOA18_predictors$depth)
 
 
 ```
@@ -116,7 +124,11 @@ all_lm <- read_csv(here::here("data/eMLR",
 
 ## Control plots
 
-```{r control_plots_pre_merging}
+Maps of number of observations per horizontal grid cell.
+
+### GLODAP climatology
+
+```{r control_plots_pre_merging_GLODAP}
 
 GLODAP_n <- GLODAP_predictors %>% 
   drop_na() %>% 
@@ -131,6 +143,14 @@ GLODAP_n %>%
   coord_quickmap(expand = 0) +
   theme(legend.position = "bottom")
 
+rm(GLODAP_n)
+
+```
+
+### WOA13 climatology
+
+```{r control_plots_pre_merging_WOA13}
+
 WOA13_gamma_n <- WOA13_gamma %>% 
   drop_na() %>% 
   group_by(lat, lon) %>% 
@@ -144,14 +164,14 @@ WOA13_gamma_n %>%
   coord_quickmap(expand = 0) +
   theme(legend.position = "bottom")
 
-rm(GLODAP_n, WOA13_gamma_n)
+rm(WOA13_gamma_n)
 
 ```
 
 
-## WOA13
+## WOA13 + GLODAP
 
-```{r join_WOA13_GLODAP_predictors, fig.asp=0.5}
+```{r join_WOA13_GLODAP_predictors}
 
 predictors <- full_join(GLODAP_predictors, WOA13_gamma)
 rm(GLODAP_predictors, WOA13_gamma)
@@ -204,15 +224,6 @@ predictors %>%
 
 predictors %>%
   filter(depth == 0) %>% 
-  ggplot(aes(lon, lat, fill = temperature)) +
-  geom_raster() +
-  scale_fill_viridis_c() +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = "bottom") +
-  labs(title = "Surface values")
-
-predictors %>%
-  filter(depth == 0) %>% 
   ggplot(aes(lon, lat, fill = gamma)) +
   geom_raster() +
   scale_fill_viridis_c() +
@@ -223,7 +234,9 @@ predictors %>%
 ```
 
 
-## WOA18 (not used)
+## WOA18 + GLODAP
+
+WOA18 data are currently not used. Code chunks in this section are not executed.
 
 ```{r join_WOA18_GLODAP_predictors, fig.asp=0.5, eval=FALSE}
 
