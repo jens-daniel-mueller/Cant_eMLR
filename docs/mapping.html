@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec8344969c97c0117dc0b29225da4443f2ac061e2targetblankc834496a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c8344969c97c0117dc0b29225da4443f2ac061e2" target="_blank">c834496</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree810fc7b591754a680fe8cbb7a072d2386fed1c43targetblank810fc7ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/810fc7b591754a680fe8cbb7a072d2386fed1c43" target="_blank">810fc7b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec8344969c97c0117dc0b29225da4443f2ac061e2targetblankc834496a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree810fc7b591754a680fe8cbb7a072d2386fed1c43targetblank810fc7ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c8344969c97c0117dc0b29225da4443f2ac061e2" target="_blank">c834496</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/810fc7b591754a680fe8cbb7a072d2386fed1c43" target="_blank">810fc7b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -615,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/810fc7b591754a680fe8cbb7a072d2386fed1c43/analysis/mapping.Rmd" target="_blank">810fc7b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+first completed Cant map
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/eb244fb6b385165f465fd628ee228e1bce7e4e7f/docs/mapping.html" target="_blank">eb244fb</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -828,7 +862,8 @@ first publish
 </div>
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
-library(oce)</code></pre>
+library(oce)
+library(marelac)</code></pre>
 <div id="required-data" class="section level1">
 <h1><span class="header-section-number">1</span> Required data</h1>
 <p>Currently we use following data sets for mapping:</p>
@@ -845,6 +880,10 @@ library(oce)</code></pre>
 <li>World Ocean Atlas 2013
 <ul>
 <li>Neutral densities calculated by D Clement</li>
+</ul></li>
+<li>World Ocean Atlas 2018
+<ul>
+<li>basin mask</li>
 </ul></li>
 <li>eMLR model coefficients</li>
 </ul>
@@ -898,6 +937,8 @@ rm(WOA13)
 
 # WOA13_depths &lt;- unique(WOA13_gamma$depth)
 # GLODAP_depths - WOA13_depths</code></pre>
+<pre class="r"><code>basinmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                                 &quot;basin_mask_WOA18.csv&quot;))</code></pre>
 <pre class="r"><code>all_lm &lt;- read_csv(here::here(&quot;data/eMLR&quot;,
                               &quot;all_lm.csv&quot;))</code></pre>
 </div>
@@ -974,34 +1015,90 @@ predictors &lt;- predictors %&gt;%
             n_temperature,
             n_gamma))
 
-predictors &lt;- predictors %&gt;% 
-  drop_na()
 
-predictors %&gt;%
+predictors &lt;- predictors %&gt;% 
+  drop_na()</code></pre>
+<div id="spatial-boundaries" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Spatial boundaries</h3>
+<pre class="r"><code>min_depth &lt;- 150
+min_bottomdepth &lt;- 500
+max_lat &lt;- 65</code></pre>
+<p>Only mapped variables were taken into consideration with:</p>
+<ul>
+<li>minimum depth: 150m</li>
+<li>minimum bottom depth: 500m</li>
+<li>maximum latitude: 65°N</li>
+</ul>
+<pre class="r"><code>predictors &lt;- predictors %&gt;% 
+  filter(depth &gt;= min_depth)
+
+predictors &lt;- predictors %&gt;% 
+  filter(lat &lt;= max_lat)
+
+predictors &lt;- predictors %&gt;% 
+  group_by(lat, lon) %&gt;% 
+  mutate(bottomdepth = max(depth)) %&gt;% 
+  ungroup()
+
+predictors &lt;- predictors %&gt;% 
+  filter(bottomdepth &gt;= min_bottomdepth) %&gt;% 
+  select(-bottomdepth)
+
+rm(min_depth, max_lat, min_bottomdepth)</code></pre>
+</div>
+<div id="basin-mask" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Basin mask</h3>
+<p>Please note that some predictor variables are available outside the WOA18 basin mask and will be removed for further analysis.</p>
+<pre class="r"><code>predictors &lt;- inner_join(predictors, basinmask)
+rm(basinmask)</code></pre>
+</div>
+<div id="maps" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Maps</h3>
+<pre class="r"><code>predictors %&gt;%
   ggplot(aes(lon, lat)) +
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(direction = -1) +
   coord_quickmap(expand = 0) +
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/mapping.Rmd/WOA13_GLODAP_climatology_control_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>predictors %&gt;%
-  filter(depth == 0) %&gt;% 
+  filter(depth == 150) %&gt;% 
   ggplot(aes(lon, lat, fill = PO4)) +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
   theme(legend.position = &quot;bottom&quot;) +
-  labs(title = &quot;Surface values&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-2.png" width="672" style="display: block; margin: auto;" /></p>
+  labs(title = &quot;150m values&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/WOA13_GLODAP_climatology_control_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>predictors %&gt;%
-  filter(depth == 0) %&gt;% 
+  filter(depth == 150) %&gt;% 
   ggplot(aes(lon, lat, fill = gamma)) +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
   theme(legend.position = &quot;bottom&quot;) +
-  labs(title = &quot;Surface values&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-3.png" width="672" style="display: block; margin: auto;" /></p>
+  labs(title = &quot;150m values&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/WOA13_GLODAP_climatology_control_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="predictor-profiles" class="section level3">
+<h3><span class="header-section-number">2.2.4</span> Predictor profiles</h3>
+<pre class="r"><code>N_Atl &lt;- predictors %&gt;% 
+  filter(lat == 40.5, lon == -20.5)
+
+N_Atl &lt;- N_Atl %&gt;% 
+  pivot_longer(salinity:gamma, names_to = &quot;parameter&quot;, values_to = &quot;value&quot;)
+
+N_Atl %&gt;% 
+  ggplot(aes(value, depth)) +
+  geom_path() +
+  geom_point() +
+  scale_y_reverse() +
+  facet_wrap(~parameter,
+             scales = &quot;free_x&quot;,
+             ncol = 2)</code></pre>
+<p><img src="figure/mapping.Rmd/predictor_profiles_N_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(N_Atl)</code></pre>
+</div>
 </div>
 <div id="woa18-glodap" class="section level2">
 <h2><span class="header-section-number">2.3</span> WOA18 + GLODAP</h2>
@@ -1062,35 +1159,179 @@ predictors %&gt;%
 
 predictors &lt;- predictors %&gt;% 
   filter(depth %in% GLODAP_depths)</code></pre>
-<div id="predictor-profiles" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> Predictor profiles</h3>
-<pre class="r"><code>N_Atl &lt;- predictors %&gt;% 
-  filter(lat == 40.5, lon == -20.5)
-
-N_Atl &lt;- N_Atl %&gt;% 
-  pivot_longer(salinity:gamma, names_to = &quot;parameter&quot;, values_to = &quot;value&quot;)
-
-N_Atl %&gt;% 
-  ggplot(aes(value, depth)) +
-  geom_path() +
-  geom_point() +
-  scale_y_reverse() +
-  facet_wrap(~parameter, scales = &quot;free_x&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/predictor_profiles_N_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(N_Atl)</code></pre>
 </div>
 </div>
-</div>
-<div id="prepare-model-coefficients" class="section level1">
-<h1><span class="header-section-number">3</span> Prepare model coefficients</h1>
+<div id="map-cant" class="section level1">
+<h1><span class="header-section-number">3</span> Map Cant</h1>
+<div id="prepare-model-coefficients" class="section level2">
+<h2><span class="header-section-number">3.1</span> Prepare model coefficients</h2>
 <pre class="r"><code>all_lm &lt;- all_lm %&gt;% 
   select(term, estimate, basin, era, gamma_slab, model)
 
+all_lm &lt;- all_lm %&gt;% 
+  mutate(estimate = if_else(is.na(estimate), 0, estimate))
+
 all_lm_wide &lt;- all_lm %&gt;% 
-  pivot_wider(values_from = estimate, names_from = term)</code></pre>
+  pivot_wider(names_from = era, values_from = estimate,
+              names_prefix = &quot;coeff_&quot;)
+
+all_lm_wide &lt;- all_lm_wide %&gt;% 
+  mutate(JGOFS_GO = coeff_JGOFS_WOCE - coeff_GO_SHIP,
+         GO_new = coeff_GO_SHIP - coeff_new_era) %&gt;% 
+  select(-c(coeff_JGOFS_WOCE,
+            coeff_GO_SHIP,
+            coeff_new_era))
+
+all_lm_long &lt;- all_lm_wide %&gt;% 
+  pivot_longer(JGOFS_GO:GO_new, names_to = &quot;eras&quot;, values_to = &quot;delta_coeff&quot;)
+
+all_lm_wide &lt;- all_lm_long %&gt;% 
+  pivot_wider(values_from = delta_coeff,
+              names_from = term,
+              names_prefix = &quot;delta_coeff_&quot;,
+              values_fill = 0)
+
+rm(all_lm_long, all_lm)</code></pre>
+</div>
+</div>
+<div id="po4-calculation" class="section level1">
+<h1><span class="header-section-number">4</span> PO<sub>4</sub>* calculation</h1>
+<p>Currently, the predictor PO<sub>4</sub>* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.</p>
+<pre class="r"><code>predictors &lt;- predictors %&gt;% 
+  rename(phosphate = PO4) %&gt;% 
+  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)</code></pre>
+<div id="aou-climatology" class="section level2">
+<h2><span class="header-section-number">4.1</span> AOU climatology</h2>
+<div id="calculation" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Calculation</h3>
+<pre class="r"><code>predictors &lt;- predictors %&gt;% 
+  mutate(oxygen_sat = gas_satconc(S = salinity,
+                                  t = temperature,
+                                  P = 1.013253,
+                                  species = &quot;O2&quot;),
+         aou = oxygen_sat - oxygen) %&gt;% 
+  select(-oxygen_sat)</code></pre>
+</div>
+<div id="atlantic-section" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Atlantic section</h3>
+<pre class="r"><code>Atl_lon &lt;- 335.5 - 360
+
+predictors %&gt;% 
+  filter(lon == Atl_lon) %&gt;% 
+  ggplot(aes(lat, depth, z = aou)) +
+  geom_contour_filled() +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/aou_climatology_section-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(Atl_lon)</code></pre>
+</div>
+</div>
+<div id="isoneutral-slabs" class="section level2">
+<h2><span class="header-section-number">4.2</span> Isoneutral slabs</h2>
+<pre class="r"><code>slabs_Atl &lt;- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+28.15,
+28.20,
+Inf)
+
+slabs_Ind_Pac &lt;- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+Inf)</code></pre>
+<p>The following boundaries for isoneutral slabs were defined:</p>
+<ul>
+<li>Atlantic: -, 26, 26.5, 26.75, 27, 27.25, 27.5, 27.75, 27.85, 27.95, 28.05, 28.1, 28.15, 28.2, </li>
+<li>Indo-Pacific: -, 26, 26.5, 26.75, 27, 27.25, 27.5, 27.75, 27.85, 27.95, 28.05, 28.1, </li>
+</ul>
+<p>Continous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.</p>
+<pre class="r"><code>predictors_Atl &lt;- predictors %&gt;% 
+  filter(basin == &quot;Atlantic&quot;) %&gt;% 
+  mutate(gamma_slab = cut(gamma, slabs_Atl))
+
+predictors_Ind_Pac &lt;- predictors %&gt;% 
+  filter(basin == &quot;Indo-Pacific&quot;) %&gt;% 
+  mutate(gamma_slab = cut(gamma, slabs_Ind_Pac))
+
+predictors &lt;- bind_rows(predictors_Atl, predictors_Ind_Pac)
+
+rm(predictors_Atl, predictors_Ind_Pac, slabs_Atl, slabs_Ind_Pac)</code></pre>
+</div>
+<div id="merge-model-climatology" class="section level2">
+<h2><span class="header-section-number">4.3</span> Merge model + climatology</h2>
+<pre class="r"><code>Cant &lt;- full_join(predictors, all_lm_wide)</code></pre>
+</div>
+<div id="calculate-cant" class="section level2">
+<h2><span class="header-section-number">4.4</span> Calculate Cant</h2>
+<pre class="r"><code>Cant &lt;- Cant %&gt;% 
+  mutate(Cant = `delta_coeff_(Intercept)` +
+           delta_coeff_aou * aou +
+           delta_coeff_oxygen * oxygen +
+           delta_coeff_phosphate * phosphate +
+           delta_coeff_phosphate_star * phosphate_star +
+           delta_coeff_silicate * silicate +
+           delta_coeff_salinity * salinity + 
+           delta_coeff_temperature * temperature)
+
+Cant_model_average &lt;- Cant %&gt;% 
+  mutate(Cant = -Cant) %&gt;%
+  mutate(Cant = if_else(Cant &lt; 0, 0, Cant)) %&gt;% 
+  group_by(lon, lat, depth, eras, basin) %&gt;% 
+  summarise(Cant_mean = mean(Cant)) %&gt;% 
+  ungroup()
+
+Cant_model_average_section &lt;- Cant_model_average %&gt;% 
+  group_by(lat, depth, eras, basin) %&gt;% 
+  summarise(Cant_zonal_mean = mean(Cant_mean, na.rm = TRUE)) %&gt;% 
+  ungroup()</code></pre>
+</div>
+<div id="atlantic-section-1" class="section level2">
+<h2><span class="header-section-number">4.5</span> Atlantic section</h2>
+<pre class="r"><code>Cant_model_average_section %&gt;% 
+  filter(depth &lt;= 500,
+         lat &gt; -60.6) %&gt;% 
+  ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
+  geom_contour_filled(binwidth = 1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;) +
+  facet_wrap(~eras, ncol = 1)</code></pre>
+<p><img src="figure/mapping.Rmd/Cant_Atlantic_section_mean_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Cant_model_average_section %&gt;% 
+  filter(depth &lt;= 4500,
+         lat &gt; -60.6) %&gt;% 
+  ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
+  geom_contour_filled(binwidth = 1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;) +
+  facet_wrap(~eras, ncol = 1)</code></pre>
+<p><img src="figure/mapping.Rmd/Cant_Atlantic_section_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="neutral-density-calculation" class="section level1">
-<h1><span class="header-section-number">4</span> Neutral density calculation</h1>
+<h1><span class="header-section-number">5</span> Neutral density calculation</h1>
 <pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                 &quot;GLODAP_MLR_fitting_ready.csv&quot;))
 
@@ -1153,10 +1394,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] oce_1.2-0       gsw_1.0-5       testthat_2.3.2  lubridate_1.7.9
- [5] forcats_0.5.0   stringr_1.4.0   dplyr_1.0.0     purrr_0.3.4    
- [9] readr_1.3.1     tidyr_1.1.0     tibble_3.0.3    ggplot2_3.3.2  
-[13] tidyverse_1.3.0 workflowr_1.6.2
+ [1] marelac_2.1.10  shape_1.4.4     oce_1.2-0       gsw_1.0-5      
+ [5] testthat_2.3.2  lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0  
+ [9] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
+[13] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5        here_0.1          assertthat_0.2.1  rprojroot_1.3-2  
@@ -1166,14 +1407,15 @@ loaded via a namespace (and not attached):
 [17] blob_1.2.1        rmarkdown_2.3     labeling_0.3      munsell_0.5.0    
 [21] broom_0.7.0       compiler_4.0.2    httpuv_1.5.4      modelr_0.1.8     
 [25] xfun_0.16         pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0 
-[29] fansi_0.4.1       viridisLite_0.3.0 crayon_1.3.4      dbplyr_1.4.4     
+[29] viridisLite_0.3.0 fansi_0.4.1       crayon_1.3.4      dbplyr_1.4.4     
 [33] withr_2.2.0       later_1.1.0.1     grid_4.0.2        jsonlite_1.7.0   
 [37] gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0         git2r_0.27.1     
-[41] magrittr_1.5      scales_1.1.1      cli_2.0.2         stringi_1.4.6    
-[45] farver_2.0.3      fs_1.4.2          promises_1.1.1    xml2_1.3.2       
-[49] ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.2       tools_4.0.2      
-[53] glue_1.4.1        hms_0.5.3         yaml_2.2.1        colorspace_1.4-1 
-[57] rvest_0.3.6       knitr_1.29        haven_2.3.1      </code></pre>
+[41] magrittr_1.5      seacarb_3.2.13    scales_1.1.1      cli_2.0.2        
+[45] stringi_1.4.6     farver_2.0.3      fs_1.4.2          promises_1.1.1   
+[49] xml2_1.3.2        ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.2      
+[53] tools_4.0.2       glue_1.4.1        hms_0.5.3         yaml_2.2.1       
+[57] colorspace_1.4-1  isoband_0.2.2     rvest_0.3.6       knitr_1.29       
+[61] haven_2.3.1      </code></pre>
 </div>
 </div>
 
