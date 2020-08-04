@@ -433,7 +433,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Mapping</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">29 July, 2020</h4>
+<h4 class="date">04 August, 2020</h4>
 
 </div>
 
@@ -458,7 +458,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-29
+<strong>Last updated:</strong> 2020-08-04
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebf5ea88c55f0acdc09c778a5dadfcbbd99eb43adtargetblankbf5ea88a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bf5ea88c55f0acdc09c778a5dadfcbbd99eb43ad" target="_blank">bf5ea88</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1443a3068cb452e28639ff81d96602cbfa042251targetblank1443a30a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1443a3068cb452e28639ff81d96602cbfa042251" target="_blank">1443a30</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebf5ea88c55f0acdc09c778a5dadfcbbd99eb43adtargetblankbf5ea88a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1443a3068cb452e28639ff81d96602cbfa042251targetblank1443a30a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bf5ea88c55f0acdc09c778a5dadfcbbd99eb43ad" target="_blank">bf5ea88</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1443a3068cb452e28639ff81d96602cbfa042251" target="_blank">1443a30</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -568,11 +568,15 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
+    Ignored:    data/WOCE/
     Ignored:    data/World_Ocean_Atlas_2018/
+    Ignored:    data/dclement/
     Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    output/figure/
+
+Untracked files:
+    Untracked:  analysis/test_scripts/
 
 </code></pre>
 <p>
@@ -611,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/1443a3068cb452e28639ff81d96602cbfa042251/analysis/mapping.Rmd" target="_blank">1443a30</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+Included gamma values from Clement based on WOA13
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/9dc5d7f756031140c2ca072b06ff9c85f9b46eb8/docs/mapping.html" target="_blank">9dc5d7f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -759,13 +797,13 @@ library(lubridate)
 library(oce)</code></pre>
 <div id="required-data" class="section level1">
 <h1><span class="header-section-number">1</span> Required data</h1>
-<p>Required are:</p>
+<p>Currently we use following data sets for mapping:</p>
 <ul>
 <li>GLODAPv2_2016b_MappedClimatologies</li>
-<li>World Ocean Atlas 2018</li>
-<li>eMLR model coeffcients</li>
+<li>World Ocean Atlas 2013 neutral densities</li>
+<li>eMLR model coefficients</li>
 </ul>
-<pre class="r"><code>variables &lt;- c(&quot;NO3&quot;, &quot;oxygen&quot;, &quot;PO4&quot;, &quot;silicate&quot;)
+<pre class="r"><code>variables &lt;- c(&quot;salinity&quot;, &quot;temperature&quot;, &quot;NO3&quot;, &quot;oxygen&quot;, &quot;PO4&quot;, &quot;silicate&quot;)
 
 for (i_variable in variables) {
   
@@ -784,13 +822,21 @@ for (i_variable in variables) {
   }
 
 }</code></pre>
-<pre><code>[1] &quot;NO3&quot;
+<pre><code>[1] &quot;salinity&quot;
+[1] &quot;temperature&quot;
+[1] &quot;NO3&quot;
 [1] &quot;oxygen&quot;
 [1] &quot;PO4&quot;
 [1] &quot;silicate&quot;</code></pre>
 <pre class="r"><code>rm(temp, i_variable, variables)
 
-GLODAP_depths &lt;- unique(GLODAP_predictors$depth)</code></pre>
+GLODAP_depths &lt;- unique(GLODAP_predictors$depth)
+
+GLODAP_lon &lt;- unique(GLODAP_predictors$lon)
+min(GLODAP_lon)</code></pre>
+<pre><code>[1] -179.5</code></pre>
+<pre class="r"><code>max(GLODAP_lon)</code></pre>
+<pre><code>[1] 179.5</code></pre>
 <pre class="r"><code>WOA18_predictors &lt;-
   read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                        &quot;WOA18_predictors.csv&quot;))
@@ -799,12 +845,129 @@ WOA18_predictors &lt;- WOA18_predictors %&gt;%
   rename(salinity = s_an, temperature = t_an)
 
 WOA18_depths &lt;- unique(WOA18_predictors$depth)</code></pre>
+<pre class="r"><code>WOA13 &lt;-
+  read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA13_mask_gamma.csv&quot;))
+
+WOA13_gamma &lt;- WOA13 %&gt;% 
+  select(-mask)
+
+WOA13_gamma &lt;- WOA13_gamma %&gt;% 
+  rename(lat = latitude, lon = longitude) %&gt;% 
+  mutate(lon = if_else(lon &gt; 180, lon - 360, lon))
+
+rm(WOA13)
+
+# WOA13_depths &lt;- unique(WOA13_gamma$depth)
+# GLODAP_depths - WOA13_depths</code></pre>
 <pre class="r"><code>all_lm &lt;- read_csv(here::here(&quot;data/eMLR&quot;,
                               &quot;all_lm.csv&quot;))</code></pre>
 </div>
 <div id="join-predictor-climatologies" class="section level1">
 <h1><span class="header-section-number">2</span> Join predictor climatologies</h1>
 <p><strong>CAVEAT</strong>: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)</p>
+<div id="control-plots" class="section level2">
+<h2><span class="header-section-number">2.1</span> Control plots</h2>
+<pre class="r"><code>GLODAP_n &lt;- GLODAP_predictors %&gt;% 
+  drop_na() %&gt;% 
+  group_by(lat, lon) %&gt;% 
+  summarise(n = n()) %&gt;% 
+  ungroup()
+
+GLODAP_n %&gt;%
+  ggplot(aes(lon, lat, fill = n)) +
+  geom_raster() +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/control_plots_pre_merging-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>WOA13_gamma_n &lt;- WOA13_gamma %&gt;% 
+  drop_na() %&gt;% 
+  group_by(lat, lon) %&gt;% 
+  summarise(n = n()) %&gt;% 
+  ungroup()
+
+WOA13_gamma_n %&gt;%
+  ggplot(aes(lon, lat, fill = n)) +
+  geom_raster() +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/control_plots_pre_merging-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(GLODAP_n, WOA13_gamma_n)</code></pre>
+</div>
+<div id="woa13" class="section level2">
+<h2><span class="header-section-number">2.2</span> WOA13</h2>
+<pre class="r"><code>predictors &lt;- full_join(GLODAP_predictors, WOA13_gamma)
+rm(GLODAP_predictors, WOA13_gamma)
+
+predictors &lt;- predictors %&gt;% 
+  group_by(lat, lon) %&gt;% 
+  mutate(n_NO3 = sum(!is.na(NO3)),
+         n_oxygen = sum(!is.na(oxygen)),
+         n_PO4 = sum(!is.na(PO4)),
+         n_silicate = sum(!is.na(silicate)),
+         n_salinity = sum(!is.na(salinity)),
+         n_temperature = sum(!is.na(temperature)),
+         n_gamma = sum(!is.na(gamma))) %&gt;% 
+  ungroup()
+
+predictors &lt;- predictors %&gt;% 
+  filter(n_NO3 &gt; 0,
+         n_oxygen &gt; 0,
+         n_PO4 &gt; 0,
+         n_silicate &gt; 0, 
+         n_salinity &gt; 0, 
+         n_temperature &gt; 0, 
+         n_gamma &gt; 0) %&gt;% 
+  select(-c(n_NO3, 
+            n_oxygen, 
+            n_PO4, 
+            n_silicate, 
+            n_salinity, 
+            n_temperature,
+            n_gamma))
+
+predictors &lt;- predictors %&gt;% 
+  drop_na()
+
+predictors %&gt;%
+  ggplot(aes(lon, lat)) +
+  geom_bin2d(binwidth = c(1,1)) +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>predictors %&gt;%
+  filter(depth == 0) %&gt;% 
+  ggplot(aes(lon, lat, fill = PO4)) +
+  geom_raster() +
+  scale_fill_viridis_c() +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;) +
+  labs(title = &quot;Surface values&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>predictors %&gt;%
+  filter(depth == 0) %&gt;% 
+  ggplot(aes(lon, lat, fill = temperature)) +
+  geom_raster() +
+  scale_fill_viridis_c() +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;) +
+  labs(title = &quot;Surface values&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>predictors %&gt;%
+  filter(depth == 0) %&gt;% 
+  ggplot(aes(lon, lat, fill = gamma)) +
+  geom_raster() +
+  scale_fill_viridis_c() +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;) +
+  labs(title = &quot;Surface values&quot;)</code></pre>
+<p><img src="figure/mapping.Rmd/join_WOA13_GLODAP_predictors-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="woa18-not-used" class="section level2">
+<h2><span class="header-section-number">2.3</span> WOA18 (not used)</h2>
 <pre class="r"><code>predictors &lt;- full_join(GLODAP_predictors, WOA18_predictors)
 rm(GLODAP_predictors, WOA18_predictors)
 
@@ -832,18 +995,18 @@ predictors %&gt;%
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(direction = -1) +
   coord_quickmap(expand = 0) +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/join_WOA_GLODAP_predictors-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>predictors %&gt;%
+  theme(legend.position = &quot;bottom&quot;)
+
+predictors %&gt;%
   filter(depth == 0) %&gt;% 
   ggplot(aes(lon, lat, fill = PO4)) +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
   theme(legend.position = &quot;bottom&quot;) +
-  labs(title = &quot;Surface values&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/join_WOA_GLODAP_predictors-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>predictors %&gt;%
+  labs(title = &quot;Surface values&quot;)
+
+predictors %&gt;%
   filter(depth == 0) %&gt;% 
   ggplot(aes(lon, lat, fill = temperature)) +
   geom_raster() +
@@ -851,9 +1014,6 @@ predictors %&gt;%
   coord_quickmap(expand = 0) +
   theme(legend.position = &quot;bottom&quot;) +
   labs(title = &quot;Surface values&quot;)</code></pre>
-<p><img src="figure/mapping.Rmd/join_WOA_GLODAP_predictors-3.png" width="672" style="display: block; margin: auto;" /></p>
-<div id="vertically-interpolate-woa18" class="section level2">
-<h2><span class="header-section-number">2.1</span> Vertically interpolate WOA18</h2>
 <pre class="r"><code>predictors &lt;- predictors %&gt;% 
   group_by(lat, lon) %&gt;% 
   arrange(depth) %&gt;% 
@@ -865,12 +1025,12 @@ predictors %&gt;%
 predictors &lt;- predictors %&gt;% 
   filter(depth %in% GLODAP_depths)</code></pre>
 <div id="predictor-profiles" class="section level3">
-<h3><span class="header-section-number">2.1.1</span> Predictor profiles</h3>
+<h3><span class="header-section-number">2.3.1</span> Predictor profiles</h3>
 <pre class="r"><code>N_Atl &lt;- predictors %&gt;% 
   filter(lat == 40.5, lon == -20.5)
 
 N_Atl &lt;- N_Atl %&gt;% 
-  pivot_longer(NO3:temperature, names_to = &quot;parameter&quot;, values_to = &quot;value&quot;)
+  pivot_longer(salinity:gamma, names_to = &quot;parameter&quot;, values_to = &quot;value&quot;)
 
 N_Atl %&gt;% 
   ggplot(aes(value, depth)) +
@@ -879,11 +1039,20 @@ N_Atl %&gt;%
   scale_y_reverse() +
   facet_wrap(~parameter, scales = &quot;free_x&quot;)</code></pre>
 <p><img src="figure/mapping.Rmd/predictor_profiles_N_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(N_Atl)</code></pre>
 </div>
 </div>
 </div>
-<div id="neutral-density-slabs" class="section level1">
-<h1><span class="header-section-number">3</span> Neutral density slabs</h1>
+<div id="prepare-model-coefficients" class="section level1">
+<h1><span class="header-section-number">3</span> Prepare model coefficients</h1>
+<pre class="r"><code>all_lm &lt;- all_lm %&gt;% 
+  select(term, estimate, basin, era, gamma_slab, model)
+
+all_lm_wide &lt;- all_lm %&gt;% 
+  pivot_wider(values_from = estimate, names_from = term)</code></pre>
+</div>
+<div id="neutral-density-calculation" class="section level1">
+<h1><span class="header-section-number">4</span> Neutral density calculation</h1>
 <pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                 &quot;GLODAP_MLR_fitting_ready.csv&quot;))
 
@@ -923,14 +1092,6 @@ lat_section +
 <pre class="r"><code>lat_section +
   geom_point(aes(col = delta_gamma))</code></pre>
 <p><img src="figure/mapping.Rmd/calculate_neutral_density_test-3.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="prepare-model-coefficients" class="section level1">
-<h1><span class="header-section-number">4</span> Prepare model coefficients</h1>
-<pre class="r"><code>all_lm &lt;- all_lm %&gt;% 
-  select(term, estimate, basin, era, gamma_slab, model)
-
-all_lm_wide &lt;- all_lm %&gt;% 
-  pivot_wider(values_from = estimate, names_from=term)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
