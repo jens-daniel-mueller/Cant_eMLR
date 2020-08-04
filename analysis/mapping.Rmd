@@ -435,7 +435,7 @@ rm(all_lm_long, all_lm)
 
 ```
 
-# PO~4~* calculation 
+## PO~4~* calculation 
 
 Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
 
@@ -581,7 +581,7 @@ Cant_model_average_section <- Cant_model_average %>%
 
 ```
 
-## Atlantic section
+## Mean Cant sections
 
 ```{r Cant_Atlantic_section_mean_surface}
 
@@ -589,11 +589,11 @@ Cant_model_average_section %>%
   filter(depth <= 500,
          lat > -60.6) %>% 
   ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
-  geom_contour_filled(binwidth = 1) +
+  geom_contour_filled(binwidth = 2) +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top") +
-  facet_wrap(~eras, ncol = 1)
+  facet_grid(basin~eras)
 
 ```
 
@@ -604,11 +604,11 @@ Cant_model_average_section %>%
   filter(depth <= 4500,
          lat > -60.6) %>% 
   ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
-  geom_contour_filled(binwidth = 1) +
+  geom_contour_filled(binwidth = 2) +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top") +
-  facet_wrap(~eras, ncol = 1)
+  facet_grid(basin~eras)
 
 ```
 
@@ -616,7 +616,7 @@ Cant_model_average_section %>%
 
 # Neutral density calculation
 
-```{r calculate_neutral_density_test, fig.asp=0.5}
+```{r calculate_neutral_density_test, fig.asp=0.5, eval=FALSE}
 
 GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                 "GLODAP_MLR_fitting_ready.csv"))
