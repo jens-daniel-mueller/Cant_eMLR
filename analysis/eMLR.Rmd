@@ -871,6 +871,30 @@ rm(n_predictors_max, n_predictors_min,
 
 ```
 
+```{r test_rmse_output, eval=FALSE}
+
+lm_1 <- GLODAP %>% 
+  filter(basin == "Atlantic",
+         gamma_slab == "(-Inf,26]",
+         era == "new_era") %>% 
+  lm(Cstar ~ salinity + temperature + aou + oxygen + phosphate_star, data = .)
+
+lm_2 <- GLODAP %>% 
+  filter(basin == "Atlantic",
+         gamma_slab == "(-Inf,26]",
+         era == "new_era") %>% 
+  lm(Cstar ~ salinity + temperature + aou + oxygen + phosphate, data = .)
+
+lm_1
+lm_2
+
+sqrt(mean(lm_1$residuals^2))
+sqrt(mean(lm_2$residuals^2))
+
+```
+
+
+
 ### Fitting best models
 
 After selecting `r n_predictors_total` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
