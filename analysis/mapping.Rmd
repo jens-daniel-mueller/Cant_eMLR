@@ -20,6 +20,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(oce)
+library(marelac)
 ```
 
 
@@ -40,6 +41,8 @@ Currently we use following data sets for mapping:
   - oxygen
 - World Ocean Atlas 2013
   - Neutral densities calculated by D Clement
+- World Ocean Atlas 2018
+  - basin mask
 - eMLR model coefficients
 
 We aim to use WOA18 instead of WOA13, but still need to implement neutral density calculation.
@@ -108,6 +111,15 @@ rm(WOA13)
 # GLODAP_depths - WOA13_depths
 
 ```
+
+
+```{r read_basin_mask_file}
+
+basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "basin_mask_WOA18.csv"))
+
+```
+
 
 ```{r load_eMLR_coeffcients}
 
@@ -203,8 +215,65 @@ predictors <- predictors %>%
             n_temperature,
             n_gamma))
 
+
 predictors <- predictors %>% 
   drop_na()
+
+```
+
+### Spatial boundaries
+
+```{r set_criteria_spatial_boundaries}
+
+min_depth <- 150
+min_bottomdepth <- 500
+max_lat <- 65
+
+```
+
+
+Only mapped variables were taken into consideration with:
+
+- minimum depth:  `r min_depth`m
+- minimum bottom depth:  `r min_bottomdepth`m
+- maximum latitude:  `r max_lat`°N
+
+
+```{r apply_spatial_boundaries}
+
+predictors <- predictors %>% 
+  filter(depth >= min_depth)
+
+predictors <- predictors %>% 
+  filter(lat <= max_lat)
+
+predictors <- predictors %>% 
+  group_by(lat, lon) %>% 
+  mutate(bottomdepth = max(depth)) %>% 
+  ungroup()
+
+predictors <- predictors %>% 
+  filter(bottomdepth >= min_bottomdepth) %>% 
+  select(-bottomdepth)
+
+rm(min_depth, max_lat, min_bottomdepth)
+
+```
+
+### Basin mask
+
+Please note that some predictor variables are available outside the WOA18 basin mask and will be removed for further analysis.
+
+```{r join_basin_mask}
+
+predictors <- inner_join(predictors, basinmask)
+rm(basinmask)
+
+```
+
+### Maps
+
+```{r WOA13_GLODAP_climatology_control_plots}
 
 predictors %>%
   ggplot(aes(lon, lat)) +
@@ -214,22 +283,46 @@ predictors %>%
   theme(legend.position = "bottom")
 
 predictors %>%
-  filter(depth == 0) %>% 
+  filter(depth == 150) %>% 
   ggplot(aes(lon, lat, fill = PO4)) +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
   theme(legend.position = "bottom") +
-  labs(title = "Surface values")
+  labs(title = "150m values")
 
 predictors %>%
-  filter(depth == 0) %>% 
+  filter(depth == 150) %>% 
   ggplot(aes(lon, lat, fill = gamma)) +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
   theme(legend.position = "bottom") +
-  labs(title = "Surface values")
+  labs(title = "150m values")
+
+```
+
+
+### Predictor profiles
+
+```{r predictor_profiles_N_Atl, fig.asp=2}
+
+N_Atl <- predictors %>% 
+  filter(lat == 40.5, lon == -20.5)
+
+N_Atl <- N_Atl %>% 
+  pivot_longer(salinity:gamma, names_to = "parameter", values_to = "value")
+
+N_Atl %>% 
+  ggplot(aes(value, depth)) +
+  geom_path() +
+  geom_point() +
+  scale_y_reverse() +
+  facet_wrap(~parameter,
+             scales = "free_x",
+             ncol = 2)
+
+rm(N_Atl)
 
 ```
 
@@ -306,40 +399,218 @@ predictors <- predictors %>%
 
 ```
 
-### Predictor profiles
+# Map Cant
 
-```{r predictor_profiles_N_Atl}
-
-N_Atl <- predictors %>% 
-  filter(lat == 40.5, lon == -20.5)
-
-N_Atl <- N_Atl %>% 
-  pivot_longer(salinity:gamma, names_to = "parameter", values_to = "value")
-
-N_Atl %>% 
-  ggplot(aes(value, depth)) +
-  geom_path() +
-  geom_point() +
-  scale_y_reverse() +
-  facet_wrap(~parameter, scales = "free_x")
-
-rm(N_Atl)
-
-```
-
-# Prepare model coefficients
+## Prepare model coefficients
 
 ```{r prepare_model_coefficients}
 
 all_lm <- all_lm %>% 
   select(term, estimate, basin, era, gamma_slab, model)
 
+all_lm <- all_lm %>% 
+  mutate(estimate = if_else(is.na(estimate), 0, estimate))
+
 all_lm_wide <- all_lm %>% 
-  pivot_wider(values_from = estimate, names_from = term)
+  pivot_wider(names_from = era, values_from = estimate,
+              names_prefix = "coeff_")
+
+all_lm_wide <- all_lm_wide %>% 
+  mutate(JGOFS_GO = coeff_JGOFS_WOCE - coeff_GO_SHIP,
+         GO_new = coeff_GO_SHIP - coeff_new_era) %>% 
+  select(-c(coeff_JGOFS_WOCE,
+            coeff_GO_SHIP,
+            coeff_new_era))
+
+all_lm_long <- all_lm_wide %>% 
+  pivot_longer(JGOFS_GO:GO_new, names_to = "eras", values_to = "delta_coeff")
+
+all_lm_wide <- all_lm_long %>% 
+  pivot_wider(values_from = delta_coeff,
+              names_from = term,
+              names_prefix = "delta_coeff_",
+              values_fill = 0)
+
+rm(all_lm_long, all_lm)
+
+```
+
+# PO~4~* calculation 
+
+Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
+
+```{r calculate_phosphate_star_clement}
+
+predictors <- predictors %>% 
+  rename(phosphate = PO4) %>% 
+  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
+
+```
+
+
+## AOU climatology
+
+### Calculation
+
+```{r calculate_aou_climatology}
+
+predictors <- predictors %>% 
+  mutate(oxygen_sat = gas_satconc(S = salinity,
+                                  t = temperature,
+                                  P = 1.013253,
+                                  species = "O2"),
+         aou = oxygen_sat - oxygen) %>% 
+  select(-oxygen_sat)
 
 
 ```
 
+### Atlantic section
+
+```{r aou_climatology_section}
+
+Atl_lon <- 335.5 - 360
+
+predictors %>% 
+  filter(lon == Atl_lon) %>% 
+  ggplot(aes(lat, depth, z = aou)) +
+  geom_contour_filled() +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = "top")
+
+rm(Atl_lon)
+
+```
+
+## Isoneutral slabs
+
+```{r define_isoneutral_slabs}
+
+slabs_Atl <- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+28.15,
+28.20,
+Inf)
+
+slabs_Ind_Pac <- c(
+-Inf,
+26.00,
+26.50,
+26.75,
+27.00,
+27.25,
+27.50,
+27.75,
+27.85,
+27.95,
+28.05,
+28.10,
+Inf)
+
+
+```
+
+The following boundaries for isoneutral slabs were defined:
+
+- Atlantic: `r slabs_Atl`
+- Indo-Pacific: `r slabs_Ind_Pac`
+
+Continous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
+
+```{r cut_isoneutral_slabs}
+
+predictors_Atl <- predictors %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma, slabs_Atl))
+
+predictors_Ind_Pac <- predictors %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma, slabs_Ind_Pac))
+
+predictors <- bind_rows(predictors_Atl, predictors_Ind_Pac)
+
+rm(predictors_Atl, predictors_Ind_Pac, slabs_Atl, slabs_Ind_Pac)
+
+```
+
+## Merge model + climatology
+
+```{r merge_model_coeff_predictor_climatology}
+
+Cant <- full_join(predictors, all_lm_wide)
+
+```
+
+## Calculate Cant
+
+```{r map_Cant}
+
+Cant <- Cant %>% 
+  mutate(Cant = `delta_coeff_(Intercept)` +
+           delta_coeff_aou * aou +
+           delta_coeff_oxygen * oxygen +
+           delta_coeff_phosphate * phosphate +
+           delta_coeff_phosphate_star * phosphate_star +
+           delta_coeff_silicate * silicate +
+           delta_coeff_salinity * salinity + 
+           delta_coeff_temperature * temperature)
+
+Cant_model_average <- Cant %>% 
+  mutate(Cant = -Cant) %>%
+  mutate(Cant = if_else(Cant < 0, 0, Cant)) %>% 
+  group_by(lon, lat, depth, eras, basin) %>% 
+  summarise(Cant_mean = mean(Cant)) %>% 
+  ungroup()
+
+Cant_model_average_section <- Cant_model_average %>% 
+  group_by(lat, depth, eras, basin) %>% 
+  summarise(Cant_zonal_mean = mean(Cant_mean, na.rm = TRUE)) %>% 
+  ungroup()
+
+```
+
+## Atlantic section
+
+```{r Cant_Atlantic_section_mean_surface}
+
+Cant_model_average_section %>% 
+  filter(depth <= 500,
+         lat > -60.6) %>% 
+  ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
+  geom_contour_filled(binwidth = 1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = "top") +
+  facet_wrap(~eras, ncol = 1)
+
+```
+
+
+```{r Cant_Atlantic_section_mean}
+
+Cant_model_average_section %>% 
+  filter(depth <= 4500,
+         lat > -60.6) %>% 
+  ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
+  geom_contour_filled(binwidth = 1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = "top") +
+  facet_wrap(~eras, ncol = 1)
+
+```
 
 
 
