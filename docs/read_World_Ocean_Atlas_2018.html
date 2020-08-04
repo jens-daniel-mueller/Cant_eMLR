@@ -433,7 +433,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">World Ocean Atlas 2018</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">31 July, 2020</h4>
+<h4 class="date">04 August, 2020</h4>
 
 </div>
 
@@ -458,7 +458,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-31
+<strong>Last updated:</strong> 2020-08-04
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5ee70b2a09bd37edf5b61a2bc5ad5500edb6b2abtargetblank5ee70b2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5ee70b2a09bd37edf5b61a2bc5ad5500edb6b2ab" target="_blank">5ee70b2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb2b1f2454fd4366f62265441522741b8410ba54ftargetblankb2b1f24a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b2b1f2454fd4366f62265441522741b8410ba54f" target="_blank">b2b1f24</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5ee70b2a09bd37edf5b61a2bc5ad5500edb6b2abtargetblank5ee70b2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb2b1f2454fd4366f62265441522741b8410ba54ftargetblankb2b1f24a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5ee70b2a09bd37edf5b61a2bc5ad5500edb6b2ab" target="_blank">5ee70b2</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b2b1f2454fd4366f62265441522741b8410ba54f" target="_blank">b2b1f24</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -568,10 +568,15 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
+    Ignored:    data/WOCE/
     Ignored:    data/World_Ocean_Atlas_2018/
+    Ignored:    data/dclement/
     Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
+
+Untracked files:
+    Untracked:  analysis/test_scripts/
 
 </code></pre>
 <p>
@@ -610,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/b2b1f2454fd4366f62265441522741b8410ba54f/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">b2b1f24</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+Read, plot, write data from D Clement
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/e9a52c5d0bf047f4c2fcb34511b24ed1a6830d69/docs/read_World_Ocean_Atlas_2018.html" target="_blank">e9a52c5</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1390,14 +1429,88 @@ WOA18_predictors %&gt;%
 rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)</code></pre>
 </div>
 </div>
+<div id="woa13-data-from-dominic-clement" class="section level1">
+<h1><span class="header-section-number">4</span> WOA13 data from Dominic Clement</h1>
+<p>Dominic Clement provided a netcdf file with the basin mask and neutral densities used in Clement and Gruber (2018), both derived from the World Ocean Atlas 2013.</p>
+<div id="read-ncdfs-1" class="section level2">
+<h2><span class="header-section-number">4.1</span> Read ncdfs</h2>
+<pre class="r"><code># temperature
+
+nd_mask &lt;- tidync(here::here(&quot;data/dclement&quot;,
+                          &quot;nd_mask.nc&quot;))
+nd_mask_tibble &lt;- nd_mask %&gt;% hyper_tibble()
+
+nd_mask_tibble &lt;- nd_mask_tibble %&gt;% 
+  mutate(gamma = if_else(gamma == -999, NaN, gamma))</code></pre>
+<pre class="r"><code>depth_surface_selection &lt;- c(0)
+Atl_lon &lt;- 335.5
+Pac_lon &lt;- 190.5</code></pre>
+<p>Below, following subsets of the climatologies are plotted for all relevant parameters:</p>
+<ul>
+<li>Horizontal planes at 0m</li>
+<li>Meridional sections at longitudes:
+<ul>
+<li>Atlantic: 335.5</li>
+<li>Pacific: 190.5</li>
+</ul></li>
+</ul>
+<p>Section locations are indicated as white lines in maps.</p>
+<p>Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.</p>
+</div>
+<div id="basin-map" class="section level2">
+<h2><span class="header-section-number">4.2</span> Basin map</h2>
+<pre class="r"><code>nd_mask_tibble %&gt;% 
+  filter(depth == 0) %&gt;% 
+  ggplot(aes(longitude, latitude, fill = as.factor(mask))) +
+  geom_raster() +
+  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = &quot;white&quot;) +
+  coord_quickmap(expand = 0) +
+  scale_fill_brewer(palette = &quot;Set1&quot;) +
+  theme(legend.position = &quot;top&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/basin_map_WOA13_dclement-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="neutral-density-sections" class="section level2">
+<h2><span class="header-section-number">4.3</span> Neutral density sections</h2>
+<div id="atlantic" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> Atlantic</h3>
+<pre class="r"><code>nd_mask_tibble %&gt;% 
+  filter(longitude == Atl_lon) %&gt;% 
+  ggplot(aes(latitude, depth, z = gamma)) +
+  geom_contour_filled() +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/gamma_section_WOA13_dclement_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="pacific" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> Pacific</h3>
+<pre class="r"><code>nd_mask_tibble %&gt;% 
+  filter(longitude == Pac_lon) %&gt;% 
+  ggplot(aes(latitude, depth, z = gamma)) +
+  geom_contour_filled() +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  theme(legend.position = &quot;top&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/gamma_section_WOA13_dclement_Pac-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="write-file-2" class="section level2">
+<h2><span class="header-section-number">4.4</span> Write file</h2>
+<pre class="r"><code>nd_mask_tibble %&gt;%
+  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA13_mask_gamma.csv&quot;))
+
+rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)</code></pre>
+</div>
+</div>
 <div id="open-tasks" class="section level1">
-<h1><span class="header-section-number">4</span> Open tasks</h1>
+<h1><span class="header-section-number">5</span> Open tasks</h1>
 <ul>
 <li>basin mask not yet applied to WOA18 data</li>
 </ul>
 </div>
 <div id="questions" class="section level1">
-<h1><span class="header-section-number">5</span> Questions</h1>
+<h1><span class="header-section-number">6</span> Questions</h1>
 <ul>
 <li>Which version of the WOA to be used
 <ul>
