@@ -266,7 +266,7 @@ rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)
 
 ```
 
-# WOA13 data from Dominic Clement
+# WOA13 from D. Clement
 
 Dominic Clement provided a netcdf file with the basin mask and neutral densities used in Clement and Gruber (2018), both derived from the World Ocean Atlas 2013.
 
@@ -285,6 +285,7 @@ nd_mask_tibble <- nd_mask_tibble %>%
 
 ```
 
+## Plots
 
 ```{r set_criteria_horizons_sections_WOA13}
 
@@ -294,16 +295,15 @@ Pac_lon <- 190.5
 
 ```
 
-Below, following subsets of the climatologies are plotted for all relevant parameters:  
+Below, following subsets of the climatologies are plotted:  
 
-- Horizontal planes at `r depth_surface_selection`m
-- Meridional sections at longitudes:
+
+- Basin mask at `r depth_surface_selection`m
+- Meridional sections of neutral density at longitudes:
   - Atlantic: `r Atl_lon`
   - Pacific: `r Pac_lon`
 
-Section locations are indicated as white lines in maps.
-
-Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
+Section locations are indicated as white lines in the basin map.
 
 ## Basin map
 
@@ -315,7 +315,8 @@ nd_mask_tibble %>%
   geom_raster() +
   geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
   coord_quickmap(expand = 0) +
-  scale_fill_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set1",
+                    name = "basin mask") +
   theme(legend.position = "top")
 
 ```
