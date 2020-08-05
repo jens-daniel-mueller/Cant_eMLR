@@ -704,6 +704,33 @@ Cant_model_average_zonal %>%
 
 # Cant maps
 
+## Depth layers
+
+```{r Cant_depth_layer_maps, fig.asp=1}
+
+mapWorld <- borders("world", colour = "gray60", fill = "gray60")
+
+Cant_model_average %>%
+  filter(depth %in% c(150, 500, 1000, 3000)) %>% 
+  ggplot(aes(lon, lat, fill = Cant_mean)) + 
+  mapWorld +
+  geom_raster() +
+  scale_fill_divergent(guide = "colorstrip",
+                       breaks = MakeBreaks(5),
+                       name = "Cant") +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  coord_quickmap(expand = 0) +
+  facet_grid(depth~eras)
+
+```
+
+## Inventory calculation
+
+To calculate Cant column inventories, we:  
+
+1. Multiple layer thickness with Cant concentration to get a layer inventory
+2. Sum positive Cant layer inventories from 150 - 3000 m 
+
 ```{r calculate_layer_thickness}
 
 depth_level_volume <- tibble(
@@ -728,38 +755,42 @@ Cant_model_average <- Cant_model_average %>%
   mutate(Cant_layer = Cant_mean * layer_thickness)
 
 Cant_inventory <- Cant_model_average %>% 
-  filter(depth < 3000,
-         Cant_layer >= 0) %>% 
+  filter(depth <= 3000) %>% 
+  mutate(Cant_pos_layer = if_else(Cant_layer < 0, 0, Cant_layer)) %>% 
   group_by(lon, lat, basin, eras) %>% 
-  summarise(Cant_inventory = sum(Cant_layer, na.rm = TRUE) / 1000) %>% 
+  summarise(Cant_pos_inventory = sum(Cant_pos_layer, na.rm = TRUE) / 1000,
+            Cant_inventory = sum(Cant_layer, na.rm = TRUE) / 1000) %>% 
   ungroup()
 
 ```
 
-## Depth layers
-
-```{r Cant_depth_layer_maps, fig.asp=1.5}
-
-mapWorld <- borders("world", colour = "gray60", fill = "gray60")
-
-Cant_model_average %>%
-  filter(depth %in% c(150, 500, 1000, 3000)) %>% 
-  ggplot(aes(lon, lat, fill = Cant_mean)) + 
-  mapWorld +
-  geom_raster() +
-  scale_fill_steps2(breaks = seq(-100,100,10)) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  coord_quickmap(expand = 0) +
-  facet_grid(depth~eras)
-
-```
 
 ## Inventories
+
+### All Cant estimates
 
 ```{r Cant_inventory_map, fig.asp=1}
 
 Cant_inventory %>% 
   ggplot(aes(lon, lat, fill = Cant_inventory)) + 
+  mapWorld +
+  geom_raster() +
+  scale_fill_divergent(guide = "colorstrip",
+                       breaks = MakeBreaks(5),
+                       name = "Cant") +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  coord_quickmap(expand = 0) +
+  facet_wrap(~eras, ncol = 1)
+
+```
+
+
+### Positive Cant estimates
+
+```{r Cant_pos_inventory_map, fig.asp=1}
+
+Cant_inventory %>% 
+  ggplot(aes(lon, lat, fill = Cant_pos_inventory)) + 
   mapWorld +
   geom_raster() +
   scale_fill_viridis_c() +
