@@ -549,16 +549,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree392f59457d3da0c8bdac5122205ac5ef70fc10d6targetblank392f594a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/392f59457d3da0c8bdac5122205ac5ef70fc10d6" target="_blank">392f594</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeef5ef59e41e6cc61644da71014f013bddfe10c06targetblankef5ef59a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ef5ef59e41e6cc61644da71014f013bddfe10c06" target="_blank">ef5ef59</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree392f59457d3da0c8bdac5122205ac5ef70fc10d6targetblank392f594a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeef5ef59e41e6cc61644da71014f013bddfe10c06targetblankef5ef59a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/392f59457d3da0c8bdac5122205ac5ef70fc10d6" target="_blank">392f594</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ef5ef59e41e6cc61644da71014f013bddfe10c06" target="_blank">ef5ef59</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -615,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/ef5ef59e41e6cc61644da71014f013bddfe10c06/analysis/mapping.Rmd" target="_blank">ef5ef59</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-05
+</td>
+<td>
+Inventories without sign and formating
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/68fc06a67d3da2d39a18b694a3f8c6feee5ffed2/docs/mapping.html" target="_blank">68fc06a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1505,6 +1539,30 @@ Cant_model_average_zonal &lt;- Cant_model_average %&gt;%
 </div>
 <div id="cant-maps" class="section level1">
 <h1><span class="header-section-number">6</span> Cant maps</h1>
+<div id="depth-layers" class="section level2">
+<h2><span class="header-section-number">6.1</span> Depth layers</h2>
+<pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour = &quot;gray60&quot;, fill = &quot;gray60&quot;)
+
+Cant_model_average %&gt;%
+  filter(depth %in% c(150, 500, 1000, 3000)) %&gt;% 
+  ggplot(aes(lon, lat, fill = Cant_mean)) + 
+  mapWorld +
+  geom_raster() +
+  scale_fill_divergent(guide = &quot;colorstrip&quot;,
+                       breaks = MakeBreaks(5),
+                       name = &quot;Cant&quot;) +
+  guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
+  coord_quickmap(expand = 0) +
+  facet_grid(depth~eras)</code></pre>
+<p><img src="figure/mapping.Rmd/Cant_depth_layer_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="inventory-calculation" class="section level2">
+<h2><span class="header-section-number">6.2</span> Inventory calculation</h2>
+<p>To calculate Cant column inventories, we:</p>
+<ol style="list-style-type: decimal">
+<li>Multiple layer thickness with Cant concentration to get a layer inventory</li>
+<li>Sum positive Cant layer inventories from 150 - 3000 m</li>
+</ol>
 <pre class="r"><code>depth_level_volume &lt;- tibble(
   depth = unique(Cant_model_average_zonal$depth))
 
@@ -1522,36 +1580,40 @@ rm(depth_level_volume)</code></pre>
   mutate(Cant_layer = Cant_mean * layer_thickness)
 
 Cant_inventory &lt;- Cant_model_average %&gt;% 
-  filter(depth &lt; 3000,
-         Cant_layer &gt;= 0) %&gt;% 
+  filter(depth &lt;= 3000) %&gt;% 
+  mutate(Cant_pos_layer = if_else(Cant_layer &lt; 0, 0, Cant_layer)) %&gt;% 
   group_by(lon, lat, basin, eras) %&gt;% 
-  summarise(Cant_inventory = sum(Cant_layer, na.rm = TRUE) / 1000) %&gt;% 
+  summarise(Cant_pos_inventory = sum(Cant_pos_layer, na.rm = TRUE) / 1000,
+            Cant_inventory = sum(Cant_layer, na.rm = TRUE) / 1000) %&gt;% 
   ungroup()</code></pre>
-<div id="depth-layers" class="section level2">
-<h2><span class="header-section-number">6.1</span> Depth layers</h2>
-<pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour = &quot;gray60&quot;, fill = &quot;gray60&quot;)
-
-Cant_model_average %&gt;%
-  filter(depth %in% c(150, 500, 1000, 3000)) %&gt;% 
-  ggplot(aes(lon, lat, fill = Cant_mean)) + 
-  mapWorld +
-  geom_raster() +
-  scale_fill_steps2(breaks = seq(-100,100,10)) +
-  guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
-  coord_quickmap(expand = 0) +
-  facet_grid(depth~eras)</code></pre>
-<p><img src="figure/mapping.Rmd/Cant_depth_layer_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="inventories" class="section level2">
-<h2><span class="header-section-number">6.2</span> Inventories</h2>
+<h2><span class="header-section-number">6.3</span> Inventories</h2>
+<div id="all-cant-estimates" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> All Cant estimates</h3>
 <pre class="r"><code>Cant_inventory %&gt;% 
   ggplot(aes(lon, lat, fill = Cant_inventory)) + 
+  mapWorld +
+  geom_raster() +
+  scale_fill_divergent(guide = &quot;colorstrip&quot;,
+                       breaks = MakeBreaks(5),
+                       name = &quot;Cant&quot;) +
+  guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
+  coord_quickmap(expand = 0) +
+  facet_wrap(~eras, ncol = 1)</code></pre>
+<p><img src="figure/mapping.Rmd/Cant_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="positive-cant-estimates" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> Positive Cant estimates</h3>
+<pre class="r"><code>Cant_inventory %&gt;% 
+  ggplot(aes(lon, lat, fill = Cant_pos_inventory)) + 
   mapWorld +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
   facet_wrap(~eras, ncol = 1)</code></pre>
-<p><img src="figure/mapping.Rmd/Cant_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/mapping.Rmd/Cant_pos_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 </div>
 <div id="neutral-density-calculation" class="section level1">
