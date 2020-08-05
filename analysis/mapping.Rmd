@@ -32,31 +32,31 @@ theme_set(theme_bw())
 
 # Required data
 
-Currently we use following data sets for mapping: 
+Currently, following data sets are used for mapping: 
 
 - GLODAPv2_2016b_MappedClimatologies
   - Salinity
   - Temperature
-  - Phosphate
-  - Nitrate
+  - Phosphate (+Phosphate*)
   - Silicate
-  - oxygen
+  - Oxygen (+AOU)
 - World Ocean Atlas 2013
   - Neutral densities calculated by D Clement
 - World Ocean Atlas 2018
-  - basin mask
+  - Basin mask
 - eMLR model coefficients
 
-We aim to use WOA18 instead of WOA13, but still need to implement neutral density calculation.
+Aim is to use WOA18 neutral density instead of WOA13, but calculation still need to be implemented.
 
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
 
-variables <- c("salinity", "temperature", "NO3", "oxygen", "PO4", "silicate")
+variables <- c("salinity", "temperature", "oxygen", "PO4", "silicate")
 
 for (i_variable in variables) {
   
   # i_variable <- variables[2]
   # print(i_variable)
+  
   temp <- read_csv(
     here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
                paste(i_variable,".csv", sep = "")))
@@ -73,10 +73,6 @@ for (i_variable in variables) {
 
 rm(temp, i_variable, variables)
 
-# GLODAP_depths <- unique(GLODAP_predictors$depth)
-# GLODAP_lon <- unique(GLODAP_predictors$lon)
-# min(GLODAP_lon)
-# max(GLODAP_lon)
 
 ```
 
@@ -88,9 +84,6 @@ WOA18_predictors <-
 
 WOA18_predictors <- WOA18_predictors %>% 
   rename(salinity = s_an, temperature = t_an)
-
-# WOA18_depths <- unique(WOA18_predictors$depth)
-
 
 ```
 
@@ -108,9 +101,6 @@ WOA13_gamma <- WOA13_gamma %>%
   mutate(lon = if_else(lon > 180, lon - 360, lon))
 
 rm(WOA13)
-
-# WOA13_depths <- unique(WOA13_gamma$depth)
-# GLODAP_depths - WOA13_depths
 
 ```
 
@@ -185,6 +175,8 @@ rm(WOA13_gamma_n)
 
 ## WOA13 + GLODAP
 
+Predictor climatologies are merged. Only horizontal grid cells with at least one observation are kept. Rows with NA values are removed.
+
 ```{r join_WOA13_GLODAP_predictors}
 
 predictors <- full_join(GLODAP_predictors, WOA13_gamma)
@@ -192,8 +184,7 @@ rm(GLODAP_predictors, WOA13_gamma)
 
 predictors <- predictors %>% 
   group_by(lat, lon) %>% 
-  mutate(n_NO3 = sum(!is.na(NO3)),
-         n_oxygen = sum(!is.na(oxygen)),
+  mutate(n_oxygen = sum(!is.na(oxygen)),
          n_PO4 = sum(!is.na(PO4)),
          n_silicate = sum(!is.na(silicate)),
          n_salinity = sum(!is.na(salinity)),
@@ -202,21 +193,18 @@ predictors <- predictors %>%
   ungroup()
 
 predictors <- predictors %>% 
-  filter(n_NO3 > 0,
-         n_oxygen > 0,
+  filter(n_oxygen > 0,
          n_PO4 > 0,
          n_silicate > 0, 
          n_salinity > 0, 
          n_temperature > 0, 
          n_gamma > 0) %>% 
-  select(-c(n_NO3, 
-            n_oxygen, 
+  select(-c(n_oxygen, 
             n_PO4, 
             n_silicate, 
             n_salinity, 
             n_temperature,
             n_gamma))
-
 
 predictors <- predictors %>% 
   drop_na()
@@ -234,7 +222,7 @@ max_lat <- 65
 ```
 
 
-Only mapped variables were taken into consideration with:
+Only mapped variables were taken into consideration which fullfill the same criteria applied to observational data before MLR fitting:
 
 - minimum depth:  `r min_depth`m
 - minimum bottom depth:  `r min_bottomdepth`m
@@ -264,7 +252,7 @@ rm(min_depth, max_lat, min_bottomdepth)
 
 ### Basin mask
 
-Please note that some predictor variables are available outside the WOA18 basin mask and will be removed for further analysis.
+Please note that some predictor variables are available outside the WOA18 basin mask, but will be removed for further analysis.
 
 ```{r join_basin_mask}
 
@@ -274,6 +262,8 @@ rm(basinmask)
 ```
 
 ### Maps
+
+Three maps are generated to control succesful merging of data sets.
 
 ```{r WOA13_GLODAP_climatology_control_plots}
 
@@ -306,6 +296,8 @@ predictors %>%
 
 
 ### Predictor profiles
+
+Likewise, predictor profiles for the North Atlantic (lat = 40.5, lon = -20.5) are plotted to control successful merging of the data sets.
 
 ```{r predictor_profiles_N_Atl, fig.asp=2}
 
@@ -401,7 +393,7 @@ predictors <- predictors %>%
 
 ```
 
-# Map Cant
+# Prepare predictor fields
 
 ## PO~4~* calculation 
 
@@ -416,9 +408,13 @@ predictors <- predictors %>%
 ```
 
 
-## AOU climatology
+## AOU
 
 ### Calculation
+
+AOU was calculated as the difference between saturation concentration and observed concentration.  
+
+**CAVEAT**: Algorithms used to calculate oxgen saturation concentration are not yet identical in GLODAP data set (fitting) and predictor climatologies (mapping).
 
 ```{r calculate_aou_climatology}
 
@@ -435,7 +431,7 @@ predictors <- predictors %>%
 
 ### Atlantic section
 
-```{r aou_climatology_section}
+```{r aou_climatology_section, fig.asp=0.6}
 
 Atl_lon <- 335.5 - 360
 
@@ -443,9 +439,10 @@ predictors %>%
   filter(lon == Atl_lon) %>% 
   ggplot(aes(lat, depth, z = aou)) +
   geom_contour_filled() +
+  scale_fill_viridis_d(name = "AOU") +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
+  coord_cartesian(expand = 0)
 
 rm(Atl_lon)
 
@@ -495,7 +492,7 @@ The following boundaries for isoneutral slabs were defined:
 - Atlantic: `r slabs_Atl`
 - Indo-Pacific: `r slabs_Ind_Pac`
 
-Continous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
+Continuous neutral density (gamma) values based on WOA13 are grouped into isoneutral slabs.
 
 ```{r cut_isoneutral_slabs}
 
@@ -514,7 +511,7 @@ rm(predictors_Atl, predictors_Ind_Pac, slabs_Atl, slabs_Ind_Pac)
 ```
 
 
-## Prepare model coefficients
+# Prepare model coefficients
 
 ```{r prepare_model_coefficients}
 
@@ -548,9 +545,7 @@ rm(all_lm_long, all_lm)
 
 ```
 
-
-
-## Merge model + climatology
+## Merge MLRs + climatology
 
 ```{r merge_model_coeff_predictor_climatology}
 
@@ -560,7 +555,9 @@ rm(predictors, all_lm_wide)
 
 ```
 
-## Calculate Cant
+# Map Cant
+
+## Apply MLRs to predictor
 
 ```{r calculate_Cant}
 
@@ -576,7 +573,11 @@ Cant <- Cant %>%
 
 ```
 
-```{r average_Cant}
+## Mean Cant fields
+
+Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combination. Calculations are performed for all Cant values vs positive values only. This averaging step summarizes the information derived from ten best fitting MLRs. 
+
+```{r Calculate_Cant_mean}
 
 Cant_model_average <- Cant %>% 
   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>% 
@@ -587,6 +588,14 @@ Cant_model_average <- Cant %>%
             Cant_pos_sd = sd(Cant_pos),
             gamma_mean = mean(gamma)) %>% 
   ungroup()
+
+```
+
+## Mean Cant sections
+
+For each basin and era combination, the zonal mean Cant is calculated, again for all vs positive only values. Likewise, sd is calculated for the averaging of the mean basin fields.
+
+```{r Calculate_Cant_mean_sections}
 
 Cant_model_average_zonal <- Cant_model_average %>% 
   group_by(lat, depth, eras, basin) %>% 
@@ -606,7 +615,7 @@ Cant_model_average_zonal <- Cant_model_average %>%
 
 ## Mean values
 
-The mean zonal distribution of neutral densities was calculated. CAVEAT: The binning here does not reflect the isoneutral density slabs used for MLR fitting.
+The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Binning here does not reflect the isoneutral density slabs used for MLR fitting.
 
 ```{r gamma_sections_mean}
 
@@ -706,6 +715,8 @@ Cant_model_average_zonal %>%
 
 ## Depth layers
 
+Cant concentration for selected depth levels at which mapping was performed.
+
 ```{r Cant_depth_layer_maps, fig.asp=1}
 
 mapWorld <- borders("world", colour = "gray60", fill = "gray60")
@@ -729,7 +740,9 @@ Cant_model_average %>%
 To calculate Cant column inventories, we:  
 
 1. Multiple layer thickness with Cant concentration to get a layer inventory
-2. Sum positive Cant layer inventories from 150 - 3000 m 
+2. For each horizontal grid cell and era, sum Cant layer inventories from 150 - 3000 m
+
+Step 2 is performed again for all Cant and positive Cant values only
 
 ```{r calculate_layer_thickness}
 
@@ -793,15 +806,29 @@ Cant_inventory %>%
   ggplot(aes(lon, lat, fill = Cant_pos_inventory)) + 
   mapWorld +
   geom_raster() +
-  scale_fill_viridis_c() +
+  scale_fill_viridis_c(name = "Cant") +
   coord_quickmap(expand = 0) +
   facet_wrap(~eras, ncol = 1)
 
 ```
 
+# Open tasks
+
+- Calculate WOA18 neutral density and use WOA18 S, T, and gamma as predictors
+- Switch to Clement's basin mask or update WOA18 basin mask
+- Check PO4* calculation
+- Harmonize AOU calculation in fitting and mapping
+- Plot Cant sections for individual MLR models
+
+
+
+# Open questions
+
 
 
 # Neutral density calculation
+
+Not yet succesfully implemented
 
 ```{r calculate_neutral_density_test, fig.asp=0.5, eval=FALSE}
 
