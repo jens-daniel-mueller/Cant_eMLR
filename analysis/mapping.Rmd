@@ -132,7 +132,7 @@ Maps of number of observations per horizontal grid cell.
 
 ### GLODAP climatology
 
-```{r control_plots_pre_merging_GLODAP}
+```{r control_plots_pre_merging_GLODAP, fig.asp=0.6}
 
 GLODAP_n <- GLODAP_predictors %>% 
   drop_na() %>% 
@@ -153,7 +153,7 @@ rm(GLODAP_n)
 
 ### WOA13 climatology
 
-```{r control_plots_pre_merging_WOA13}
+```{r control_plots_pre_merging_WOA13, fig.asp=0.6}
 
 WOA13_gamma_n <- WOA13_gamma %>% 
   drop_na() %>% 
@@ -265,7 +265,7 @@ rm(basinmask)
 
 Three maps are generated to control succesful merging of data sets.
 
-```{r WOA13_GLODAP_climatology_control_plots}
+```{r WOA13_GLODAP_climatology_control_plots, fig.asp=0.6}
 
 predictors %>%
   ggplot(aes(lon, lat)) +
@@ -299,7 +299,7 @@ predictors %>%
 
 Likewise, predictor profiles for the North Atlantic (lat = 40.5, lon = -20.5) are plotted to control successful merging of the data sets.
 
-```{r predictor_profiles_N_Atl, fig.asp=2}
+```{r predictor_profiles_N_Atl, fig.asp=1.5}
 
 N_Atl <- predictors %>% 
   filter(lat == 40.5, lon == -20.5)
@@ -440,7 +440,7 @@ predictors %>%
   ggplot(aes(lat, depth, z = aou)) +
   geom_contour_filled() +
   scale_fill_viridis_d(name = "AOU") +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
   scale_y_reverse() +
   coord_cartesian(expand = 0)
 
