@@ -584,7 +584,8 @@ Cant_model_average <- Cant %>%
   summarise(Cant_mean = mean(Cant),
             Cant_sd = sd(Cant),
             Cant_pos_mean = mean(Cant_pos),
-            Cant_pos_sd = sd(Cant_pos)) %>% 
+            Cant_pos_sd = sd(Cant_pos),
+            gamma_mean = mean(gamma)) %>% 
   ungroup()
 
 Cant_model_average_zonal <- Cant_model_average %>% 
@@ -594,11 +595,34 @@ Cant_model_average_zonal <- Cant_model_average %>%
             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
-            Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE)) %>% 
+            Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
+            gamma_mean = mean(gamma_mean)) %>% 
   ungroup()
 
 ```
 
+
+# Neutral density section
+
+## Mean values
+
+The mean zonal distribution of neutral densities was calculated. CAVEAT: The binning here does not reflect the isoneutral density slabs used for MLR fitting.
+
+```{r gamma_sections_mean}
+
+Cant_model_average_zonal %>% 
+  filter(depth <= 4500,
+         lat > -60) %>% 
+  ggplot(aes(lat, depth, z = gamma_mean)) +
+  geom_contour_filled(binwidth = 0.25) +
+  scale_fill_viridis_d(name = "Gamma",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin~eras)
+
+```
 
 # Cant sections
 
@@ -643,7 +667,7 @@ Cant_model_average_zonal %>%
 
 ## Zonal standard deviation of mean Cant estimates
 
-Standard deviation of mean Cant values was calculate across all longitudes for each latitude, depth, basin and era. This standard deviation should reflect the zonal variability of Cant within the basin and era.
+Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
 
 ```{r Cant_sections_sd_Cant}
 
@@ -675,6 +699,72 @@ Cant_model_average_zonal %>%
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   facet_grid(basin~eras)
+
+```
+
+# Cant maps
+
+```{r calculate_layer_thickness}
+
+depth_level_volume <- tibble(
+  depth = unique(Cant_model_average_zonal$depth))
+
+depth_level_volume <- depth_level_volume %>% 
+  mutate(layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
+         layer_thickness_below = replace_na((lead(depth) - depth) / 2, 0),
+         layer_thickness = layer_thickness_above + layer_thickness_below) %>% 
+  select(-c(layer_thickness_above,
+         layer_thickness_below))
+
+Cant_model_average <- full_join(Cant_model_average, depth_level_volume)
+
+rm(depth_level_volume)
+
+```
+
+```{r calculate_inventories}
+
+Cant_model_average <- Cant_model_average %>% 
+  mutate(Cant_layer = Cant_mean * layer_thickness)
+
+Cant_inventory <- Cant_model_average %>% 
+  filter(depth < 3000,
+         Cant_layer >= 0) %>% 
+  group_by(lon, lat, basin, eras) %>% 
+  summarise(Cant_inventory = sum(Cant_layer, na.rm = TRUE) / 1000) %>% 
+  ungroup()
+
+```
+
+## Depth layers
+
+```{r Cant_depth_layer_maps, fig.asp=1.5}
+
+mapWorld <- borders("world", colour = "gray60", fill = "gray60")
+
+Cant_model_average %>%
+  filter(depth %in% c(150, 500, 1000, 3000)) %>% 
+  ggplot(aes(lon, lat, fill = Cant_mean)) + 
+  mapWorld +
+  geom_raster() +
+  scale_fill_steps2(breaks = seq(-100,100,10)) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  coord_quickmap(expand = 0) +
+  facet_grid(depth~eras)
+
+```
+
+## Inventories
+
+```{r Cant_inventory_map, fig.asp=1}
+
+Cant_inventory %>% 
+  ggplot(aes(lon, lat, fill = Cant_inventory)) + 
+  mapWorld +
+  geom_raster() +
+  scale_fill_viridis_c() +
+  coord_quickmap(expand = 0) +
+  facet_wrap(~eras, ncol = 1)
 
 ```
 
