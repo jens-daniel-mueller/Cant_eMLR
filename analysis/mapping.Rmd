@@ -21,6 +21,8 @@ library(tidyverse)
 library(lubridate)
 library(oce)
 library(marelac)
+library(metR)
+
 ```
 
 
@@ -401,40 +403,6 @@ predictors <- predictors %>%
 
 # Map Cant
 
-## Prepare model coefficients
-
-```{r prepare_model_coefficients}
-
-all_lm <- all_lm %>% 
-  select(term, estimate, basin, era, gamma_slab, model)
-
-all_lm <- all_lm %>% 
-  mutate(estimate = if_else(is.na(estimate), 0, estimate))
-
-all_lm_wide <- all_lm %>% 
-  pivot_wider(names_from = era, values_from = estimate,
-              names_prefix = "coeff_")
-
-all_lm_wide <- all_lm_wide %>% 
-  mutate(JGOFS_GO = coeff_JGOFS_WOCE - coeff_GO_SHIP,
-         GO_new = coeff_GO_SHIP - coeff_new_era) %>% 
-  select(-c(coeff_JGOFS_WOCE,
-            coeff_GO_SHIP,
-            coeff_new_era))
-
-all_lm_long <- all_lm_wide %>% 
-  pivot_longer(JGOFS_GO:GO_new, names_to = "eras", values_to = "delta_coeff")
-
-all_lm_wide <- all_lm_long %>% 
-  pivot_wider(values_from = delta_coeff,
-              names_from = term,
-              names_prefix = "delta_coeff_",
-              values_fill = 0)
-
-rm(all_lm_long, all_lm)
-
-```
-
 ## PO~4~* calculation 
 
 Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
@@ -545,17 +513,56 @@ rm(predictors_Atl, predictors_Ind_Pac, slabs_Atl, slabs_Ind_Pac)
 
 ```
 
+
+## Prepare model coefficients
+
+```{r prepare_model_coefficients}
+
+all_lm <- all_lm %>% 
+  select(term, estimate, basin, era, gamma_slab, model)
+
+all_lm <- all_lm %>% 
+  mutate(estimate = if_else(is.na(estimate), 0, estimate))
+
+all_lm_wide <- all_lm %>% 
+  pivot_wider(names_from = era, values_from = estimate,
+              names_prefix = "coeff_")
+
+all_lm_wide <- all_lm_wide %>% 
+  mutate(JGOFS_GO = coeff_GO_SHIP - coeff_JGOFS_WOCE,
+         GO_new = coeff_new_era - coeff_GO_SHIP) %>% 
+  select(-c(coeff_JGOFS_WOCE,
+            coeff_GO_SHIP,
+            coeff_new_era))
+
+all_lm_long <- all_lm_wide %>% 
+  pivot_longer(JGOFS_GO:GO_new, names_to = "eras", values_to = "delta_coeff")
+
+all_lm_wide <- all_lm_long %>% 
+  pivot_wider(values_from = delta_coeff,
+              names_from = term,
+              names_prefix = "delta_coeff_",
+              values_fill = 0)
+
+rm(all_lm_long, all_lm)
+
+```
+
+
+
 ## Merge model + climatology
 
 ```{r merge_model_coeff_predictor_climatology}
 
 Cant <- full_join(predictors, all_lm_wide)
 
+rm(predictors, all_lm_wide)
+
 ```
 
 ## Calculate Cant
 
-```{r map_Cant}
+```{r calculate_Cant}
 
 Cant <- Cant %>% 
   mutate(Cant = `delta_coeff_(Intercept)` +
@@ -567,47 +574,106 @@ Cant <- Cant %>%
            delta_coeff_salinity * salinity + 
            delta_coeff_temperature * temperature)
 
+```
+
+```{r average_Cant}
+
 Cant_model_average <- Cant %>% 
-  mutate(Cant = -Cant) %>%
-  mutate(Cant = if_else(Cant < 0, 0, Cant)) %>% 
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>% 
   group_by(lon, lat, depth, eras, basin) %>% 
-  summarise(Cant_mean = mean(Cant)) %>% 
+  summarise(Cant_mean = mean(Cant),
+            Cant_sd = sd(Cant),
+            Cant_pos_mean = mean(Cant_pos),
+            Cant_pos_sd = sd(Cant_pos)) %>% 
   ungroup()
 
-Cant_model_average_section <- Cant_model_average %>% 
+Cant_model_average_zonal <- Cant_model_average %>% 
   group_by(lat, depth, eras, basin) %>% 
-  summarise(Cant_zonal_mean = mean(Cant_mean, na.rm = TRUE)) %>% 
+  summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
+            Cant_mean = mean(Cant_mean, na.rm = TRUE),
+            Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
+            Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
+            Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
+            Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE)) %>% 
   ungroup()
 
 ```
 
-## Mean Cant sections
 
-```{r Cant_Atlantic_section_mean_surface}
+# Cant sections
 
-Cant_model_average_section %>% 
-  filter(depth <= 500,
-         lat > -60.6) %>% 
-  ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
-  geom_contour_filled(binwidth = 2) +
+## Mean values
+
+```{r Cant_sections_mean}
+
+Cant_model_average_zonal %>% 
+  filter(depth <= 4500,
+         lat > -60) %>% 
+  ggplot(aes(lat, depth, z = Cant_mean)) +
+  geom_contour_fill(breaks = MakeBreaks(5),
+                    na.fill = TRUE) +
+  scale_fill_divergent(guide = "colorstrip",
+                       breaks = MakeBreaks(5),
+                       name = "Cant") +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
-  theme(legend.position = "top") +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin~eras)
+
+```
+
+## Mean zonal standard deviation across MLR models
+
+Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
+
+```{r Cant_sections_sd_models}
+
+Cant_model_average_zonal %>% 
+  filter(depth <= 4500,
+         lat > -60) %>% 
+  ggplot(aes(lat, depth, z = Cant_sd_mean)) +
+  geom_contour_filled() +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin~eras)
+
+```
+
+## Zonal standard deviation of mean Cant estimates
+
+Standard deviation of mean Cant values was calculate across all longitudes for each latitude, depth, basin and era. This standard deviation should reflect the zonal variability of Cant within the basin and era.
+
+```{r Cant_sections_sd_Cant}
+
+Cant_model_average_zonal %>% 
+  filter(depth <= 4500,
+         lat > -60) %>% 
+  ggplot(aes(lat, depth, z = Cant_mean_sd)) +
+  geom_contour_filled() +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   facet_grid(basin~eras)
 
 ```
 
 
-```{r Cant_Atlantic_section_mean}
+## Mean positive values
 
-Cant_model_average_section %>% 
+```{r Cant_sections_positive_mean}
+
+Cant_model_average_zonal %>% 
   filter(depth <= 4500,
-         lat > -60.6) %>% 
-  ggplot(aes(lat, depth, z = Cant_zonal_mean)) +
-  geom_contour_filled(binwidth = 2) +
+         lat > -60) %>% 
+  ggplot(aes(lat, depth, z = Cant_pos_mean)) +
+  geom_contour_filled() +
+  scale_fill_viridis_d(name = "Cant") +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
-  theme(legend.position = "top") +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   facet_grid(basin~eras)
 
 ```
