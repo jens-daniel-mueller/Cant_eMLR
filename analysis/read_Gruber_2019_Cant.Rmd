@@ -29,9 +29,10 @@ theme_set(theme_bw())
 ```
 
 # Data source
-- Data source: Anthropogenic CO2 estimates (1994-2007) by Gruber et al. (2019) downloaded in August 2020 from [NOAA/NCEI Ocean Carbon Data System (OCADS)](https://www.nodc.noaa.gov/ocads/oceans/ndp_100/ndp100.html){target="_blank"}
 
-## Read ncdfs
+- Anthropogenic CO2 estimates (1994-2007) by Gruber et al. (2019) downloaded in August 2020 from [NOAA/NCEI Ocean Carbon Data System (OCADS)](https://www.nodc.noaa.gov/ocads/oceans/ndp_100/ndp100.html){target="_blank"}
+
+# Read ncdfs
 
 ```{r read_WOA18}
 
@@ -52,6 +53,7 @@ inv_dcant_tibble <- inv_dcant %>% hyper_tibble()
 
 ```
 
+# Cant plots
 
 ```{r set_criteria_horizons_sections}
 
@@ -74,9 +76,7 @@ Please note that longitudes in the climatologies range from -179.5 - 179.5, whic
 
 
 
-## Cant plots
-
-### Surface Inventory map
+## Surface Inventory map
 
 ```{r Cant_inv_map}
 
@@ -91,7 +91,9 @@ inv_dcant_tibble %>%
 
 ```
 
-### Section
+## Sections
+
+### Atlantic
 
 ```{r Cant_section_Atlantic}
 
@@ -99,12 +101,15 @@ dcant_tibble %>%
   filter(LONGITUDE == Atl_lon) %>% 
   ggplot(aes(LATITUDE, DEPTH, z = DCANT_01)) +
   geom_contour_filled() +
+  scale_fill_viridis_d(name = "Cant") +
+  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top")
 
 ```
 
+### Pacific
 
 ```{r Cant_section_Pacific}
 
@@ -112,15 +117,15 @@ dcant_tibble %>%
   filter(LONGITUDE == Pac_lon) %>% 
   ggplot(aes(LATITUDE, DEPTH, z = DCANT_01)) +
   geom_contour_filled() +
+  scale_fill_viridis_d(name = "Cant") +
+  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   theme(legend.position = "top")
 
 ```
 
-
-
-## Write file
+## Write files
 
 ```{r write_Gruber_Cant_file}
 
