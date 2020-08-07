@@ -104,8 +104,7 @@ dcant_tibble %>%
   scale_fill_viridis_d(name = "Cant") +
   guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
   scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
+  coord_cartesian(expand = 0)
 
 ```
 
@@ -120,8 +119,7 @@ dcant_tibble %>%
   scale_fill_viridis_d(name = "Cant") +
   guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
   scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
+  coord_cartesian(expand = 0)
 
 ```
 
