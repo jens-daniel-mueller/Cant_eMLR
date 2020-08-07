@@ -22,6 +22,7 @@ library(lubridate)
 library(oce)
 library(marelac)
 library(metR)
+library(reticulate)
 
 ```
 
@@ -47,6 +48,7 @@ Currently, following data sets are used for mapping:
 - eMLR model coefficients
 
 Aim is to use WOA18 neutral density instead of WOA13, but calculation still need to be implemented.
+
 
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
 

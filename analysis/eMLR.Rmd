@@ -495,7 +495,7 @@ GLODAP_basin_era <- GLODAP %>%
 
 for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
   
-  #i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[5]
+  # i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[5]
   print(i_gamma_slab)
   
   GLODAP_highlight <- GLODAP_basin_era %>% 
@@ -516,11 +516,11 @@ p <- GLODAP_highlight %>%
       scale_fill_manual( values = c("red", "grey")) +
       scale_color_manual(values = c("red", "grey")) +
       labs(title = paste(i_basin,
-                         "| ", i_era,
+                         "|", i_era,
                          "| Gamma slab", i_gamma_slab,
-                         "| total nr", nrow(GLODAP_basin_era),
-                         "| slab nr", nrow(GLODAP_highlight %>% 
-                                             filter(gamma_highlight == "slab"))))
+                         "| # obs total", nrow(GLODAP_basin_era),
+                         "| # obs slab", nrow(GLODAP_highlight %>% 
+                                             filter(gamma_highlight == "in"))))
   
 
 png(here::here("output/figure/eMLR/predictor_correlation",
