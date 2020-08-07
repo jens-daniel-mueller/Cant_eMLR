@@ -386,6 +386,9 @@ div.tocify {
       <a href="read_World_Ocean_Atlas_2018.html">World Ocean Atlas</a>
     </li>
     <li>
+      <a href="read_Gruber_2019_Cant.html">Cant Gruber</a>
+    </li>
+    <li>
       <a href="read_CO2_atm.html">Atmospheric CO2</a>
     </li>
   </ul>
@@ -434,7 +437,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Data base</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">04 August, 2020</h4>
+<h4 class="date">07 August, 2020</h4>
 
 </div>
 
@@ -459,7 +462,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-04
+<strong>Last updated:</strong> 2020-08-07
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -550,16 +553,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebafc589174c8b9dbd284180ddc6dcd9c582b3045targetblankbafc589a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bafc589174c8b9dbd284180ddc6dcd9c582b3045" target="_blank">bafc589</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeceb438a015c9498ca414b837763d487f631cbe76targetblankceb438aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ceb438a015c9498ca414b837763d487f631cbe76" target="_blank">ceb438a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebafc589174c8b9dbd284180ddc6dcd9c582b3045targetblankbafc589a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeceb438a015c9498ca414b837763d487f631cbe76targetblankceb438aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bafc589174c8b9dbd284180ddc6dcd9c582b3045" target="_blank">bafc589</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ceb438a015c9498ca414b837763d487f631cbe76" target="_blank">ceb438a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -569,6 +572,7 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
+    Ignored:    data/Gruber_2019/
     Ignored:    data/WOCE/
     Ignored:    data/World_Ocean_Atlas_2018/
     Ignored:    data/dclement/
@@ -577,7 +581,89 @@ Ignored files:
     Ignored:    dump/
 
 Untracked files:
+    Untracked:  analysis/python_scripts/
     Untracked:  analysis/test_scripts/
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(-Inf,26]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(26,26.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(26.5,26.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(26.75,27]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(27,27.25]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(27.25,27.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(27.5,27.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(27.75,27.85]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(27.85,27.95]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(27.95,28.05]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(28.05,28.1]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(28.1,28.15]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(28.15,28.2]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_GO_SHIP_(28.2, Inf]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(-Inf,26]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(26,26.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(26.5,26.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(26.75,27]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(27,27.25]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(27.25,27.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(27.5,27.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(27.75,27.85]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(27.85,27.95]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(27.95,28.05]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(28.05,28.1]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(28.1,28.15]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(28.15,28.2]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_JGOFS_WOCE_(28.2, Inf]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(-Inf,26]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(26,26.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(26.5,26.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(26.75,27]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(27,27.25]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(27.25,27.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(27.5,27.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(27.75,27.85]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(27.85,27.95]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(27.95,28.05]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(28.05,28.1]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(28.1,28.15]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(28.15,28.2]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Atlantic_new_era_(28.2, Inf]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(-Inf,26]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(26,26.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(26.5,26.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(26.75,27]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(27,27.25]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(27.25,27.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(27.5,27.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(27.75,27.85]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(27.85,27.95]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(27.95,28.05]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(28.05,28.1]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_GO_SHIP_(28.1, Inf]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(-Inf,26]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(26,26.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(26.5,26.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(26.75,27]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(27,27.25]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(27.25,27.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(27.5,27.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(27.75,27.85]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(27.85,27.95]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(27.95,28.05]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(28.05,28.1]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_JGOFS_WOCE_(28.1, Inf]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(-Inf,26]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(26,26.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(26.5,26.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(26.75,27]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(27,27.25]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(27.25,27.5]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(27.5,27.75]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(27.75,27.85]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(27.85,27.95]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(27.95,28.05]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(28.05,28.1]_.png
+    Modified:   output/figure/eMLR/predictor_correlation/predictor_correlation_Indo-Pacific_new_era_(28.1, Inf]_.png
 
 </code></pre>
 <p>
@@ -616,6 +702,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/ceb438a015c9498ca414b837763d487f631cbe76/analysis/eMLR.Rmd" target="_blank">ceb438a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-07
+</td>
+<td>
+rebuild with Gruber Cant
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/846ab5eb0add9d3d6d5810b38d0d876c758ad903/docs/eMLR.html" target="_blank">846ab5e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2424,7 +2544,7 @@ GLODAP_basin_era &lt;- GLODAP %&gt;%
 
 for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
   
-  #i_gamma_slab &lt;- unique(GLODAP_basin_era$gamma_slab)[5]
+  # i_gamma_slab &lt;- unique(GLODAP_basin_era$gamma_slab)[5]
   print(i_gamma_slab)
   
   GLODAP_highlight &lt;- GLODAP_basin_era %&gt;% 
@@ -2445,11 +2565,11 @@ p &lt;- GLODAP_highlight %&gt;%
       scale_fill_manual( values = c(&quot;red&quot;, &quot;grey&quot;)) +
       scale_color_manual(values = c(&quot;red&quot;, &quot;grey&quot;)) +
       labs(title = paste(i_basin,
-                         &quot;| &quot;, i_era,
+                         &quot;|&quot;, i_era,
                          &quot;| Gamma slab&quot;, i_gamma_slab,
-                         &quot;| total nr&quot;, nrow(GLODAP_basin_era),
-                         &quot;| slab nr&quot;, nrow(GLODAP_highlight %&gt;% 
-                                             filter(gamma_highlight == &quot;slab&quot;))))
+                         &quot;| # obs total&quot;, nrow(GLODAP_basin_era),
+                         &quot;| # obs slab&quot;, nrow(GLODAP_highlight %&gt;% 
+                                             filter(gamma_highlight == &quot;in&quot;))))
   
 
 png(here::here(&quot;output/figure/eMLR/predictor_correlation&quot;,
