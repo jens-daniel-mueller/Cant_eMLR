@@ -78,7 +78,7 @@ rm(temp, i_variable, variables)
 
 ```
 
-```{r load_WOA18, eval=FALSE}
+```{r load_WOA18}
 
 WOA18_predictors <-
   read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -875,3 +875,41 @@ lat_section +
 
 ```
 
+
+## WOA18
+
+```{r WOA18_neutral_density_calculations}
+
+WOA18_predictors <- WOA18_predictors %>% 
+  rename(LATITUDE = lat,
+         LONGITUDE = lon,
+         SALNTY = salinity,
+         THETA = temperature,
+         CTDPRS = depth) %>% 
+  mutate(CTDPRS = 1 + CTDPRS/10)
+
+source_python(here::here("analysis/python_scripts",
+                         "Gamma_GLODAP_python.py"))
+
+WOA18_predictors <- calculate_gamma(WOA18_predictors)
+
+```
+
+### Atlantic section
+
+```{r WOA18_gamma_climatology_section, fig.asp=0.6}
+
+Atl_lon <- 335.5 - 360
+
+WOA18_predictors %>% 
+  filter(LONGITUDE == Atl_lon) %>% 
+  ggplot(aes(LATITUDE, CTDPRS, z = GAMMA)) +
+  geom_contour_filled() +
+  scale_fill_viridis_d(name = "GAMMA") +
+  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0)
+
+rm(Atl_lon)
+
+```
