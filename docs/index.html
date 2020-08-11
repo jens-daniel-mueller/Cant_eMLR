@@ -370,6 +370,21 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Config
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="parameterization.html">config_parameterization</a>
+    </li>
+    <li>
+      <a href="config_nomenclature.html">Nomenclature</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Data base
      
     <span class="caret"></span>
@@ -464,7 +479,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-10
+<strong>Last updated:</strong> 2020-08-11
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -555,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed202c61f72271c2ce3dd13c7dfd98de24189c480targetblankd202c61a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d202c61f72271c2ce3dd13c7dfd98de24189c480" target="_blank">d202c61</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree39d06f0ec379a5652760e27b36c907e7ed2f6c27targetblank39d06f0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/39d06f0ec379a5652760e27b36c907e7ed2f6c27" target="_blank">39d06f0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed202c61f72271c2ce3dd13c7dfd98de24189c480targetblankd202c61a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree39d06f0ec379a5652760e27b36c907e7ed2f6c27targetblank39d06f0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d202c61f72271c2ce3dd13c7dfd98de24189c480" target="_blank">d202c61</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/39d06f0ec379a5652760e27b36c907e7ed2f6c27" target="_blank">39d06f0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -581,6 +596,7 @@ Ignored files:
     Ignored:    data/dclement/
     Ignored:    data/eMLR/
     Ignored:    data/pCO2_atmosphere/
+    Ignored:    data/parameters/
     Ignored:    dump/
 
 Untracked files:
@@ -627,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/39d06f0ec379a5652760e27b36c907e7ed2f6c27/analysis/index.Rmd" target="_blank">39d06f0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+created config navbar element
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/e18e59ae91049e4ce3633220680aadc3b3586d84/docs/index.html" target="_blank">e18e59a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1352,41 +1402,6 @@ Start workflowr project.
 <h1><span class="header-section-number">1</span> General information</h1>
 <p>On this website we present our ongoing ambition to quantify anthropogenic CO<sub>2</sub> in the ocean based on observations.</p>
 <p>Navigate trough the navbar on top to take a look at the various chapters of this project. The links in the upper right corner bring you to the source code of this project and to Jens’ homepage.</p>
-</div>
-<div id="nomenclature" class="section level1">
-<h1><span class="header-section-number">2</span> Nomenclature</h1>
-<div id="variables" class="section level2">
-<h2><span class="header-section-number">2.1</span> Variables</h2>
-<p>Original variable names from source data files are maintained to the highest degree possible. When required for merging, following variable names were used:</p>
-<ul>
-<li>lat</li>
-<li>lon</li>
-<li>depth</li>
-</ul>
-</div>
-<div id="data-sets-objects" class="section level2">
-<h2><span class="header-section-number">2.2</span> Data sets / objects</h2>
-</div>
-<div id="chunk-labels" class="section level2">
-<h2><span class="header-section-number">2.3</span> Chunk labels</h2>
-<ul>
-<li>read_xxx: open new data set</li>
-<li>set_criteria_xxx: definition of subsetting criteria, thresholds, grids, etc</li>
-<li>clean_xxx: subset rows of a data set</li>
-<li>write_xxx: write summarized data file to disk</li>
-</ul>
-</div>
-<div id="folder-structure" class="section level2">
-<h2><span class="header-section-number">2.4</span> Folder structure</h2>
-<ul>
-<li>data: contains all data, not synced to Github
-<ul>
-<li>subfolder for each data product
-<ul>
-<li>_summarized_data_files: data sets created along analysis</li>
-</ul></li>
-</ul></li>
-</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1421,7 +1436,6 @@ loaded via a namespace (and not attached):
 [21] vctrs_0.3.2     promises_1.1.1  fs_1.4.2        glue_1.4.1     
 [25] evaluate_0.14   rmarkdown_2.3   stringi_1.4.6   compiler_4.0.2 
 [29] pillar_1.4.6    backports_1.1.8 httpuv_1.5.4    pkgconfig_2.0.3</code></pre>
-</div>
 </div>
 </div>
 
