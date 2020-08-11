@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecfbc5e4befc91903529c86cd2367241f10a783datargetblankcfbc5e4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cfbc5e4befc91903529c86cd2367241f10a783da" target="_blank">cfbc5e4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5d4598160dff9ddc8596674983c74e0680c9ce62targetblank5d45981a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5d4598160dff9ddc8596674983c74e0680c9ce62" target="_blank">5d45981</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecfbc5e4befc91903529c86cd2367241f10a783datargetblankcfbc5e4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5d4598160dff9ddc8596674983c74e0680c9ce62targetblank5d45981a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cfbc5e4befc91903529c86cd2367241f10a783da" target="_blank">cfbc5e4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5d4598160dff9ddc8596674983c74e0680c9ce62" target="_blank">5d45981</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -643,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/5d4598160dff9ddc8596674983c74e0680c9ce62/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">5d45981</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+plot sal sections from function both basins
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/495debba777d653e30a3059e54b0a2686b9c7ae2/docs/read_World_Ocean_Atlas_2018.html" target="_blank">495debb</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1882,16 +1916,8 @@ rm(WOA_sal, WOA_tem)</code></pre>
 map_climatology(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="section" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Section</h3>
-<pre class="r"><code>WOA_tem_tibble %&gt;% 
-  filter(lon == parameters$lon_Atl_section) %&gt;% 
-  ggplot(aes(lat, depth, z = tem)) +
-  geom_contour_filled() +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_section_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="sections" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Sections</h3>
 <pre class="r"><code>section_climatology_Atl(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_section_WOA18_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>section_climatology_Pac(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
@@ -1905,16 +1931,12 @@ map_climatology(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
 <pre class="r"><code>map_climatology(WOA_sal_tibble, &quot;sal&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="section-1" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> Section</h3>
-<pre class="r"><code>WOA_sal_tibble %&gt;% 
-  filter(lon == parameters$lon_Atl_section) %&gt;% 
-  ggplot(aes(lat, depth, z = sal)) +
-  geom_contour_filled() +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_section_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="sections-1" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Sections</h3>
+<pre class="r"><code>section_climatology_Atl(WOA_sal_tibble, &quot;sal&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_section_WOA18_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>section_climatology_Pac(WOA_sal_tibble, &quot;sal&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_section_WOA18_Pac-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="write-file" class="section level2">
