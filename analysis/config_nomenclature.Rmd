@@ -26,10 +26,13 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 Variables from source data files are converted and harmonized to following variables:
 
 - 1x1 degree coordinate grid
-  - lon: 0.5 to 359.5°E longitude (in °E)
+  - lon: 20.5 to 379.5°E longitude (in °E)
   - lat: -89.5 to 89.5°N latitude (in °N)
 - depth: water depth in m
 - bottomdepth: bottomdepth in m
+
+- sal: salinity (Check scales!)
+- tem: temperature in deg C (Check scales!)
 - Cant: anthropogenic CO~2~ in umol kg-1
 
 # Data sets / objects
@@ -45,3 +48,8 @@ Variables from source data files are converted and harmonized to following varia
 - data: contains all data, not synced to Github
   - subfolder for each data product
     - _summarized_data_files: data sets created along analysis
+
+
+# Open tasks
+
+- check temperature and salinity scales 

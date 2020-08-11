@@ -28,6 +28,16 @@ library(stars)
 theme_set(theme_bw())
 ```
 
+```{r read_parameters, include = FALSE}
+
+parameters <- read_csv(here::here("data/parameters",
+                                  "parameters.csv"))
+
+depth_levels <- read_lines(here::here("data/parameters",
+                                      "depth_levels.txt"))
+```
+
+
 # Data source
 - Data source: [World Ocean Atlas 2018](https://www.nodc.noaa.gov/OC5/woa18/woa18data.html){target="_blank"}
 
@@ -53,7 +63,7 @@ basinmask_01 <- basinmask_01 %>%
   
 ```
 
-## Labels
+### Labels
 
 According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website, number codes in the mask file refer to Ocean basins as follows:  
 
@@ -72,7 +82,7 @@ basinmask_01 <- basinmask_01 %>%
          basin = if_else(Basin_0m == "1",
                          "Atlantic", basin)) %>% 
   select(-Basin_0m) %>% 
-  mutate(lon = lon + 180)
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 ```
 
@@ -96,12 +106,12 @@ landmask <- landsea_01 %>%
 landmask <- landmask %>% 
   rename(lat = Latitude,
          lon = Longitude) %>% 
-  mutate(lon = lon + 180)
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 rm(landsea_01)
 ```
 
-## Labels
+### Label
 
 According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document: *"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
 
@@ -183,8 +193,9 @@ WOA_tem <- tidync(here::here("data/World_Ocean_Atlas_2018",
 WOA_tem_tibble <- WOA_tem %>% hyper_tibble()
 
 WOA_tem_tibble <- WOA_tem_tibble  %>% 
-  select(t_an, lon, lat, depth) %>% 
-  drop_na()
+  select(tem = t_an, lon, lat, depth) %>% 
+  drop_na() %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 # salinity
 
@@ -194,26 +205,21 @@ WOA_sal <- tidync(here::here("data/World_Ocean_Atlas_2018",
 WOA_sal_tibble <- WOA_sal %>% hyper_tibble()
 
 WOA_sal_tibble <- WOA_sal_tibble  %>% 
-  select(s_an, lon, lat, depth) %>% 
-  drop_na()
+  select(sal = s_an, lon, lat, depth) %>% 
+  drop_na() %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+rm(WOA_sal, WOA_tem)
 
 ```
 
-
-```{r set_criteria_horizons_sections}
-
-depth_surface_selection <- c(0)
-Atl_lon <- 335.5 - 360 # subtract 360 from value used for GLODAP climatology
-Pac_lon <- 190.5 - 360 # subtract 360 from value used for GLODAP climatology
-
-```
 
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
 
-- Horizontal planes at `r depth_surface_selection`m
+- Horizontal planes at `r depth_levels`m
 - Meridional sections at longitudes:
-  - Atlantic: `r Atl_lon`
-  - Pacific: `r Pac_lon`
+  - Atlantic: `r parameters$lon_Atl_section`
+  - Pacific: `r parameters$lon_Pac_section`
 
 Section locations are indicated as white lines in maps.
 
@@ -227,15 +233,27 @@ Please note that longitudes in the climatologies range from -179.5 - 179.5, whic
 
 ```{r temperature_surface_WOA18_map}
 
+source(here::here("analysis/plotting_scripts",
+                  "plotting_functions.R"))
+
+map_climatology(WOA_tem_tibble, "tem")
+
 WOA_tem_tibble %>% 
-  filter(depth == 0) %>% 
-  ggplot(aes(lon, lat, fill = t_an)) +
+  filter(depth %in% depth_levels) %>% 
+  ggplot(aes(lon, lat, fill = tem)) +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey80") +
   geom_raster() +
-  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
+  geom_vline(xintercept = c(parameters$lon_Atl_section,
+                            parameters$lon_Pac_section),
+             col = "white") +
   coord_quickmap(expand = 0) +
   scale_fill_viridis_c() +
-  theme(legend.position = "top")
-
+  theme(legend.position = "top",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  facet_wrap(~ depth)
 
 ```
 
@@ -244,8 +262,8 @@ WOA_tem_tibble %>%
 ```{r temperature_section_WOA18_map}
 
 WOA_tem_tibble %>% 
-  filter(lon == Atl_lon) %>% 
-  ggplot(aes(lat, depth, z = t_an)) +
+  filter(lon == parameters$lon_Atl_section) %>% 
+  ggplot(aes(lat, depth, z = tem)) +
   geom_contour_filled() +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
@@ -262,14 +280,7 @@ WOA_tem_tibble %>%
 
 ```{r salinity_surface_WOA18_map}
 
-WOA_sal_tibble %>% 
-  filter(depth == 0) %>% 
-  ggplot(aes(lon, lat, fill = s_an)) +
-  geom_raster() +
-  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
-  coord_quickmap(expand = 0) +
-  scale_fill_viridis_c() +
-  theme(legend.position = "top")
+map_climatology(WOA_sal_tibble, "sal")
 
 ```
 
@@ -279,8 +290,8 @@ WOA_sal_tibble %>%
 ```{r salinity_section_WOA18_map}
 
 WOA_sal_tibble %>% 
-  filter(lon == Pac_lon) %>% 
-  ggplot(aes(lat, depth, z = s_an)) +
+  filter(lon == parameters$lon_Atl_section) %>% 
+  ggplot(aes(lat, depth, z = sal)) +
   geom_contour_filled() +
   scale_y_reverse() +
   coord_cartesian(expand = 0) +

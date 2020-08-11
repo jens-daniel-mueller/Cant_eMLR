@@ -39,7 +39,11 @@ parameters <- tibble(
   lat_max = 65,
   year_JGOFS_start = 1981,
   year_JGOFS_end = 1999,
-  year_GOSHIP_end = 2012)
+  year_GOSHIP_end = 2012,
+  lon_Atl_section = 335.5,
+  lon_Pac_section = 190.5)
+
+depth_levels <- c(0,100,500,2000)
 
 ```
 
@@ -56,6 +60,8 @@ parameters_long <- parameters %>%
 kable(parameters_long) %>%
   kable_styling()
 
+depth_levels
+
 ```
 
 
@@ -67,5 +73,8 @@ kable(parameters_long) %>%
 
 parameters %>% write_csv(here::here("data/parameters",
                                     "parameters.csv"))
+
+depth_levels %>% write_lines(here::here("data/parameters",
+                                      "depth_levels.txt"))
 
 ```
