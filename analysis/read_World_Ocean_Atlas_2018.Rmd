@@ -241,30 +241,15 @@ map_climatology(WOA_tem_tibble, "tem")
 
 ```
 
+### Sections
 
-
-### Section
-
-```{r temperature_section_WOA18_map}
-
-WOA_tem_tibble %>% 
-  filter(lon == parameters$lon_Atl_section) %>% 
-  ggplot(aes(lat, depth, z = tem)) +
-  geom_contour_filled() +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
-
-```
-
-
-```{r temperature_section_WOA18_Atl}
+```{r temperature_section_WOA18_Atl, fig.asp=0.6}
 
 section_climatology_Atl(WOA_tem_tibble, "tem")
 
 ```
 
-```{r temperature_section_WOA18_Pac}
+```{r temperature_section_WOA18_Pac, fig.asp=0.6}
 
 section_climatology_Pac(WOA_tem_tibble, "tem")
 
@@ -283,19 +268,20 @@ map_climatology(WOA_sal_tibble, "sal")
 ```
 
 
-### Section
+### Sections
 
-```{r salinity_section_WOA18_map}
+```{r salinity_section_WOA18_Atl, fig.asp=0.6}
 
-WOA_sal_tibble %>% 
-  filter(lon == parameters$lon_Atl_section) %>% 
-  ggplot(aes(lat, depth, z = sal)) +
-  geom_contour_filled() +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
+section_climatology_Atl(WOA_sal_tibble, "sal")
 
 ```
+
+```{r salinity_section_WOA18_Pac, fig.asp=0.6}
+
+section_climatology_Pac(WOA_sal_tibble, "sal")
+
+```
+
 
 
 ## Write file
