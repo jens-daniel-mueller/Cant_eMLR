@@ -5,7 +5,7 @@ date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   workflowr::wflow_html:
     number_sections: true
-    toc_depth: 3
+    toc: false
 editor_options:
   chunk_output_type: console
 ---
