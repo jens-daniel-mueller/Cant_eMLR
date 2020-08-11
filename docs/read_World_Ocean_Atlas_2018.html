@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6targetblank3ff89bba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6" target="_blank">3ff89bb</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec3a6c6301448f4e5abfddab0c5c6dfebb9297788targetblankc3a6c63a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c3a6c6301448f4e5abfddab0c5c6dfebb9297788" target="_blank">c3a6c63</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6targetblank3ff89bba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec3a6c6301448f4e5abfddab0c5c6dfebb9297788targetblankc3a6c63a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6" target="_blank">3ff89bb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c3a6c6301448f4e5abfddab0c5c6dfebb9297788" target="_blank">c3a6c63</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -602,9 +602,6 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/python_scripts/
     Untracked:  analysis/test_scripts/
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
 
 </code></pre>
 <p>
@@ -643,6 +640,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/c3a6c6301448f4e5abfddab0c5c6dfebb9297788/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">c3a6c63</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+included WOA land mask and longitude conversion
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/5d33341808fbcabe819a13383089d580f720965d/docs/read_World_Ocean_Atlas_2018.html" target="_blank">5d33341</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1391,22 +1422,26 @@ library(stars)</code></pre>
 <li>Data source: <a href="https://www.nodc.noaa.gov/OC5/woa18/woa18data.html" target="_blank">World Ocean Atlas 2018</a></li>
 </ul>
 </div>
-<div id="basin-mask" class="section level1">
-<h1><span class="header-section-number">2</span> Basin mask</h1>
-<div id="read-data" class="section level2">
-<h2><span class="header-section-number">2.1</span> Read data</h2>
+<div id="masks" class="section level1">
+<h1><span class="header-section-number">2</span> Masks</h1>
+<div id="basins" class="section level2">
+<h2><span class="header-section-number">2.1</span> Basins</h2>
+<div id="read-mask" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Read mask</h3>
 <p>The surface mask (0m) with 1x1° resolution from the file <code>basinmask_01.msk</code> was used.</p>
 <pre class="r"><code>basinmask_01 &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
                                     &quot;basinmask_01.msk&quot;),
-                         skip = 1)
+                         skip = 1,
+                         col_types = list(.default = &quot;d&quot;))
 
 basinmask_01 &lt;- basinmask_01 %&gt;% 
   select(Latitude:Basin_0m) %&gt;% 
   mutate(Basin_0m = as.factor(Basin_0m)) %&gt;% 
   rename(lat = Latitude, lon = Longitude)</code></pre>
 </div>
-<div id="basin-labels" class="section level2">
-<h2><span class="header-section-number">2.2</span> Basin labels</h2>
+</div>
+<div id="labels" class="section level2">
+<h2><span class="header-section-number">2.2</span> Labels</h2>
 <p>According to <a href="https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html" target="_blank">WOA FAQ</a> website, number codes in the mask file refer to Ocean basins as follows:</p>
 <ul>
 <li>1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)</li>
@@ -1420,27 +1455,58 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
                          &quot;Atlantic&quot;, &quot;Indo-Pacific&quot;),
          basin = if_else(Basin_0m == &quot;1&quot;,
                          &quot;Atlantic&quot;, basin)) %&gt;% 
-  select(-Basin_0m)</code></pre>
+  select(-Basin_0m) %&gt;% 
+  mutate(lon = lon + 180)</code></pre>
+</div>
+<div id="land" class="section level2">
+<h2><span class="header-section-number">2.3</span> Land</h2>
+<div id="read-mask-1" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Read mask</h3>
+<p>The land sea mask with 1x1° resolution from the file <code>landsea_01.msk</code> was used.</p>
+<pre class="r"><code>landsea_01 &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
+                                  &quot;landsea_01.msk&quot;),
+                         skip = 1,
+                         col_types = list(.default = &quot;d&quot;))
+
+landmask &lt;- landsea_01 %&gt;% 
+  filter(Bottom_Standard_Level == 1) %&gt;% 
+  select(-Bottom_Standard_Level)
+
+landmask &lt;- landmask %&gt;% 
+  rename(lat = Latitude,
+         lon = Longitude) %&gt;% 
+  mutate(lon = lon + 180)
+
+rm(landsea_01)</code></pre>
+</div>
+</div>
+<div id="labels-1" class="section level2">
+<h2><span class="header-section-number">2.4</span> Labels</h2>
+<p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document: <em>“The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world. Land will have a value of 1, corresponding to the surface.”</em></p>
+<p>The landmask was derived as coordinates with value 1.</p>
 </div>
 <div id="plot-map" class="section level2">
-<h2><span class="header-section-number">2.3</span> Plot map</h2>
-<pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, col = &quot;gray60&quot;, fill = &quot;gray60&quot;)
-
-basinmask_01 %&gt;% 
-  ggplot(aes(lon, lat, fill = basin)) +
-  mapWorld +
-  geom_raster() +
+<h2><span class="header-section-number">2.5</span> Plot map</h2>
+<pre class="r"><code>ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = &quot;grey80&quot;) +
+  geom_raster(data = basinmask_01,
+              aes(lon, lat, fill = basin)) +
   scale_fill_brewer(palette = &quot;Dark2&quot;) +
   coord_quickmap(expand = 0) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/basinmask_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(mapWorld)</code></pre>
+  theme(legend.position = &quot;top&quot;,
+        legend.title = element_blank())</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="write-file" class="section level2">
-<h2><span class="header-section-number">2.4</span> Write file</h2>
+<div id="write-files" class="section level2">
+<h2><span class="header-section-number">2.6</span> Write files</h2>
 <pre class="r"><code>basinmask_01 %&gt;% 
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                        &quot;basin_mask_WOA18.csv&quot;))
+
+landmask %&gt;% 
+  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;land_mask_WOA18.csv&quot;))
 
 rm(basinmask_01)</code></pre>
 </div>
@@ -1565,7 +1631,7 @@ Pac_lon &lt;- 190.5 - 360 # subtract 360 from value used for GLODAP climatology<
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_section_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<div id="write-file-1" class="section level2">
+<div id="write-file" class="section level2">
 <h2><span class="header-section-number">3.4</span> Write file</h2>
 <pre class="r"><code>WOA18_predictors &lt;- full_join(WOA_sal_tibble, WOA_tem_tibble)
 
@@ -1644,7 +1710,7 @@ Pac_lon &lt;- 190.5</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/gamma_section_WOA13_dclement_Pac-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<div id="write-file-2" class="section level2">
+<div id="write-file-1" class="section level2">
 <h2><span class="header-section-number">4.5</span> Write file</h2>
 <pre class="r"><code>nd_mask_tibble %&gt;%
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
@@ -1699,24 +1765,24 @@ other attached packages:
 [13] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.2         maps_3.3.0         viridisLite_0.3.0  jsonlite_1.7.0    
- [5] here_0.1           modelr_0.1.8       assertthat_0.2.1   blob_1.2.1        
- [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.8   
-[13] glue_1.4.1         digest_0.6.25      RColorBrewer_1.1-2 promises_1.1.1    
-[17] rvest_0.3.6        colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
-[21] pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1        scales_1.1.1      
-[25] whisker_0.4        later_1.1.0.1      git2r_0.27.1       farver_2.0.3      
-[29] generics_0.0.2     ellipsis_0.3.1     withr_2.2.0        cli_2.0.2         
-[33] magrittr_1.5       crayon_1.3.4       readxl_1.3.1       evaluate_0.14     
-[37] fs_1.4.2           ncdf4_1.17         fansi_0.4.1        xml2_1.3.2        
-[41] lwgeom_0.2-5       class_7.3-17       tools_4.0.2        hms_0.5.3         
-[45] lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0       isoband_0.2.2     
-[49] compiler_4.0.2     e1071_1.7-3        RNetCDF_2.3-1      rlang_0.4.7       
-[53] classInt_0.4-3     units_0.6-7        grid_4.0.2         rstudioapi_0.11   
-[57] labeling_0.3       rmarkdown_2.3      gtable_0.3.0       DBI_1.1.0         
-[61] R6_2.4.1           ncmeta_0.2.5       knitr_1.29         rprojroot_1.3-2   
-[65] KernSmooth_2.23-17 stringi_1.4.6      parallel_4.0.2     Rcpp_1.0.5        
-[69] vctrs_0.3.2        dbplyr_1.4.4       tidyselect_1.1.0   xfun_0.16         </code></pre>
+ [1] httr_1.4.2         viridisLite_0.3.0  jsonlite_1.7.0     here_0.1          
+ [5] modelr_0.1.8       assertthat_0.2.1   blob_1.2.1         cellranger_1.1.0  
+ [9] yaml_2.2.1         pillar_1.4.6       backports_1.1.8    glue_1.4.1        
+[13] digest_0.6.25      RColorBrewer_1.1-2 promises_1.1.1     rvest_0.3.6       
+[17] colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4       pkgconfig_2.0.3   
+[21] broom_0.7.0        haven_2.3.1        scales_1.1.1       whisker_0.4       
+[25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
+[29] ellipsis_0.3.1     withr_2.2.0        cli_2.0.2          magrittr_1.5      
+[33] crayon_1.3.4       readxl_1.3.1       evaluate_0.14      fs_1.4.2          
+[37] ncdf4_1.17         fansi_0.4.1        xml2_1.3.2         lwgeom_0.2-5      
+[41] class_7.3-17       tools_4.0.2        hms_0.5.3          lifecycle_0.2.0   
+[45] munsell_0.5.0      reprex_0.3.0       isoband_0.2.2      compiler_4.0.2    
+[49] e1071_1.7-3        RNetCDF_2.3-1      rlang_0.4.7        classInt_0.4-3    
+[53] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.3      
+[57] rmarkdown_2.3      gtable_0.3.0       DBI_1.1.0          R6_2.4.1          
+[61] ncmeta_0.2.5       knitr_1.29         rprojroot_1.3-2    KernSmooth_2.23-17
+[65] stringi_1.4.6      parallel_4.0.2     Rcpp_1.0.5         vctrs_0.3.2       
+[69] dbplyr_1.4.4       tidyselect_1.1.0   xfun_0.16         </code></pre>
 </div>
 </div>
 
