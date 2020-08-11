@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeca836afc274b44d09c787fa9367c93adc99878ectargetblankca836afa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ca836afc274b44d09c787fa9367c93adc99878ec" target="_blank">ca836af</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeadc0335f28fa4ab908ff17572a833a3f95491527targetblankadc0335a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/adc0335f28fa4ab908ff17572a833a3f95491527" target="_blank">adc0335</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeca836afc274b44d09c787fa9367c93adc99878ectargetblankca836afa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeadc0335f28fa4ab908ff17572a833a3f95491527targetblankadc0335a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ca836afc274b44d09c787fa9367c93adc99878ec" target="_blank">ca836af</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/adc0335f28fa4ab908ff17572a833a3f95491527" target="_blank">adc0335</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -601,9 +601,9 @@ Ignored files:
     Ignored:    dump/
 
 Untracked files:
-    Untracked:  analysis/plotting_scripts/
     Untracked:  analysis/python_scripts/
-    Untracked:  analysis/test_scripts/
+    Untracked:  code/plotting_functions.R
+    Untracked:  code/test_scripts/
     Untracked:  figure/
 
 </code></pre>
@@ -643,6 +643,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/adc0335f28fa4ab908ff17572a833a3f95491527/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">adc0335</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+plot sections from function
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/69b9a789f221b23aa069065692264861f691df98/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">69b9a78</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+plot sections from function
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/cfd84b7267196cb6876bf604fb338b5e0e2b9f0e/docs/read_World_Ocean_Atlas_2018.html" target="_blank">cfd84b7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1791,7 +1842,7 @@ rm(WOA_sal, WOA_tem)</code></pre>
 <h2><span class="header-section-number">3.2</span> Temperature plots</h2>
 <div id="surface-map" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Surface map</h3>
-<pre class="r"><code>source(here::here(&quot;analysis/plotting_scripts&quot;,
+<pre class="r"><code>source(here::here(&quot;code&quot;,
                   &quot;plotting_functions.R&quot;))
 
 map_climatology(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
@@ -1807,6 +1858,7 @@ map_climatology(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
   coord_cartesian(expand = 0) +
   theme(legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_section_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>section_climatology(WOA_tem_tibble, &quot;tem&quot;)</code></pre>
 </div>
 </div>
 <div id="salinity-plots" class="section level2">
