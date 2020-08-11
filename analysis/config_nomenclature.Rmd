@@ -1,5 +1,5 @@
 ---
-title: "Parameterization"
+title: "Nomenclature"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -20,9 +20,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```
 
-# Nomenclature
 
-## Variables
+# Variables
 
 Original variable names from source data files are maintained to the highest degree possible. When required for merging, following variable names were used:
 
@@ -30,15 +29,15 @@ Original variable names from source data files are maintained to the highest deg
 - lon
 - depth
 
-## Data sets / objects
+# Data sets / objects
 
-## Chunk labels
+# Chunk labels
 
 - read_xxx: open new data set
 - clean_xxx: subset rows of a data set
 - write_xxx: write summarized data file to disk
 
-## Folder structure
+# Folder structure
 
 - data: contains all data, not synced to Github
   - subfolder for each data product
