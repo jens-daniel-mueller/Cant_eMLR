@@ -23,6 +23,11 @@ library(tidync)
 library(stars)
 ```
 
+```{r, include = FALSE}
+src <- knitr::knit_expand(file = here::here("analysis/child/iris.Rmd"),
+                          title = "setosa")
+```
+
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
@@ -62,6 +67,8 @@ basinmask_01 <- basinmask_01 %>%
   rename(lat = Latitude, lon = Longitude)
   
 ```
+
+`r knitr::knit(text = unlist(src))`
 
 ### Labels
 
@@ -401,7 +408,7 @@ rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
 
 # Open tasks
 
-- basin mask not yet applied to WOA18 data
+- apply basin mask to WOA18 data
 
 # Questions
 
