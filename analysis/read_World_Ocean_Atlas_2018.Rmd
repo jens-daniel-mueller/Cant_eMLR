@@ -258,9 +258,15 @@ WOA_tem_tibble %>%
 ```
 
 
-```{r temperature_section_WOA18}
+```{r temperature_section_WOA18_Atl}
 
-section_climatology(WOA_tem_tibble, "tem")
+section_climatology_Atl(WOA_tem_tibble, "tem")
+
+```
+
+```{r temperature_section_WOA18_Pac}
+
+section_climatology_Pac(WOA_tem_tibble, "tem")
 
 ```
 
@@ -411,6 +417,7 @@ rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
 # Open tasks
 
 - apply basin mask to WOA18 data
+- add Indian ocean section plot
 
 # Questions
 
