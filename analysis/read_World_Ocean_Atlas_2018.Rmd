@@ -31,9 +31,11 @@ theme_set(theme_bw())
 # Data source
 - Data source: [World Ocean Atlas 2018](https://www.nodc.noaa.gov/OC5/woa18/woa18data.html){target="_blank"}
 
-# Basin mask
+# Masks
 
-## Read data
+## Basins
+
+### Read mask
 
 The surface mask (0m) with 1x1° resolution from the file `basinmask_01.msk` was used.
 
@@ -41,7 +43,8 @@ The surface mask (0m) with 1x1° resolution from the file `basinmask_01.msk` was
 
 basinmask_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
                                     "basinmask_01.msk"),
-                         skip = 1)
+                         skip = 1,
+                         col_types = list(.default = "d"))
 
 basinmask_01 <- basinmask_01 %>% 
   select(Latitude:Basin_0m) %>% 
@@ -50,7 +53,7 @@ basinmask_01 <- basinmask_01 %>%
   
 ```
 
-## Basin labels
+## Labels
 
 According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website, number codes in the mask file refer to Ocean basins as follows:  
 
@@ -68,35 +71,69 @@ basinmask_01 <- basinmask_01 %>%
                          "Atlantic", "Indo-Pacific"),
          basin = if_else(Basin_0m == "1",
                          "Atlantic", basin)) %>% 
-  select(-Basin_0m)
+  select(-Basin_0m) %>% 
+  mutate(lon = lon + 180)
 
 ```
+
+## Land
+
+### Read mask
+
+The land sea mask with 1x1° resolution from the file `landsea_01.msk` was used.
+
+```{r read_landsea_mask}
+
+landsea_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
+                                  "landsea_01.msk"),
+                         skip = 1,
+                         col_types = list(.default = "d"))
+
+landmask <- landsea_01 %>% 
+  filter(Bottom_Standard_Level == 1) %>% 
+  select(-Bottom_Standard_Level)
+
+landmask <- landmask %>% 
+  rename(lat = Latitude,
+         lon = Longitude) %>% 
+  mutate(lon = lon + 180)
+
+rm(landsea_01)
+```
+
+## Labels
+
+According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document: *"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
+
+The landmask was derived as coordinates with value 1.
 
 ## Plot map
 
-```{r basinmask_WOA18_map}
+```{r WOA18_map}
 
-mapWorld <- borders("world", col = "gray60", fill = "gray60")
-
-basinmask_01 %>% 
-  ggplot(aes(lon, lat, fill = basin)) +
-  mapWorld +
-  geom_raster() +
+ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = basinmask_01,
+              aes(lon, lat, fill = basin)) +
   scale_fill_brewer(palette = "Dark2") +
   coord_quickmap(expand = 0) +
-  theme(legend.position = "top")
-
-rm(mapWorld)
+  theme(legend.position = "top",
+        legend.title = element_blank())
 
 ```
 
-## Write file
+## Write files
 
-```{r write_basinmask_file}
+```{r write_files}
 
 basinmask_01 %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                        "basin_mask_WOA18.csv"))
+
+landmask %>% 
+  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "land_mask_WOA18.csv"))
 
 rm(basinmask_01)
 
