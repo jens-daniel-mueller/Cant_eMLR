@@ -24,8 +24,10 @@ library(stars)
 ```
 
 ```{r, include = FALSE}
+
 src <- knitr::knit_expand(file = here::here("analysis/child/iris.Rmd"),
-                          title = "setosa")
+                          title = "Species")
+
 ```
 
 
@@ -67,6 +69,7 @@ basinmask_01 <- basinmask_01 %>%
   rename(lat = Latitude, lon = Longitude)
   
 ```
+
 
 `r knitr::knit(text = unlist(src))`
 
