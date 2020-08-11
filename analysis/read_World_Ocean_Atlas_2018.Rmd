@@ -258,6 +258,12 @@ WOA_tem_tibble %>%
 ```
 
 
+```{r temperature_surface_WOA18_map, fig.asp=0.6}
+
+section_climatology(WOA_tem_tibble, "tem")
+
+```
+
 
 
 ## Salinity plots
