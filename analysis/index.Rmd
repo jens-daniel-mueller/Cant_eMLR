@@ -5,10 +5,10 @@ date:  "`r format(Sys.time(), '%B %Y')`"
 site: workflowr::wflow_site
 output: 
   workflowr::wflow_html:
+    number_sections: true
 editor_options:
   chunk_output_type: console
 ---
-# WELCOME!
 
 On this website we present our ongoing ambition to quantify anthropogenic CO~2~ in the ocean based on observations.
 
