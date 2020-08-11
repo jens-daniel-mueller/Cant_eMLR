@@ -571,16 +571,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6targetblank3ff89bba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6" target="_blank">3ff89bb</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec9e2d6589d10d071648999267fe5847788046df4targetblankc9e2d65a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c9e2d6589d10d071648999267fe5847788046df4" target="_blank">c9e2d65</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6targetblank3ff89bba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec9e2d6589d10d071648999267fe5847788046df4targetblankc9e2d65a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6" target="_blank">3ff89bb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c9e2d6589d10d071648999267fe5847788046df4" target="_blank">c9e2d65</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -588,6 +588,7 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv1_1/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
@@ -601,11 +602,9 @@ Ignored files:
     Ignored:    dump/
 
 Untracked files:
+    Untracked:  analysis/plotting_scripts/
     Untracked:  analysis/python_scripts/
     Untracked:  analysis/test_scripts/
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
 
 </code></pre>
 <p>
@@ -644,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/c9e2d6589d10d071648999267fe5847788046df4/analysis/config_parameterization.Rmd" target="_blank">c9e2d65</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+plot maps from function
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/5d33341808fbcabe819a13383089d580f720965d/docs/config_parameterization.html" target="_blank">5d33341</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -715,7 +748,11 @@ library(kableExtra)</code></pre>
   lat_max = 65,
   year_JGOFS_start = 1981,
   year_JGOFS_end = 1999,
-  year_GOSHIP_end = 2012)</code></pre>
+  year_GOSHIP_end = 2012,
+  lon_Atl_section = 335.5,
+  lon_Pac_section = 190.5)
+
+depth_levels &lt;- c(0,100,500,2000)</code></pre>
 </div>
 <div id="overview" class="section level1">
 <h1><span class="header-section-number">2</span> Overview</h1>
@@ -744,7 +781,7 @@ value
 bottomdepth_min
 </td>
 <td style="text-align:right;">
-500
+500.0
 </td>
 </tr>
 <tr>
@@ -752,7 +789,7 @@ bottomdepth_min
 depth_min
 </td>
 <td style="text-align:right;">
-150
+150.0
 </td>
 </tr>
 <tr>
@@ -760,7 +797,7 @@ depth_min
 flag_f
 </td>
 <td style="text-align:right;">
-2
+2.0
 </td>
 </tr>
 <tr>
@@ -768,7 +805,7 @@ flag_f
 flag_qc
 </td>
 <td style="text-align:right;">
-1
+1.0
 </td>
 </tr>
 <tr>
@@ -776,7 +813,23 @@ flag_qc
 lat_max
 </td>
 <td style="text-align:right;">
-65
+65.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lon_Atl_section
+</td>
+<td style="text-align:right;">
+335.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lon_Pac_section
+</td>
+<td style="text-align:right;">
+190.5
 </td>
 </tr>
 <tr>
@@ -784,7 +837,7 @@ lat_max
 year_GOSHIP_end
 </td>
 <td style="text-align:right;">
-2012
+2012.0
 </td>
 </tr>
 <tr>
@@ -792,7 +845,7 @@ year_GOSHIP_end
 year_JGOFS_end
 </td>
 <td style="text-align:right;">
-1999
+1999.0
 </td>
 </tr>
 <tr>
@@ -800,16 +853,21 @@ year_JGOFS_end
 year_JGOFS_start
 </td>
 <td style="text-align:right;">
-1981
+1981.0
 </td>
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>depth_levels</code></pre>
+<pre><code>[1]    0  100  500 2000</code></pre>
 </div>
 <div id="write-file" class="section level1">
 <h1><span class="header-section-number">3</span> Write file</h1>
 <pre class="r"><code>parameters %&gt;% write_csv(here::here(&quot;data/parameters&quot;,
-                                    &quot;parameters.csv&quot;))</code></pre>
+                                    &quot;parameters.csv&quot;))
+
+depth_levels %&gt;% write_lines(here::here(&quot;data/parameters&quot;,
+                                      &quot;depth_levels.txt&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
