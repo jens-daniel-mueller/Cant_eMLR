@@ -6,9 +6,6 @@ site: workflowr::wflow_site
 output: 
   workflowr::wflow_html:
     number_sections: true
-    toc_depth: 3
-    toc_float:
-      collapsed: false
 editor_options:
   chunk_output_type: console
 ---

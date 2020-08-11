@@ -23,11 +23,14 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 # Variables
 
-Original variable names from source data files are maintained to the highest degree possible. When required for merging, following variable names were used:
+Variables from source data files are converted and harmonized to following variables:
 
-- lat
-- lon
-- depth
+- 1x1 degree coordinate grid
+  - lon: 0.5 to 359.5°E longitude (in °E)
+  - lat: -89.5 to 89.5°N latitude (in °N)
+- depth: water depth in m
+- bottomdepth: bottomdepth in m
+- Cant: anthropogenic CO~2~ in umol kg-1
 
 # Data sets / objects
 
