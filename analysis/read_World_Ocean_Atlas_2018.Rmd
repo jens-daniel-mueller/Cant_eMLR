@@ -234,7 +234,7 @@ Please note that longitudes in the climatologies range from -179.5 - 179.5, whic
 
 ```{r temperature_surface_WOA18_map, fig.asp=0.6}
 
-source(here::here("analysis/plotting_scripts",
+source(here::here("code",
                   "plotting_functions.R"))
 
 map_climatology(WOA_tem_tibble, "tem")
@@ -258,7 +258,7 @@ WOA_tem_tibble %>%
 ```
 
 
-```{r temperature_surface_WOA18_map, fig.asp=0.6}
+```{r temperature_section_WOA18}
 
 section_climatology(WOA_tem_tibble, "tem")
 
