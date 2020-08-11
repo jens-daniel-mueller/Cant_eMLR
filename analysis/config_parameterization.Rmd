@@ -1,0 +1,71 @@
+---
+title: "Parameterization"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+
+# Definition
+
+```{r define_parameters}
+
+parameters <- tibble(
+  flag_f = 2,
+  flag_qc = 1,
+  depth_min = 150,
+  bottomdepth_min = 500,
+  lat_max = 65,
+  year_JGOFS_start = 1981,
+  year_JGOFS_end = 1999,
+  year_GOSHIP_end = 2012)
+
+```
+
+# Overview
+
+```{r print_parameter_table}
+
+parameters_long <- parameters %>% 
+  pivot_longer(1:length(parameters),
+               names_to = "parameter",
+               values_to = "value") %>% 
+  arrange(parameter)
+
+kable(parameters_long) %>%
+  kable_styling()
+
+```
+
+
+
+# Write file
+
+
+```{r write_parameters}
+
+parameters %>% write_csv(here::here("data/parameters",
+                                    "parameters.csv"))
+
+```
