@@ -55,22 +55,27 @@ GLODAP <- GLODAP %>%
 
 ```
 
+Read parameterization
+
+
+```{r read_parameters}
+
+parameters <- read_csv(here::here("data/parameters",
+                                  "parameters.csv"))
+
+```
+
+
+
 # Data preparation
 
 ## Flags and missing data
 
-```{r set_criteria_flagging}
-
-flag_f <- 2
-flag_qc <- 1
-
-```
-
 Only rows (samples) for which all relevant parameters are available were selected.
 In additions, following flagging criteria were applied:
 
-- flag f:     `r flag_f`
-- flag qc:    `r flag_qc`
+- flag_f:     `r parameters$flag_f`
+- flag_qc:    `r parameters$flag_qc`
   
 Summary statistics were calculated during cleaning process.
 
@@ -85,11 +90,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(tco2))
 
 GLODAP <- GLODAP %>% 
-  filter(tco2f == flag_f) %>% 
+  filter(tco2f == parameters$flag_f) %>% 
   select(-tco2f)
 
 GLODAP <- GLODAP %>% 
-  filter(tco2qc == flag_qc) %>% 
+  filter(tco2qc == parameters$flag_qc) %>% 
   select(-tco2qc)
 
 GLODAP_stats_temp <- GLODAP %>% 
@@ -104,11 +109,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(talk))
 
 GLODAP <- GLODAP %>% 
-  filter(talkf == flag_f) %>% 
+  filter(talkf == parameters$flag_f) %>% 
   select(-talkf)
 
 GLODAP <- GLODAP %>% 
-  filter(talkqc == flag_qc) %>% 
+  filter(talkqc == parameters$flag_qc) %>% 
   select(-talkqc)
 
 ##
@@ -117,11 +122,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(phosphate))
 
 GLODAP <- GLODAP %>% 
-  filter(phosphatef == flag_f) %>% 
+  filter(phosphatef == parameters$flag_f) %>% 
   select(-phosphatef)
 
 GLODAP <- GLODAP %>% 
-  filter(phosphateqc == flag_qc) %>% 
+  filter(phosphateqc == parameters$flag_qc) %>% 
   select(-phosphateqc)
 
 GLODAP_stats_temp <- GLODAP %>% 
@@ -141,11 +146,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(salinity))
 
 GLODAP <- GLODAP %>% 
-  filter(salinityf == flag_f) %>% 
+  filter(salinityf == parameters$flag_f) %>% 
   select(-salinityf)
 
 GLODAP <- GLODAP %>% 
-  filter(salinityqc == flag_qc) %>% 
+  filter(salinityqc == parameters$flag_qc) %>% 
   select(-salinityqc)
 
 ##
@@ -154,11 +159,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(silicate))
 
 GLODAP <- GLODAP %>% 
-  filter(silicatef == flag_f) %>% 
+  filter(silicatef == parameters$flag_f) %>% 
   select(-silicatef)
 
 GLODAP <- GLODAP %>% 
-  filter(silicateqc == flag_qc) %>% 
+  filter(silicateqc == parameters$flag_qc) %>% 
   select(-silicateqc)
 
 ##
@@ -167,11 +172,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(oxygen))
 
 GLODAP <- GLODAP %>% 
-  filter(oxygenf == flag_f) %>% 
+  filter(oxygenf == parameters$flag_f) %>% 
   select(-oxygenf)
 
 GLODAP <- GLODAP %>% 
-  filter(oxygenqc == flag_qc) %>% 
+  filter(oxygenqc == parameters$flag_qc) %>% 
   select(-oxygenqc)
 
 ##
@@ -180,7 +185,7 @@ GLODAP <- GLODAP %>%
   filter(!is.na(aou))
 
 GLODAP <- GLODAP %>% 
-  filter(aouf == flag_f) %>% 
+  filter(aouf == parameters$flag_f) %>% 
   select(-aouf)
 
 ##
@@ -189,11 +194,11 @@ GLODAP <- GLODAP %>%
   filter(!is.na(nitrate))
 
 GLODAP <- GLODAP %>% 
-  filter(nitratef == flag_f) %>% 
+  filter(nitratef == parameters$flag_f) %>% 
   select(-nitratef)
 
 GLODAP <- GLODAP %>% 
-  filter(nitrateqc == flag_qc) %>% 
+  filter(nitrateqc == parameters$flag_qc) %>% 
   select(-nitrateqc)
 
 ##
@@ -212,31 +217,22 @@ GLODAP_stats_temp <- GLODAP %>%
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 
 rm(GLODAP_stats_temp)
-rm(flag_f, flag_qc)
 
 ```
 
 ## Spatial boundaries
 
-```{r set_criteria_spatial_boundaries}
-
-min_depth <- 150
-min_bottomdepth <- 500
-max_lat <- 65
-
-```
-
 Only observations were taken into consideration with:
 
-- minimum sampling depth:  `r min_depth`m
-- minimum bottom depth:  `r min_bottomdepth`m
-- maximum latitude:  `r max_lat`°N
+- minimum sampling depth:  `r parameters$depth_min`m
+- minimum bottom depth:  `r parameters$bottomdepth_min`m
+- maximum latitude:  `r parameters$lat_max`°N
 
 
 ```{r apply_spatial_boundaries}
 
 GLODAP <- GLODAP %>% 
-  filter(depth >= min_depth)
+  filter(depth >= parameters$depth_min)
 
 GLODAP_stats_temp <- GLODAP %>% 
   summarise(eMLR_variables_150m = n())
@@ -247,10 +243,10 @@ rm(GLODAP_stats_temp)
 ##
 
 GLODAP <- GLODAP %>% 
-  filter(latitude <= max_lat)
+  filter(latitude <= parameters$lat_max)
 
 GLODAP <- GLODAP %>% 
-  filter(bottomdepth >= min_bottomdepth)
+  filter(bottomdepth >= parameters$bottomdepth_min)
 
 GLODAP_stats_temp <- GLODAP %>% 
   summarise(eMLR_variables_150m_65N_500m = n())
@@ -260,40 +256,37 @@ rm(GLODAP_stats_temp)
 
 
 GLODAP_stats_long <- GLODAP_stats %>% 
-  pivot_longer(1:length(GLODAP_stats), names_to = "parameter", values_to = "n")
+  pivot_longer(1:length(GLODAP_stats),
+               names_to = "parameter",
+               values_to = "n")
 
 GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                              "GLODAPv2.2020_stats.csv"))
 
 rm(GLODAP_stats_long, GLODAP_stats)
-rm(min_depth, max_lat, min_bottomdepth)
 
 ```
 
 ## Reference eras
 
-```{r set_criteria_eras}
-
-start <- 1981
-JGOFS <- 1999
-GOSHIP <- 2012
-
-```
-
 Samples were assigned to following eras:
 
-- JGOFS-WOCE: `r start` - `r JGOFS`
-- GO-SHIP:    `r JGOFS+1` - `r GOSHIP`
-- new-era:    > `r GOSHIP+1`
+- JGOFS_WOCE:
+`r parameters$year_JGOFS_start` - `r parameters$year_JGOFS_end`
+
+- GO_SHIP:
+`r parameters$year_JGOFS_end+1` - `r parameters$year_GOSHIP_end`
+
+- new_era:    > `r parameters$year_GOSHIP_end+1`
 
 
 ```{r assign_eras}
 
 GLODAP <- GLODAP %>%
-  filter(year >= start) %>% 
+  filter(year >= parameters$year_JGOFS_start) %>% 
   mutate(era = "JGOFS_WOCE",
-         era = if_else(year > JGOFS, "GO_SHIP", era),
-         era = if_else(year > GOSHIP, "new_era", era))
+         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
+         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
 
 ```
 
@@ -473,7 +466,7 @@ era_median_year <- GLODAP %>%
 
 GLODAP_histogram_year %>% 
   ggplot() +
-  geom_vline(xintercept = c(JGOFS + 0.5, GOSHIP + 0.5)) +
+  geom_vline(xintercept = c(parameters$year_JGOFS_end + 0.5, parameters$year_GOSHIP_end + 0.5)) +
   geom_col(aes(year, n, fill = basin)) +
   geom_point(data = era_median_year, aes(t_ref,0, shape = "Median year"), size = 2, fill = "white") +
   scale_fill_brewer(palette = "Dark2") +
@@ -516,7 +509,7 @@ rm(GLODAP_hovmoeller_year)
 mapWorld <- borders("world", colour = "gray60", fill = "gray60")
 
 GLODAP <- GLODAP %>% 
-  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
+  mutate(era = factor(era, c("parameters$year_JGOFS_end_WOCE", "GO_SHIP", "new_era")))
 
 GLODAP %>%
   ggplot(aes(lon, lat)) +

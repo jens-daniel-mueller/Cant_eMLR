@@ -13,6 +13,8 @@ navbar:
       href: read_World_Ocean_Atlas_2018.html
     - text: Cant Gruber
       href: read_Gruber_2019_Cant.html
+    - text: Cant Sabine
+      href: read_Sabine_2004_Cant.html
     - text: Atmospheric CO2
       href: read_CO2_atm.html
   - text: eMLR
