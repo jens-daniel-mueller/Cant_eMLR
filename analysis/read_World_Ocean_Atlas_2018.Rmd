@@ -231,29 +231,12 @@ Please note that longitudes in the climatologies range from -179.5 - 179.5, whic
 
 ### Surface map
 
-```{r temperature_surface_WOA18_map}
+```{r temperature_surface_WOA18_map, fig.asp=0.6}
 
 source(here::here("analysis/plotting_scripts",
                   "plotting_functions.R"))
 
 map_climatology(WOA_tem_tibble, "tem")
-
-WOA_tem_tibble %>% 
-  filter(depth %in% depth_levels) %>% 
-  ggplot(aes(lon, lat, fill = tem)) +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
-  geom_raster() +
-  geom_vline(xintercept = c(parameters$lon_Atl_section,
-                            parameters$lon_Pac_section),
-             col = "white") +
-  coord_quickmap(expand = 0) +
-  scale_fill_viridis_c() +
-  theme(legend.position = "top",
-        axis.title = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank()) +
-  facet_wrap(~ depth)
 
 ```
 
