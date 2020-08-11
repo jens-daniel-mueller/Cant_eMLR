@@ -23,13 +23,6 @@ library(tidync)
 library(stars)
 ```
 
-```{r, include = FALSE}
-
-src <- knitr::knit_expand(file = here::here("analysis/child/iris.Rmd"),
-                          var = "lat")
-
-```
-
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
@@ -70,8 +63,6 @@ basinmask_01 <- basinmask_01 %>%
   
 ```
 
-
-`r knitr::knit(text = unlist(src))`
 
 ### Labels
 
@@ -249,6 +240,8 @@ source(here::here("analysis/plotting_scripts",
 map_climatology(WOA_tem_tibble, "tem")
 
 ```
+
+
 
 ### Section
 
