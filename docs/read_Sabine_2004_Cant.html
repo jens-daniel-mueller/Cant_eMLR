@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec78a3f9e2ed5675f091f19e294bfdc542b536070targetblankc78a3f9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c78a3f9e2ed5675f091f19e294bfdc542b536070" target="_blank">c78a3f9</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1dd027db809b249efa89da8af10cb67c4638966ftargetblank1dd027da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1dd027db809b249efa89da8af10cb67c4638966f" target="_blank">1dd027d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreec78a3f9e2ed5675f091f19e294bfdc542b536070targetblankc78a3f9a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1dd027db809b249efa89da8af10cb67c4638966ftargetblank1dd027da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/c78a3f9e2ed5675f091f19e294bfdc542b536070" target="_blank">c78a3f9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1dd027db809b249efa89da8af10cb67c4638966f" target="_blank">1dd027d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -601,9 +601,7 @@ Ignored files:
     Ignored:    figure/
 
 Untracked files:
-    Untracked:  code/plotting_functions.R
-    Untracked:  code/python_scripts/
-    Untracked:  code/test_scripts/
+    Untracked:  code/inventory_calculation.R
 
 </code></pre>
 <p>
@@ -642,6 +640,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/1dd027db809b249efa89da8af10cb67c4638966f/analysis/read_Sabine_2004_Cant.Rmd" target="_blank">1dd027d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+harmonized coordinates, calculated inventories
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/f143b2d8df8a1af68d1b09c89227d808d378c9c7/docs/read_Sabine_2004_Cant.html" target="_blank">f143b2d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -786,91 +818,100 @@ Long_centers &lt;- Long_centers %&gt;%
 
 names(AnthCO2_data) &lt;- Lat_centers
 
-Long_Depth &lt;- expand_grid(Depth = Depth_centers, Long = Long_centers) %&gt;% 
-  mutate(Long = as.numeric(Long),
-         Depth = as.numeric(Depth))
+Long_Depth &lt;- expand_grid(depth = Depth_centers, lon = Long_centers) %&gt;% 
+  mutate(lon = as.numeric(lon),
+         depth = as.numeric(depth))
 
 Cant &lt;- bind_cols(AnthCO2_data, Long_Depth)
 
 Cant &lt;- Cant %&gt;% 
-  pivot_longer(1:180, names_to = &quot;Lat&quot;, values_to = &quot;Cant&quot;) %&gt;% 
-  mutate(Lat = as.numeric(Lat))
+  pivot_longer(1:180, names_to = &quot;lat&quot;, values_to = &quot;cant&quot;) %&gt;% 
+  mutate(lat = as.numeric(lat))
 
 Cant &lt;- Cant %&gt;% 
   drop_na()
 
+Cant &lt;- Cant %&gt;% 
+  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
+
 rm(AnthCO2_data, Long_Depth, Depth_centers, Lat_centers, Long_centers)</code></pre>
 </div>
+<div id="masks" class="section level1">
+<h1><span class="header-section-number">3</span> Masks</h1>
+<div id="read" class="section level2">
+<h2><span class="header-section-number">3.1</span> Read</h2>
+<pre class="r"><code>basinmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                                 &quot;basin_mask_WOA18.csv&quot;))
+
+landmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                                 &quot;land_mask_WOA18.csv&quot;))</code></pre>
+</div>
+<div id="apply-basin-mask" class="section level2">
+<h2><span class="header-section-number">3.2</span> Apply basin mask</h2>
+<pre class="r"><code>Cant &lt;- inner_join(Cant, basinmask)</code></pre>
+</div>
+</div>
 <div id="cant-plots" class="section level1">
-<h1><span class="header-section-number">3</span> Cant plots</h1>
-<pre class="r"><code>depth_surface_selection &lt;- c(0)
-Atl_lon &lt;- 335.5 - 360
-Pac_lon &lt;- 190.5 - 360</code></pre>
+<h1><span class="header-section-number">4</span> Cant plots</h1>
 <p>Below, following subsets of the climatologies are plotted for all relevant parameters:</p>
 <ul>
-<li>Horizontal planes at 0m</li>
+<li>Horizontal planes at 0, 100, 500, 2000m</li>
 <li>Meridional sections at longitudes:
 <ul>
-<li>Atlantic: -24.5</li>
-<li>Pacific: -169.5</li>
+<li>Atlantic: 335.5</li>
+<li>Pacific: 190.5</li>
+<li>Indian ocean: 70.5</li>
 </ul></li>
 </ul>
 <p>Section locations are indicated as white lines in maps.</p>
-<p>Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.</p>
-<div id="surface-inventory-map" class="section level2">
-<h2><span class="header-section-number">3.1</span> Surface Inventory map</h2>
-<pre class="r"><code>Cant %&gt;% 
-  filter(Depth == depth_surface_selection) %&gt;% 
-  ggplot(aes(Long, Lat, fill = Cant)) +
-  geom_raster() +
-  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = &quot;white&quot;) +
-  coord_quickmap(expand = 0) +
-  scale_fill_viridis_c() +
-  theme(legend.position = &quot;top&quot;)</code></pre>
-<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_inv_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="inventory-calculation" class="section level1">
+<h1><span class="header-section-number">5</span> Inventory calculation</h1>
+<pre class="r"><code>source(here::here(&quot;code&quot;, &quot;inventory_calculation.R&quot;))
+
+Cant &lt;- layer_inventory(Cant, &quot;cant&quot;)
+
+Cant_inv &lt;- Cant %&gt;% 
+  filter(depth &lt;= parameters$inventory_depth) %&gt;% 
+  group_by(lon, lat, basin) %&gt;% 
+  summarise(cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
+            cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000) %&gt;% 
+  ungroup()</code></pre>
+<div id="horizontal-plane-maps" class="section level2">
+<h2><span class="header-section-number">5.1</span> Horizontal plane maps</h2>
+<pre class="r"><code>map_climatology(Cant, &quot;cant&quot;)</code></pre>
+<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections" class="section level2">
-<h2><span class="header-section-number">3.2</span> Sections</h2>
-<div id="atlantic" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Atlantic</h3>
-<pre class="r"><code>Cant %&gt;% 
-  filter(Long == Atl_lon) %&gt;% 
-  ggplot(aes(Lat, Depth, z = Cant)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = &quot;Cant&quot;) +
-  guides(fill = guide_colorsteps(barheight = unit(7, &quot;cm&quot;))) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)</code></pre>
-<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_section_Atlantic-1.png" width="672" style="display: block; margin: auto;" /></p>
+<h2><span class="header-section-number">5.2</span> Sections</h2>
+<pre class="r"><code>section_climatology(Cant, &quot;cant&quot;)</code></pre>
+<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_sections-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="pacific" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Pacific</h3>
-<pre class="r"><code>Cant %&gt;% 
-  filter(Long == Pac_lon) %&gt;% 
-  ggplot(aes(Lat, Depth, z = Cant)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = &quot;Cant&quot;) +
-  guides(fill = guide_colorsteps(barheight = unit(7, &quot;cm&quot;))) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)</code></pre>
-<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_section_Pacific-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="sections-shallow" class="section level2">
+<h2><span class="header-section-number">5.3</span> Sections shallow</h2>
+<pre class="r"><code>section_climatology_shallow(Cant, &quot;cant&quot;)</code></pre>
+<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_sections_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="inventory-maps" class="section level2">
+<h2><span class="header-section-number">5.4</span> Inventory maps</h2>
+<pre class="r"><code>map_climatology_inv(Cant_inv, &quot;cant_inv_pos&quot;)</code></pre>
+<p><img src="figure/read_Sabine_2004_Cant.Rmd/Cant_inv_pos_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="write-files" class="section level2">
-<h2><span class="header-section-number">3.3</span> Write files</h2>
+<h2><span class="header-section-number">5.5</span> Write files</h2>
 <pre class="r"><code>Cant %&gt;% 
   write_csv(here::here(&quot;data/GLODAPv1_1/_summarized_files&quot;,
                        &quot;Cant_Sabine_2004.csv&quot;))</code></pre>
 </div>
 </div>
 <div id="open-tasks" class="section level1">
-<h1><span class="header-section-number">4</span> Open tasks</h1>
+<h1><span class="header-section-number">6</span> Open tasks</h1>
 <ul>
 <li></li>
 </ul>
 </div>
 <div id="questions" class="section level1">
-<h1><span class="header-section-number">5</span> Questions</h1>
+<h1><span class="header-section-number">7</span> Questions</h1>
 <ul>
 <li></li>
 </ul>
