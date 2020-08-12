@@ -77,6 +77,7 @@ Below, following subsets of the climatologies are plotted for all relevant param
 - Meridional sections at longitudes:
   - Atlantic: `r parameters$lon_Atl_section`
   - Pacific: `r parameters$lon_Pac_section`
+  - Indian ocean: `r parameters$lon_Ind_section`
 
 Section locations are indicated as white lines in maps.
 
