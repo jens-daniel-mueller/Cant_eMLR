@@ -71,13 +71,14 @@ According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){targ
 - 1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)
 - 2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)
 - 3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)
+- 56: Bay of Bengal (included in Indo-Pacifc)
 
-From this, the Atlantik and the Indo-Pacific were labeled.
+From this, the Atlantic and the Indo-Pacific were labeled.
 
 ```{r assign_basin_labels}
 
 basinmask_01 <- basinmask_01 %>% 
-  filter(Basin_0m %in% c("1", "2", "3", "10")) %>% 
+  filter(Basin_0m %in% c("1", "2", "3", "10", "56")) %>% 
   mutate(basin = if_else(Basin_0m == "10" & lon >= -63 & lon < 20,
                          "Atlantic", "Indo-Pacific"),
          basin = if_else(Basin_0m == "1",
@@ -100,8 +101,19 @@ landsea_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
                          skip = 1,
                          col_types = list(.default = "d"))
 
+```
+
+### Label
+
+According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document: *"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
+
+The landmask was derived as coordinates with value 1.
+
+```{r assign_region_labels}
+
 landmask <- landsea_01 %>% 
-  filter(Bottom_Standard_Level == 1) %>% 
+  mutate(region = if_else(Bottom_Standard_Level == "1",
+                         "land", "ocean")) %>% 
   select(-Bottom_Standard_Level)
 
 landmask <- landmask %>% 
@@ -112,18 +124,13 @@ landmask <- landmask %>%
 rm(landsea_01)
 ```
 
-### Label
-
-According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document: *"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
-
-The landmask was derived as coordinates with value 1.
 
 ## Plot map
 
-```{r WOA18_map}
+```{r basin_masks_WOA18_map}
 
 ggplot() +
-  geom_raster(data = landmask,
+  geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = basinmask_01,
               aes(lon, lat, fill = basin)) +
@@ -145,8 +152,6 @@ basinmask_01 %>%
 landmask %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                        "land_mask_WOA18.csv"))
-
-rm(basinmask_01)
 
 ```
 
@@ -226,6 +231,26 @@ Section locations are indicated as white lines in maps.
 
 Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
 
+```{r join_predictors}
+
+WOA18_predictors <- full_join(WOA_sal_tibble, WOA_tem_tibble)
+rm(WOA_sal_tibble, WOA_tem_tibble)
+
+```
+
+
+## Apply basin mask
+
+Data outside the WOA18 basin mask were removed for further analysis.
+
+```{r join_basin_mask}
+
+WOA18_predictors <- inner_join(WOA18_predictors, basinmask_01)
+rm(basinmask_01)
+
+```
+
+## Neutral density
 
 
 ## Temperature plots
@@ -237,21 +262,15 @@ Please note that longitudes in the climatologies range from -179.5 - 179.5, whic
 source(here::here("code",
                   "plotting_functions.R"))
 
-map_climatology(WOA_tem_tibble, "tem")
+map_climatology(WOA18_predictors, "tem")
 
 ```
 
 ### Sections
 
-```{r temperature_section_WOA18_Atl, fig.asp=0.6}
+```{r temperature_sections_WOA18, fig.asp=1}
 
-section_climatology_Atl(WOA_tem_tibble, "tem")
-
-```
-
-```{r temperature_section_WOA18_Pac, fig.asp=0.6}
-
-section_climatology_Pac(WOA_tem_tibble, "tem")
+section_climatology(WOA18_predictors, "tem")
 
 ```
 
@@ -263,32 +282,22 @@ section_climatology_Pac(WOA_tem_tibble, "tem")
 
 ```{r salinity_surface_WOA18_map}
 
-map_climatology(WOA_sal_tibble, "sal")
+map_climatology(WOA18_predictors, "sal")
 
 ```
-
 
 ### Sections
 
-```{r salinity_section_WOA18_Atl, fig.asp=0.6}
+```{r salinity_sections_WOA18, fig.asp=1}
 
-section_climatology_Atl(WOA_sal_tibble, "sal")
-
-```
-
-```{r salinity_section_WOA18_Pac, fig.asp=0.6}
-
-section_climatology_Pac(WOA_sal_tibble, "sal")
+section_climatology(WOA18_predictors, "sal")
 
 ```
-
 
 
 ## Write file
 
 ```{r write_WOA_predictor_file}
-
-WOA18_predictors <- full_join(WOA_sal_tibble, WOA_tem_tibble)
 
 WOA18_predictors %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -404,6 +413,7 @@ rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
 
 - apply basin mask to WOA18 data
 - add Indian ocean section plot
+-calculate neutral density
 
 # Questions
 
