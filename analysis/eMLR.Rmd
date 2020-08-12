@@ -269,12 +269,14 @@ GLODAP_cruise <- GLODAP %>%
 
 ```{r meridional_sections, fig.asp=0.6}
 
-mapWorld <- borders("world", colour = "gray60", fill = "gray60")
+landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "land_mask_WOA18.csv"))
 
 GLODAP_cruise %>%
   arrange(date) %>% 
   ggplot(aes(lon, lat)) +
-  mapWorld +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
   geom_path() +
   geom_point(aes(col = date)) +
   coord_quickmap(expand = 0) +
@@ -317,7 +319,7 @@ lat_section +
   geom_point(aes(col = -Cstar_tref_delta))
 
 
-rm(mapWorld, lat_section, GLODAP_cruise)
+rm(lat_section, GLODAP_cruise)
 
 ```
 
@@ -436,8 +438,8 @@ GLODAP %>%
   filter(basin == "Atlantic") %>% 
   sample_frac(0.05) %>% 
   ggpairs(columns = c("Cstar",
-                      "salinity",
-                      "temperature",
+                      "sal",
+                      "tem",
                       "aou",
                       "oxygen",
                       "silicate",
@@ -458,8 +460,8 @@ GLODAP %>%
   filter(basin == "Indo-Pacific") %>% 
   sample_frac(0.05) %>% 
   ggpairs(columns = c("Cstar",
-                      "salinity",
-                      "temperature",
+                      "sal",
+                      "tem",
                       "aou",
                       "oxygen",
                       "silicate",
@@ -505,8 +507,8 @@ for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
   
 p <- GLODAP_highlight %>% 
   ggpairs(columns = c("Cstar",
-                      "salinity",
-                      "temperature",
+                      "sal",
+                      "tem",
                       "aou",
                       "oxygen",
                       "silicate",
@@ -561,8 +563,8 @@ GLODAP_basin_era <- GLODAP %>%
          era,
          gamma_slab,
          Cstar,
-         salinity,
-         temperature,
+         sal,
+         tem,
          aou,
          oxygen,
          silicate,
@@ -754,8 +756,8 @@ for (i_basin in unique(GLODAP$basin)) {
         filter(gamma_slab == i_gamma_slab)
       
       lm_full <- lm(Cstar ~ 
-                salinity  + 
-                temperature  + 
+                sal  + 
+                tem  + 
                 aou  + 
                 oxygen  + 
                 silicate  + 
@@ -990,62 +992,6 @@ all_lm %>%
 
 ```
 
-
-
-# Old script chunks
-
-```{r eMLR_fitting_full_model, eval=FALSE}
-
-MLRs <- GLODAP %>%
-  nest(data = -c(basin, era, gamma_slab)) %>% 
-  mutate(
-    fit = map(data, ~ lm(Cstar ~ salinity  + temperature  + aou  + oxygen  + silicate  + phosphate  + phosphate_star,
-                         data = .x)),
-    tidied = map(fit, tidy),
-    glanced = map(fit, glance),
-    augmented = map(fit, augment)
-  )
-
-MLRs_tidied <- MLRs %>% 
-  unnest(tidied)
-
-MLRs_tidied
-
-MLRs_tidied <- MLRs_tidied %>% 
-  select(era, basin, gamma_slab, term, estimate, p.value)
-
-MLRs_tidied_wide <- MLRs_tidied %>% 
-  select(-p.value) %>% 
-  pivot_wider(names_from = era, values_from = estimate, names_prefix = "coeff_")
-
-MLRs_tidied_wide <- MLRs_tidied_wide %>% 
-  mutate(delta_coeff_J_G = coeff_GO_SHIP - coeff_JGOFS_WOCE,
-         delta_coeff_G_n = coeff_new_era - coeff_GO_SHIP,
-         delta_coeff_n_G = coeff_new_era - coeff_JGOFS_WOCE)
-
-MLRs_tidied %>% 
-  ggplot(aes(p.value, term, col = gamma_slab)) +
-  geom_point() +
-  facet_grid(basin~era)
-
-MLRs_tidied %>% 
-  filter(p.value < 0.05) %>% 
-  ggplot(aes(p.value, term, col = gamma_slab)) +
-  geom_point() +
-  facet_grid(basin~era)
-
-MLRs_tidied %>% 
-  ggplot(aes(p.value, term)) +
-  geom_boxplot() +
-  facet_grid(basin~era)
-
-MLRs %>% 
-  unnest(glanced)
-
-MLRs %>% 
-  unnest(augmented)
-
-```
 
 # Open tasks
 

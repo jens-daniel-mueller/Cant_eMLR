@@ -82,6 +82,10 @@ for (i_variable in variables) {
 rm(temp, i_variable, variables)
 #min(GLODAP_predictors$lon)
 
+GLODAP_predictors <- GLODAP_predictors %>% 
+  rename(sal = salinity,
+         tem = temperature)
+
 ```
 
 ```{r load_WOA18}
@@ -204,8 +208,8 @@ predictors <- predictors %>%
   mutate(n_oxygen = sum(!is.na(oxygen)),
          n_PO4 = sum(!is.na(PO4)),
          n_silicate = sum(!is.na(silicate)),
-         n_salinity = sum(!is.na(salinity)),
-         n_temperature = sum(!is.na(temperature)),
+         n_sal = sum(!is.na(sal)),
+         n_tem = sum(!is.na(tem)),
          n_gamma = sum(!is.na(gamma))) %>% 
   ungroup()
 
@@ -213,14 +217,14 @@ predictors <- predictors %>%
   filter(n_oxygen > 0,
          n_PO4 > 0,
          n_silicate > 0, 
-         n_salinity > 0, 
-         n_temperature > 0, 
+         n_sal > 0, 
+         n_tem > 0, 
          n_gamma > 0) %>% 
   select(-c(n_oxygen, 
             n_PO4, 
             n_silicate, 
-            n_salinity, 
-            n_temperature,
+            n_sal, 
+            n_tem,
             n_gamma))
 
 predictors <- predictors %>% 
@@ -323,7 +327,7 @@ N_Atl <- predictors %>%
 
 N_Atl <- N_Atl %>% 
   select(-basin) %>% 
-  pivot_longer(salinity:gamma, names_to = "parameter", values_to = "value")
+  pivot_longer(sal:gamma, names_to = "parameter", values_to = "value")
 
 N_Atl %>% 
   ggplot(aes(value, depth)) +
@@ -354,8 +358,8 @@ predictors <- predictors %>%
          n_oxygen = sum(!is.na(oxygen)),
          n_PO4 = sum(!is.na(PO4)),
          n_silicate = sum(!is.na(silicate)),
-         n_salinity = sum(!is.na(salinity)),
-         n_temperature = sum(!is.na(temperature))) %>% 
+         n_sal = sum(!is.na(sal)),
+         n_tem = sum(!is.na(tem))) %>% 
   ungroup()
 
 predictors <- predictors %>% 
@@ -363,9 +367,9 @@ predictors <- predictors %>%
          n_oxygen > 1,
          n_PO4 > 1,
          n_silicate > 1, 
-         n_salinity > 1, 
-         n_temperature > 1) %>% 
-  select(-c(n_NO3 , n_oxygen , n_PO4 , n_silicate , n_salinity , n_temperature))
+         n_sal > 1, 
+         n_tem > 1) %>% 
+  select(-c(n_NO3 , n_oxygen , n_PO4 , n_silicate , n_sal , n_tem))
 
 predictors %>%
   ggplot(aes(lon, lat)) +
@@ -385,7 +389,7 @@ predictors %>%
 
 predictors %>%
   filter(depth == 0) %>% 
-  ggplot(aes(lon, lat, fill = temperature)) +
+  ggplot(aes(lon, lat, fill = tem)) +
   geom_raster() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0) +
@@ -400,8 +404,8 @@ predictors %>%
 predictors <- predictors %>% 
   group_by(lat, lon) %>% 
   arrange(depth) %>% 
-  mutate(temperature = approxfun(depth, temperature, rule = 2)(depth),
-         salinity = approxfun(depth, salinity, rule = 2)(depth)) %>% 
+  mutate(tem = approxfun(depth, tem, rule = 2)(depth),
+         sal = approxfun(depth, sal, rule = 2)(depth)) %>% 
   ungroup()
 
 
@@ -437,8 +441,8 @@ AOU was calculated as the difference between saturation concentration and observ
 ```{r calculate_aou_climatology}
 
 predictors <- predictors %>% 
-  mutate(oxygen_sat = gas_satconc(S = salinity,
-                                  t = temperature,
+  mutate(oxygen_sat = gas_satconc(S = sal,
+                                  t = tem,
                                   P = 1.013253,
                                   species = "O2"),
          aou = oxygen_sat - oxygen) %>% 
@@ -586,8 +590,8 @@ Cant <- Cant %>%
            delta_coeff_phosphate * phosphate +
            delta_coeff_phosphate_star * phosphate_star +
            delta_coeff_silicate * silicate +
-           delta_coeff_salinity * salinity + 
-           delta_coeff_temperature * temperature)
+           delta_coeff_sal * sal + 
+           delta_coeff_tem * tem)
 
 ```
 
@@ -778,9 +782,11 @@ Cant_inv <- Cant_model_average %>%
 
 ## Inventories
 
+!!!! Under construction....
+
 ### All Cant estimates
 
-```{r Cant_inventory_map, fig.asp=1}
+```{r Cant_inventory_map, fig.asp=0.6}
 
 map_climatology_inv(Cant_inv, "cant_inv")
 
@@ -789,7 +795,7 @@ map_climatology_inv(Cant_inv, "cant_inv")
 
 ### Positive Cant estimates
 
-```{r Cant_pos_inventory_map, fig.asp=1}
+```{r Cant_pos_inventory_map, fig.asp=0.6}
 
 map_climatology_inv(Cant_inv, "cant_inv_pos")
 
