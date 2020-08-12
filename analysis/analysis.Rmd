@@ -1,0 +1,60 @@
+---
+title: "Analysis of Cant estimates"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r read_parameters_functions, include = FALSE}
+parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
+depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+source(here::here("code", "plotting_functions.R"))
+```
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Data source
+
+
+```{r read_Sabine_Cant_file, eval=FALSE}
+
+Cant <- read_csv(here::here("data/GLODAPv1_1/_summarized_files",
+                       "Cant_Sabine_2004.csv"))
+
+Cant_inv <- read_csv(here::here("data/GLODAPv1_1/_summarized_files",
+                       "Cant_inv_Sabine_2004.csv"))
+
+
+```
+
+```{r read_Gruber_Cant_file, eval=FALSE}
+
+dcant %>% 
+  write_csv(here::here("data/Gruber_2019/_summarized_files",
+                       "dcant.csv"))
+
+dcant_inv %>% 
+  write_csv(here::here("data/Gruber_2019/_summarized_files",
+                       "dcant_inv.csv"))
+
+```
+
+
