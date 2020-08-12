@@ -53,7 +53,7 @@ section_climatology_shallow <- function(df, var) {
     filter(lon %in% c(parameters$lon_Ind_section,
                       parameters$lon_Pac_section,
                       parameters$lon_Atl_section),
-           depth < 500) %>%
+           depth <= 500) %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled() +
     scale_fill_viridis_d(name = name_var) +
