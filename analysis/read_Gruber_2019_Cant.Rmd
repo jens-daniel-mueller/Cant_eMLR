@@ -144,7 +144,7 @@ section_climatology_shallow(dcant, "cant")
 
 ```
 
-## Write files
+# Write files
 
 ```{r write_Gruber_Cant_file}
 

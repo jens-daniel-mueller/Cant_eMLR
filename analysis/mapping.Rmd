@@ -27,6 +27,12 @@ library(reticulate)
 ```
 
 
+```{r read_parameters_functions, include = FALSE}
+parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
+depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+source(here::here("code", "plotting_functions.R"))
+```
+
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
 ```
@@ -74,7 +80,7 @@ for (i_variable in variables) {
 }
 
 rm(temp, i_variable, variables)
-
+#min(GLODAP_predictors$lon)
 
 ```
 
@@ -86,6 +92,7 @@ WOA18_predictors <-
 
 WOA18_predictors <- WOA18_predictors %>% 
   rename(salinity = sal, temperature = tem)
+#min(WOA18_predictors$lon)
 
 ```
 
@@ -100,17 +107,10 @@ WOA13_gamma <- WOA13 %>%
 
 WOA13_gamma <- WOA13_gamma %>% 
   rename(lat = latitude, lon = longitude) %>% 
-  mutate(lon = if_else(lon > 180, lon - 360, lon))
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 rm(WOA13)
-
-```
-
-
-```{r read_basin_mask_file}
-
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
+# min(WOA13_gamma$lon)
 
 ```
 
@@ -122,6 +122,19 @@ all_lm <- read_csv(here::here("data/eMLR",
 
 ```
 
+# Masks
+
+## Read
+
+```{r read_mask_files}
+
+basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "basin_mask_WOA18.csv"))
+
+landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "land_mask_WOA18.csv"))
+
+```
 
 
 # Join predictor climatologies
@@ -260,9 +273,6 @@ Please note that some predictor variables are available outside the WOA18 basin 
 
 ```{r join_basin_mask}
 
-predictors <- predictors %>% 
-  mutate(lon = if_else(lon < 20, lon + 360, lon))
-
 predictors <- inner_join(predictors, basinmask)
 rm(basinmask)
 
@@ -312,6 +322,7 @@ N_Atl <- predictors %>%
   filter(lat == 30.5, lon == 320.5)
 
 N_Atl <- N_Atl %>% 
+  select(-basin) %>% 
   pivot_longer(salinity:gamma, names_to = "parameter", values_to = "value")
 
 N_Atl %>% 
@@ -748,36 +759,19 @@ To calculate Cant column inventories, we:
 
 Step 2 is performed again for all Cant and positive Cant values only
 
-```{r calculate_layer_thickness}
-
-depth_level_volume <- tibble(
-  depth = unique(Cant_model_average_zonal$depth))
-
-depth_level_volume <- depth_level_volume %>% 
-  mutate(layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
-         layer_thickness_below = replace_na((lead(depth) - depth) / 2, 0),
-         layer_thickness = layer_thickness_above + layer_thickness_below) %>% 
-  select(-c(layer_thickness_above,
-         layer_thickness_below))
-
-Cant_model_average <- full_join(Cant_model_average, depth_level_volume)
-
-rm(depth_level_volume)
-
-```
-
 ```{r calculate_inventories}
 
-Cant_model_average <- Cant_model_average %>% 
-  mutate(Cant_layer = Cant_mean * layer_thickness)
+source(here::here("code", "inventory_calculation.R"))
 
-Cant_inventory <- Cant_model_average %>% 
-  filter(depth <= 3000) %>% 
-  mutate(Cant_pos_layer = if_else(Cant_layer < 0, 0, Cant_layer)) %>% 
+Cant_model_average <- layer_inventory(Cant_model_average, "Cant_mean")
+
+Cant_inv <- Cant_model_average %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
   group_by(lon, lat, basin, eras) %>% 
-  summarise(Cant_pos_inventory = sum(Cant_pos_layer, na.rm = TRUE) / 1000,
-            Cant_inventory = sum(Cant_layer, na.rm = TRUE) / 1000) %>% 
+  summarise(cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
+            cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000) %>% 
   ungroup()
+
 
 ```
 
@@ -788,15 +782,7 @@ Cant_inventory <- Cant_model_average %>%
 
 ```{r Cant_inventory_map, fig.asp=1}
 
-Cant_inventory %>% 
-  ggplot(aes(lon, lat, fill = Cant_inventory)) + 
-  geom_raster() +
-  scale_fill_divergent(guide = "colorstrip",
-                       breaks = MakeBreaks(5),
-                       name = "Cant") +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  coord_quickmap(expand = 0) +
-  facet_wrap(~eras, ncol = 1)
+map_climatology_inv(Cant_inv, "cant_inv")
 
 ```
 
@@ -805,14 +791,24 @@ Cant_inventory %>%
 
 ```{r Cant_pos_inventory_map, fig.asp=1}
 
-Cant_inventory %>% 
-  ggplot(aes(lon, lat, fill = Cant_pos_inventory)) + 
-  geom_raster() +
-  scale_fill_viridis_c(name = "Cant") +
-  coord_quickmap(expand = 0) +
-  facet_wrap(~eras, ncol = 1)
+map_climatology_inv(Cant_inv, "cant_inv_pos")
 
 ```
+
+# Write csv
+
+```{r write_cant_inventory}
+
+Cant_model_average %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_2020.csv"))
+
+Cant_inv %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_inv_2020.csv"))
+
+```
+
 
 # Open tasks
 

@@ -173,11 +173,15 @@ map_climatology_inv(Cant_inv, "cant_inv_pos")
 
 ## Write files
 
-```{r write_Sabin_Cant_file}
+```{r write_Sabine_Cant_file}
 
 Cant %>% 
   write_csv(here::here("data/GLODAPv1_1/_summarized_files",
                        "Cant_Sabine_2004.csv"))
+
+Cant_inv %>% 
+  write_csv(here::here("data/GLODAPv1_1/_summarized_files",
+                       "Cant_inv_Sabine_2004.csv"))
 
 
 ```
