@@ -82,17 +82,19 @@ Section locations are indicated as white lines in maps.
 
 ```{r GLODAPv2_2016_Mappedclimatologies}
 
-file <- file_list[1]
+# file <- file_list[1]
 
 for (file in file_list) {
  
 clim <- read_stars(here::here("data/GLODAPv2_2016b_Mappedclimatologies",
-                          file))
+                          file),
+                   quiet = TRUE)
 
 # extract parameter name
 
 parameter <- str_split(file, pattern = "6b.", simplify = TRUE)[2]
 parameter <- str_split(parameter, pattern = ".nc", simplify = TRUE)[1]
+print(parameter)
 
 # extract parameter
 
