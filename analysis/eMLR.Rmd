@@ -414,13 +414,37 @@ rm(lat_section, GLODAP_cruise, cruises_meridional)
 
 ```
 
+### Observations coverage
 
-```{r obs_gamma_slab_histogram, fig.asp=2.5}
+```{r obs_gamma_slab_Atl, fig.asp=1}
+
+GLODAP <- GLODAP %>% 
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) %>%
+  mutate(gamma_slab = factor(gamma_slab), 
+         gamma_slab = factor(gamma_slab, levels = rev(levels(gamma_slab))))
 
 GLODAP %>% 
-  ggplot(aes(lat, fill = era)) +
-  geom_histogram() +
-  facet_grid(gamma_slab~basin)
+  filter(basin == "Atlantic") %>% 
+  ggplot(aes(lat, gamma_slab)) +
+  geom_bin2d(binwidth = 5) +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
+                       name = "log10(n)") +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  facet_grid(era~basin)
+
+```
+
+
+```{r obs_gamma_slab_Pac, fig.asp=1}
+
+GLODAP %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  ggplot(aes(lat, gamma_slab)) +
+  geom_bin2d(binwidth = 5) +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
+                       name = "log10(n)") +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  facet_grid(era~basin)
 
 ```
 
