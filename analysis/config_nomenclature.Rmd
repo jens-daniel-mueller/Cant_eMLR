@@ -32,7 +32,10 @@ Variables from source data files are converted and harmonized to following varia
 - bottomdepth: bottomdepth in m
 
 - sal: salinity (Check scales!)
-- tem: temperature in deg C (Check scales!)
+- tem: insitu temperature in deg C (Check scales!)
+- theta: potential temperature in deg C (Check scales!)
+- gamma: neutral density
+
 - Cant: anthropogenic CO~2~ in umol kg-1
 
 # Data sets / objects

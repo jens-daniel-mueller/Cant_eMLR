@@ -27,7 +27,9 @@ library(patchwork)
 theme_set(theme_bw())
 ```
 
-# Read master file
+# Read files
+
+## GLODAP
 
 Main data source for this project is `GLODAPv2.2020_Merged_Master_File.csv` downloaded from [glodap.info](https://www.glodap.info/) in June 2020.
 
@@ -38,24 +40,36 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/Merged_data_product",
                    na = "-9999",
                    col_types = cols(.default = col_double()))
 
-# relevant columns
+# select relevant columns
 GLODAP <- GLODAP %>% 
   select(cruise:talkqc)
 
+# create date column
 GLODAP <- GLODAP %>% 
   mutate(date = ymd(paste(year, month, day))) %>% 
          #decade = as.factor(floor(year / 10) * 10)) %>% 
   relocate(date)
 
+# harmonize column names
+GLODAP <- GLODAP  %>% 
+  rename(sal = salinity,
+         tem = temperature)
+
+# harmonize coordinates
+GLODAP <- GLODAP  %>% 
+  rename(lon = longitude,
+         lat = latitude) %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+# remove irrelevant columns
 GLODAP <- GLODAP %>% 
   select(-c(month:minute, 
-            maxsampdepth, pressure,
-            theta, sigma0:sigma4,
+            maxsampdepth, sigma0:sigma4,
             nitrite:nitritef))
 
 ```
 
-Read parameterization
+## Parameterization
 
 
 ```{r read_parameters}
@@ -138,12 +152,12 @@ rm(GLODAP_stats_temp)
 ##
 
 GLODAP <- GLODAP %>% 
-  filter(!is.na(temperature))
+  filter(!is.na(tem))
 
 ##
   
 GLODAP <- GLODAP %>% 
-  filter(!is.na(salinity))
+  filter(!is.na(sal))
 
 GLODAP <- GLODAP %>% 
   filter(salinityf == parameters$flag_f) %>% 
@@ -243,7 +257,7 @@ rm(GLODAP_stats_temp)
 ##
 
 GLODAP <- GLODAP %>% 
-  filter(latitude <= parameters$lat_max)
+  filter(lat <= parameters$lat_max)
 
 GLODAP <- GLODAP %>% 
   filter(bottomdepth >= parameters$bottomdepth_min)
@@ -299,12 +313,11 @@ For merging with other data sets, all observations were grouped into latitude in
 ```{r grid_spatially_1x1}
 
 GLODAP <- GLODAP %>% 
-  mutate(lat = cut(latitude, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
+  mutate(lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
          lat = as.numeric(as.character(lat)),
-         lon = cut(longitude, seq(-180, 180, 1), seq(-179.5, 179.5, 1)),
+         lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
          lon = as.numeric(as.character(lon))) %>% 
-  arrange(date) %>% 
-  select(-c(latitude,longitude))
+  arrange(date)
 
 ```
 
@@ -313,10 +326,13 @@ GLODAP <- GLODAP %>%
 
 The basin mask from the World Ocean Atlas was used. For details consult the data base section for WOA18 data [Link](/read_World_Ocean_Atlas_2018.Rmd).
 
-```{r read_basin_mask_file}
+```{r read_mask_files}
 
 basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                                  "basin_mask_WOA18.csv"))
+
+landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "land_mask_WOA18.csv"))
 
 ```
 
@@ -327,10 +343,9 @@ GLODAP_obs <- GLODAP %>%
   summarise(n = n()) %>% 
   ungroup()
 
-mapWorld <- borders("world", col = "gray60", fill = "gray60") 
-
 ggplot() +
-  mapWorld +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
   geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
   geom_raster(data = GLODAP_obs, aes(lon, lat)) +
   scale_fill_brewer(palette = "Dark2") +
@@ -338,7 +353,7 @@ ggplot() +
   theme(legend.position = "top",
         legend.title = element_blank())
 
-rm(mapWorld, GLODAP_obs)
+rm(GLODAP_obs)
 
 ```
 
@@ -420,7 +435,7 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
 GLODAP <- GLODAP %>% 
   mutate(lat_grid = cut(lat, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
          lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(lon, seq(-180, 180, 5), seq(-177.5, 177.5, 5)),
+         lon_grid = cut(lon, seq(20, 380, 5), seq(22.5, 377.5, 5)),
          lon_grid = as.numeric(as.character(lon_grid))) %>% 
   arrange(date)
 
@@ -506,14 +521,13 @@ rm(GLODAP_hovmoeller_year)
 
 ```{r coverage_maps_era, fig.asp=1.5}
 
-mapWorld <- borders("world", colour = "gray60", fill = "gray60")
-
 GLODAP <- GLODAP %>% 
-  mutate(era = factor(era, c("parameters$year_JGOFS_end_WOCE", "GO_SHIP", "new_era")))
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
 
 GLODAP %>%
   ggplot(aes(lon, lat)) +
-  mapWorld +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
                        name = "log10(n)") +
@@ -522,8 +536,6 @@ GLODAP %>%
   coord_quickmap(expand = FALSE) +
   facet_wrap(~era, ncol = 1) +
   theme(legend.position = "top")
-
-rm(mapWorld)
 
 ```
 
@@ -543,12 +555,10 @@ cruises <- GLODAP %>%
 
 GLODAP <- full_join(GLODAP, cruises)
 
-mapWorld <- borders("world", colour="gray60", fill="gray60")
-
 n <- 0
 for (i_cruise in unique(cruises$cruise)) {
 
-#i_cruise <- unique(cruises$cruise)[1]
+# i_cruise <- unique(cruises$cruise)[1]
 n <- n+1
 print(n)  
   
@@ -561,7 +571,8 @@ cruises_cruise <- cruises %>%
   
 map <- GLODAP_cruise %>%
   ggplot(aes(lon, lat)) +
-  mapWorld+
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
   geom_point(aes(col=date)) +
   coord_quickmap(expand = FALSE) +
   scale_color_viridis_c(trans = "date") +

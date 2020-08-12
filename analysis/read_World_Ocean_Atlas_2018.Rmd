@@ -492,9 +492,8 @@ rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
 
 # Open tasks
 
-- apply basin mask to WOA18 data
-- add Indian ocean section plot
--calculate neutral density
+- Which temperature is made available from WOA18? Is conversion to pot. temperature required for neutral density calculation?
+- How to convert depth from WOA18 to CTD pressure (dbars) for neutral density calculation?
 
 # Questions
 
