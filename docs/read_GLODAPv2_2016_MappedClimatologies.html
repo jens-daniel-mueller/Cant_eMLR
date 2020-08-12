@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree33a3d29b18fd20e06309255575b9bc519f8d34e9targetblank33a3d29a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/33a3d29b18fd20e06309255575b9bc519f8d34e9" target="_blank">33a3d29</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree109ef2a38294080a21e5fa90c2d038354acc1b26targetblank109ef2aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/109ef2a38294080a21e5fa90c2d038354acc1b26" target="_blank">109ef2a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree33a3d29b18fd20e06309255575b9bc519f8d34e9targetblank33a3d29a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree109ef2a38294080a21e5fa90c2d038354acc1b26targetblank109ef2aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/33a3d29b18fd20e06309255575b9bc519f8d34e9" target="_blank">33a3d29</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/109ef2a38294080a21e5fa90c2d038354acc1b26" target="_blank">109ef2a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -637,6 +637,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/109ef2a38294080a21e5fa90c2d038354acc1b26/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">109ef2a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+quiet nc opening, print each parameter name
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/f76390c7abf5e5c053d4e108296eb7cbcd77ebdb/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">f76390c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1647,17 +1681,19 @@ landmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized
 </ul></li>
 </ul>
 <p>Section locations are indicated as white lines in maps.</p>
-<pre class="r"><code>file &lt;- file_list[1]
+<pre class="r"><code># file &lt;- file_list[1]
 
 for (file in file_list) {
  
 clim &lt;- read_stars(here::here(&quot;data/GLODAPv2_2016b_Mappedclimatologies&quot;,
-                          file))
+                          file),
+                   quiet = TRUE)
 
 # extract parameter name
 
 parameter &lt;- str_split(file, pattern = &quot;6b.&quot;, simplify = TRUE)[2]
 parameter &lt;- str_split(parameter, pattern = &quot;.nc&quot;, simplify = TRUE)[1]
+print(parameter)
 
 # extract parameter
 
@@ -1708,23 +1744,23 @@ section_climatology_shallow(clim_tibble, parameter)
 )
 
 }</code></pre>
-<pre><code>Cant, Cant_error, Input_mean, Input_std, Input_N, Cant_relerr, </code></pre>
+<pre><code>[1] &quot;Cant&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>NO3, NO3_error, Input_mean, Input_std, Input_N, NO3_relerr, </code></pre>
+<pre><code>[1] &quot;NO3&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>oxygen, oxygen_error, Input_mean, Input_std, Input_N, oxygen_relerr, </code></pre>
+<pre><code>[1] &quot;oxygen&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-9.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>PO4, PO4_error, Input_mean, Input_std, Input_N, PO4_relerr, </code></pre>
+<pre><code>[1] &quot;PO4&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-12.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>salinity, salinity_error, Input_mean, Input_std, Input_N, salinity_relerr, </code></pre>
+<pre><code>[1] &quot;salinity&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-15.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>silicate, silicate_error, Input_mean, Input_std, Input_N, silicate_relerr, </code></pre>
+<pre><code>[1] &quot;silicate&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-18.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>TAlk, TAlk_error, Input_mean, Input_std, Input_N, TAlk_relerr, </code></pre>
+<pre><code>[1] &quot;TAlk&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-19.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-21.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>TCO2, TCO2_error, Input_mean, Input_std, Input_N, TCO2_relerr, </code></pre>
+<pre><code>[1] &quot;TCO2&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-24.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>temperature, temperature_error, Input_mean, Input_std, Input_N, temperature_relerr, </code></pre>
+<pre><code>[1] &quot;temperature&quot;</code></pre>
 <p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-25.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-26.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-27.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="open-tasks" class="section level1">
