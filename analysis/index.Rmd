@@ -2,9 +2,9 @@
 title: "Home"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
+site: workflowr::wflow_site
+output:
   workflowr::wflow_html:
-    number_sections: false
     toc: false
 editor_options:
   chunk_output_type: console

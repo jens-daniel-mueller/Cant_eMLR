@@ -21,6 +21,7 @@ library(tidyverse)
 library(lubridate)
 library(tidync)
 library(stars)
+library(reticulate)
 ```
 
 
@@ -250,7 +251,56 @@ rm(basinmask_01)
 
 ```
 
-## Neutral density
+## Neutral density calculation
+
+
+```{r WOA18_neutral_density_calculations, eval=FALSE}
+
+WOA18_predictors_gamma_prep <- WOA18_predictors %>% 
+  rename(LATITUDE = lat,
+         LONGITUDE = lon,
+         SALNTY = sal,
+         THETA = tem,
+         CTDPRS = depth) %>% 
+  mutate(CTDPRS = CTDPRS/10)
+
+source_python(here::here("code/python_scripts",
+                         "Gamma_GLODAP_python.py"))
+
+WOA18_predictors_gamma_calc <- calculate_gamma(WOA18_predictors_gamma_prep)
+
+```
+
+
+### Write file
+
+```{r write_WOA_predictor_file, eval=FALSE}
+
+WOA18_predictors <- WOA18_predictors_gamma_calc %>% 
+  rename(lat = LATITUDE,
+         lon = LONGITUDE,
+         sal = SALNTY,
+         tem = THETA,
+         depth = CTDPRS,
+         gamma  = GAMMA) %>% 
+  mutate(depth = depth*10)
+
+WOA18_predictors %>% 
+  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "WOA18_predictors.csv"))
+
+```
+
+### Open file
+
+```{r read_WOA_predictor_file_gamma}
+
+rm(list = setdiff(ls(), c("landmask", "parameters", "depth_levels")))
+
+WOA18_predictors <- 
+  read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "WOA18_predictors.csv"))
+```
 
 
 ## Temperature plots
@@ -295,17 +345,32 @@ section_climatology(WOA18_predictors, "sal")
 ```
 
 
-## Write file
+## Neutral density plots
 
-```{r write_WOA_predictor_file}
+### Surface map
 
-WOA18_predictors %>% 
-  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                       "WOA18_predictors.csv"))
+```{r neutral_density_surface_WOA18_map}
 
-rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)
+map_climatology(WOA18_predictors, "gamma")
 
 ```
+
+### Sections
+
+```{r neutral_density_sections_WOA18, fig.asp=1}
+
+section_climatology(WOA18_predictors, "gamma")
+
+```
+
+### Sections shallow
+
+```{r neutral_density_sections_WOA18_shallow, fig.asp=1}
+
+section_climatology_shallow(WOA18_predictors, "gamma")
+
+```
+
 
 # WOA13 from D. Clement
 

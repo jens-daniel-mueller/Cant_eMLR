@@ -85,7 +85,7 @@ WOA18_predictors <-
                        "WOA18_predictors.csv"))
 
 WOA18_predictors <- WOA18_predictors %>% 
-  rename(salinity = s_an, temperature = t_an)
+  rename(salinity = sal, temperature = tem)
 
 ```
 
@@ -182,6 +182,8 @@ Predictor climatologies are merged. Only horizontal grid cells with at least one
 ```{r join_WOA13_GLODAP_predictors}
 
 predictors <- full_join(GLODAP_predictors, WOA13_gamma)
+GLODAP_depths <- unique(GLODAP_predictors$depth)
+
 rm(GLODAP_predictors, WOA13_gamma)
 
 predictors <- predictors %>% 
@@ -258,6 +260,9 @@ Please note that some predictor variables are available outside the WOA18 basin 
 
 ```{r join_basin_mask}
 
+predictors <- predictors %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
 predictors <- inner_join(predictors, basinmask)
 rm(basinmask)
 
@@ -304,7 +309,7 @@ Likewise, predictor profiles for the North Atlantic (lat = 40.5, lon = -20.5) ar
 ```{r predictor_profiles_N_Atl, fig.asp=1.5}
 
 N_Atl <- predictors %>% 
-  filter(lat == 40.5, lon == -20.5)
+  filter(lat == 30.5, lon == 320.5)
 
 N_Atl <- N_Atl %>% 
   pivot_longer(salinity:gamma, names_to = "parameter", values_to = "value")
@@ -435,7 +440,7 @@ predictors <- predictors %>%
 
 ```{r aou_climatology_section, fig.asp=0.6}
 
-Atl_lon <- 335.5 - 360
+Atl_lon <- 335.5
 
 predictors %>% 
   filter(lon == Atl_lon) %>% 
@@ -721,12 +726,9 @@ Cant concentration for selected depth levels at which mapping was performed.
 
 ```{r Cant_depth_layer_maps, fig.asp=1}
 
-mapWorld <- borders("world", colour = "gray60", fill = "gray60")
-
 Cant_model_average %>%
   filter(depth %in% c(150, 500, 1000, 3000)) %>% 
   ggplot(aes(lon, lat, fill = Cant_mean)) + 
-  mapWorld +
   geom_raster() +
   scale_fill_divergent(guide = "colorstrip",
                        breaks = MakeBreaks(5),
@@ -788,7 +790,6 @@ Cant_inventory <- Cant_model_average %>%
 
 Cant_inventory %>% 
   ggplot(aes(lon, lat, fill = Cant_inventory)) + 
-  mapWorld +
   geom_raster() +
   scale_fill_divergent(guide = "colorstrip",
                        breaks = MakeBreaks(5),
@@ -806,7 +807,6 @@ Cant_inventory %>%
 
 Cant_inventory %>% 
   ggplot(aes(lon, lat, fill = Cant_pos_inventory)) + 
-  mapWorld +
   geom_raster() +
   scale_fill_viridis_c(name = "Cant") +
   coord_quickmap(expand = 0) +
@@ -826,90 +826,4 @@ Cant_inventory %>%
 
 # Open questions
 
-
-
-# Neutral density calculation
-
-Not yet succesfully implemented
-
-```{r calculate_neutral_density_test, fig.asp=0.5, eval=FALSE}
-
-GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                "GLODAP_MLR_fitting_ready.csv"))
-
-cruises_meridional <- c("1041")
-
-GLODAP_cruise <- GLODAP %>% 
-  filter(cruise %in% cruises_meridional)
-
-
-GLODAP_cruise <- GLODAP_cruise %>% 
-  mutate(gamma_calc = swRho(salinity = salinity,
-                            temperature = temperature,
-                            pressure = depth,
-                            longitude = lon,
-                            latitude = lat,
-                            eos = "gsw"))
-
-
-GLODAP_cruise <- GLODAP_cruise %>% 
-  mutate(gamma_calc = gamma_calc - 1000,
-         delta_gamma = gamma - gamma_calc)
-
-
-lat_section <- 
-GLODAP_cruise %>%
-  ggplot(aes(lat, depth)) +
-  scale_y_reverse() +
-  scale_color_viridis_c() +
-  theme(legend.position = "bottom")
-
-lat_section +
-  geom_point(aes(col = gamma))
-
-lat_section +
-  geom_point(aes(col = gamma_calc))
-
-lat_section +
-  geom_point(aes(col = delta_gamma))
-
-```
-
-
-## WOA18
-
-```{r WOA18_neutral_density_calculations}
-
-WOA18_predictors <- WOA18_predictors %>% 
-  rename(LATITUDE = lat,
-         LONGITUDE = lon,
-         SALNTY = salinity,
-         THETA = temperature,
-         CTDPRS = depth) %>% 
-  mutate(CTDPRS = 1 + CTDPRS/10)
-
-source_python(here::here("analysis/python_scripts",
-                         "Gamma_GLODAP_python.py"))
-
-WOA18_predictors <- calculate_gamma(WOA18_predictors)
-
-```
-
-### Atlantic section
-
-```{r WOA18_gamma_climatology_section, fig.asp=0.6}
-
-Atl_lon <- 335.5 - 360
-
-WOA18_predictors %>% 
-  filter(LONGITUDE == Atl_lon) %>% 
-  ggplot(aes(LATITUDE, CTDPRS, z = GAMMA)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = "GAMMA") +
-  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)
-
-rm(Atl_lon)
-
-```
+- 
