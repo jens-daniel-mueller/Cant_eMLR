@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1a7acc27f10d03a0cf9339e46aaf8597fa9ea4ectargetblank1a7acc2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1a7acc27f10d03a0cf9339e46aaf8597fa9ea4ec" target="_blank">1a7acc2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree525cb522f5546c22df40c43a45fa28892a2df11ftargetblank525cb52a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/525cb522f5546c22df40c43a45fa28892a2df11f" target="_blank">525cb52</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1a7acc27f10d03a0cf9339e46aaf8597fa9ea4ectargetblank1a7acc2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree525cb522f5546c22df40c43a45fa28892a2df11ftargetblank525cb52a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1a7acc27f10d03a0cf9339e46aaf8597fa9ea4ec" target="_blank">1a7acc2</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/525cb522f5546c22df40c43a45fa28892a2df11f" target="_blank">525cb52</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -587,7 +587,6 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv1_1/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
@@ -599,12 +598,12 @@ Ignored files:
     Ignored:    data/pCO2_atmosphere/
     Ignored:    data/parameters/
     Ignored:    dump/
+    Ignored:    figure/
 
 Untracked files:
-    Untracked:  analysis/python_scripts/
     Untracked:  code/plotting_functions.R
+    Untracked:  code/python_scripts/
     Untracked:  code/test_scripts/
-    Untracked:  figure/
 
 </code></pre>
 <p>
@@ -643,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/525cb522f5546c22df40c43a45fa28892a2df11f/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">525cb52</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+WOA 18 gamma calculation, new lon values in mapping
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/9455a555cc74c0341ec8318f4be2b365c6cfafb9/docs/read_World_Ocean_Atlas_2018.html" target="_blank">9455a55</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1775,7 +1808,8 @@ added WOA blank script
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(tidync)
-library(stars)</code></pre>
+library(stars)
+library(reticulate)</code></pre>
 <div id="data-source" class="section level1">
 <h1><span class="header-section-number">1</span> Data source</h1>
 <ul>
@@ -1947,8 +1981,43 @@ rm(WOA_sal_tibble, WOA_tem_tibble)</code></pre>
 <pre class="r"><code>WOA18_predictors &lt;- inner_join(WOA18_predictors, basinmask_01)
 rm(basinmask_01)</code></pre>
 </div>
-<div id="neutral-density" class="section level2">
-<h2><span class="header-section-number">3.3</span> Neutral density</h2>
+<div id="neutral-density-calculation" class="section level2">
+<h2><span class="header-section-number">3.3</span> Neutral density calculation</h2>
+<pre class="r"><code>WOA18_predictors_gamma_prep &lt;- WOA18_predictors %&gt;% 
+  rename(LATITUDE = lat,
+         LONGITUDE = lon,
+         SALNTY = sal,
+         THETA = tem,
+         CTDPRS = depth) %&gt;% 
+  mutate(CTDPRS = CTDPRS/10)
+
+source_python(here::here(&quot;code/python_scripts&quot;,
+                         &quot;Gamma_GLODAP_python.py&quot;))
+
+WOA18_predictors_gamma_calc &lt;- calculate_gamma(WOA18_predictors_gamma_prep)</code></pre>
+<div id="write-file" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Write file</h3>
+<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors_gamma_calc %&gt;% 
+  rename(lat = LATITUDE,
+         lon = LONGITUDE,
+         sal = SALNTY,
+         tem = THETA,
+         depth = CTDPRS,
+         gamma  = GAMMA) %&gt;% 
+  mutate(depth = depth*10)
+
+WOA18_predictors %&gt;% 
+  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA18_predictors.csv&quot;))</code></pre>
+</div>
+<div id="open-file" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Open file</h3>
+<pre class="r"><code>rm(list = setdiff(ls(), c(&quot;landmask&quot;, &quot;parameters&quot;, &quot;depth_levels&quot;)))
+
+WOA18_predictors &lt;- 
+  read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA18_predictors.csv&quot;))</code></pre>
+</div>
 </div>
 <div id="temperature-plots" class="section level2">
 <h2><span class="header-section-number">3.4</span> Temperature plots</h2>
@@ -1979,13 +2048,23 @@ map_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<div id="write-file" class="section level2">
-<h2><span class="header-section-number">3.6</span> Write file</h2>
-<pre class="r"><code>WOA18_predictors %&gt;% 
-  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                       &quot;WOA18_predictors.csv&quot;))
-
-rm(WOA18_predictors, WOA_sal, WOA_sal_tibble, WOA_tem, WOA_tem_tibble)</code></pre>
+<div id="neutral-density-plots" class="section level2">
+<h2><span class="header-section-number">3.6</span> Neutral density plots</h2>
+<div id="surface-map-2" class="section level3">
+<h3><span class="header-section-number">3.6.1</span> Surface map</h3>
+<pre class="r"><code>map_climatology(WOA18_predictors, &quot;gamma&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="sections-2" class="section level3">
+<h3><span class="header-section-number">3.6.2</span> Sections</h3>
+<pre class="r"><code>section_climatology(WOA18_predictors, &quot;gamma&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="sections-shallow" class="section level3">
+<h3><span class="header-section-number">3.6.3</span> Sections shallow</h3>
+<pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;gamma&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 </div>
 <div id="woa13-from-d.-clement" class="section level1">
@@ -2106,30 +2185,31 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] stars_0.4-3     sf_0.9-5        abind_1.4-5     tidync_0.2.4   
- [5] lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0   dplyr_1.0.0    
- [9] purrr_0.3.4     readr_1.3.1     tidyr_1.1.0     tibble_3.0.3   
-[13] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
+ [1] reticulate_1.16 stars_0.4-3     sf_0.9-5        abind_1.4-5    
+ [5] tidync_0.2.4    lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0  
+ [9] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
+[13] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] httr_1.4.2         viridisLite_0.3.0  jsonlite_1.7.0     here_0.1          
  [5] modelr_0.1.8       assertthat_0.2.1   blob_1.2.1         cellranger_1.1.0  
- [9] yaml_2.2.1         pillar_1.4.6       backports_1.1.8    glue_1.4.1        
-[13] digest_0.6.25      RColorBrewer_1.1-2 promises_1.1.1     rvest_0.3.6       
-[17] colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4       pkgconfig_2.0.3   
-[21] broom_0.7.0        haven_2.3.1        scales_1.1.1       whisker_0.4       
-[25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
-[29] ellipsis_0.3.1     withr_2.2.0        cli_2.0.2          magrittr_1.5      
-[33] crayon_1.3.4       readxl_1.3.1       evaluate_0.14      fs_1.4.2          
-[37] ncdf4_1.17         fansi_0.4.1        xml2_1.3.2         lwgeom_0.2-5      
-[41] class_7.3-17       tools_4.0.2        hms_0.5.3          lifecycle_0.2.0   
-[45] munsell_0.5.0      reprex_0.3.0       isoband_0.2.2      compiler_4.0.2    
-[49] e1071_1.7-3        RNetCDF_2.3-1      rlang_0.4.7        classInt_0.4-3    
-[53] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.3      
-[57] rmarkdown_2.3      gtable_0.3.0       DBI_1.1.0          R6_2.4.1          
-[61] ncmeta_0.2.5       knitr_1.29         rprojroot_1.3-2    KernSmooth_2.23-17
-[65] stringi_1.4.6      parallel_4.0.2     Rcpp_1.0.5         vctrs_0.3.2       
-[69] dbplyr_1.4.4       tidyselect_1.1.0   xfun_0.16         </code></pre>
+ [9] yaml_2.2.1         pillar_1.4.6       backports_1.1.8    lattice_0.20-41   
+[13] glue_1.4.1         digest_0.6.25      RColorBrewer_1.1-2 promises_1.1.1    
+[17] rvest_0.3.6        colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
+[21] Matrix_1.2-18      pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1       
+[25] scales_1.1.1       whisker_0.4        later_1.1.0.1      git2r_0.27.1      
+[29] farver_2.0.3       generics_0.0.2     ellipsis_0.3.1     withr_2.2.0       
+[33] cli_2.0.2          magrittr_1.5       crayon_1.3.4       readxl_1.3.1      
+[37] evaluate_0.14      fs_1.4.2           ncdf4_1.17         fansi_0.4.1       
+[41] xml2_1.3.2         lwgeom_0.2-5       class_7.3-17       tools_4.0.2       
+[45] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
+[49] isoband_0.2.2      compiler_4.0.2     e1071_1.7-3        RNetCDF_2.3-1     
+[53] rlang_0.4.7        classInt_0.4-3     units_0.6-7        grid_4.0.2        
+[57] rstudioapi_0.11    labeling_0.3       rmarkdown_2.3      gtable_0.3.0      
+[61] DBI_1.1.0          R6_2.4.1           ncmeta_0.2.5       knitr_1.29        
+[65] rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6      parallel_4.0.2    
+[69] Rcpp_1.0.5         vctrs_0.3.2        dbplyr_1.4.4       tidyselect_1.1.0  
+[73] xfun_0.16         </code></pre>
 </div>
 </div>
 

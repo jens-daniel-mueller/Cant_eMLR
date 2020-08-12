@@ -454,7 +454,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Mapping</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">11 August, 2020</h4>
+<h4 class="date">12 August, 2020</h4>
 
 </div>
 
@@ -479,7 +479,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-11
+<strong>Last updated:</strong> 2020-08-12
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -570,16 +570,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6targetblank3ff89bba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6" target="_blank">3ff89bb</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree525cb522f5546c22df40c43a45fa28892a2df11ftargetblank525cb52a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/525cb522f5546c22df40c43a45fa28892a2df11f" target="_blank">525cb52</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6targetblank3ff89bba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree525cb522f5546c22df40c43a45fa28892a2df11ftargetblank525cb52a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3ff89bb89d1ea11d07b11d2d77c97bc6ffe75fc6" target="_blank">3ff89bb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/525cb522f5546c22df40c43a45fa28892a2df11f" target="_blank">525cb52</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -598,13 +598,12 @@ Ignored files:
     Ignored:    data/pCO2_atmosphere/
     Ignored:    data/parameters/
     Ignored:    dump/
+    Ignored:    figure/
 
 Untracked files:
-    Untracked:  analysis/python_scripts/
-    Untracked:  analysis/test_scripts/
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
+    Untracked:  code/plotting_functions.R
+    Untracked:  code/python_scripts/
+    Untracked:  code/test_scripts/
 
 </code></pre>
 <p>
@@ -643,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/525cb522f5546c22df40c43a45fa28892a2df11f/analysis/mapping.Rmd" target="_blank">525cb52</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+WOA 18 gamma calculation, new lon values in mapping
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/5d33341808fbcabe819a13383089d580f720965d/docs/mapping.html" target="_blank">5d33341</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1284,7 +1317,7 @@ rm(temp, i_variable, variables)</code></pre>
                        &quot;WOA18_predictors.csv&quot;))
 
 WOA18_predictors &lt;- WOA18_predictors %&gt;% 
-  rename(salinity = s_an, temperature = t_an)</code></pre>
+  rename(salinity = sal, temperature = tem)</code></pre>
 <pre class="r"><code>WOA13 &lt;-
   read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                        &quot;WOA13_mask_gamma.csv&quot;))
@@ -1347,6 +1380,8 @@ WOA13_gamma_n %&gt;%
 <h2><span class="header-section-number">2.2</span> WOA13 + GLODAP</h2>
 <p>Predictor climatologies are merged. Only horizontal grid cells with at least one observation are kept. Rows with NA values are removed.</p>
 <pre class="r"><code>predictors &lt;- full_join(GLODAP_predictors, WOA13_gamma)
+GLODAP_depths &lt;- unique(GLODAP_predictors$depth)
+
 rm(GLODAP_predictors, WOA13_gamma)
 
 predictors &lt;- predictors %&gt;% 
@@ -1406,7 +1441,10 @@ rm(min_depth, max_lat, min_bottomdepth)</code></pre>
 <div id="basin-mask" class="section level3">
 <h3><span class="header-section-number">2.2.2</span> Basin mask</h3>
 <p>Please note that some predictor variables are available outside the WOA18 basin mask, but will be removed for further analysis.</p>
-<pre class="r"><code>predictors &lt;- inner_join(predictors, basinmask)
+<pre class="r"><code>predictors &lt;- predictors %&gt;% 
+  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
+
+predictors &lt;- inner_join(predictors, basinmask)
 rm(basinmask)</code></pre>
 </div>
 <div id="maps" class="section level3">
@@ -1442,7 +1480,7 @@ rm(basinmask)</code></pre>
 <h3><span class="header-section-number">2.2.4</span> Predictor profiles</h3>
 <p>Likewise, predictor profiles for the North Atlantic (lat = 40.5, lon = -20.5) are plotted to control successful merging of the data sets.</p>
 <pre class="r"><code>N_Atl &lt;- predictors %&gt;% 
-  filter(lat == 40.5, lon == -20.5)
+  filter(lat == 30.5, lon == 320.5)
 
 N_Atl &lt;- N_Atl %&gt;% 
   pivot_longer(salinity:gamma, names_to = &quot;parameter&quot;, values_to = &quot;value&quot;)
@@ -1545,7 +1583,7 @@ predictors &lt;- predictors %&gt;%
 </div>
 <div id="atlantic-section" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Atlantic section</h3>
-<pre class="r"><code>Atl_lon &lt;- 335.5 - 360
+<pre class="r"><code>Atl_lon &lt;- 335.5
 
 predictors %&gt;% 
   filter(lon == Atl_lon) %&gt;% 
@@ -1777,12 +1815,9 @@ rm(predictors, all_lm_wide)</code></pre>
 <div id="depth-layers" class="section level2">
 <h2><span class="header-section-number">8.1</span> Depth layers</h2>
 <p>Cant concentration for selected depth levels at which mapping was performed.</p>
-<pre class="r"><code>mapWorld &lt;- borders(&quot;world&quot;, colour = &quot;gray60&quot;, fill = &quot;gray60&quot;)
-
-Cant_model_average %&gt;%
+<pre class="r"><code>Cant_model_average %&gt;%
   filter(depth %in% c(150, 500, 1000, 3000)) %&gt;% 
   ggplot(aes(lon, lat, fill = Cant_mean)) + 
-  mapWorld +
   geom_raster() +
   scale_fill_divergent(guide = &quot;colorstrip&quot;,
                        breaks = MakeBreaks(5),
@@ -1830,7 +1865,6 @@ Cant_inventory &lt;- Cant_model_average %&gt;%
 <h3><span class="header-section-number">8.3.1</span> All Cant estimates</h3>
 <pre class="r"><code>Cant_inventory %&gt;% 
   ggplot(aes(lon, lat, fill = Cant_inventory)) + 
-  mapWorld +
   geom_raster() +
   scale_fill_divergent(guide = &quot;colorstrip&quot;,
                        breaks = MakeBreaks(5),
@@ -1844,7 +1878,6 @@ Cant_inventory &lt;- Cant_model_average %&gt;%
 <h3><span class="header-section-number">8.3.2</span> Positive Cant estimates</h3>
 <pre class="r"><code>Cant_inventory %&gt;% 
   ggplot(aes(lon, lat, fill = Cant_pos_inventory)) + 
-  mapWorld +
   geom_raster() +
   scale_fill_viridis_c(name = &quot;Cant&quot;) +
   coord_quickmap(expand = 0) +
@@ -1865,76 +1898,9 @@ Cant_inventory &lt;- Cant_model_average %&gt;%
 </div>
 <div id="open-questions" class="section level1">
 <h1><span class="header-section-number">10</span> Open questions</h1>
-</div>
-<div id="neutral-density-calculation" class="section level1">
-<h1><span class="header-section-number">11</span> Neutral density calculation</h1>
-<p>Not yet succesfully implemented</p>
-<pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
-                                &quot;GLODAP_MLR_fitting_ready.csv&quot;))
-
-cruises_meridional &lt;- c(&quot;1041&quot;)
-
-GLODAP_cruise &lt;- GLODAP %&gt;% 
-  filter(cruise %in% cruises_meridional)
-
-
-GLODAP_cruise &lt;- GLODAP_cruise %&gt;% 
-  mutate(gamma_calc = swRho(salinity = salinity,
-                            temperature = temperature,
-                            pressure = depth,
-                            longitude = lon,
-                            latitude = lat,
-                            eos = &quot;gsw&quot;))
-
-
-GLODAP_cruise &lt;- GLODAP_cruise %&gt;% 
-  mutate(gamma_calc = gamma_calc - 1000,
-         delta_gamma = gamma - gamma_calc)
-
-
-lat_section &lt;- 
-GLODAP_cruise %&gt;%
-  ggplot(aes(lat, depth)) +
-  scale_y_reverse() +
-  scale_color_viridis_c() +
-  theme(legend.position = &quot;bottom&quot;)
-
-lat_section +
-  geom_point(aes(col = gamma))
-
-lat_section +
-  geom_point(aes(col = gamma_calc))
-
-lat_section +
-  geom_point(aes(col = delta_gamma))</code></pre>
-<div id="woa18" class="section level2">
-<h2><span class="header-section-number">11.1</span> WOA18</h2>
-<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors %&gt;% 
-  rename(LATITUDE = lat,
-         LONGITUDE = lon,
-         SALNTY = salinity,
-         THETA = temperature,
-         CTDPRS = depth) %&gt;% 
-  mutate(CTDPRS = 1 + CTDPRS/10)
-
-source_python(here::here(&quot;analysis/python_scripts&quot;,
-                         &quot;Gamma_GLODAP_python.py&quot;))
-
-WOA18_predictors &lt;- calculate_gamma(WOA18_predictors)</code></pre>
-<div id="atlantic-section-1" class="section level3">
-<h3><span class="header-section-number">11.1.1</span> Atlantic section</h3>
-<pre class="r"><code>Atl_lon &lt;- 335.5 - 360
-
-WOA18_predictors %&gt;% 
-  filter(LONGITUDE == Atl_lon) %&gt;% 
-  ggplot(aes(LATITUDE, CTDPRS, z = GAMMA)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = &quot;GAMMA&quot;) +
-  guides(fill = guide_colorsteps(barheight = unit(7, &quot;cm&quot;))) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)</code></pre>
-<p><img src="figure/mapping.Rmd/WOA18_gamma_climatology_section-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(Atl_lon)</code></pre>
+<ul>
+<li></li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1965,26 +1931,23 @@ other attached packages:
 [17] tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.2        maps_3.3.0        jsonlite_1.7.0    viridisLite_0.3.0
- [5] here_0.1          modelr_0.1.8      assertthat_0.2.1  sp_1.4-2         
- [9] blob_1.2.1        cellranger_1.1.0  yaml_2.2.1        pillar_1.4.6     
-[13] backports_1.1.8   lattice_0.20-41   glue_1.4.1        digest_0.6.25    
-[17] promises_1.1.1    checkmate_2.0.0   rvest_0.3.6       colorspace_1.4-1 
-[21] plyr_1.8.6        htmltools_0.5.0   httpuv_1.5.4      Matrix_1.2-18    
-[25] pkgconfig_2.0.3   broom_0.7.0       seacarb_3.2.13    haven_2.3.1      
-[29] scales_1.1.1      whisker_0.4       later_1.1.0.1     git2r_0.27.1     
-[33] generics_0.0.2    farver_2.0.3      ellipsis_0.3.1    withr_2.2.0      
-[37] cli_2.0.2         magrittr_1.5      crayon_1.3.4      readxl_1.3.1     
-[41] memoise_1.1.0     evaluate_0.14     fs_1.4.2          fansi_0.4.1      
-[45] xml2_1.3.2        tools_4.0.2       data.table_1.13.0 hms_0.5.3        
-[49] lifecycle_0.2.0   munsell_0.5.0     reprex_0.3.0      isoband_0.2.2    
-[53] compiler_4.0.2    rlang_0.4.7       grid_4.0.2        rstudioapi_0.11  
-[57] rappdirs_0.3.1    labeling_0.3      rmarkdown_2.3     gtable_0.3.0     
-[61] DBI_1.1.0         R6_2.4.1          knitr_1.29        rprojroot_1.3-2  
-[65] stringi_1.4.6     Rcpp_1.0.5        vctrs_0.3.2       dbplyr_1.4.4     
-[69] tidyselect_1.1.0  xfun_0.16        </code></pre>
-</div>
-</div>
+ [1] httr_1.4.2        jsonlite_1.7.0    viridisLite_0.3.0 here_0.1         
+ [5] modelr_0.1.8      assertthat_0.2.1  sp_1.4-2          blob_1.2.1       
+ [9] cellranger_1.1.0  yaml_2.2.1        pillar_1.4.6      backports_1.1.8  
+[13] lattice_0.20-41   glue_1.4.1        digest_0.6.25     promises_1.1.1   
+[17] checkmate_2.0.0   rvest_0.3.6       colorspace_1.4-1  plyr_1.8.6       
+[21] htmltools_0.5.0   httpuv_1.5.4      Matrix_1.2-18     pkgconfig_2.0.3  
+[25] broom_0.7.0       seacarb_3.2.13    haven_2.3.1       scales_1.1.1     
+[29] whisker_0.4       later_1.1.0.1     git2r_0.27.1      generics_0.0.2   
+[33] farver_2.0.3      ellipsis_0.3.1    withr_2.2.0       cli_2.0.2        
+[37] magrittr_1.5      crayon_1.3.4      readxl_1.3.1      memoise_1.1.0    
+[41] evaluate_0.14     fs_1.4.2          fansi_0.4.1       xml2_1.3.2       
+[45] tools_4.0.2       data.table_1.13.0 hms_0.5.3         lifecycle_0.2.0  
+[49] munsell_0.5.0     reprex_0.3.0      isoband_0.2.2     compiler_4.0.2   
+[53] rlang_0.4.7       grid_4.0.2        rstudioapi_0.11   labeling_0.3     
+[57] rmarkdown_2.3     gtable_0.3.0      DBI_1.1.0         R6_2.4.1         
+[61] knitr_1.29        rprojroot_1.3-2   stringi_1.4.6     Rcpp_1.0.5       
+[65] vctrs_0.3.2       dbplyr_1.4.4      tidyselect_1.1.0  xfun_0.16        </code></pre>
 </div>
 </div>
 
