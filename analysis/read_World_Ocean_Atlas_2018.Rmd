@@ -281,8 +281,7 @@ WOA18_predictors <- WOA18_predictors_gamma_calc %>%
          sal = SALNTY,
          tem = THETA,
          depth = CTDPRS,
-         gamma  = GAMMA) %>% 
-  mutate(depth = depth*10)
+         gamma  = GAMMA)
 
 WOA18_predictors %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -323,6 +322,15 @@ section_climatology(WOA18_predictors, "tem")
 
 ```
 
+### Sections shallow
+
+```{r temperature_sections_WOA18_shallow, fig.asp=0.8}
+
+section_climatology_shallow(WOA18_predictors, "tem")
+
+```
+
+
 
 
 ## Salinity plots
@@ -342,6 +350,15 @@ map_climatology(WOA18_predictors, "sal")
 section_climatology(WOA18_predictors, "sal")
 
 ```
+
+### Sections shallow
+
+```{r salinity_sections_WOA18_shallow, fig.asp=0.8}
+
+section_climatology_shallow(WOA18_predictors, "sal")
+
+```
+
 
 
 ## Neutral density plots
@@ -364,7 +381,7 @@ section_climatology(WOA18_predictors, "gamma")
 
 ### Sections shallow
 
-```{r neutral_density_sections_WOA18_shallow, fig.asp=1}
+```{r neutral_density_sections_WOA18_shallow, fig.asp=0.8}
 
 section_climatology_shallow(WOA18_predictors, "gamma")
 
