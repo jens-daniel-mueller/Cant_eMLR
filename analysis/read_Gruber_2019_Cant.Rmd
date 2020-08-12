@@ -113,7 +113,7 @@ Section locations are indicated as white lines in maps.
 
 ## Horizontal plane maps
 
-```{r Cant_maps}
+```{r Cant_maps, fig.asp=0.6}
 
 map_climatology(dcant %>% filter(cant < 25), "cant")
 
@@ -122,7 +122,7 @@ map_climatology(dcant %>% filter(cant < 25), "cant")
 
 ## Surface Inventory map
 
-```{r Cant_inv_map}
+```{r Cant_inv_map, fig.asp=0.6}
 
 map_climatology_inv(dcant_inv, "cant_inv")
 
@@ -130,7 +130,7 @@ map_climatology_inv(dcant_inv, "cant_inv")
 
 ## Sections
 
-```{r Cant_sections}
+```{r Cant_sections, fig.asp=1}
 
 section_climatology(dcant, "cant")
 
@@ -138,7 +138,7 @@ section_climatology(dcant, "cant")
 
 ## Sections shallow
 
-```{r Cant_sections_shallow}
+```{r Cant_sections_shallow, fig.asp=1}
 
 section_climatology_shallow(dcant, "cant")
 
