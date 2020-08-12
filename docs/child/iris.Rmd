@@ -1,8 +1,0 @@
-## {{var}}
-
-```{r plot_{{var}}}
-
-print(basinmask_01$"{{var}}")
-
-
-```

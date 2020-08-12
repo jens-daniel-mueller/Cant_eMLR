@@ -27,8 +27,8 @@ navbar:
     href: eMLR.html
   - text: Mapping
     href: mapping.html
-  - text: License
-    href: license.html
+  - text: Analysis
+    href: Analysis.html
   right:
   - icon: fa-github
     text: Source code
