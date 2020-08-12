@@ -261,8 +261,7 @@ WOA18_predictors_gamma_prep <- WOA18_predictors %>%
          LONGITUDE = lon,
          SALNTY = sal,
          THETA = tem,
-         CTDPRS = depth) %>% 
-  mutate(CTDPRS = CTDPRS/10)
+         CTDPRS = depth)
 
 source_python(here::here("code/python_scripts",
                          "Gamma_GLODAP_python.py"))
