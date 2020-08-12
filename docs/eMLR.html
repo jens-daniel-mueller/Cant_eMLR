@@ -571,16 +571,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecc3a876d0ef434e339bc1356976bdf73b3ef1190targetblankcc3a876a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cc3a876d0ef434e339bc1356976bdf73b3ef1190" target="_blank">cc3a876</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1be0bc4f2f92f170d9629b88684ac7ace3f62c3etargetblank1be0bc4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1be0bc4f2f92f170d9629b88684ac7ace3f62c3e" target="_blank">1be0bc4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecc3a876d0ef434e339bc1356976bdf73b3ef1190targetblankcc3a876a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1be0bc4f2f92f170d9629b88684ac7ace3f62c3etargetblank1be0bc4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cc3a876d0ef434e339bc1356976bdf73b3ef1190" target="_blank">cc3a876</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1be0bc4f2f92f170d9629b88684ac7ace3f62c3e" target="_blank">1be0bc4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -601,6 +601,9 @@ Ignored files:
     Ignored:    data/parameters/
     Ignored:    dump/
     Ignored:    figure/
+
+Untracked files:
+    Untracked:  analysis/config_packages.Rmd
 
 </code></pre>
 <p>
@@ -639,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/1be0bc4f2f92f170d9629b88684ac7ace3f62c3e/analysis/eMLR.Rmd" target="_blank">1be0bc4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+gamma slab coverage visualised
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/bc8f3c180ff6bd0828d522e8e8de591adb842318/docs/eMLR.html" target="_blank">bc8f3c1</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2585,11 +2622,32 @@ lat_section +
   scale_color_viridis_d()</code></pre>
 <p><img src="figure/eMLR.Rmd/meridional_sections_isoneutral_slabs-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(lat_section, GLODAP_cruise, cruises_meridional)</code></pre>
+<div id="observations-coverage" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Observations coverage</h3>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
+  mutate(era = factor(era, c(&quot;JGOFS_WOCE&quot;, &quot;GO_SHIP&quot;, &quot;new_era&quot;))) %&gt;%
+  mutate(gamma_slab = factor(gamma_slab), 
+         gamma_slab = factor(gamma_slab, levels = rev(levels(gamma_slab))))
+
+GLODAP %&gt;% 
+  filter(basin == &quot;Atlantic&quot;) %&gt;% 
+  ggplot(aes(lat, gamma_slab)) +
+  geom_bin2d(binwidth = 5) +
+  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;,
+                       name = &quot;log10(n)&quot;) +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  facet_grid(era~basin)</code></pre>
+<p><img src="figure/eMLR.Rmd/obs_gamma_slab_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>GLODAP %&gt;% 
-  ggplot(aes(lat, fill = era)) +
-  geom_histogram() +
-  facet_grid(gamma_slab~basin)</code></pre>
-<p><img src="figure/eMLR.Rmd/obs_gamma_slab_histogram-1.png" width="672" style="display: block; margin: auto;" /></p>
+  filter(basin == &quot;Indo-Pacific&quot;) %&gt;% 
+  ggplot(aes(lat, gamma_slab)) +
+  geom_bin2d(binwidth = 5) +
+  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;,
+                       name = &quot;log10(n)&quot;) +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  facet_grid(era~basin)</code></pre>
+<p><img src="figure/eMLR.Rmd/obs_gamma_slab_Pac-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="predictor-correlation" class="section level2">
 <h2><span class="header-section-number">6.2</span> Predictor correlation</h2>
