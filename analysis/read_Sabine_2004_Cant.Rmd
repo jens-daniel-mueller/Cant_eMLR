@@ -21,6 +21,11 @@ library(tidyverse)
 library(lubridate)
 ```
 
+```{r read_parameters_functions, include = FALSE}
+parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
+depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+source(here::here("code", "plotting_functions.R"))
+```
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
@@ -59,93 +64,112 @@ Long_centers <- Long_centers %>%
 
 names(AnthCO2_data) <- Lat_centers
 
-Long_Depth <- expand_grid(Depth = Depth_centers, Long = Long_centers) %>% 
-  mutate(Long = as.numeric(Long),
-         Depth = as.numeric(Depth))
+Long_Depth <- expand_grid(depth = Depth_centers, lon = Long_centers) %>% 
+  mutate(lon = as.numeric(lon),
+         depth = as.numeric(depth))
 
 Cant <- bind_cols(AnthCO2_data, Long_Depth)
 
 Cant <- Cant %>% 
-  pivot_longer(1:180, names_to = "Lat", values_to = "Cant") %>% 
-  mutate(Lat = as.numeric(Lat))
+  pivot_longer(1:180, names_to = "lat", values_to = "cant") %>% 
+  mutate(lat = as.numeric(lat))
 
 Cant <- Cant %>% 
   drop_na()
+
+Cant <- Cant %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 rm(AnthCO2_data, Long_Depth, Depth_centers, Lat_centers, Long_centers)
 
 ```
 
-# Cant plots
+# Masks
 
-```{r set_criteria_horizons_sections}
+## Read
 
-depth_surface_selection <- c(0)
-Atl_lon <- 335.5 - 360
-Pac_lon <- 190.5 - 360
+```{r read_mask_files}
+
+basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "basin_mask_WOA18.csv"))
+
+landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "land_mask_WOA18.csv"))
 
 ```
 
+## Apply basin mask
+
+```{r}
+
+Cant <- inner_join(Cant, basinmask)
+
+```
+
+
+# Cant plots
+
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
 
-- Horizontal planes at `r depth_surface_selection`m
+- Horizontal planes at `r depth_levels`m
 - Meridional sections at longitudes:
-  - Atlantic: `r Atl_lon`
-  - Pacific: `r Pac_lon`
+  - Atlantic: `r parameters$lon_Atl_section`
+  - Pacific: `r parameters$lon_Pac_section`
+  - Indian ocean: `r parameters$lon_Ind_section`
 
 Section locations are indicated as white lines in maps.
 
-Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
+# Inventory calculation
+
+```{r calculate_inventory}
+
+source(here::here("code", "inventory_calculation.R"))
+
+Cant <- layer_inventory(Cant, "cant")
+
+Cant_inv <- Cant %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
+  group_by(lon, lat, basin) %>% 
+  summarise(cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
+            cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000) %>% 
+  ungroup()
+
+```
 
 
+## Horizontal plane maps
 
-## Surface Inventory map
+```{r Cant_maps, fig.asp=0.6}
 
-```{r Cant_inv_map}
-
-Cant %>% 
-  filter(Depth == depth_surface_selection) %>% 
-  ggplot(aes(Long, Lat, fill = Cant)) +
-  geom_raster() +
-  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
-  coord_quickmap(expand = 0) +
-  scale_fill_viridis_c() +
-  theme(legend.position = "top")
+map_climatology(Cant, "cant")
 
 
 ```
 
 ## Sections
 
-### Atlantic
+```{r Cant_sections, fig.asp=1}
 
-```{r Cant_section_Atlantic}
-
-Cant %>% 
-  filter(Long == Atl_lon) %>% 
-  ggplot(aes(Lat, Depth, z = Cant)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = "Cant") +
-  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)
+section_climatology(Cant, "cant")
 
 ```
 
-### Pacific
+## Sections shallow
 
-```{r Cant_section_Pacific}
+```{r Cant_sections_shallow, fig.asp=1}
 
-Cant %>% 
-  filter(Long == Pac_lon) %>% 
-  ggplot(aes(Lat, Depth, z = Cant)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = "Cant") +
-  guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0)
+section_climatology_shallow(Cant, "cant")
 
 ```
+
+## Inventory maps
+
+```{r Cant_inv_pos_maps, fig.asp=0.6}
+
+map_climatology_inv(Cant_inv, "cant_inv_pos")
+
+```
+
 
 ## Write files
 

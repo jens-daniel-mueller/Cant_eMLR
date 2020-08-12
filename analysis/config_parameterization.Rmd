@@ -42,7 +42,8 @@ parameters <- tibble(
   year_GOSHIP_end = 2012,
   lon_Atl_section = 335.5,
   lon_Pac_section = 190.5,
-  lon_Ind_section = 70.5)
+  lon_Ind_section = 70.5,
+  inventory_depth = 3000)
 
 depth_levels <- c(0,100,500,2000)
 
