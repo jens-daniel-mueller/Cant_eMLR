@@ -24,6 +24,24 @@ map_climatology <- function(df, var) {
 
 }
 
+map_climatology_inv <- function(df, var) {
+
+  var <- sym(var)
+
+  ggplot() +
+    geom_raster(data = landmask %>% filter(region == "land"),
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df,
+                aes(lon, lat, fill = !!var)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+    theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank()
+    )
+}
+
 section_climatology <- function(df, var) {
 
   name_var <- var
@@ -38,6 +56,7 @@ section_climatology <- function(df, var) {
     scale_fill_viridis_d(name = name_var) +
     guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
     scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-80,80,20)) +
     coord_cartesian(expand = 0) +
     facet_wrap(~lon, ncol = 1)
 
@@ -59,6 +78,7 @@ section_climatology_shallow <- function(df, var) {
     scale_fill_viridis_d(name = name_var) +
     guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
     scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-80,80,20)) +
     coord_cartesian(expand = 0) +
     facet_wrap(~lon, ncol = 1)
 

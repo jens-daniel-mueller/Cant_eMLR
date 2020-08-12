@@ -24,19 +24,11 @@ library(metR)
 library(patchwork)
 ```
 
-```{r read_parameters, include = FALSE}
-
-parameters <- read_csv(here::here("data/parameters",
-                                  "parameters.csv"))
-
-depth_levels <- read_lines(here::here("data/parameters",
-                                      "depth_levels.txt"))
-
-source(here::here("code",
-                  "plotting_functions.R"))
-
+```{r read_parameters_functions, include = FALSE}
+parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
+depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+source(here::here("code", "plotting_functions.R"))
 ```
-
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
