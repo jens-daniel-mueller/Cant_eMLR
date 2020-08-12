@@ -415,6 +415,16 @@ rm(lat_section, GLODAP_cruise, cruises_meridional)
 ```
 
 
+```{r obs_gamma_slab_histogram, fig.asp=2.5}
+
+GLODAP %>% 
+  ggplot(aes(lat, fill = era)) +
+  geom_histogram() +
+  facet_grid(gamma_slab~basin)
+
+```
+
+
 ## Predictor correlation
 
 The correlation between:  
