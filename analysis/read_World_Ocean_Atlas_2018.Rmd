@@ -81,19 +81,24 @@ According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){targ
 Atlantic Ocean:  
 
 - 1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)
+- 11: Arctic Ocean (restricted by northern latitude limit)
 
 Indo-Pacific:  
 
 - 2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)
 - 3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)
+- 12: Sea of Japan
 - 56: Bay of Bengal
 
 ```{r assign_basin_labels}
 
 basinmask_01 <- basinmask_01 %>% 
-  filter(Basin_0m %in% c("1", "2", "3", "10", "56")) %>% 
+  filter(Basin_0m %in% c("1", "2", "3", "10", "11", "12", "56"),
+         lat <= parameters$lat_max) %>% 
   mutate(basin = if_else(Basin_0m == "10" & lon >= -63 & lon < 20,
                          "Atlantic", "Indo-Pacific"),
+         basin = if_else(Basin_0m == "11",
+                         "Atlantic", basin),
          basin = if_else(Basin_0m == "1",
                          "Atlantic", basin)) %>% 
   select(-Basin_0m) %>% 
@@ -354,8 +359,6 @@ Below, following subsets of the climatologies are plotted for all relevant param
   - Pacific: `r parameters$lon_Pac_section`
 
 Section locations are indicated as white lines in maps.
-
-Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
 
 ### Surface map
 
