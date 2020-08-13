@@ -21,7 +21,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(patchwork)
-library(broom)
 library(GGally)
 library(olsrr)
 library(knitr)
@@ -157,31 +156,38 @@ The mapped Cant product was merged with GLODAP observation by:
 
 ```{r interpolate_Cant_to_observations}
 
-GLODAP_Cant_obs <- GLODAP_Cant_obs %>% 
-  group_by(lat, lon) %>% 
-  arrange(depth) %>% 
-  mutate(Cant_int = approxfun(depth, Cant, rule = 2)(depth)) %>% 
+
+GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
+  group_by(lat, lon) %>%
+  arrange(depth) %>%
+  mutate(Cant_int = approxfun(depth, Cant, rule = 2)(depth)) %>%
   ungroup()
 
 ggplot() +
-    geom_path(data = GLODAP_Cant_obs %>% 
-              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
-              arrange(depth),
-            aes(Cant, depth, col = "mapped")) +
-  geom_point(data = GLODAP_Cant_obs %>% 
-              filter(lat == 48.5, lon == 165.5, !is.na(Cant)) %>% 
-              arrange(depth),
-            aes(Cant, depth, col = "mapped")) +
-  geom_point(data = GLODAP_Cant_obs %>% 
-              filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
-            aes(Cant_int, depth, col = "interpolated")) +
+  geom_path(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(Cant)) %>%
+      arrange(depth),
+    aes(Cant, depth, col = "mapped")
+  ) +
+  geom_point(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(Cant)) %>%
+      arrange(depth),
+    aes(Cant, depth, col = "mapped")
+  ) +
+  geom_point(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
+    aes(Cant_int, depth, col = "interpolated")
+  ) +
   scale_y_reverse() +
   scale_color_brewer(palette = "Dark2", name = "") +
   labs(title = "Cant interpolation to sampling depth - example profile")
 
-GLODAP <- GLODAP_Cant_obs %>% 
-  filter(!is.na(Cstar)) %>% 
-  mutate(Cant = Cant_int) %>% 
+GLODAP <- GLODAP_Cant_obs %>%
+  filter(!is.na(Cstar)) %>%
+  mutate(Cant = Cant_int) %>%
   select(-Cant_int)
 
 rm(GLODAP_Cant_obs)
