@@ -23,9 +23,40 @@ library(tidync)
 library(stars)
 ```
 
-```{r read_parameters_functions, include = FALSE}
-parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
-depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_csv(here::here("data/parameters",
+                      "parameters.csv"))
+depth_levels <-
+  read_lines(here::here("data/parameters",
+                        "depth_levels.txt"))
+slabs_Atl <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Atl.txt"))
+slabs_Ind_Pac <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Ind_Pac.txt"))
+```
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
 ```
 
@@ -39,7 +70,7 @@ theme_set(theme_bw())
 
 # Read ncdfs
 
-```{r read_Gruber_dcant_all}
+```{r read_Gruber_dcant}
 
 dcant <- tidync(here::here("data/Gruber_2019",
                                "dcant_emlr_cstar_gruber_94-07_vs1.nc"))
@@ -74,23 +105,9 @@ dcant_inv <- dcant_inv %>%
 
 ```
 
-# Masks
+# Apply basin mask
 
-## Read
-
-```{r read_mask_files}
-
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
-
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
-
-```
-
-## Apply basin mask
-
-```{r}
+```{r apply_basin_mask}
 
 dcant <- inner_join(dcant, basinmask)
 dcant_inv <- inner_join(dcant_inv, basinmask)
@@ -116,7 +133,6 @@ Section locations are indicated as white lines in maps.
 ```{r Cant_maps, fig.asp=0.6}
 
 map_climatology(dcant %>% filter(cant < 25), "cant")
-
 
 ```
 
