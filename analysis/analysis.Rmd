@@ -142,17 +142,18 @@ Cant_inv_wide <- Cant_inv_wide %>%
 
 
 Cant_inv_wide %>%
-  filter(cant_ratio_rel < 2) %>% 
+  #filter(cant_ratio_rel < 2) %>% 
   ggplot() +
   geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat),
               fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = cant_ratio_rel)) +
+  geom_raster(aes(lon, lat, fill = log(cant_ratio_rel))) +
   coord_quickmap(expand = 0) +
   scale_fill_gradient2(  low = "red",
   mid = "white",
   high = "blue",
-  midpoint = 1) +
+  midpoint = 0,
+  limits = c(-1.5,1.5)) +
   theme(
     axis.title = element_blank(),
     axis.text = element_blank(),
