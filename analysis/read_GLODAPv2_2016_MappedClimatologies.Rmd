@@ -24,9 +24,40 @@ library(metR)
 library(patchwork)
 ```
 
-```{r read_parameters_functions, include = FALSE}
-parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
-depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_csv(here::here("data/parameters",
+                      "parameters.csv"))
+depth_levels <-
+  read_lines(here::here("data/parameters",
+                        "depth_levels.txt"))
+slabs_Atl <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Atl.txt"))
+slabs_Ind_Pac <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Ind_Pac.txt"))
+```
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
 ```
 
@@ -48,18 +79,6 @@ file_list <- list.files(path = "data/GLODAPv2_2016b_Mappedclimatologies", patter
 print(file_list)
 
 ```
-
-
-```{r read_mask_files}
-
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
-
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
-
-```
-
 
 # Plot data and write csv
 
