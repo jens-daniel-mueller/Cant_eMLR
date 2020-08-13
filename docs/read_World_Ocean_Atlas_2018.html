@@ -573,16 +573,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree47e19d80639e29fbf24d11c603712f8069cd3131targetblank47e19d8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/47e19d80639e29fbf24d11c603712f8069cd3131" target="_blank">47e19d8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7133d1a5b03e979d1c8a8fe06225018c5721c600targetblank7133d1aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7133d1a5b03e979d1c8a8fe06225018c5721c600" target="_blank">7133d1a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree47e19d80639e29fbf24d11c603712f8069cd3131targetblank47e19d8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7133d1a5b03e979d1c8a8fe06225018c5721c600targetblank7133d1aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/47e19d80639e29fbf24d11c603712f8069cd3131" target="_blank">47e19d8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7133d1a5b03e979d1c8a8fe06225018c5721c600" target="_blank">7133d1a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -603,10 +603,6 @@ Ignored files:
     Ignored:    data/parameters/
     Ignored:    dump/
     Ignored:    figure/
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   analysis/config_parameterization.Rmd
 
 </code></pre>
 <p>
@@ -645,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/7133d1a5b03e979d1c8a8fe06225018c5721c600/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">7133d1a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+potentiell temperature calculated
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/bf69270b1ed1af5687230278a6e390d89e5bbc39/docs/read_World_Ocean_Atlas_2018.html" target="_blank">bf69270</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1947,8 +1977,8 @@ added WOA blank script
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
 library(tidync)
-library(stars)
-library(reticulate)</code></pre>
+library(reticulate)
+library(oce)</code></pre>
 <div id="data-source" class="section level1">
 <h1><span class="header-section-number">1</span> Data source</h1>
 <ul>
@@ -1974,14 +2004,17 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
 </div>
 <div id="labels" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> Labels</h3>
-<p>According to <a href="https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html" target="_blank">WOA FAQ</a> website, number codes in the mask file refer to Ocean basins as follows:</p>
+<p>According to <a href="https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html" target="_blank">WOA FAQ</a> website, number codes in the mask files were used to assign ocean basins as follows:</p>
+<p>Atlantic Ocean:</p>
 <ul>
 <li>1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)</li>
+</ul>
+<p>Indo-Pacific:</p>
+<ul>
 <li>2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)</li>
 <li>3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)</li>
-<li>56: Bay of Bengal (included in Indo-Pacifc)</li>
+<li>56: Bay of Bengal</li>
 </ul>
-<p>From this, the Atlantic and the Indo-Pacific were labeled.</p>
 <pre class="r"><code>basinmask_01 &lt;- basinmask_01 %&gt;% 
   filter(Basin_0m %in% c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;10&quot;, &quot;56&quot;)) %&gt;% 
   mutate(basin = if_else(Basin_0m == &quot;10&quot; &amp; lon &gt;= -63 &amp; lon &lt; 20,
@@ -2004,7 +2037,8 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
 </div>
 <div id="label" class="section level3">
 <h3><span class="header-section-number">2.2.2</span> Label</h3>
-<p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document: <em>“The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world. Land will have a value of 1, corresponding to the surface.”</em></p>
+<p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document:</p>
+<p><em>“The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world. Land will have a value of 1, corresponding to the surface.”</em></p>
 <p>The landmask was derived as coordinates with value 1.</p>
 <pre class="r"><code>landmask &lt;- landsea_01 %&gt;% 
   mutate(region = if_else(Bottom_Standard_Level == &quot;1&quot;,
@@ -2043,8 +2077,8 @@ landmask %&gt;%
                        &quot;land_mask_WOA18.csv&quot;))</code></pre>
 </div>
 </div>
-<div id="woa18-data" class="section level1">
-<h1><span class="header-section-number">3</span> WOA18 data</h1>
+<div id="climatologies" class="section level1">
+<h1><span class="header-section-number">3</span> Climatologies</h1>
 <p>Copied from the WOA FAQ website, the file naming conventions is:</p>
 <p>PREF_DDDD_VTTFFGG.EXT, where:</p>
 <ul>
@@ -2073,6 +2107,9 @@ landmask %&gt;%
 <li>Decades: all decades</li>
 <li>Grid: 1 deg resolution</li>
 </ul>
+<p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document:</p>
+<p>*What are the units for temperature and salinity in the WOA18?</p>
+<p>In situ temperatures used for WOA18 are not converted from their original scale, so there is a mix of IPTS-48, IPTS-68, and ITS-90 (and pre IPTS-48 temperatures). The differences between scales are small (on the order of 0.01°C) and should not have much effect on the climatological means, except, possibly at very deep depths. Values for salinity are on the Practical salinity scale (PSS-78). Pre-1978 salinity values converted from conductivity may have used a different salinity scale. Pre-conductivity salinities use the Knudsen method.*</p>
 <div id="read-ncdfs" class="section level2">
 <h2><span class="header-section-number">3.1</span> Read ncdfs</h2>
 <pre class="r"><code># temperature
@@ -2100,6 +2137,79 @@ WOA_sal_tibble &lt;- WOA_sal_tibble  %&gt;%
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
 
 rm(WOA_sal, WOA_tem)</code></pre>
+<pre class="r"><code>WOA18_predictors &lt;- full_join(WOA_sal_tibble, WOA_tem_tibble)
+rm(WOA_sal_tibble, WOA_tem_tibble)</code></pre>
+</div>
+<div id="apply-basin-mask" class="section level2">
+<h2><span class="header-section-number">3.2</span> Apply basin mask</h2>
+<p>Data outside the WOA18 basin mask were removed for further analysis.</p>
+<pre class="r"><code>WOA18_predictors &lt;- inner_join(WOA18_predictors, basinmask_01)
+rm(basinmask_01)</code></pre>
+</div>
+<div id="potential-temperature" class="section level2">
+<h2><span class="header-section-number">3.3</span> Potential temperature</h2>
+<div id="calculation" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Calculation</h3>
+<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors %&gt;% 
+  mutate(THETA = swTheta(salinity = sal,
+                         temperature = tem,
+                         pressure = depth,
+                         referencePressure = 0,
+                         longitude = lon,
+                         latitude = lat))</code></pre>
+</div>
+<div id="profile" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Profile</h3>
+<p>Example profile from North Atlantic Ocean.</p>
+<pre class="r"><code>WOA18_predictors %&gt;%
+  filter(lat == parameters$lat_Atl_profile,
+         lon == parameters$lon_Atl_section) %&gt;%
+  ggplot() +
+  geom_line(aes(tem, depth, col = &quot;insitu&quot;)) +
+  geom_point(aes(tem, depth, col = &quot;insitu&quot;)) +
+  geom_line(aes(THETA, depth, col = &quot;theta&quot;)) +
+  geom_point(aes(THETA, depth, col = &quot;theta&quot;)) +
+  scale_y_reverse() +
+  scale_color_brewer(palette = &quot;Dark2&quot;, name = &quot;Scale&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/WOA18_potential_temperature_profile-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="neutral-density-calculation" class="section level2">
+<h2><span class="header-section-number">3.4</span> Neutral density calculation</h2>
+<pre class="r"><code>WOA18_predictors_gamma_prep &lt;- WOA18_predictors %&gt;% 
+  rename(LATITUDE = lat,
+         LONGITUDE = lon,
+         SALNTY = sal,
+         CTDPRS = depth)
+
+source_python(here::here(&quot;code/python_scripts&quot;,
+                         &quot;Gamma_GLODAP_python.py&quot;))
+
+WOA18_predictors_gamma_calc &lt;- calculate_gamma(WOA18_predictors_gamma_prep)</code></pre>
+<div id="write-file" class="section level3">
+<h3><span class="header-section-number">3.4.1</span> Write file</h3>
+<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors_gamma_calc %&gt;% 
+  rename(lat = LATITUDE,
+         lon = LONGITUDE,
+         sal = SALNTY,
+         depth = CTDPRS,
+         gamma  = GAMMA)
+
+WOA18_predictors %&gt;% 
+  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA18_predictors.csv&quot;))</code></pre>
+</div>
+<div id="open-file" class="section level3">
+<h3><span class="header-section-number">3.4.2</span> Open file</h3>
+<pre class="r"><code>rm(list = setdiff(ls(), c(&quot;landmask&quot;, &quot;parameters&quot;, &quot;depth_levels&quot;)))
+
+WOA18_predictors &lt;- 
+  read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+                       &quot;WOA18_predictors.csv&quot;))</code></pre>
+</div>
+</div>
+<div id="temperature-plots" class="section level2">
+<h2><span class="header-section-number">3.5</span> Temperature plots</h2>
 <p>Below, following subsets of the climatologies are plotted for all relevant parameters:</p>
 <ul>
 <li>Horizontal planes at 0, 100, 500, 2000m</li>
@@ -2111,55 +2221,8 @@ rm(WOA_sal, WOA_tem)</code></pre>
 </ul>
 <p>Section locations are indicated as white lines in maps.</p>
 <p>Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.</p>
-<pre class="r"><code>WOA18_predictors &lt;- full_join(WOA_sal_tibble, WOA_tem_tibble)
-rm(WOA_sal_tibble, WOA_tem_tibble)</code></pre>
-</div>
-<div id="apply-basin-mask" class="section level2">
-<h2><span class="header-section-number">3.2</span> Apply basin mask</h2>
-<p>Data outside the WOA18 basin mask were removed for further analysis.</p>
-<pre class="r"><code>WOA18_predictors &lt;- inner_join(WOA18_predictors, basinmask_01)
-rm(basinmask_01)</code></pre>
-</div>
-<div id="neutral-density-calculation" class="section level2">
-<h2><span class="header-section-number">3.3</span> Neutral density calculation</h2>
-<pre class="r"><code>WOA18_predictors_gamma_prep &lt;- WOA18_predictors %&gt;% 
-  rename(LATITUDE = lat,
-         LONGITUDE = lon,
-         SALNTY = sal,
-         THETA = tem,
-         CTDPRS = depth)
-
-source_python(here::here(&quot;code/python_scripts&quot;,
-                         &quot;Gamma_GLODAP_python.py&quot;))
-
-WOA18_predictors_gamma_calc &lt;- calculate_gamma(WOA18_predictors_gamma_prep)</code></pre>
-<div id="write-file" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> Write file</h3>
-<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors_gamma_calc %&gt;% 
-  rename(lat = LATITUDE,
-         lon = LONGITUDE,
-         sal = SALNTY,
-         tem = THETA,
-         depth = CTDPRS,
-         gamma  = GAMMA)
-
-WOA18_predictors %&gt;% 
-  write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                       &quot;WOA18_predictors.csv&quot;))</code></pre>
-</div>
-<div id="open-file" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> Open file</h3>
-<pre class="r"><code>rm(list = setdiff(ls(), c(&quot;landmask&quot;, &quot;parameters&quot;, &quot;depth_levels&quot;)))
-
-WOA18_predictors &lt;- 
-  read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                       &quot;WOA18_predictors.csv&quot;))</code></pre>
-</div>
-</div>
-<div id="temperature-plots" class="section level2">
-<h2><span class="header-section-number">3.4</span> Temperature plots</h2>
 <div id="surface-map" class="section level3">
-<h3><span class="header-section-number">3.4.1</span> Surface map</h3>
+<h3><span class="header-section-number">3.5.1</span> Surface map</h3>
 <pre class="r"><code>source(here::here(&quot;code&quot;,
                   &quot;plotting_functions.R&quot;))
 
@@ -2167,48 +2230,48 @@ map_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections" class="section level3">
-<h3><span class="header-section-number">3.4.2</span> Sections</h3>
+<h3><span class="header-section-number">3.5.2</span> Sections</h3>
 <pre class="r"><code>section_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-shallow" class="section level3">
-<h3><span class="header-section-number">3.4.3</span> Sections shallow</h3>
+<h3><span class="header-section-number">3.5.3</span> Sections shallow</h3>
 <pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="salinity-plots" class="section level2">
-<h2><span class="header-section-number">3.5</span> Salinity plots</h2>
+<h2><span class="header-section-number">3.6</span> Salinity plots</h2>
 <div id="surface-map-1" class="section level3">
-<h3><span class="header-section-number">3.5.1</span> Surface map</h3>
+<h3><span class="header-section-number">3.6.1</span> Surface map</h3>
 <pre class="r"><code>map_climatology(WOA18_predictors, &quot;sal&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-1" class="section level3">
-<h3><span class="header-section-number">3.5.2</span> Sections</h3>
+<h3><span class="header-section-number">3.6.2</span> Sections</h3>
 <pre class="r"><code>section_climatology(WOA18_predictors, &quot;sal&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-shallow-1" class="section level3">
-<h3><span class="header-section-number">3.5.3</span> Sections shallow</h3>
+<h3><span class="header-section-number">3.6.3</span> Sections shallow</h3>
 <pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;sal&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="neutral-density-plots" class="section level2">
-<h2><span class="header-section-number">3.6</span> Neutral density plots</h2>
+<h2><span class="header-section-number">3.7</span> Neutral density plots</h2>
 <div id="surface-map-2" class="section level3">
-<h3><span class="header-section-number">3.6.1</span> Surface map</h3>
+<h3><span class="header-section-number">3.7.1</span> Surface map</h3>
 <pre class="r"><code>map_climatology(WOA18_predictors, &quot;gamma&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-2" class="section level3">
-<h3><span class="header-section-number">3.6.2</span> Sections</h3>
+<h3><span class="header-section-number">3.7.2</span> Sections</h3>
 <pre class="r"><code>section_climatology(WOA18_predictors, &quot;gamma&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-shallow-2" class="section level3">
-<h3><span class="header-section-number">3.6.3</span> Sections shallow</h3>
+<h3><span class="header-section-number">3.7.3</span> Sections shallow</h3>
 <pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;gamma&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -2332,31 +2395,29 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] reticulate_1.16 stars_0.4-3     sf_0.9-5        abind_1.4-5    
+ [1] oce_1.2-0       gsw_1.0-5       testthat_2.3.2  reticulate_1.16
  [5] tidync_0.2.4    lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0  
  [9] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
 [13] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.2         viridisLite_0.3.0  jsonlite_1.7.0     here_0.1          
+ [1] httr_1.4.2         jsonlite_1.7.0     viridisLite_0.3.0  here_0.1          
  [5] modelr_0.1.8       assertthat_0.2.1   blob_1.2.1         cellranger_1.1.0  
  [9] yaml_2.2.1         pillar_1.4.6       backports_1.1.8    lattice_0.20-41   
 [13] glue_1.4.1         digest_0.6.25      RColorBrewer_1.1-2 promises_1.1.1    
 [17] rvest_0.3.6        colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
 [21] Matrix_1.2-18      pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1       
 [25] scales_1.1.1       whisker_0.4        later_1.1.0.1      git2r_0.27.1      
-[29] farver_2.0.3       generics_0.0.2     ellipsis_0.3.1     withr_2.2.0       
+[29] generics_0.0.2     farver_2.0.3       ellipsis_0.3.1     withr_2.2.0       
 [33] cli_2.0.2          magrittr_1.5       crayon_1.3.4       readxl_1.3.1      
 [37] evaluate_0.14      fs_1.4.2           ncdf4_1.17         fansi_0.4.1       
-[41] xml2_1.3.2         lwgeom_0.2-5       class_7.3-17       tools_4.0.2       
-[45] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
-[49] isoband_0.2.2      compiler_4.0.2     e1071_1.7-3        RNetCDF_2.3-1     
-[53] rlang_0.4.7        classInt_0.4-3     units_0.6-7        grid_4.0.2        
-[57] rstudioapi_0.11    labeling_0.3       rmarkdown_2.3      gtable_0.3.0      
-[61] DBI_1.1.0          R6_2.4.1           ncmeta_0.2.5       knitr_1.29        
-[65] rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6      parallel_4.0.2    
-[69] Rcpp_1.0.5         vctrs_0.3.2        dbplyr_1.4.4       tidyselect_1.1.0  
-[73] xfun_0.16         </code></pre>
+[41] xml2_1.3.2         tools_4.0.2        hms_0.5.3          lifecycle_0.2.0   
+[45] munsell_0.5.0      reprex_0.3.0       isoband_0.2.2      compiler_4.0.2    
+[49] RNetCDF_2.3-1      rlang_0.4.7        grid_4.0.2         rstudioapi_0.11   
+[53] labeling_0.3       rmarkdown_2.3      gtable_0.3.0       DBI_1.1.0         
+[57] R6_2.4.1           ncmeta_0.2.5       knitr_1.29         rprojroot_1.3-2   
+[61] stringi_1.4.6      Rcpp_1.0.5         vctrs_0.3.2        dbplyr_1.4.4      
+[65] tidyselect_1.1.0   xfun_0.16         </code></pre>
 </div>
 </div>
 
