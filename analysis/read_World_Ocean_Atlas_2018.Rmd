@@ -76,7 +76,7 @@ basinmask_01 <- basinmask_01 %>%
 
 ### Labels
 
-According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website, number codes in the mask files were used to assign ocean basins as follows:  
+According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website and [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"}, number codes in the mask files were used to assign ocean basins as follows:  
 
 Atlantic Ocean:  
 
@@ -190,16 +190,10 @@ PREF_DDDD_VTTFFGG.EXT, where:
 - GG: grid (5deg- 5°, 01- 1°, 04 - 1/4°)
 - EXT: file extention
 
-Short description of the statistical fields in WOA
+Short description of two statistical fields in WOA
 
 - Objectively analyzed climatologies are the objectively interpolated mean fields for oceanographic variables at standard - depth levels for the World Ocean.
 - The statistical mean is the average of all unflagged interpolated values at each standard depth level for each variable - in each 1° square which contains at least one measurement for the given oceanographic variable.
-- The number of observations of each variable in each 1° square of the World Ocean at each standard depth level.
-- The standard deviation about the statistical mean of each variable in each 1° square at each standard depth level.
-- The standard error of the mean of each variable in each 1° square at each standard depth level.
-- The seasonal or monthly climatology minus the annual climatology at each 1° square at each standard depth.
-- The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.
-- The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.
 
 Here, we use  
 
@@ -209,9 +203,9 @@ Here, we use
 
 According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document:
 
-*What are the units for temperature and salinity in the WOA18?
+*What are the units for temperature and salinity in the WOA18?*
 
-In situ temperatures used for WOA18 are not converted from their original scale, so there is a mix of IPTS-48, IPTS-68, and ITS-90 (and pre IPTS-48 temperatures). The differences between scales are small (on the order of 0.01°C) and should not have much effect on the climatological means, except, possibly at very deep depths. Values for salinity are on the Practical salinity scale (PSS-78). Pre-1978 salinity values converted from conductivity may have used a different salinity scale. Pre-conductivity salinities use the Knudsen method.* 
+*In situ temperatures used for WOA18 are not converted from their original scale, so there is a mix of IPTS-48, IPTS-68, and ITS-90 (and pre IPTS-48 temperatures). The differences between scales are small (on the order of 0.01°C) and should not have much effect on the climatological means, except, possibly at very deep depths. Values for salinity are on the Practical salinity scale (PSS-78). Pre-1978 salinity values converted from conductivity may have used a different salinity scale. Pre-conductivity salinities use the Knudsen method.* 
 
 
 ## Read ncdfs
