@@ -30,7 +30,7 @@ navbar:
   - text: Mapping
     href: mapping.html
   - text: Analysis
-    href: Analysis.html
+    href: analysis.html
   right:
   - icon: fa-github
     text: Source code
