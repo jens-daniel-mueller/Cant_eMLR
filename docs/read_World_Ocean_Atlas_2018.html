@@ -573,16 +573,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree044073df01c3ccaa2cd438eb2251dea292e92c7atargetblank044073da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/044073df01c3ccaa2cd438eb2251dea292e92c7a" target="_blank">044073d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree35b1b792bc04ff3ebb4bbd893e3ca6c95f8c36c9targetblank35b1b79a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/35b1b792bc04ff3ebb4bbd893e3ca6c95f8c36c9" target="_blank">35b1b79</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree044073df01c3ccaa2cd438eb2251dea292e92c7atargetblank044073da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree35b1b792bc04ff3ebb4bbd893e3ca6c95f8c36c9targetblank35b1b79a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/044073df01c3ccaa2cd438eb2251dea292e92c7a" target="_blank">044073d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/35b1b792bc04ff3ebb4bbd893e3ca6c95f8c36c9" target="_blank">35b1b79</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/35b1b792bc04ff3ebb4bbd893e3ca6c95f8c36c9/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">35b1b79</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+formatting
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/f0b8f3f9273f3acf1a42de208f91014731b9c6c0/docs/read_World_Ocean_Atlas_2018.html" target="_blank">f0b8f3f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2038,7 +2072,7 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
 </div>
 <div id="labels" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> Labels</h3>
-<p>According to <a href="https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html" target="_blank">WOA FAQ</a> website, number codes in the mask files were used to assign ocean basins as follows:</p>
+<p>According to <a href="https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html" target="_blank">WOA FAQ</a> website and <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a>, number codes in the mask files were used to assign ocean basins as follows:</p>
 <p>Atlantic Ocean:</p>
 <ul>
 <li>1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)</li>
@@ -2129,16 +2163,10 @@ landmask %&gt;%
 <li>GG: grid (5deg- 5°, 01- 1°, 04 - 1/4°)</li>
 <li>EXT: file extention</li>
 </ul>
-<p>Short description of the statistical fields in WOA</p>
+<p>Short description of two statistical fields in WOA</p>
 <ul>
 <li>Objectively analyzed climatologies are the objectively interpolated mean fields for oceanographic variables at standard - depth levels for the World Ocean.</li>
 <li>The statistical mean is the average of all unflagged interpolated values at each standard depth level for each variable - in each 1° square which contains at least one measurement for the given oceanographic variable.</li>
-<li>The number of observations of each variable in each 1° square of the World Ocean at each standard depth level.</li>
-<li>The standard deviation about the statistical mean of each variable in each 1° square at each standard depth level.</li>
-<li>The standard error of the mean of each variable in each 1° square at each standard depth level.</li>
-<li>The seasonal or monthly climatology minus the annual climatology at each 1° square at each standard depth.</li>
-<li>The statistical mean minus the climatological mean at each 1° square at each standard depth. This value is used as an estimate of interpolation and smoothing error.</li>
-<li>The number of 1° squares within the smallest radius of influence around each 1° square which contain a statistical mean.</li>
 </ul>
 <p>Here, we use</p>
 <ul>
@@ -2147,8 +2175,8 @@ landmask %&gt;%
 <li>Grid: 1 deg resolution</li>
 </ul>
 <p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document:</p>
-<p>*What are the units for temperature and salinity in the WOA18?</p>
-<p>In situ temperatures used for WOA18 are not converted from their original scale, so there is a mix of IPTS-48, IPTS-68, and ITS-90 (and pre IPTS-48 temperatures). The differences between scales are small (on the order of 0.01°C) and should not have much effect on the climatological means, except, possibly at very deep depths. Values for salinity are on the Practical salinity scale (PSS-78). Pre-1978 salinity values converted from conductivity may have used a different salinity scale. Pre-conductivity salinities use the Knudsen method.*</p>
+<p><em>What are the units for temperature and salinity in the WOA18?</em></p>
+<p><em>In situ temperatures used for WOA18 are not converted from their original scale, so there is a mix of IPTS-48, IPTS-68, and ITS-90 (and pre IPTS-48 temperatures). The differences between scales are small (on the order of 0.01°C) and should not have much effect on the climatological means, except, possibly at very deep depths. Values for salinity are on the Practical salinity scale (PSS-78). Pre-1978 salinity values converted from conductivity may have used a different salinity scale. Pre-conductivity salinities use the Knudsen method.</em></p>
 <div id="read-ncdfs" class="section level2">
 <h2><span class="header-section-number">3.1</span> Read ncdfs</h2>
 <pre class="r"><code># temperature
