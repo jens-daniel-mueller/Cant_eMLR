@@ -573,16 +573,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7133d1a5b03e979d1c8a8fe06225018c5721c600targetblank7133d1aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7133d1a5b03e979d1c8a8fe06225018c5721c600" target="_blank">7133d1a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree044073df01c3ccaa2cd438eb2251dea292e92c7atargetblank044073da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/044073df01c3ccaa2cd438eb2251dea292e92c7a" target="_blank">044073d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7133d1a5b03e979d1c8a8fe06225018c5721c600targetblank7133d1aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree044073df01c3ccaa2cd438eb2251dea292e92c7atargetblank044073da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7133d1a5b03e979d1c8a8fe06225018c5721c600" target="_blank">7133d1a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/044073df01c3ccaa2cd438eb2251dea292e92c7a" target="_blank">044073d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/044073df01c3ccaa2cd438eb2251dea292e92c7a/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">044073d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+Arctic and Sea of Japan incuded in basin mask
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/a1b06c921e62c2da87c707099c8a0c172987a12e/docs/read_World_Ocean_Atlas_2018.html" target="_blank">a1b06c9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2008,17 +2042,22 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
 <p>Atlantic Ocean:</p>
 <ul>
 <li>1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)</li>
+<li>11: Arctic Ocean (restricted by northern latitude limit)</li>
 </ul>
 <p>Indo-Pacific:</p>
 <ul>
 <li>2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)</li>
 <li>3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)</li>
+<li>12: Sea of Japan</li>
 <li>56: Bay of Bengal</li>
 </ul>
 <pre class="r"><code>basinmask_01 &lt;- basinmask_01 %&gt;% 
-  filter(Basin_0m %in% c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;10&quot;, &quot;56&quot;)) %&gt;% 
+  filter(Basin_0m %in% c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;10&quot;, &quot;11&quot;, &quot;12&quot;, &quot;56&quot;),
+         lat &lt;= parameters$lat_max) %&gt;% 
   mutate(basin = if_else(Basin_0m == &quot;10&quot; &amp; lon &gt;= -63 &amp; lon &lt; 20,
                          &quot;Atlantic&quot;, &quot;Indo-Pacific&quot;),
+         basin = if_else(Basin_0m == &quot;11&quot;,
+                         &quot;Atlantic&quot;, basin),
          basin = if_else(Basin_0m == &quot;1&quot;,
                          &quot;Atlantic&quot;, basin)) %&gt;% 
   select(-Basin_0m) %&gt;% 
@@ -2220,7 +2259,6 @@ WOA18_predictors &lt;-
 </ul></li>
 </ul>
 <p>Section locations are indicated as white lines in maps.</p>
-<p>Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.</p>
 <div id="surface-map" class="section level3">
 <h3><span class="header-section-number">3.5.1</span> Surface map</h3>
 <pre class="r"><code>source(here::here(&quot;code&quot;,
