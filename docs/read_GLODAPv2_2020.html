@@ -573,16 +573,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree47e19d80639e29fbf24d11c603712f8069cd3131targetblank47e19d8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/47e19d80639e29fbf24d11c603712f8069cd3131" target="_blank">47e19d8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree634ae4e7ec53bb06576608e76d544f4ef4fe71b3targetblank634ae4ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/634ae4e7ec53bb06576608e76d544f4ef4fe71b3" target="_blank">634ae4e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree47e19d80639e29fbf24d11c603712f8069cd3131targetblank47e19d8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree634ae4e7ec53bb06576608e76d544f4ef4fe71b3targetblank634ae4ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/47e19d80639e29fbf24d11c603712f8069cd3131" target="_blank">47e19d8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/634ae4e7ec53bb06576608e76d544f4ef4fe71b3" target="_blank">634ae4e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -603,10 +603,6 @@ Ignored files:
     Ignored:    data/parameters/
     Ignored:    dump/
     Ignored:    figure/
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   analysis/config_parameterization.Rmd
 
 </code></pre>
 <p>
@@ -645,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/634ae4e7ec53bb06576608e76d544f4ef4fe71b3/analysis/read_GLODAPv2_2020.Rmd" target="_blank">634ae4e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+cleaning and reference to parameters and masks
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/bf69270b1ed1af5687230278a6e390d89e5bbc39/docs/read_GLODAPv2_2020.html" target="_blank">bf69270</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1725,49 +1755,47 @@ split read in per data set
 </div>
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
-library(patchwork)</code></pre>
+library(patchwork)
+library(cutr)</code></pre>
 <div id="read-files" class="section level1">
 <h1><span class="header-section-number">1</span> Read files</h1>
-<div id="glodap" class="section level2">
-<h2><span class="header-section-number">1.1</span> GLODAP</h2>
 <p>Main data source for this project is <code>GLODAPv2.2020_Merged_Master_File.csv</code> downloaded from <a href="https://www.glodap.info/">glodap.info</a> in June 2020.</p>
-<pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/Merged_data_product&quot;,
-                              &quot;GLODAPv2.2020_Merged_Master_File.csv&quot;),
-                   na = &quot;-9999&quot;,
-                   col_types = cols(.default = col_double()))
+<pre class="r"><code>GLODAP &lt;-
+  read_csv(
+    here::here(
+      &quot;data/GLODAPv2_2020/Merged_data_product&quot;,
+      &quot;GLODAPv2.2020_Merged_Master_File.csv&quot;
+    ),
+    na = &quot;-9999&quot;,
+    col_types = cols(.default = col_double())
+  )
 
 # select relevant columns
-GLODAP &lt;- GLODAP %&gt;% 
+GLODAP &lt;- GLODAP %&gt;%
   select(cruise:talkqc)
 
 # create date column
-GLODAP &lt;- GLODAP %&gt;% 
-  mutate(date = ymd(paste(year, month, day))) %&gt;% 
-         #decade = as.factor(floor(year / 10) * 10)) %&gt;% 
+GLODAP &lt;- GLODAP %&gt;%
+  mutate(date = ymd(paste(year, month, day))) %&gt;%
+  #decade = as.factor(floor(year / 10) * 10)) %&gt;%
   relocate(date)
 
 # harmonize column names
-GLODAP &lt;- GLODAP  %&gt;% 
+GLODAP &lt;- GLODAP  %&gt;%
   rename(sal = salinity,
          tem = temperature)
 
 # harmonize coordinates
-GLODAP &lt;- GLODAP  %&gt;% 
+GLODAP &lt;- GLODAP  %&gt;%
   rename(lon = longitude,
-         lat = latitude) %&gt;% 
+         lat = latitude) %&gt;%
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
 
 # remove irrelevant columns
-GLODAP &lt;- GLODAP %&gt;% 
-  select(-c(month:minute, 
+GLODAP &lt;- GLODAP %&gt;%
+  select(-c(month:minute,
             maxsampdepth, sigma0:sigma4,
             nitrite:nitritef))</code></pre>
-</div>
-<div id="parameterization" class="section level2">
-<h2><span class="header-section-number">1.2</span> Parameterization</h2>
-<pre class="r"><code>parameters &lt;- read_csv(here::here(&quot;data/parameters&quot;,
-                                  &quot;parameters.csv&quot;))</code></pre>
-</div>
 </div>
 <div id="data-preparation" class="section level1">
 <h1><span class="header-section-number">2</span> Data preparation</h1>
@@ -1987,12 +2015,7 @@ rm(GLODAP_stats_long, GLODAP_stats)</code></pre>
 </div>
 <div id="basin-mask" class="section level2">
 <h2><span class="header-section-number">2.5</span> Basin mask</h2>
-<p>The basin mask from the World Ocean Atlas was used. For details consult the data base section for WOA18 data <a href="/read_World_Ocean_Atlas_2018.Rmd">Link</a>.</p>
-<pre class="r"><code>basinmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                                 &quot;basin_mask_WOA18.csv&quot;))
-
-landmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                                 &quot;land_mask_WOA18.csv&quot;))</code></pre>
+<p>The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for <a href="https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html">WOA18</a> data.</p>
 <pre class="r"><code>GLODAP_obs &lt;- GLODAP %&gt;% 
   group_by(lat, lon) %&gt;% 
   summarise(n = n()) %&gt;% 
@@ -2009,19 +2032,20 @@ ggplot() +
         legend.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/WOA_basin_mask_GLODAP_observations_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_obs)</code></pre>
-<p>Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis.</p>
+<p>Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis (eg North Sea, Sea of Japan).</p>
 <pre class="r"><code>GLODAP &lt;- inner_join(GLODAP, basinmask)
 rm(basinmask)</code></pre>
 </div>
 <div id="observations-grid" class="section level2">
 <h2><span class="header-section-number">2.6</span> Observations grid</h2>
+<p>A 1x1 grid containing all coordinates with at least one GLODAP observation was created.</p>
 <pre class="r"><code>GLODAP_obs_grid &lt;- GLODAP %&gt;% 
   group_by(lat, lon) %&gt;% 
   summarise(n = n()) %&gt;% 
   ungroup()</code></pre>
 </div>
-<div id="write-summary-filea" class="section level2">
-<h2><span class="header-section-number">2.7</span> Write summary filea</h2>
+<div id="write-summary-file" class="section level2">
+<h2><span class="header-section-number">2.7</span> Write summary file</h2>
 <pre class="r"><code>GLODAP_obs_grid  %&gt;%  write_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                            &quot;GLODAPv2.2020_clean_obs_grid.csv&quot;))
 
@@ -2035,6 +2059,7 @@ rm(GLODAP, GLODAP_obs_grid)</code></pre>
 <h1><span class="header-section-number">3</span> Overview plots</h1>
 <div id="cleaning-stats" class="section level2">
 <h2><span class="header-section-number">3.1</span> Cleaning stats</h2>
+<p>Number of observations at various steps of data cleaning.</p>
 <pre class="r"><code>GLODAP_stats_long &lt;-  read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                                              &quot;GLODAPv2.2020_stats.csv&quot;))
 
@@ -2052,10 +2077,28 @@ GLODAP_stats_long %&gt;%
 </div>
 <div id="assign-coarse-spatial-grid" class="section level2">
 <h2><span class="header-section-number">3.2</span> Assign coarse spatial grid</h2>
-<p>For the following plots, the cleaned data set was re-opened and observations were gridded spatially to intervals of:<br />
-- 5° x 5°</p>
+<p>For the following plots, the cleaned data set was re-opened and observations were gridded spatially to intervals of:</p>
+<ul>
+<li>5° x 5°</li>
+</ul>
 <pre class="r"><code>GLODAP &lt;- read_csv(here::here(&quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
                               &quot;GLODAPv2.2020_clean.csv&quot;))</code></pre>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;%
+  mutate(
+    lat_grid = smart_cut(
+      lat,
+      seq(-90, 90, parameters$coarse_grid_resolution),
+      labels = ~ mean(.y)
+    ),
+    lat_grid = as.numeric(as.character(lat_grid)),
+    lon_grid = smart_cut(
+      lon,
+      seq(-1000, 1000, parameters$coarse_grid_resolution),
+      labels = ~ mean(.y)
+    ),
+    lon_grid = as.numeric(as.character(lon_grid))
+  ) %&gt;%
+  arrange(date)</code></pre>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   mutate(lat_grid = cut(lat, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
          lat_grid = as.numeric(as.character(lat_grid)),
@@ -2065,17 +2108,16 @@ GLODAP_stats_long %&gt;%
 </div>
 <div id="histogram-zonal-coverage" class="section level2">
 <h2><span class="header-section-number">3.3</span> Histogram Zonal coverage</h2>
-<pre class="r"><code>GLODAP_histogram_lat &lt;- GLODAP %&gt;% 
-  group_by(era, lat_grid, basin) %&gt;% 
-  tally() %&gt;% 
+<pre class="r"><code>GLODAP_histogram_lat &lt;- GLODAP %&gt;%
+  group_by(era, lat_grid, basin) %&gt;%
+  tally() %&gt;%
   ungroup()
 
-GLODAP_histogram_lat %&gt;% 
+GLODAP_histogram_lat %&gt;%
   ggplot(aes(lat_grid, n, fill = era)) +
   geom_col() +
-  scale_x_continuous(breaks = seq(-87.5,90,10)) +
   scale_fill_brewer(palette = &quot;Dark2&quot;) +
-  facet_wrap(~basin) +
+  facet_wrap( ~ basin) +
   coord_flip(expand = 0) +
   theme(legend.position = &quot;top&quot;,
         legend.title = element_blank())</code></pre>
@@ -2084,45 +2126,58 @@ GLODAP_histogram_lat %&gt;%
 </div>
 <div id="histogram-temporal-coverage" class="section level2">
 <h2><span class="header-section-number">3.4</span> Histogram temporal coverage</h2>
-<pre class="r"><code>GLODAP_histogram_year &lt;- GLODAP %&gt;% 
-  group_by(year, basin) %&gt;% 
-  tally() %&gt;% 
+<pre class="r"><code>GLODAP_histogram_year &lt;- GLODAP %&gt;%
+  group_by(year, basin) %&gt;%
+  tally() %&gt;%
   ungroup()
 
-era_median_year &lt;- GLODAP %&gt;% 
-  group_by(era) %&gt;% 
-  summarise(t_ref = median(year)) %&gt;% 
+era_median_year &lt;- GLODAP %&gt;%
+  group_by(era) %&gt;%
+  summarise(t_ref = median(year)) %&gt;%
   ungroup()
 
-GLODAP_histogram_year %&gt;% 
+GLODAP_histogram_year %&gt;%
   ggplot() +
-  geom_vline(xintercept = c(parameters$year_JGOFS_end + 0.5, parameters$year_GOSHIP_end + 0.5)) +
+  geom_vline(xintercept = c(
+    parameters$year_JGOFS_end + 0.5,
+    parameters$year_GOSHIP_end + 0.5
+  )) +
   geom_col(aes(year, n, fill = basin)) +
-  geom_point(data = era_median_year, aes(t_ref,0, shape = &quot;Median year&quot;), size = 2, fill = &quot;white&quot;) +
+  geom_point(
+    data = era_median_year,
+    aes(t_ref, 0, shape = &quot;Median year&quot;),
+    size = 2,
+    fill = &quot;white&quot;
+  ) +
   scale_fill_brewer(palette = &quot;Dark2&quot;) +
   scale_shape_manual(values = 24, name = &quot;&quot;) +
+  scale_y_continuous() +
   coord_cartesian(expand = 0) +
-  theme(legend.position = &quot;top&quot;,
-        legend.direction = &quot;vertical&quot;,
-        legend.title = element_blank())</code></pre>
+  theme(
+    legend.position = &quot;top&quot;,
+    legend.direction = &quot;vertical&quot;,
+    legend.title = element_blank(),
+    axis.title.x = element_blank()
+  )</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_histogram_temporal-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_histogram_year,
    era_median_year)</code></pre>
 </div>
 <div id="zonal-temporal-coverage-hovmoeller" class="section level2">
 <h2><span class="header-section-number">3.5</span> Zonal temporal coverage (Hovmoeller)</h2>
-<pre class="r"><code>GLODAP_hovmoeller_year &lt;- GLODAP %&gt;% 
-  group_by(year, lat_grid, basin) %&gt;% 
-  tally() %&gt;% 
+<pre class="r"><code>GLODAP_hovmoeller_year &lt;- GLODAP %&gt;%
+  group_by(year, lat_grid, basin) %&gt;%
+  tally() %&gt;%
   ungroup()
 
-GLODAP_hovmoeller_year %&gt;% 
+GLODAP_hovmoeller_year %&gt;%
   ggplot(aes(year, lat_grid, fill = log10(n))) +
   geom_tile() +
   geom_vline(xintercept = c(1999.5, 2012.5)) +
   scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1) +
-  facet_wrap(~basin, ncol = 1) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
+  facet_wrap( ~ basin, ncol = 1) +
+  theme(legend.position = &quot;top&quot;,
+        axis.title.x = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_hovmoeller-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(GLODAP_hovmoeller_year)</code></pre>
 </div>
@@ -2138,11 +2193,10 @@ GLODAP %&gt;%
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1, trans = &quot;log10&quot;,
                        name = &quot;log10(n)&quot;) +
-  scale_x_continuous(breaks = seq(-180, 180, 30)) +
-  scale_y_continuous(breaks = seq(-90, 90, 30)) +
   coord_quickmap(expand = FALSE) +
   facet_wrap(~era, ncol = 1) +
-  theme(legend.position = &quot;top&quot;)</code></pre>
+  theme(legend.position = &quot;top&quot;,
+        axis.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_maps_era-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -2296,9 +2350,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] patchwork_1.0.1 lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0  
- [5] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
- [9] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
+ [1] cutr_0.0.0.9000 patchwork_1.0.1 lubridate_1.7.9 forcats_0.5.0  
+ [5] stringr_1.4.0   dplyr_1.0.0     purrr_0.3.4     readr_1.3.1    
+ [9] tidyr_1.1.0     tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0
+[13] workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5         here_0.1           assertthat_0.2.1   rprojroot_1.3-2   
@@ -2308,7 +2363,7 @@ loaded via a namespace (and not attached):
 [17] blob_1.2.1         rmarkdown_2.3      labeling_0.3       munsell_0.5.0     
 [21] broom_0.7.0        compiler_4.0.2     httpuv_1.5.4       modelr_0.1.8      
 [25] xfun_0.16          pkgconfig_2.0.3    htmltools_0.5.0    tidyselect_1.1.0  
-[29] fansi_0.4.1        viridisLite_0.3.0  crayon_1.3.4       dbplyr_1.4.4      
+[29] viridisLite_0.3.0  fansi_0.4.1        crayon_1.3.4       dbplyr_1.4.4      
 [33] withr_2.2.0        later_1.1.0.1      grid_4.0.2         jsonlite_1.7.0    
 [37] gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          git2r_0.27.1      
 [41] magrittr_1.5       scales_1.1.1       cli_2.0.2          stringi_1.4.6     
