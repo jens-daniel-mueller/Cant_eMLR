@@ -20,24 +20,33 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(tidync)
-library(stars)
 library(reticulate)
+library(oce)
+
 ```
 
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_csv(here::here("data/parameters",
+                      "parameters.csv"))
+depth_levels <-
+  read_lines(here::here("data/parameters",
+                        "depth_levels.txt"))
+slabs_Atl <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Atl.txt"))
+slabs_Ind_Pac <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Ind_Pac.txt"))
+```
+
+```{r read_functions, include = FALSE}
+source(here::here("code", "plotting_functions.R"))
+```
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
 ```
-
-```{r read_parameters, include = FALSE}
-
-parameters <- read_csv(here::here("data/parameters",
-                                  "parameters.csv"))
-
-depth_levels <- read_lines(here::here("data/parameters",
-                                      "depth_levels.txt"))
-```
-
 
 # Data source
 - Data source: [World Ocean Atlas 2018](https://www.nodc.noaa.gov/OC5/woa18/woa18data.html){target="_blank"}
@@ -67,14 +76,17 @@ basinmask_01 <- basinmask_01 %>%
 
 ### Labels
 
-According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website, number codes in the mask file refer to Ocean basins as follows:  
+According to [WOA FAQ](https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html){target="_blank"} website, number codes in the mask files were used to assign ocean basins as follows:  
+
+Atlantic Ocean:  
 
 - 1: Atlantic Ocean (with 10 - Southern Ocean, between 63°W and 20°E)
+
+Indo-Pacific:  
+
 - 2: Pacific Ocean (with 10 - Southern Ocean, between 147°E and 63°W)
 - 3: Indian Ocean (with 10 - Southern Ocean, between 20°E and 147°E)
-- 56: Bay of Bengal (included in Indo-Pacifc)
-
-From this, the Atlantic and the Indo-Pacific were labeled.
+- 56: Bay of Bengal
 
 ```{r assign_basin_labels}
 
@@ -106,7 +118,9 @@ landsea_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
 
 ### Label
 
-According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document: *"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
+According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document:  
+
+*"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
 
 The landmask was derived as coordinates with value 1.
 
@@ -157,7 +171,7 @@ landmask %>%
 ```
 
 
-# WOA18 data
+# Climatologies
 
 Copied from the WOA FAQ website, the file naming conventions is:  
 
@@ -187,6 +201,13 @@ Here, we use
 - Fields: objectively analyzed mean
 - Decades: all decades
 - Grid: 1 deg resolution
+
+According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document:
+
+*What are the units for temperature and salinity in the WOA18?
+
+In situ temperatures used for WOA18 are not converted from their original scale, so there is a mix of IPTS-48, IPTS-68, and ITS-90 (and pre IPTS-48 temperatures). The differences between scales are small (on the order of 0.01°C) and should not have much effect on the climatological means, except, possibly at very deep depths. Values for salinity are on the Practical salinity scale (PSS-78). Pre-1978 salinity values converted from conductivity may have used a different salinity scale. Pre-conductivity salinities use the Knudsen method.* 
+
 
 ## Read ncdfs
 
@@ -221,17 +242,6 @@ rm(WOA_sal, WOA_tem)
 ```
 
 
-Below, following subsets of the climatologies are plotted for all relevant parameters:  
-
-- Horizontal planes at `r depth_levels`m
-- Meridional sections at longitudes:
-  - Atlantic: `r parameters$lon_Atl_section`
-  - Pacific: `r parameters$lon_Pac_section`
-
-Section locations are indicated as white lines in maps.
-
-Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
-
 ```{r join_predictors}
 
 WOA18_predictors <- full_join(WOA_sal_tibble, WOA_tem_tibble)
@@ -251,8 +261,43 @@ rm(basinmask_01)
 
 ```
 
-## Neutral density calculation
+## Potential temperature
 
+### Calculation
+
+```{r WOA18_potential_temperature_calculation}
+
+WOA18_predictors <- WOA18_predictors %>% 
+  mutate(THETA = swTheta(salinity = sal,
+                         temperature = tem,
+                         pressure = depth,
+                         referencePressure = 0,
+                         longitude = lon,
+                         latitude = lat))
+
+```
+
+### Profile
+
+Example profile from North Atlantic Ocean.
+
+```{r WOA18_potential_temperature_profile}
+WOA18_predictors %>%
+  filter(lat == parameters$lat_Atl_profile,
+         lon == parameters$lon_Atl_section) %>%
+  ggplot() +
+  geom_line(aes(tem, depth, col = "insitu")) +
+  geom_point(aes(tem, depth, col = "insitu")) +
+  geom_line(aes(THETA, depth, col = "theta")) +
+  geom_point(aes(THETA, depth, col = "theta")) +
+  scale_y_reverse() +
+  scale_color_brewer(palette = "Dark2", name = "Scale")
+
+```
+
+
+
+## Neutral density calculation
 
 ```{r WOA18_neutral_density_calculations, eval=FALSE}
 
@@ -260,7 +305,6 @@ WOA18_predictors_gamma_prep <- WOA18_predictors %>%
   rename(LATITUDE = lat,
          LONGITUDE = lon,
          SALNTY = sal,
-         THETA = tem,
          CTDPRS = depth)
 
 source_python(here::here("code/python_scripts",
@@ -279,7 +323,6 @@ WOA18_predictors <- WOA18_predictors_gamma_calc %>%
   rename(lat = LATITUDE,
          lon = LONGITUDE,
          sal = SALNTY,
-         tem = THETA,
          depth = CTDPRS,
          gamma  = GAMMA)
 
@@ -302,6 +345,17 @@ WOA18_predictors <-
 
 
 ## Temperature plots
+
+Below, following subsets of the climatologies are plotted for all relevant parameters:  
+
+- Horizontal planes at `r depth_levels`m
+- Meridional sections at longitudes:
+  - Atlantic: `r parameters$lon_Atl_section`
+  - Pacific: `r parameters$lon_Pac_section`
+
+Section locations are indicated as white lines in maps.
+
+Please note that longitudes in the climatologies range from -179.5 - 179.5, which is different from GLODAP mapped climatologies.
 
 ### Surface map
 
