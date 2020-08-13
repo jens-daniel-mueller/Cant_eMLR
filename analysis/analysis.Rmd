@@ -21,9 +21,40 @@ library(tidyverse)
 library(lubridate)
 ```
 
-```{r read_parameters_functions, include = FALSE}
-parameters <- read_csv(here::here("data/parameters", "parameters.csv"))
-depth_levels <- read_lines(here::here("data/parameters", "depth_levels.txt"))
+
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_csv(here::here("data/parameters",
+                      "parameters.csv"))
+depth_levels <-
+  read_lines(here::here("data/parameters",
+                        "depth_levels.txt"))
+slabs_Atl <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Atl.txt"))
+slabs_Ind_Pac <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Ind_Pac.txt"))
+```
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
 ```
 
@@ -31,30 +62,125 @@ source(here::here("code", "plotting_functions.R"))
 theme_set(theme_bw())
 ```
 
-# Data source
+# Data sources
 
+## Sabine 2004
 
-```{r read_Sabine_Cant_file, eval=FALSE}
+```{r read_Sabine_Cant_file}
 
-Cant <- read_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                       "Cant_Sabine_2004.csv"))
+Cant_94 <- read_csv(here::here("data/GLODAPv1_1/_summarized_files",
+                               "Cant_94.csv"))
 
-Cant_inv <- read_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                       "Cant_inv_Sabine_2004.csv"))
+Cant_94_inv <-
+  read_csv(here::here("data/GLODAPv1_1/_summarized_files",
+                      "Cant_94_inv.csv"))
 
 
 ```
 
-```{r read_Gruber_Cant_file, eval=FALSE}
+## Gruber 2019
 
-dcant %>% 
-  write_csv(here::here("data/Gruber_2019/_summarized_files",
-                       "dcant.csv"))
+```{r read_Gruber_Cant_file}
 
-dcant_inv %>% 
-  write_csv(here::here("data/Gruber_2019/_summarized_files",
-                       "dcant_inv.csv"))
+Cant_07 <- read_csv(here::here("data/Gruber_2019/_summarized_files",
+                               "Cant_07.csv"))
+
+Cant_07_inv <-
+  read_csv(here::here("data/Gruber_2019/_summarized_files",
+                      "Cant_07_inv.csv"))
 
 ```
 
+# Merge data sets
 
+```{r merge_Cant_data_sets}
+
+Cant_94_inv <- Cant_94_inv %>% 
+  select(-cant_inv) %>% 
+  rename(cant_inv = cant_inv_pos)
+
+
+Cant_inv <- full_join(Cant_07_inv %>% mutate(estimate = "G19"),
+                      Cant_94_inv %>% mutate(estimate = "S04"))
+
+```
+
+# Inventory maps
+
+```{r Cant_inv_comparison, fig.asp=1}
+ 
+Cant_inv %>%
+  ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(aes(lon, lat, fill = cant_inv)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_viridis_c() +
+  facet_wrap( ~ estimate, ncol = 1) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+```
+
+# Relative inventory ratios
+
+```{r Cant_inv_ratio, fig.asp=0.6}
+
+Cant_inv_wide <- Cant_inv %>% 
+  pivot_wider(values_from = cant_inv, names_from = estimate)
+
+Cant_inv_wide <- Cant_inv_wide %>% 
+  drop_na() %>% 
+  mutate(G19_rel = G19 / sum(G19),
+         S04_rel = S04 / sum(S04),
+         cant_ratio = G19 / S04,
+         cant_ratio_rel = G19_rel / S04_rel)
+
+
+Cant_inv_wide %>%
+  filter(cant_ratio_rel < 2) %>% 
+  ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(aes(lon, lat, fill = cant_ratio_rel)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_gradient2(  low = "red",
+  mid = "white",
+  high = "blue",
+  midpoint = 1) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+```
+
+# Relative inventories
+
+```{r Cant_inv_rel_comparison, fig.asp=1}
+
+Cant_inv_rel <- Cant_inv_wide %>% 
+  pivot_longer(G19_rel:S04_rel, values_to = "cant_inv_rel", names_to = "estimate")
+
+Cant_inv_rel %>%
+  ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(aes(lon, lat, fill = cant_inv_rel)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_viridis_c() +
+  facet_wrap( ~ estimate, ncol = 1) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+```

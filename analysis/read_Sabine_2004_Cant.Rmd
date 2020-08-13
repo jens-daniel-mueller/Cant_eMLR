@@ -194,11 +194,11 @@ map_climatology_inv(Cant_inv, "cant_inv_pos")
 
 Cant %>% 
   write_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                       "Cant_Sabine_2004.csv"))
+                       "Cant_94.csv"))
 
 Cant_inv %>% 
   write_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                       "Cant_inv_Sabine_2004.csv"))
+                       "Cant_94_inv.csv"))
 
 
 ```
