@@ -20,66 +20,92 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(patchwork)
+library(cutr)
 ```
-
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
 ```
 
-# Read files
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_csv(here::here("data/parameters",
+                      "parameters.csv"))
+depth_levels <-
+  read_lines(here::here("data/parameters",
+                        "depth_levels.txt"))
+slabs_Atl <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Atl.txt"))
+slabs_Ind_Pac <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Ind_Pac.txt"))
+```
 
-## GLODAP
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+
+# Read files
 
 Main data source for this project is `GLODAPv2.2020_Merged_Master_File.csv` downloaded from [glodap.info](https://www.glodap.info/) in June 2020.
 
 ```{r read_GLODAPv2_2020_merged_master_file}
 
-GLODAP <- read_csv(here::here("data/GLODAPv2_2020/Merged_data_product",
-                              "GLODAPv2.2020_Merged_Master_File.csv"),
-                   na = "-9999",
-                   col_types = cols(.default = col_double()))
+
+GLODAP <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2020/Merged_data_product",
+      "GLODAPv2.2020_Merged_Master_File.csv"
+    ),
+    na = "-9999",
+    col_types = cols(.default = col_double())
+  )
 
 # select relevant columns
-GLODAP <- GLODAP %>% 
+GLODAP <- GLODAP %>%
   select(cruise:talkqc)
 
 # create date column
-GLODAP <- GLODAP %>% 
-  mutate(date = ymd(paste(year, month, day))) %>% 
-         #decade = as.factor(floor(year / 10) * 10)) %>% 
+GLODAP <- GLODAP %>%
+  mutate(date = ymd(paste(year, month, day))) %>%
+  #decade = as.factor(floor(year / 10) * 10)) %>%
   relocate(date)
 
 # harmonize column names
-GLODAP <- GLODAP  %>% 
+GLODAP <- GLODAP  %>%
   rename(sal = salinity,
          tem = temperature)
 
 # harmonize coordinates
-GLODAP <- GLODAP  %>% 
+GLODAP <- GLODAP  %>%
   rename(lon = longitude,
-         lat = latitude) %>% 
+         lat = latitude) %>%
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 # remove irrelevant columns
-GLODAP <- GLODAP %>% 
-  select(-c(month:minute, 
+GLODAP <- GLODAP %>%
+  select(-c(month:minute,
             maxsampdepth, sigma0:sigma4,
             nitrite:nitritef))
 
 ```
-
-## Parameterization
-
-
-```{r read_parameters}
-
-parameters <- read_csv(here::here("data/parameters",
-                                  "parameters.csv"))
-
-```
-
-
 
 # Data preparation
 
@@ -324,17 +350,7 @@ GLODAP <- GLODAP %>%
 
 ## Basin mask
 
-The basin mask from the World Ocean Atlas was used. For details consult the data base section for WOA18 data [Link](/read_World_Ocean_Atlas_2018.Rmd).
-
-```{r read_mask_files}
-
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
-
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
-
-```
+The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for [WOA18](https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html) data.
 
 ```{r WOA_basin_mask_GLODAP_observations_map}
 
@@ -357,7 +373,7 @@ rm(GLODAP_obs)
 
 ```
 
-Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis.
+Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis (eg North Sea, Sea of Japan).
 
 ```{r join_basin_mask}
 
@@ -367,6 +383,8 @@ rm(basinmask)
 ```
 
 ## Observations grid
+
+A 1x1 grid containing all coordinates with at least one GLODAP observation was created.
 
 ```{r GLODAP_clean_observations_grid}
 
@@ -378,7 +396,7 @@ GLODAP_obs_grid <- GLODAP %>%
 ```
 
 
-## Write summary filea 
+## Write summary file
  
 ```{r write_clean_data_files}
 
@@ -396,6 +414,8 @@ rm(GLODAP, GLODAP_obs_grid)
 # Overview plots
 
 ## Cleaning stats
+
+Number of observations at various steps of data cleaning.
 
 ```{r GLODAP_cleaning_stats}
 
@@ -420,6 +440,7 @@ rm(GLODAP_stats_long)
 ## Assign coarse spatial grid
 
 For the following plots, the cleaned data set was re-opened and observations were gridded spatially to intervals of:  
+
 - 5° x 5°
 
 
@@ -429,6 +450,29 @@ GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                               "GLODAPv2.2020_clean.csv"))
 
 ```
+
+```{r grid_spatially_coarse}
+
+
+GLODAP <- GLODAP %>%
+  mutate(
+    lat_grid = smart_cut(
+      lat,
+      seq(-90, 90, parameters$coarse_grid_resolution),
+      labels = ~ mean(.y)
+    ),
+    lat_grid = as.numeric(as.character(lat_grid)),
+    lon_grid = smart_cut(
+      lon,
+      seq(-1000, 1000, parameters$coarse_grid_resolution),
+      labels = ~ mean(.y)
+    ),
+    lon_grid = as.numeric(as.character(lon_grid))
+  ) %>%
+  arrange(date)
+
+```
+
 
 ```{r grid_spatially_5x5}
 
@@ -446,17 +490,16 @@ GLODAP <- GLODAP %>%
 
 ```{r coverage_histogram_zonal}
 
-GLODAP_histogram_lat <- GLODAP %>% 
-  group_by(era, lat_grid, basin) %>% 
-  tally() %>% 
+GLODAP_histogram_lat <- GLODAP %>%
+  group_by(era, lat_grid, basin) %>%
+  tally() %>%
   ungroup()
 
-GLODAP_histogram_lat %>% 
+GLODAP_histogram_lat %>%
   ggplot(aes(lat_grid, n, fill = era)) +
   geom_col() +
-  scale_x_continuous(breaks = seq(-87.5,90,10)) +
   scale_fill_brewer(palette = "Dark2") +
-  facet_wrap(~basin) +
+  facet_wrap( ~ basin) +
   coord_flip(expand = 0) +
   theme(legend.position = "top",
         legend.title = element_blank())
@@ -469,27 +512,39 @@ rm(GLODAP_histogram_lat)
 
 ```{r coverage_histogram_temporal}
 
-GLODAP_histogram_year <- GLODAP %>% 
-  group_by(year, basin) %>% 
-  tally() %>% 
+GLODAP_histogram_year <- GLODAP %>%
+  group_by(year, basin) %>%
+  tally() %>%
   ungroup()
 
-era_median_year <- GLODAP %>% 
-  group_by(era) %>% 
-  summarise(t_ref = median(year)) %>% 
+era_median_year <- GLODAP %>%
+  group_by(era) %>%
+  summarise(t_ref = median(year)) %>%
   ungroup()
 
-GLODAP_histogram_year %>% 
+GLODAP_histogram_year %>%
   ggplot() +
-  geom_vline(xintercept = c(parameters$year_JGOFS_end + 0.5, parameters$year_GOSHIP_end + 0.5)) +
+  geom_vline(xintercept = c(
+    parameters$year_JGOFS_end + 0.5,
+    parameters$year_GOSHIP_end + 0.5
+  )) +
   geom_col(aes(year, n, fill = basin)) +
-  geom_point(data = era_median_year, aes(t_ref,0, shape = "Median year"), size = 2, fill = "white") +
+  geom_point(
+    data = era_median_year,
+    aes(t_ref, 0, shape = "Median year"),
+    size = 2,
+    fill = "white"
+  ) +
   scale_fill_brewer(palette = "Dark2") +
   scale_shape_manual(values = 24, name = "") +
+  scale_y_continuous() +
   coord_cartesian(expand = 0) +
-  theme(legend.position = "top",
-        legend.direction = "vertical",
-        legend.title = element_blank())
+  theme(
+    legend.position = "top",
+    legend.direction = "vertical",
+    legend.title = element_blank(),
+    axis.title.x = element_blank()
+  )
 
 rm(GLODAP_histogram_year,
    era_median_year)
@@ -500,18 +555,19 @@ rm(GLODAP_histogram_year,
 
 ```{r coverage_hovmoeller, fig.asp=1}
 
-GLODAP_hovmoeller_year <- GLODAP %>% 
-  group_by(year, lat_grid, basin) %>% 
-  tally() %>% 
+GLODAP_hovmoeller_year <- GLODAP %>%
+  group_by(year, lat_grid, basin) %>%
+  tally() %>%
   ungroup()
 
-GLODAP_hovmoeller_year %>% 
+GLODAP_hovmoeller_year %>%
   ggplot(aes(year, lat_grid, fill = log10(n))) +
   geom_tile() +
   geom_vline(xintercept = c(1999.5, 2012.5)) +
   scale_fill_viridis_c(option = "magma", direction = -1) +
-  facet_wrap(~basin, ncol = 1) +
-  theme(legend.position = "top")
+  facet_wrap( ~ basin, ncol = 1) +
+  theme(legend.position = "top",
+        axis.title.x = element_blank())
 
 rm(GLODAP_hovmoeller_year)
 
@@ -531,11 +587,10 @@ GLODAP %>%
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
                        name = "log10(n)") +
-  scale_x_continuous(breaks = seq(-180, 180, 30)) +
-  scale_y_continuous(breaks = seq(-90, 90, 30)) +
   coord_quickmap(expand = FALSE) +
   facet_wrap(~era, ncol = 1) +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        axis.title = element_blank())
 
 ```
 
