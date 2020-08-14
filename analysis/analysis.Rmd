@@ -19,6 +19,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lubridate)
+library(marelac)
 ```
 
 
@@ -134,23 +135,39 @@ Cant_inv %>%
 
 ```
 
-## Relative inventories
+## Global inventories
 
+```{r calculate_global_inventory}
+
+Cant_inv <- Cant_inv %>% 
+  mutate(surface_area = earth_surf(lat, lon),
+         cant_inv_grid = cant_inv*surface_area)
+
+Cant_inv_global <- Cant_inv %>% 
+  mutate(surface_area = earth_surf(lat, lon),
+         cant_inv_grid = cant_inv*surface_area) %>% 
+  group_by(estimate) %>% 
+  summarise(cant_total = sum(cant_inv_grid)*12*1e-15) %>% 
+  ungroup()
+
+Cant_inv_global
+
+```
+
+
+## Relative inventories
 
 ```{r calculate_Cant_inv_ratio}
 
-
 Cant_inv_wide <- Cant_inv %>%
-  pivot_wider(values_from = cant_inv,
+  pivot_wider(values_from = c(cant_inv, cant_inv_grid),
               names_from = estimate)
 
 Cant_inv_wide <- Cant_inv_wide %>% 
   drop_na() %>% 
-  mutate(G19_rel = G19 / sum(G19),
-         S04_rel = S04 / sum(S04),
-         cant_ratio = G19 / S04,
+  mutate(G19_rel = cant_inv_grid_G19 / sum(cant_inv_grid_G19),
+         S04_rel = cant_inv_grid_S04 / sum(cant_inv_grid_S04),
          cant_ratio_rel = G19_rel / S04_rel)
-
 
 Cant_inv_rel <- Cant_inv_wide %>% 
   pivot_longer(cols = c(G19_rel, S04_rel),
@@ -168,7 +185,7 @@ Cant_inv_rel %>%
   geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat),
               fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = cant_inv_rel)) +
+  geom_raster(aes(lon, lat, fill = cant_inv_rel*100)) +
   coord_quickmap(expand = 0) +
   scale_fill_viridis_c() +
   facet_wrap( ~ estimate, ncol = 1) +
@@ -197,7 +214,7 @@ Cant_inv_wide %>%
   coord_quickmap(expand = 0) +
   scale_fill_brewer(palette = "RdBu", direction = -1) +
   labs(title = "Cant inventory distribution | 1994-2007 vs preind-1994",
-       subtitle = "Ratio of relative contributions to total inventory") +
+       subtitle = "Log ratio of relative contributions to total inventory") +
   theme(
     axis.title = element_blank(),
     axis.text = element_blank(),
