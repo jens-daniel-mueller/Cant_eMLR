@@ -91,7 +91,11 @@ Cant_07_inv <-
 
 ```
 
-# Merge data sets
+# Comparison of previous estimates
+
+Cant inventory estimates of S04 (Sabine et al, 2004) and G19 (Gruber et al, 2019) were compared.
+
+## Merge data sets
 
 ```{r merge_Cant_data_sets}
 
@@ -103,9 +107,13 @@ Cant_94_inv <- Cant_94_inv %>%
 Cant_inv <- full_join(Cant_07_inv %>% mutate(estimate = "G19"),
                       Cant_94_inv %>% mutate(estimate = "S04"))
 
+rm(Cant_07_inv, Cant_94_inv)
+
 ```
 
-# Inventory maps
+## Inventory maps
+
+Spanning different time periods, the Cant inventories differ in magnitude.
 
 ```{r Cant_inv_comparison, fig.asp=1}
  
@@ -126,12 +134,15 @@ Cant_inv %>%
 
 ```
 
-# Relative inventory ratios
+## Relative inventories
+
 
 ```{r calculate_Cant_inv_ratio}
 
-Cant_inv_wide <- Cant_inv %>% 
-  pivot_wider(values_from = cant_inv, names_from = estimate)
+
+Cant_inv_wide <- Cant_inv %>%
+  pivot_wider(values_from = cant_inv,
+              names_from = estimate)
 
 Cant_inv_wide <- Cant_inv_wide %>% 
   drop_na() %>% 
@@ -141,7 +152,35 @@ Cant_inv_wide <- Cant_inv_wide %>%
          cant_ratio_rel = G19_rel / S04_rel)
 
 
+Cant_inv_rel <- Cant_inv_wide %>% 
+  pivot_longer(cols = c(G19_rel, S04_rel),
+                        names_to = "estimate",
+                        values_to = "cant_inv_rel")
+
 ```
+
+
+
+```{r Cant_inv_rel_maps, fig.asp=1}
+
+Cant_inv_rel %>%
+  ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(aes(lon, lat, fill = cant_inv_rel)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_viridis_c() +
+  facet_wrap( ~ estimate, ncol = 1) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+```
+
+## Relative inventory ratios
 
 ```{r Cant_inv_ratio_map, fig.asp=0.6}
 
@@ -168,26 +207,3 @@ Cant_inv_wide %>%
 
 ```
 
-# Relative inventories
-
-```{r Cant_inv_rel_comparison, fig.asp=1}
-
-Cant_inv_rel <- Cant_inv_wide %>% 
-  pivot_longer(G19_rel:S04_rel, values_to = "cant_inv_rel", names_to = "estimate")
-
-Cant_inv_rel %>%
-  ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
-              aes(lon, lat),
-              fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = cant_inv_rel)) +
-  coord_quickmap(expand = 0) +
-  scale_fill_viridis_c() +
-  facet_wrap( ~ estimate, ncol = 1) +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank()
-  )
-
-```
