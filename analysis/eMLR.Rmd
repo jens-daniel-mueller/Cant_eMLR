@@ -191,7 +191,7 @@ GLODAP <- GLODAP %>%
 
 GLODAP %>% 
   ggplot(aes(phosphate_star_oxy, phosphate_star_nit)) +
-  geom_hex() +
+  geom_bin2d() +
   scale_fill_viridis_c() +
   facet_wrap(~basin)
 
