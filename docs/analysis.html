@@ -457,7 +457,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analysis of Cant estimates</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">13 August, 2020</h4>
+<h4 class="date">14 August, 2020</h4>
 
 </div>
 
@@ -482,7 +482,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-13
+<strong>Last updated:</strong> 2020-08-14
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -573,16 +573,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecdacd41977358f8aa742f26197ed171af1bf93batargetblankcdacd41a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cdacd41977358f8aa742f26197ed171af1bf93ba" target="_blank">cdacd41</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree44dbba0ea4d42c360a7c11de40fc08e3b5f57adetargetblank44dbba0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/44dbba0ea4d42c360a7c11de40fc08e3b5f57ade" target="_blank">44dbba0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecdacd41977358f8aa742f26197ed171af1bf93batargetblankcdacd41a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree44dbba0ea4d42c360a7c11de40fc08e3b5f57adetargetblank44dbba0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cdacd41977358f8aa742f26197ed171af1bf93ba" target="_blank">cdacd41</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/44dbba0ea4d42c360a7c11de40fc08e3b5f57ade" target="_blank">44dbba0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/44dbba0ea4d42c360a7c11de40fc08e3b5f57ade/analysis/analysis.Rmd" target="_blank">44dbba0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-14
+</td>
+<td>
+update cant ratio map
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/9a90644d434168e9a244f30e318b14ffbcd0b5db/docs/analysis.html" target="_blank">9a90644</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -862,28 +896,28 @@ Cant_inv_wide &lt;- Cant_inv_wide %&gt;%
   mutate(G19_rel = G19 / sum(G19),
          S04_rel = S04 / sum(S04),
          cant_ratio = G19 / S04,
-         cant_ratio_rel = G19_rel / S04_rel)
-
-
-Cant_inv_wide %&gt;%
-  #filter(cant_ratio_rel &lt; 2) %&gt;% 
+         cant_ratio_rel = G19_rel / S04_rel)</code></pre>
+<pre class="r"><code>Cant_inv_wide %&gt;%
+  filter(cant_ratio_rel &lt; 10,
+         cant_ratio_rel &gt; 0.1) %&gt;% 
   ggplot() +
-  geom_raster(data = landmask %&gt;% filter(region == &quot;land&quot;),
+  geom_raster(data = landmask %&gt;% filter(region == &quot;land&quot;,
+                                         lat &lt;= 65,
+                                         lat &gt;= -80),
               aes(lon, lat),
               fill = &quot;grey80&quot;) +
-  geom_raster(aes(lon, lat, fill = log(cant_ratio_rel))) +
+  geom_contour_filled(aes(lon, lat, z = log10(cant_ratio_rel))) +
   coord_quickmap(expand = 0) +
-  scale_fill_gradient2(  low = &quot;red&quot;,
-  mid = &quot;white&quot;,
-  high = &quot;blue&quot;,
-  midpoint = 0,
-  limits = c(-1.5,1.5)) +
+  scale_fill_brewer(palette = &quot;RdBu&quot;, direction = -1) +
+  labs(title = &quot;Cant inventory distribution | 1994-2007 vs preind-1994&quot;,
+       subtitle = &quot;Ratio of relative contributions to total inventory&quot;) +
   theme(
     axis.title = element_blank(),
     axis.text = element_blank(),
-    axis.ticks = element_blank()
+    axis.ticks = element_blank(),
+    legend.title = element_blank()
   )</code></pre>
-<p><img src="figure/analysis.Rmd/Cant_inv_ratio-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/analysis.Rmd/Cant_inv_ratio_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="relative-inventories" class="section level1">
 <h1><span class="header-section-number">5</span> Relative inventories</h1>
@@ -933,21 +967,22 @@ other attached packages:
  [9] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.1.0  xfun_0.16         haven_2.3.1       colorspace_1.4-1 
- [5] vctrs_0.3.2       generics_0.0.2    viridisLite_0.3.0 htmltools_0.5.0  
- [9] yaml_2.2.1        blob_1.2.1        rlang_0.4.7       later_1.1.0.1    
-[13] pillar_1.4.6      withr_2.2.0       glue_1.4.1        DBI_1.1.0        
-[17] dbplyr_1.4.4      modelr_0.1.8      readxl_1.3.1      lifecycle_0.2.0  
-[21] munsell_0.5.0     gtable_0.3.0      cellranger_1.1.0  rvest_0.3.6      
-[25] evaluate_0.14     labeling_0.3      knitr_1.29        httpuv_1.5.4     
-[29] fansi_0.4.1       broom_0.7.0       Rcpp_1.0.5        promises_1.1.1   
-[33] backports_1.1.8   scales_1.1.1      jsonlite_1.7.0    farver_2.0.3     
-[37] fs_1.4.2          hms_0.5.3         digest_0.6.25     stringi_1.4.6    
-[41] rprojroot_1.3-2   grid_4.0.2        here_0.1          cli_2.0.2        
-[45] tools_4.0.2       magrittr_1.5      crayon_1.3.4      whisker_0.4      
-[49] pkgconfig_2.0.3   ellipsis_0.3.1    xml2_1.3.2        reprex_0.3.0     
-[53] assertthat_0.2.1  rmarkdown_2.3     httr_1.4.2        rstudioapi_0.11  
-[57] R6_2.4.1          git2r_0.27.1      compiler_4.0.2   </code></pre>
+ [1] Rcpp_1.0.5         here_0.1           assertthat_0.2.1   rprojroot_1.3-2   
+ [5] digest_0.6.25      R6_2.4.1           cellranger_1.1.0   backports_1.1.8   
+ [9] reprex_0.3.0       evaluate_0.14      httr_1.4.2         pillar_1.4.6      
+[13] rlang_0.4.7        readxl_1.3.1       rstudioapi_0.11    whisker_0.4       
+[17] blob_1.2.1         rmarkdown_2.3      labeling_0.3       munsell_0.5.0     
+[21] broom_0.7.0        compiler_4.0.2     httpuv_1.5.4       modelr_0.1.8      
+[25] xfun_0.16          pkgconfig_2.0.3    htmltools_0.5.0    tidyselect_1.1.0  
+[29] fansi_0.4.1        viridisLite_0.3.0  crayon_1.3.4       dbplyr_1.4.4      
+[33] withr_2.2.0        later_1.1.0.1      grid_4.0.2         jsonlite_1.7.0    
+[37] gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          git2r_0.27.1      
+[41] magrittr_1.5       scales_1.1.1       cli_2.0.2          stringi_1.4.6     
+[45] farver_2.0.3       fs_1.4.2           promises_1.1.1     xml2_1.3.2        
+[49] ellipsis_0.3.1     generics_0.0.2     vctrs_0.3.2        RColorBrewer_1.1-2
+[53] tools_4.0.2        glue_1.4.1         hms_0.5.3          yaml_2.2.1        
+[57] colorspace_1.4-1   rvest_0.3.6        isoband_0.2.2      knitr_1.29        
+[61] haven_2.3.1       </code></pre>
 </div>
 </div>
 
