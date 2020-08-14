@@ -436,7 +436,7 @@ predictors <- predictors %>%
 
 AOU was calculated as the difference between saturation concentration and observed concentration.  
 
-**CAVEAT**: Algorithms used to calculate oxgen saturation concentration are not yet identical in GLODAP data set (fitting) and predictor climatologies (mapping).
+**CAVEAT**: Algorithms used to calculate oxygen saturation concentration are not yet identical in GLODAP data set (fitting) and predictor climatologies (mapping).
 
 ```{r calculate_aou_climatology}
 

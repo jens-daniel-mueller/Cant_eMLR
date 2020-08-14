@@ -47,6 +47,10 @@ parameters <-
     lat_Atl_profile = 40.5,
     inventory_depth = 3000,
     coarse_grid_resolution = 10,
+    cruises_meridional = 1041,
+    predictors_max = 5,
+    predictors_min = 2,
+    MLR_number = 10
   )
 
 depth_levels <-

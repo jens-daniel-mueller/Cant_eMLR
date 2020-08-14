@@ -271,7 +271,7 @@ WOA18_predictors <- WOA18_predictors %>%
                          temperature = tem,
                          pressure = depth,
                          referencePressure = 0,
-                         longitude = lon,
+                         longitude = lon-180,
                          latitude = lat))
 
 ```

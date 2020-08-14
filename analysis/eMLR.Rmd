@@ -30,6 +30,41 @@ library(corrr)
   
 ```
 
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_csv(here::here("data/parameters",
+                      "parameters.csv"))
+depth_levels <-
+  read_lines(here::here("data/parameters",
+                        "depth_levels.txt"))
+slabs_Atl <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Atl.txt"))
+slabs_Ind_Pac <-
+  read_lines(here::here("data/parameters",
+                        "slabs_Ind_Pac.txt"))
+```
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+```{r read_functions, include = FALSE}
+source(here::here("code", "plotting_functions.R"))
+```
 
 ```{r ggplot_theme, include = FALSE}
 theme_set(theme_bw())
@@ -47,19 +82,49 @@ Required are:
 
 ```{r read_required_data_sets}
 
-GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                              "GLODAPv2.2020_clean.csv"))
+GLODAP <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2020/_summarized_data_files",
+      "GLODAPv2.2020_clean.csv"
+    )
+  )
 
-GLODAP_obs_grid <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                           "GLODAPv2.2020_clean_obs_grid.csv"))
+GLODAP_obs_grid <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2020/_summarized_data_files",
+      "GLODAPv2.2020_clean_obs_grid.csv"
+    )
+  )
 
-Cant_clim <- read_csv(here::here("data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
-                                 "Cant.csv"))
+# Cant_clim <-
+#   read_csv(here::here("data/GLODAPv1_1/_summarized_files",
+#                       "Cant_94.csv"))
 
-co2_atm <- read_csv(here::here("data/pCO2_atmosphere/_summarized_data_files",
-                               "co2_atm.csv"))
+Cant_clim <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+      "Cant.csv"
+    )
+  )
+
+co2_atm <-
+  read_csv(here::here(
+    "data/pCO2_atmosphere/_summarized_data_files",
+    "co2_atm.csv"
+  ))
 
 ```
+
+```{r data_set_harmonization}
+
+Cant_clim <- Cant_clim %>%
+  rename(cant = Cant)
+
+```
+
 
 # C*
 
@@ -106,21 +171,36 @@ rm(rCP, rNP)
 
 # PO~4~* calculation 
 
-Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
+Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate, as claimed in Gruber et al (2019).
 
-```{r calculate_phosphate_star_clement}
+```{r calculate_phosphate_star_oxygen}
 
 GLODAP <- GLODAP %>% 
-  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
+  mutate(phosphate_star_oxy = phosphate + (oxygen / 170)  - 1.95)
 
 ```
 
-```{r calculate_phosphate_star_gruber, eval=FALSE}
+```{r calculate_phosphate_star_nitrate}
 
 GLODAP <- GLODAP %>% 
-  mutate(phosphate_star = phosphate - 16*nitrate  + 2.9)
+  mutate(phosphate_star_nit = phosphate - nitrate/16  + 2.9)
 
 ```
+
+```{r phosphate_star_approach_comparison}
+
+GLODAP %>% 
+  ggplot(aes(phosphate_star_oxy, phosphate_star_nit)) +
+  geom_hex() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)
+
+GLODAP <- GLODAP %>% 
+  select(-phosphate_star_nit) %>% 
+  rename(phosphate_star = phosphate_star_oxy)
+
+```
+
 
 
 # Reference year adjustment
@@ -141,11 +221,22 @@ Cant_clim <- Cant_clim %>%
 Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim) %>% 
   select(-n)
 
+# Cant_clim_obs_nr <- Cant_clim_obs %>%
+#   group_by(lon, lat) %>%
+#   summarise(n_cant = n()) %>%
+#   ungroup()
+
+# Cant_clim_obs %>% 
+#   filter(n < 1) %>% 
+#   ggplot(aes(lon,lat)) +
+#   geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
+#   geom_point(col = "red")
+
 rm(Cant_clim, GLODAP_obs_grid)
 
 GLODAP_Cant_obs <- full_join(GLODAP, Cant_clim_obs)
 
-rm(Cant_clim_obs, GLODAP)
+rm(GLODAP, Cant_clim_obs)
 
 ```
 
@@ -156,39 +247,50 @@ The mapped Cant product was merged with GLODAP observation by:
 
 ```{r interpolate_Cant_to_observations}
 
+# GLODAP_Cant_obs <- full_join(GLODAP_Cant_obs, Cant_clim_obs_nr)
 
 GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
+  # filter(n_cant > 1) %>% 
   group_by(lat, lon) %>%
   arrange(depth) %>%
-  mutate(Cant_int = approxfun(depth, Cant, rule = 2)(depth)) %>%
+  mutate(cant_int = approxfun(depth, cant, rule = 2)(depth)) %>%
   ungroup()
+
+# GLODAP_Cant_obs_set <- GLODAP_Cant_obs %>%
+#   filter(n_cant == 1) %>% 
+#   group_by(lat, lon) %>%
+#   arrange(depth) %>%
+#   mutate(cant_int = mean(cant, na.rm = TRUE)) %>%
+#   ungroup()
 
 ggplot() +
   geom_path(
     data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5,!is.na(Cant)) %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
       arrange(depth),
-    aes(Cant, depth, col = "mapped")
+    aes(cant, depth, col = "mapped")
   ) +
   geom_point(
     data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5,!is.na(Cant)) %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
       arrange(depth),
-    aes(Cant, depth, col = "mapped")
+    aes(cant, depth, col = "mapped")
   ) +
   geom_point(
     data = GLODAP_Cant_obs %>%
       filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
-    aes(Cant_int, depth, col = "interpolated")
+    aes(cant_int, depth, col = "interpolated")
   ) +
   scale_y_reverse() +
   scale_color_brewer(palette = "Dark2", name = "") +
   labs(title = "Cant interpolation to sampling depth - example profile")
 
+# remove cant data at grid cells without observations
+
 GLODAP <- GLODAP_Cant_obs %>%
   filter(!is.na(Cstar)) %>%
-  mutate(Cant = Cant_int) %>%
-  select(-Cant_int)
+  mutate(cant = cant_int) %>%
+  select(-cant_int)
 
 rm(GLODAP_Cant_obs)
 
@@ -229,7 +331,7 @@ rm(co2_atm, co2_atm_tref, tref)
 
 GLODAP <- GLODAP %>% 
   mutate(Cstar_tref_delta = 
-           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * Cant,
+           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * cant,
          Cstar_tref = Cstar - Cstar_tref_delta)
 
 ```
@@ -252,7 +354,7 @@ GLODAP %>%
 
 GLODAP %>% 
   sample_n(1e4) %>% 
-  ggplot(aes(year, Cstar_tref_delta, col = Cant)) +
+  ggplot(aes(year, Cstar_tref_delta, col = cant)) +
   geom_point() +
   scale_color_viridis_c() +
   labs(title = "random subsample 1e4")
@@ -265,18 +367,13 @@ A selected section is plotted to demonstrate the magnitude of various parameters
 
 ```{r select_cruises}
 
-cruises_meridional <- c("1041")
-
 GLODAP_cruise <- GLODAP %>% 
-  filter(cruise %in% cruises_meridional)
+  filter(cruise %in% parameters$cruises_meridional)
 
 ```
 
 
 ```{r meridional_sections, fig.asp=0.6}
-
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
 
 GLODAP_cruise %>%
   arrange(date) %>% 
@@ -319,7 +416,7 @@ lat_section +
   geom_point(aes(col = Cstar))
 
 lat_section +
-  geom_point(aes(col = Cant))
+  geom_point(aes(col = cant))
 
 lat_section +
   geom_point(aes(col = -Cstar_tref_delta))
@@ -330,55 +427,16 @@ rm(lat_section, GLODAP_cruise)
 ```
 
 
-
-
 # MLR
 
 ## Isoneutral slabs
-
-```{r define_isoneutral_slabs}
-
-slabs_Atl <- c(
--Inf,
-26.00,
-26.50,
-26.75,
-27.00,
-27.25,
-27.50,
-27.75,
-27.85,
-27.95,
-28.05,
-28.10,
-28.15,
-28.20,
-Inf)
-
-slabs_Ind_Pac <- c(
--Inf,
-26.00,
-26.50,
-26.75,
-27.00,
-27.25,
-27.50,
-27.75,
-27.85,
-27.95,
-28.05,
-28.10,
-Inf)
-
-
-```
 
 The following boundaries for isoneutral slabs were defined:
 
 - Atlantic: `r slabs_Atl`
 - Indo-Pacific: `r slabs_Ind_Pac`
 
-Continous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
+Continuous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
 
 ```{r cut_isoneutral_slabs}
 
@@ -399,7 +457,7 @@ rm(GLODAP_Atl, GLODAP_Ind_Pac, slabs_Atl, slabs_Ind_Pac)
 ```{r meridional_sections_isoneutral_slabs, fig.asp=0.6}
 
 GLODAP_cruise <- GLODAP %>% 
-  filter(cruise %in% cruises_meridional)
+  filter(cruise %in% parameters$cruises_meridional)
 
 lat_section <- 
 GLODAP_cruise %>%
@@ -415,10 +473,60 @@ lat_section +
   geom_point(aes(col = gamma_slab)) +
   scale_color_viridis_d()
 
+rm(lat_section, GLODAP_cruise)
+
+```
+
+
+```{r test_isoneutral_density_calculation, eval=FALSE}
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% parameters$cruises_meridional)
+
+library(oce)
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(THETA = swTheta(salinity = sal,
+                         temperature = tem,
+                         pressure = depth,
+                         referencePressure = 0,
+                         longitude = lon-180,
+                         latitude = lat))
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  rename(LATITUDE = lat,
+         LONGITUDE = lon,
+         SALNTY = sal,
+         CTDPRS = depth,
+         gamma_provided = gamma)
+
+library(reticulate)
+source_python(here::here("code/python_scripts",
+                         "Gamma_GLODAP_python.py"))
+
+GLODAP_cruise <- calculate_gamma(GLODAP_cruise)
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(gamma_delta = gamma_provided - GAMMA)
+
+lat_section <- 
+GLODAP_cruise %>%
+  ggplot(aes(LATITUDE, CTDPRS)) +
+  scale_y_reverse() +
+  theme(legend.position = "bottom")
+
+lat_section +
+  geom_point(aes(col = gamma_delta)) +
+  scale_color_viridis_c()
+
+GLODAP_cruise %>% 
+  ggplot(aes(gamma_delta))+
+  geom_histogram()
 
 rm(lat_section, GLODAP_cruise, cruises_meridional)
 
 ```
+
+
 
 ### Observations coverage
 
@@ -840,17 +948,8 @@ rm(i_gamma_slab, i_era, i_basin,
 
 ```
 
-```{r set_criteria_predictor_number}
 
-n_predictors_max <- 5
-n_predictors_min <- 2
-
-n_predictors_total <- 10
-
-```
-
-
-RMSE was plotted against the number of predictors (limited to `r n_predictors_min` - `r n_predictors_max`).
+RMSE was plotted against the number of predictors (limited to `r parameters$predictors_min` - `r parameters$predictors_max`).
 
 ```{r eMLR_predictor_model_quality, fig.asp=2}
 
@@ -866,8 +965,8 @@ all_lm_stats <- read_csv(here::here("data/eMLR",
 # length(unique(all_lm_stats$mindex))
 
 all_lm_stats <- all_lm_stats %>% 
-  filter(n >= n_predictors_min,
-         n <= n_predictors_max)
+  filter(n >= parameters$predictors_min,
+         n <= parameters$predictors_max)
 
 all_lm_stats %>% 
   ggplot(aes(n, rmse, col = basin)) +
@@ -878,7 +977,7 @@ all_lm_stats %>%
 
 ```
 
-Within each basin and slab, the `r n_predictors_total` linear regression models with lowest summed RMSE across all eras were selected.
+Within each basin and slab, the `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras were selected.
 
 ```{r predictor_selection}
 
@@ -895,7 +994,7 @@ lm_best <- all_lm_stats_wide %>%
   group_by(basin, gamma_slab) %>% 
   slice_min(order_by = rmse_sum,
             with_ties = FALSE,
-            n = n_predictors_total) %>% 
+            n = parameters$MLR_number) %>% 
   ungroup()
 
 kable(lm_best) %>%
@@ -908,8 +1007,7 @@ kable(lm_best) %>%
 #   summarise(n()) %>% 
 #   ungroup()
 
-rm(n_predictors_max, n_predictors_min, 
-   all_lm_stats, all_lm_stats_wide)
+rm(all_lm_stats, all_lm_stats_wide)
 
 ```
 
@@ -939,7 +1037,7 @@ sqrt(mean(lm_2$residuals^2))
 
 ### Fitting best models
 
-After selecting `r n_predictors_total` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
+After selecting `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
 
 ```{r fit_best_models, eval=FALSE}
 
