@@ -128,7 +128,7 @@ Cant_inv %>%
 
 # Relative inventory ratios
 
-```{r Cant_inv_ratio, fig.asp=0.6}
+```{r calculate_Cant_inv_ratio}
 
 Cant_inv_wide <- Cant_inv %>% 
   pivot_wider(values_from = cant_inv, names_from = estimate)
@@ -141,23 +141,29 @@ Cant_inv_wide <- Cant_inv_wide %>%
          cant_ratio_rel = G19_rel / S04_rel)
 
 
+```
+
+```{r Cant_inv_ratio_map, fig.asp=0.6}
+
 Cant_inv_wide %>%
-  #filter(cant_ratio_rel < 2) %>% 
+  filter(cant_ratio_rel < 10,
+         cant_ratio_rel > 0.1) %>% 
   ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask %>% filter(region == "land",
+                                         lat <= 65,
+                                         lat >= -80),
               aes(lon, lat),
               fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = log(cant_ratio_rel))) +
+  geom_contour_filled(aes(lon, lat, z = log10(cant_ratio_rel))) +
   coord_quickmap(expand = 0) +
-  scale_fill_gradient2(  low = "red",
-  mid = "white",
-  high = "blue",
-  midpoint = 0,
-  limits = c(-1.5,1.5)) +
+  scale_fill_brewer(palette = "RdBu", direction = -1) +
+  labs(title = "Cant inventory distribution | 1994-2007 vs preind-1994",
+       subtitle = "Ratio of relative contributions to total inventory") +
   theme(
     axis.title = element_blank(),
     axis.text = element_blank(),
-    axis.ticks = element_blank()
+    axis.ticks = element_blank(),
+    legend.title = element_blank()
   )
 
 ```
