@@ -101,9 +101,7 @@ Cant inventory estimates of S04 (Sabine et al, 2004) and G19 (Gruber et al, 2019
 ```{r merge_Cant_data_sets}
 
 Cant_94_inv <- Cant_94_inv %>% 
-  select(-cant_inv) %>% 
-  rename(cant_inv = cant_inv_pos)
-
+  select(-cant_inv_incl_neg)
 
 Cant_inv <- full_join(Cant_07_inv %>% mutate(estimate = "G19"),
                       Cant_94_inv %>% mutate(estimate = "S04"))
@@ -136,6 +134,8 @@ Cant_inv %>%
 ```
 
 ## Global inventories
+
+Global anthropogenic CO2 inventories were estimated in Pg-C. Please note that here we onyl added positive Cant values in the upper 3000m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
@@ -205,9 +205,7 @@ Cant_inv_wide %>%
   filter(cant_ratio_rel < 10,
          cant_ratio_rel > 0.1) %>% 
   ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land",
-                                         lat <= 65,
-                                         lat >= -80),
+  geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat),
               fill = "grey80") +
   geom_contour_filled(aes(lon, lat, z = log10(cant_ratio_rel))) +
