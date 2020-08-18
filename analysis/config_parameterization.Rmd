@@ -31,8 +31,9 @@ theme_set(theme_bw())
 
 ```{r define_parameters}
 
+
 parameters <-
-  tibble(
+  lst(
     flag_f = 2,
     flag_qc = 1,
     depth_min = 150,
@@ -50,11 +51,12 @@ parameters <-
     cruises_meridional = 1041,
     predictors_max = 5,
     predictors_min = 2,
-    MLR_number = 10
+    MLR_number = 10,
+    
+    depth_levels = c(0, 100, 500, 2000)
+    
   )
 
-depth_levels <-
-  c(0, 100, 500, 2000)
 
 slabs_Atl <-
   c(
@@ -97,22 +99,23 @@ slabs_Ind_Pac <-
 Following parameterizations were chosen to run the analysis and display results:
 
 ```{r print_parameter_table}
+parameters
 
-parameters_long <-
-  parameters %>%
-  pivot_longer(1:length(parameters),
-               names_to = "parameter",
-               values_to = "value") %>%
-  arrange(parameter)
-
-kable(parameters_long) %>%
-  kable_styling()
-
-depth_levels
-
-slabs_Atl
-
-slabs_Ind_Pac
+# parameters_long <-
+#   parameters %>%
+#   pivot_longer(1:length(parameters),
+#                names_to = "parameter",
+#                values_to = "value") %>%
+#   arrange(parameter)
+# 
+# kable(parameters_long) %>%
+#   kable_styling()
+# 
+# depth_levels
+# 
+# slabs_Atl
+# 
+# slabs_Ind_Pac
 
 ```
 
@@ -124,19 +127,24 @@ slabs_Ind_Pac
 ```{r write_parameters}
 
 parameters %>%
-  write_csv(here::here("data/parameters",
-                       "parameters.csv"))
-
-depth_levels %>%
-  write_lines(here::here("data/parameters",
-                         "depth_levels.txt"))
-
-slabs_Atl %>%
-  write_lines(here::here("data/parameters",
-                         "slabs_Atl.txt"))
-
-slabs_Ind_Pac %>%
-  write_lines(here::here("data/parameters",
-                         "slabs_Ind_Pac.txt"))
+  write_rds(here::here("data/parameters",
+                       "parameters.rds"))
+# 
+# 
+# parameters %>%
+#   write_csv(here::here("data/parameters",
+#                        "parameters.csv"))
+# 
+# depth_levels %>%
+#   write_lines(here::here("data/parameters",
+#                          "depth_levels.txt"))
+# 
+# slabs_Atl %>%
+#   write_lines(here::here("data/parameters",
+#                          "slabs_Atl.txt"))
+# 
+# slabs_Ind_Pac %>%
+#   write_lines(here::here("data/parameters",
+#                          "slabs_Ind_Pac.txt"))
 
 ```
