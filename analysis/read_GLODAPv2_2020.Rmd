@@ -747,7 +747,7 @@ rm(map,
 
 # Open tasks
 
-- move A16 cruises in 2013 from new_era to GO_SHIP era
+- 
 
 # Questions
 

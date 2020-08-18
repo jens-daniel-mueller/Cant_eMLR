@@ -985,7 +985,6 @@ Within each basin and slab, the `r parameters$MLR_number` linear regression mode
 
 ```{r predictor_selection}
 
-
 all_lm_stats <- all_lm_stats %>%
   select(basin, era, gamma_slab, predictors, rmse)
 
@@ -1021,12 +1020,6 @@ kable(lm_best) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "400px")
 
-# lm_best_n <-lm_best %>%
-#   group_by(basin, gamma_slab) %>%
-#   summarise(n()) %>%
-#   ungroup()
-
-
 ```
 
 ```{r rmse_correlation_across_eras}
@@ -1050,13 +1043,13 @@ lm_1 <- GLODAP %>%
   filter(basin == "Atlantic",
          gamma_slab == "(-Inf,26]",
          era == "new_era") %>% 
-  lm(Cstar ~ salinity + temperature + aou + oxygen + phosphate_star, data = .)
+  lm(Cstar ~ sal + tem + aou + oxygen + phosphate_star, data = .)
 
 lm_2 <- GLODAP %>% 
   filter(basin == "Atlantic",
          gamma_slab == "(-Inf,26]",
          era == "new_era") %>% 
-  lm(Cstar ~ salinity + temperature + aou + oxygen + phosphate, data = .)
+  lm(Cstar ~ sal + tem + aou + oxygen + phosphate, data = .)
 
 lm_1
 lm_2
@@ -1179,5 +1172,8 @@ all_lm %>%
 - combine correlation, rmse and model calculation into one routine, ideally using the purrr map approach
 - select exactly best 10 models, even if same rmse sum appears more than once (currently, selection is set two ten, even if doublicated rmse occur)
 - check (phosphate_star) NA's in coeffcients -> cases of exact colinearity?
+- test model selection based on AIC 
 
 # Open questions
+
+- 

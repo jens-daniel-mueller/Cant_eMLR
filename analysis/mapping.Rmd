@@ -34,6 +34,17 @@ parameters <-
 ```
 
 
+```{r read_mask_files}
+
+basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "basin_mask_WOA18.csv"))
+
+landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "land_mask_WOA18.csv"))
+
+```
+
+
 ```{r read_parameters_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
 ```
@@ -131,20 +142,6 @@ all_lm <- read_csv(here::here("data/eMLR",
 
 ```
 
-# Masks
-
-## Read
-
-```{r read_mask_files}
-
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
-
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
-
-```
-
 
 # Join predictor climatologies
 
@@ -239,29 +236,21 @@ predictors <- predictors %>%
 
 ### Spatial boundaries
 
-```{r set_criteria_spatial_boundaries}
-
-min_depth <- 150
-min_bottomdepth <- 500
-max_lat <- 65
-
-```
-
-
 Only mapped variables were taken into consideration which fullfill the same criteria applied to observational data before MLR fitting:
 
-- minimum depth:  `r min_depth`m
-- minimum bottom depth:  `r min_bottomdepth`m
-- maximum latitude:  `r max_lat`°N
+- minimum sampling depth:  `r parameters$depth_min`m
+- minimum bottom depth:  `r parameters$bottomdepth_min`m
+- maximum latitude:  `r parameters$lat_max`°N
+
 
 
 ```{r apply_spatial_boundaries}
 
 predictors <- predictors %>% 
-  filter(depth >= min_depth)
+  filter(depth >= parameters$depth_min)
 
 predictors <- predictors %>% 
-  filter(lat <= max_lat)
+  filter(lat <= parameters$lat_max)
 
 predictors <- predictors %>% 
   group_by(lat, lon) %>% 
@@ -269,10 +258,8 @@ predictors <- predictors %>%
   ungroup()
 
 predictors <- predictors %>% 
-  filter(bottomdepth >= min_bottomdepth) %>% 
+  filter(bottomdepth >= parameters$bottomdepth_min) %>% 
   select(-bottomdepth)
-
-rm(min_depth, max_lat, min_bottomdepth)
 
 ```
 
@@ -323,12 +310,13 @@ predictors %>%
 
 ### Predictor profiles
 
-Likewise, predictor profiles for the North Atlantic (lat = 40.5, lon = -20.5) are plotted to control successful merging of the data sets.
+Likewise, predictor profiles for the North Atlantic are plotted to control successful merging of the data sets.
 
 ```{r predictor_profiles_N_Atl, fig.asp=1.5}
 
 N_Atl <- predictors %>% 
-  filter(lat == 30.5, lon == 320.5)
+  filter(lat == parameters$lat_Atl_profile,
+         lon == parameters$lon_Atl_section)
 
 N_Atl <- N_Atl %>% 
   select(-basin) %>% 
@@ -460,18 +448,14 @@ predictors <- predictors %>%
 
 ```{r aou_climatology_section, fig.asp=0.6}
 
-Atl_lon <- 335.5
-
 predictors %>% 
-  filter(lon == Atl_lon) %>% 
+  filter(lon == parameters$lon_Atl_section) %>% 
   ggplot(aes(lat, depth, z = aou)) +
   geom_contour_filled() +
   scale_fill_viridis_d(name = "AOU") +
   guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
   scale_y_reverse() +
   coord_cartesian(expand = 0)
-
-rm(Atl_lon)
 
 ```
 
