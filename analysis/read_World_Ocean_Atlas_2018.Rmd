@@ -27,17 +27,8 @@ library(oce)
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_csv(here::here("data/parameters",
-                      "parameters.csv"))
-depth_levels <-
-  read_lines(here::here("data/parameters",
-                        "depth_levels.txt"))
-slabs_Atl <-
-  read_lines(here::here("data/parameters",
-                        "slabs_Atl.txt"))
-slabs_Ind_Pac <-
-  read_lines(here::here("data/parameters",
-                        "slabs_Ind_Pac.txt"))
+  read_rds(here::here("data",
+                       "parameters.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -335,7 +326,7 @@ WOA18_predictors %>%
 
 ```{r read_WOA_predictor_file_gamma}
 
-rm(list = setdiff(ls(), c("landmask", "parameters", "depth_levels")))
+rm(list = setdiff(ls(), c("landmask", "parameters")))
 
 WOA18_predictors <- 
   read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -347,7 +338,7 @@ WOA18_predictors <-
 
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
 
-- Horizontal planes at `r depth_levels`m
+- Horizontal planes at `r parameters$depth_levels`m
 - Meridional sections at longitudes:
   - Atlantic: `r parameters$lon_Atl_section`
   - Pacific: `r parameters$lon_Pac_section`

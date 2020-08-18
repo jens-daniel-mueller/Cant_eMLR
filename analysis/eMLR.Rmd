@@ -32,17 +32,8 @@ library(corrr)
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_csv(here::here("data/parameters",
-                      "parameters.csv"))
-depth_levels <-
-  read_lines(here::here("data/parameters",
-                        "depth_levels.txt"))
-slabs_Atl <-
-  read_lines(here::here("data/parameters",
-                        "slabs_Atl.txt"))
-slabs_Ind_Pac <-
-  read_lines(here::here("data/parameters",
-                        "slabs_Ind_Pac.txt"))
+  read_rds(here::here("data",
+                       "parameters.rds"))
 ```
 
 ```{r read_mask_files, include = FALSE}
@@ -433,8 +424,8 @@ rm(lat_section, GLODAP_cruise)
 
 The following boundaries for isoneutral slabs were defined:
 
-- Atlantic: `r slabs_Atl`
-- Indo-Pacific: `r slabs_Ind_Pac`
+- Atlantic: `r parameters$slabs_Atl`
+- Indo-Pacific: `r parameters$slabs_Ind_Pac`
 
 Continuous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
 
@@ -442,15 +433,15 @@ Continuous neutral densities (gamma) values from GLODAP are grouped into isoneut
 
 GLODAP_Atl <- GLODAP %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma, slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 GLODAP_Ind_Pac <- GLODAP %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma, slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 GLODAP <- bind_rows(GLODAP_Atl, GLODAP_Ind_Pac)
 
-rm(GLODAP_Atl, GLODAP_Ind_Pac, slabs_Atl, slabs_Ind_Pac)
+rm(GLODAP_Atl, GLODAP_Ind_Pac)
 
 ```
 

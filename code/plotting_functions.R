@@ -5,7 +5,7 @@ map_climatology <- function(df, var) {
   ggplot() +
     geom_raster(data = landmask %>% filter(region == "land"),
                 aes(lon, lat), fill = "grey80") +
-    geom_raster(data = df %>% filter(depth %in% depth_levels),
+    geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
                 aes(lon, lat, fill = !!var)) +
     geom_vline(
       xintercept = c(parameters$lon_Atl_section,
