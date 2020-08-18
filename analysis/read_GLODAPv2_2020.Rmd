@@ -297,29 +297,6 @@ rm(GLODAP_stats_long, GLODAP_stats)
 
 ```
 
-## Reference eras
-
-Samples were assigned to following eras:
-
-- JGOFS_WOCE:
-`r parameters$year_JGOFS_start` - `r parameters$year_JGOFS_end`
-
-- GO_SHIP:
-`r parameters$year_JGOFS_end+1` - `r parameters$year_GOSHIP_end`
-
-- new_era:    > `r parameters$year_GOSHIP_end+1`
-
-
-```{r assign_eras}
-
-GLODAP <- GLODAP %>%
-  filter(year >= parameters$year_JGOFS_start) %>% 
-  mutate(era = "JGOFS_WOCE",
-         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
-         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
-
-```
-
 ## Horizontal gridding
 
 For merging with other data sets, all observations were grouped into latitude intervals of:
@@ -371,6 +348,65 @@ GLODAP <- inner_join(GLODAP, basinmask)
 rm(basinmask)
 
 ```
+
+## Reference eras
+
+Samples were assigned to following eras:
+
+- JGOFS_WOCE:
+`r parameters$year_JGOFS_start` - `r parameters$year_JGOFS_end`
+
+- GO_SHIP:
+`r parameters$year_JGOFS_end+1` - `r parameters$year_GOSHIP_end`
+
+- new_era:    > `r parameters$year_GOSHIP_end+1`
+
+
+```{r assign_eras}
+
+GLODAP <- GLODAP %>%
+  filter(year >= parameters$year_JGOFS_start) %>% 
+  mutate(era = "JGOFS_WOCE",
+         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
+         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
+
+```
+
+### Manual adjustment A16 cruise
+
+For harmonization with Gruber et al. (2019), cruises 1041 (A16N) and 1042 (A16S) were grouped into the GO_SHIP area despite taking place in 2013/14.
+
+```{r GLODAP_Atl_cruises_2013_2014_map}
+
+GLODAP_cruises <- GLODAP %>% 
+  filter(basin == "Atlantic",
+         year %in% c(2013, 2014)) %>% 
+  group_by(lat, lon, cruise) %>% 
+  summarise(cruise = as.factor(mean(cruise))) %>% 
+  ungroup()
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_cruises, aes(lon, lat, fill = cruise)) +
+  scale_fill_brewer(palette = "Dark2") +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+rm(GLODAP_cruises)
+
+```
+
+
+```{r switch_eras_manually}
+
+GLODAP <- GLODAP %>%
+  mutate(era = if_else(cruise %in% c(1041, 1042),
+                       "GO_SHIP", era))
+
+```
+
 
 ## Observations grid
 

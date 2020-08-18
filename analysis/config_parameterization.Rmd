@@ -99,9 +99,6 @@ rm(slabs_Ind_Pac, slabs_Atl, depth_levels)
 
 parameters
 
-library(pander)
-pandoc.table(parameters, style = "rmarkdown")
-
 ```
 
 # Write file
