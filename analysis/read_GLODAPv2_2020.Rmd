@@ -29,9 +29,8 @@ theme_set(theme_bw())
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data/parameters",
+  read_rds(here::here("data",
                        "parameters.rds"))
-
 ```
 
 
