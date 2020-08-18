@@ -106,7 +106,7 @@ parameters
 ```{r write_parameters}
 
 parameters %>%
-  write_rds(here::here("data/parameters",
+  write_rds(here::here("data",
                        "parameters.rds"))
 
 ```
