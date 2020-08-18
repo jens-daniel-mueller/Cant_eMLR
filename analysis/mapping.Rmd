@@ -828,7 +828,7 @@ Cant_inv %>%
 
 ### Positive Cant estimates
 
-```{r Cant_pos_inventory_map, fig.asp=0.6}
+```{r Cant_pos_inventory_map, fig.asp=1}
 
 Cant_inv %>% 
   ggplot() +
