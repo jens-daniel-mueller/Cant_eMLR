@@ -646,8 +646,7 @@ The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Bin
 ```{r gamma_sections_mean}
 
 Cant_model_average_zonal %>% 
-  filter(depth <= 4500,
-         lat > -60) %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = gamma_mean)) +
   geom_contour_filled(binwidth = 0.25) +
   scale_fill_viridis_d(name = "Gamma",
@@ -666,8 +665,7 @@ Cant_model_average_zonal %>%
 ```{r Cant_sections_mean}
 
 Cant_model_average_zonal %>% 
-  filter(depth <= 4500,
-         lat > -60) %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = Cant_mean)) +
   geom_contour_fill(breaks = MakeBreaks(5),
                     na.fill = TRUE) +
@@ -688,8 +686,7 @@ Standard deviation across Cant from all MLR models was calculate for each grid c
 ```{r Cant_sections_sd_models}
 
 Cant_model_average_zonal %>% 
-  filter(depth <= 4500,
-         lat > -60) %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = Cant_sd_mean)) +
   geom_contour_filled() +
   scale_fill_viridis_d(name = "Cant") +
@@ -707,8 +704,7 @@ Standard deviation of mean Cant values was calculate across all longitudes. This
 ```{r Cant_sections_sd_Cant}
 
 Cant_model_average_zonal %>% 
-  filter(depth <= 4500,
-         lat > -60) %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = Cant_mean_sd)) +
   geom_contour_filled() +
   scale_fill_viridis_d(name = "Cant") +
@@ -725,8 +721,7 @@ Cant_model_average_zonal %>%
 ```{r Cant_sections_positive_mean}
 
 Cant_model_average_zonal %>% 
-  filter(depth <= 4500,
-         lat > -60) %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = Cant_pos_mean)) +
   geom_contour_filled() +
   scale_fill_viridis_d(name = "Cant") +
@@ -769,15 +764,32 @@ Step 2 is performed again for all Cant and positive Cant values only
 
 ```{r calculate_inventories}
 
-source(here::here("code", "inventory_calculation.R"))
+depth_level_volume <- tibble(depth = unique(Cant_model_average$depth))
 
-Cant_model_average <- layer_inventory(Cant_model_average, "Cant_mean")
+depth_level_volume <- depth_level_volume %>%
+  mutate(
+    layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
+    layer_thickness_below = replace_na((lead(depth) - depth) / 2, 0),
+    layer_thickness = layer_thickness_above + layer_thickness_below
+  ) %>%
+  select(-c(layer_thickness_above,
+            layer_thickness_below))
 
-Cant_inv <- Cant_model_average %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  group_by(lon, lat, basin, eras) %>% 
-  summarise(cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
-            cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000) %>% 
+Cant_model_average <-
+  full_join(Cant_model_average, depth_level_volume)
+
+Cant_model_average <- Cant_model_average %>%
+  mutate(layer_inv = Cant_mean * layer_thickness) %>%
+  mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
+  select(-layer_thickness)
+
+Cant_inv <- Cant_model_average %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  group_by(lon, lat, basin, eras) %>%
+  summarise(
+    cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
+    cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000
+  ) %>%
   ungroup()
 
 
@@ -786,13 +798,30 @@ Cant_inv <- Cant_model_average %>%
 
 ## Inventories
 
-!!!! Under construction....
-
 ### All Cant estimates
 
-```{r Cant_inventory_map, fig.asp=0.6}
+```{r Cant_inventory_map, fig.asp=1}
 
-map_climatology_inv(Cant_inv, "cant_inv")
+library(scales)
+
+Cant_inv %>% 
+  ggplot() +
+    geom_raster(data = landmask %>% filter(region == "land"),
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cant_inv)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_gradient2(high = muted("red"),
+                         mid = "white",
+                         low = muted("blue"),
+                         midpoint = 0,
+                         space = "Lab",
+                         na.value = "green") +
+  facet_wrap(~eras, ncol = 1) +
+    theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank()
+    )
 
 ```
 
@@ -801,7 +830,19 @@ map_climatology_inv(Cant_inv, "cant_inv")
 
 ```{r Cant_pos_inventory_map, fig.asp=0.6}
 
-map_climatology_inv(Cant_inv, "cant_inv_pos")
+Cant_inv %>% 
+  ggplot() +
+    geom_raster(data = landmask %>% filter(region == "land"),
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cant_inv_pos)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+  facet_wrap(~eras, ncol = 1) +
+    theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank()
+    )
 
 ```
 
