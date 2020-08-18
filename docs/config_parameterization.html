@@ -573,16 +573,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree2b14bc44c889ed58a0172495c6ddb6ec1b24b4a4targetblank2b14bc4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/2b14bc44c889ed58a0172495c6ddb6ec1b24b4a4" target="_blank">2b14bc4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9bf69ad0f9be28f44654fe8ed72aed4647854840targetblank9bf69ada"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9bf69ad0f9be28f44654fe8ed72aed4647854840" target="_blank">9bf69ad</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree2b14bc44c889ed58a0172495c6ddb6ec1b24b4a4targetblank2b14bc4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9bf69ad0f9be28f44654fe8ed72aed4647854840targetblank9bf69ada" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/2b14bc44c889ed58a0172495c6ddb6ec1b24b4a4" target="_blank">2b14bc4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9bf69ad0f9be28f44654fe8ed72aed4647854840" target="_blank">9bf69ad</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/9bf69ad0f9be28f44654fe8ed72aed4647854840/analysis/config_parameterization.Rmd" target="_blank">9bf69ad</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-18
+</td>
+<td>
+all parameters in one list
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/e6daedeb80a3543733b873cbdde45008de649ce1/docs/config_parameterization.html" target="_blank">e6daede</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1044,31 +1078,8 @@ library(knitr)
 library(kableExtra)</code></pre>
 <div id="definition" class="section level1">
 <h1><span class="header-section-number">1</span> Definition</h1>
-<pre class="r"><code>parameters &lt;-
-  lst(
-    flag_f = 2,
-    flag_qc = 1,
-    depth_min = 150,
-    bottomdepth_min = 500,
-    lat_max = 65,
-    year_JGOFS_start = 1981,
-    year_JGOFS_end = 1999,
-    year_GOSHIP_end = 2012,
-    lon_Atl_section = 335.5,
-    lon_Pac_section = 190.5,
-    lon_Ind_section = 70.5,
-    lat_Atl_profile = 40.5,
-    inventory_depth = 3000,
-    coarse_grid_resolution = 10,
-    cruises_meridional = 1041,
-    predictors_max = 5,
-    predictors_min = 2,
-    MLR_number = 10,
-    
-    depth_levels = c(0, 100, 500, 2000)
-    
-  )
-
+<p>Following parameterizations were chosen to run analysis and display results:</p>
+<pre class="r"><code>depth_levels = c(0, 100, 500, 2000)
 
 slabs_Atl &lt;-
   c(
@@ -1102,12 +1113,36 @@ slabs_Ind_Pac &lt;-
     27.95,
     28.05,
     28.10,
-    Inf)</code></pre>
-</div>
-<div id="overview" class="section level1">
-<h1><span class="header-section-number">2</span> Overview</h1>
-<p>Following parameterizations were chosen to run the analysis and display results:</p>
-<pre class="r"><code>parameters</code></pre>
+    Inf)
+
+parameters &lt;-
+  lst(
+    flag_f = 2,
+    flag_qc = 1,
+    depth_min = 150,
+    bottomdepth_min = 500,
+    lat_max = 65,
+    year_JGOFS_start = 1981,
+    year_JGOFS_end = 1999,
+    year_GOSHIP_end = 2012,
+    lon_Atl_section = 335.5,
+    lon_Pac_section = 190.5,
+    lon_Ind_section = 70.5,
+    lat_Atl_profile = 40.5,
+    inventory_depth = 3000,
+    coarse_grid_resolution = 10,
+    cruises_meridional = 1041,
+    predictors_max = 5,
+    predictors_min = 2,
+    MLR_number = 10,
+    depth_levels = depth_levels,
+    slabs_Atl = slabs_Atl,
+    slabs_Ind_Pac = slabs_Ind_Pac
+  )
+
+rm(slabs_Ind_Pac, slabs_Atl, depth_levels)
+
+parameters</code></pre>
 <pre><code>$flag_f
 [1] 2
 
@@ -1163,45 +1198,21 @@ $MLR_number
 [1] 10
 
 $depth_levels
-[1]    0  100  500 2000</code></pre>
-<pre class="r"><code># parameters_long &lt;-
-#   parameters %&gt;%
-#   pivot_longer(1:length(parameters),
-#                names_to = &quot;parameter&quot;,
-#                values_to = &quot;value&quot;) %&gt;%
-#   arrange(parameter)
-# 
-# kable(parameters_long) %&gt;%
-#   kable_styling()
-# 
-# depth_levels
-# 
-# slabs_Atl
-# 
-# slabs_Ind_Pac</code></pre>
+[1]    0  100  500 2000
+
+$slabs_Atl
+ [1]  -Inf 26.00 26.50 26.75 27.00 27.25 27.50 27.75 27.85 27.95 28.05 28.10
+[13] 28.15 28.20   Inf
+
+$slabs_Ind_Pac
+ [1]  -Inf 26.00 26.50 26.75 27.00 27.25 27.50 27.75 27.85 27.95 28.05 28.10
+[13]   Inf</code></pre>
 </div>
 <div id="write-file" class="section level1">
-<h1><span class="header-section-number">3</span> Write file</h1>
+<h1><span class="header-section-number">2</span> Write file</h1>
 <pre class="r"><code>parameters %&gt;%
   write_rds(here::here(&quot;data/parameters&quot;,
-                       &quot;parameters.rds&quot;))
-# 
-# 
-# parameters %&gt;%
-#   write_csv(here::here(&quot;data/parameters&quot;,
-#                        &quot;parameters.csv&quot;))
-# 
-# depth_levels %&gt;%
-#   write_lines(here::here(&quot;data/parameters&quot;,
-#                          &quot;depth_levels.txt&quot;))
-# 
-# slabs_Atl %&gt;%
-#   write_lines(here::here(&quot;data/parameters&quot;,
-#                          &quot;slabs_Atl.txt&quot;))
-# 
-# slabs_Ind_Pac %&gt;%
-#   write_lines(here::here(&quot;data/parameters&quot;,
-#                          &quot;slabs_Ind_Pac.txt&quot;))</code></pre>
+                       &quot;parameters.rds&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
