@@ -948,7 +948,6 @@ rm(i_gamma_slab, i_era, i_basin,
 
 ```
 
-
 RMSE was plotted against the number of predictors (limited to `r parameters$predictors_min` - `r parameters$predictors_max`).
 
 ```{r eMLR_predictor_model_quality, fig.asp=2}
@@ -977,39 +976,82 @@ all_lm_stats %>%
 
 ```
 
+
+AIC is an alternative criterion to RMSE to judge model quality, but not (yet) taken into account.
+
+```{r AIC_RMSE, fig.asp=1}
+all_lm_stats %>% 
+  ggplot(aes(rmse, aic, col = gamma_slab)) +
+  geom_point() +
+  scale_color_viridis_d() +
+  facet_grid(era~basin)
+
+```
+
+
+
 Within each basin and slab, the `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras were selected.
 
 ```{r predictor_selection}
 
-all_lm_stats <- all_lm_stats %>% 
+
+all_lm_stats <- all_lm_stats %>%
   select(basin, era, gamma_slab, predictors, rmse)
 
-all_lm_stats_wide <- all_lm_stats %>% 
-  pivot_wider(names_from = era, values_from = rmse, names_prefix = "rmse_")
+all_lm_stats_wide <- all_lm_stats %>%
+  pivot_wider(names_from = era,
+              values_from = rmse,
+              names_prefix = "rmse_")
 
-all_lm_stats_wide <- all_lm_stats_wide %>% 
-  mutate(rmse_sum = rmse_JGOFS_WOCE + rmse_GO_SHIP + rmse_new_era)
+all_lm_stats_wide <- all_lm_stats_wide %>%
+  mutate(
+    rmse_sum_JGOFS_GO = rmse_JGOFS_WOCE + rmse_GO_SHIP,
+    rmse_sum_GO_new = rmse_GO_SHIP + rmse_new_era
+  )
 
-lm_best <- all_lm_stats_wide %>% 
-  group_by(basin, gamma_slab) %>% 
+all_lm_stats <- all_lm_stats_wide %>%
+  pivot_longer(
+    c(rmse_sum_JGOFS_GO, rmse_sum_GO_new),
+    names_to = "eras",
+    values_to = "rmse_sum",
+    names_prefix = "rmse_sum_"
+  )
+
+lm_best <- all_lm_stats %>%
+  group_by(basin, gamma_slab, eras) %>%
   slice_min(order_by = rmse_sum,
             with_ties = FALSE,
-            n = parameters$MLR_number) %>% 
-  ungroup()
+            n = parameters$MLR_number) %>%
+  ungroup() %>% 
+  arrange(basin, gamma_slab, eras, predictors)
 
 kable(lm_best) %>%
   add_header_above() %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "400px")
 
-# lm_best_n <-lm_best %>% 
-#   group_by(basin, gamma_slab) %>% 
-#   summarise(n()) %>% 
+# lm_best_n <-lm_best %>%
+#   group_by(basin, gamma_slab) %>%
+#   summarise(n()) %>%
 #   ungroup()
+
+
+```
+
+```{r rmse_correlation_across_eras}
+
+all_lm_stats %>%
+  ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
+  geom_point() +
+  scale_color_viridis_d() +
+  facet_grid(eras ~ basin)
 
 rm(all_lm_stats, all_lm_stats_wide)
 
 ```
+
+
+
 
 ```{r test_rmse_output, eval=FALSE}
 
@@ -1071,16 +1113,23 @@ for (i_basin in unique(GLODAP$basin)) {
       lm_best_basin_slab <- lm_best_basin %>% 
         filter(gamma_slab == i_gamma_slab)
       
-      for (i_predictors in unique(lm_best_basin_slab$predictors)) {
+      for (i_eras in unique(lm_best_basin_slab$eras)) {
         
-        # i_predictors <- unique(lm_best_basin_slab$predictors)[1]
+        # i_eras <- unique(lm_best_basin_slab$eras)[1]
         
-        lm_best_single <- lm_best_basin_slab %>%
+        lm_best_basin_slab_eras <- lm_best_basin_slab %>%
+          filter(eras == i_eras)
+      
+      for (i_predictors in unique(lm_best_basin_slab_eras$predictors)) {
+        
+        # i_predictors <- unique(lm_best_basin_slab_eras$predictors)[1]
+        
+        lm_best_single <- lm_best_basin_slab_eras %>%
           filter(predictors == i_predictors) %>%
           select(lm_coeff) %>%
           pull()
         
-        i_rmse_sum <- lm_best_basin_slab %>%
+        i_rmse_sum <- lm_best_basin_slab_eras %>%
           filter(predictors == i_predictors) %>%
           select(rmse_sum) %>%
           pull()
@@ -1094,6 +1143,7 @@ for (i_basin in unique(GLODAP$basin)) {
         coefficients <- coefficients %>% 
           mutate(basin = i_basin,
                  era = i_era,
+                 eras = i_eras,
                  gamma_slab = i_gamma_slab,
                  model = lm_best_single,
                  rmse = i_rmse_sum)
@@ -1112,6 +1162,7 @@ for (i_basin in unique(GLODAP$basin)) {
       }
       
  
+      }
     }
     
   }
@@ -1128,6 +1179,7 @@ all_lm %>%
   write_csv(here::here("data/eMLR",
                        "all_lm.csv"))
 
+
 ```
 
 
@@ -1135,5 +1187,6 @@ all_lm %>%
 
 - combine correlation, rmse and model calculation into one routine, ideally using the purrr map approach
 - select exactly best 10 models, even if same rmse sum appears more than once (currently, selection is set two ten, even if doublicated rmse occur)
+- check (phosphate_star) NA's in coeffcients -> cases of exact colinearity?
 
 # Open questions
