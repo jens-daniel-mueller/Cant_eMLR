@@ -574,16 +574,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed08ccbe18f78d69f86d415c7d38ec9f160a8a1d1targetblankd08ccbea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d08ccbe18f78d69f86d415c7d38ec9f160a8a1d1" target="_blank">d08ccbe</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3de9dc82ca5d067f2a33037c442d204ff415326atargetblank3de9dc8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3de9dc82ca5d067f2a33037c442d204ff415326a" target="_blank">3de9dc8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed08ccbe18f78d69f86d415c7d38ec9f160a8a1d1targetblankd08ccbea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree3de9dc82ca5d067f2a33037c442d204ff415326atargetblank3de9dc8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d08ccbe18f78d69f86d415c7d38ec9f160a8a1d1" target="_blank">d08ccbe</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/3de9dc82ca5d067f2a33037c442d204ff415326a" target="_blank">3de9dc8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/3de9dc82ca5d067f2a33037c442d204ff415326a/analysis/eMLR.Rmd" target="_blank">3de9dc8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-19
+</td>
+<td>
+po4 star nitrate oxygen comparison added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/cfa2ce0bedbe8c3386645906a0869cbb8db1f302/docs/eMLR.html" target="_blank">cfa2ce0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2727,6 +2761,20 @@ rm(rCP, rNP)</code></pre>
   scale_fill_viridis_c() +
   facet_wrap(~basin)</code></pre>
 <p><img src="figure/eMLR.Rmd/phosphate_star_approach_comparison_oxygen_nitrate-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>GLODAP %&gt;% 
+  ggplot(aes(phosphate,
+             nitrate)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)</code></pre>
+<p><img src="figure/eMLR.Rmd/phosphate_star_approach_comparison_phosphate_nitrate-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>GLODAP %&gt;% 
+  ggplot(aes(phosphate,
+             oxygen)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)</code></pre>
+<p><img src="figure/eMLR.Rmd/phosphate_star_approach_comparison_phosphate_oxygen-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>GLODAP %&gt;% 
   ggplot(aes(phosphate_star_oxy_corr,
              phosphate_star_nit_corr)) +
