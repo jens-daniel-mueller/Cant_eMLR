@@ -26,7 +26,13 @@ navbar:
     - text: Atmospheric CO2
       href: read_CO2_atm.html
   - text: eMLR
-    href: eMLR.html
+    menu:
+    - text: Data preparation
+      href: eMLR_data_preparation.html
+    - text: Assumption testing
+      href: eMLR_assumption_testing.html
+    - text: Model fitting
+      href: eMLR_model_fitting.html
   - text: Mapping
     href: mapping.html
   - text: Analysis
