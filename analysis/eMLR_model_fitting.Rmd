@@ -1,5 +1,5 @@
 ---
-title: "Data base"
+title: "eMLR - model fitting"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 

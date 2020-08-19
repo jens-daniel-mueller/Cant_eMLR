@@ -25,17 +25,8 @@ library(marelac)
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_csv(here::here("data/parameters",
-                      "parameters.csv"))
-depth_levels <-
-  read_lines(here::here("data/parameters",
-                        "depth_levels.txt"))
-slabs_Atl <-
-  read_lines(here::here("data/parameters",
-                        "slabs_Atl.txt"))
-slabs_Ind_Pac <-
-  read_lines(here::here("data/parameters",
-                        "slabs_Ind_Pac.txt"))
+  read_rds(here::here("data",
+                       "parameters.rds"))
 ```
 
 ```{r read_mask_files, include = FALSE}
