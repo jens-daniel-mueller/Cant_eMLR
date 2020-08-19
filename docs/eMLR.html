@@ -458,7 +458,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Data base</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">18 August, 2020</h4>
+<h4 class="date">19 August, 2020</h4>
 
 </div>
 
@@ -483,7 +483,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-18
+<strong>Last updated:</strong> 2020-08-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -574,16 +574,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1a4d1a8c762a8e513389f9bb6616d165f57463d2targetblank1a4d1a8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1a4d1a8c762a8e513389f9bb6616d165f57463d2" target="_blank">1a4d1a8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed08ccbe18f78d69f86d415c7d38ec9f160a8a1d1targetblankd08ccbea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d08ccbe18f78d69f86d415c7d38ec9f160a8a1d1" target="_blank">d08ccbe</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1a4d1a8c762a8e513389f9bb6616d165f57463d2targetblank1a4d1a8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed08ccbe18f78d69f86d415c7d38ec9f160a8a1d1targetblankd08ccbea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1a4d1a8c762a8e513389f9bb6616d165f57463d2" target="_blank">1a4d1a8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d08ccbe18f78d69f86d415c7d38ec9f160a8a1d1" target="_blank">d08ccbe</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/d08ccbe18f78d69f86d415c7d38ec9f160a8a1d1/analysis/eMLR.Rmd" target="_blank">d08ccbe</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-19
+</td>
+<td>
+phosphate star plots included
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/3574489a05ad94be67e9ba1f3feba4e69c5ac5a7/docs/eMLR.html" target="_blank">3574489</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2679,9 +2713,27 @@ rm(rCP, rNP)</code></pre>
 <h1><span class="header-section-number">3</span> PO<sub>4</sub>* calculation</h1>
 <p>Currently, the predictor PO<sub>4</sub>* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate, as claimed in Gruber et al (2019).</p>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
-  mutate(phosphate_star_oxy = phosphate + (oxygen / 170)  - 1.95)</code></pre>
+  mutate(phosphate_star_oxy_corr = (oxygen / 170)  - 1.95,
+         phosphate_star_oxy = phosphate + phosphate_star_oxy_corr)</code></pre>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
-  mutate(phosphate_star_nit = phosphate - nitrate/16  + 2.9)</code></pre>
+  mutate(phosphate_star_nit_corr = - nitrate/16  + 2.9,
+         phosphate_star_nit = phosphate + phosphate_star_nit_corr)</code></pre>
+<div id="comparison-of-approaches" class="section level2">
+<h2><span class="header-section-number">3.1</span> Comparison of approaches</h2>
+<pre class="r"><code>GLODAP %&gt;% 
+  ggplot(aes(oxygen,
+             nitrate)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)</code></pre>
+<p><img src="figure/eMLR.Rmd/phosphate_star_approach_comparison_oxygen_nitrate-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>GLODAP %&gt;% 
+  ggplot(aes(phosphate_star_oxy_corr,
+             phosphate_star_nit_corr)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)</code></pre>
+<p><img src="figure/eMLR.Rmd/phosphate_star_approach_comparison_oxygen_nitrate_corr-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>GLODAP %&gt;% 
   ggplot(aes(phosphate_star_oxy, phosphate_star_nit)) +
   geom_bin2d() +
@@ -2689,8 +2741,11 @@ rm(rCP, rNP)</code></pre>
   facet_wrap(~basin)</code></pre>
 <p><img src="figure/eMLR.Rmd/phosphate_star_approach_comparison-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
-  select(-phosphate_star_nit) %&gt;% 
+  select(-c(
+    phosphate_star_nit,
+    phosphate_star_oxy_corr)) %&gt;% 
   rename(phosphate_star = phosphate_star_oxy)</code></pre>
+</div>
 </div>
 <div id="reference-year-adjustment" class="section level1">
 <h1><span class="header-section-number">4</span> Reference year adjustment</h1>
@@ -31700,7 +31755,7 @@ all_lm %&gt;%
 <div id="open-questions" class="section level1">
 <h1><span class="header-section-number">8</span> Open questions</h1>
 <ul>
-<li></li>
+<li>Which PO4* calculation is “correct”?</li>
 </ul>
 <br>
 <p>
