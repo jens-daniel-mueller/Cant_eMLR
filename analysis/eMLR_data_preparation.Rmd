@@ -1,0 +1,606 @@
+---
+title: "Data base"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+```
+
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_rds(here::here("data",
+                       "parameters.rds"))
+```
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+```{r read_functions, include = FALSE}
+source(here::here("code", "plotting_functions.R"))
+```
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Required data
+
+Required are: 
+
+- GLODAPv2.2020
+  - cleaned data file
+  - horizontal grid of sampling coordinates
+- Cant from GLODAPv2_2016b_MappedClimatologies
+- annual mean atmospheric pCO~2~ 
+
+```{r read_required_data_sets}
+
+GLODAP <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2020/_summarized_data_files",
+      "GLODAPv2.2020_clean.csv"
+    )
+  )
+
+GLODAP_obs_grid <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2020/_summarized_data_files",
+      "GLODAPv2.2020_clean_obs_grid.csv"
+    )
+  )
+
+# Cant_clim <-
+#   read_csv(here::here("data/GLODAPv1_1/_summarized_files",
+#                       "Cant_94.csv"))
+
+Cant_clim <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+      "Cant.csv"
+    )
+  )
+
+co2_atm <-
+  read_csv(here::here(
+    "data/pCO2_atmosphere/_summarized_data_files",
+    "co2_atm.csv"
+  ))
+
+```
+
+```{r data_set_harmonization}
+
+Cant_clim <- Cant_clim %>%
+  rename(cant = Cant)
+
+```
+
+
+# C*
+
+C* serves as a conservative tracer of anthropogenic CO~2~ uptake. It is derived from measured DIC by removing the impact of  
+
+- organic matter formation and respiration
+- calcification and calcium carbonate dissolution
+
+Contributions of those processes are estimated from phosphate and alkalinity concentrations.
+
+## Stoichiometric ratios
+
+```{r set_criteria_stoichiometric_ratios}
+
+rCP <- 117
+rNP <- 16
+
+```
+
+The stoichiometric nutrient ratios for the production and mineralization of organic matter were set to:
+
+- C/P: `r rCP`
+- N/P: `r rNP`
+
+## Calculation
+
+C* is calculated as:  
+
+
+
+```{r calculate_Cstar}
+
+print("Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05")
+
+GLODAP <- GLODAP %>% 
+  mutate(rCP_phosphate = -rCP * phosphate,
+         talk_05 = -0.5 * talk,
+         rNP_phosphate_05 = -0.5 * rNP * phosphate,
+         Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05)
+
+rm(rCP, rNP)
+
+```
+
+# PO~4~* calculation 
+
+Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate, as claimed in Gruber et al (2019).
+
+```{r calculate_phosphate_star_oxygen}
+
+GLODAP <- GLODAP %>% 
+  mutate(phosphate_star_oxy_corr = (oxygen / 170)  - 1.95,
+         phosphate_star_oxy = phosphate + phosphate_star_oxy_corr)
+
+```
+
+```{r calculate_phosphate_star_nitrate}
+
+GLODAP <- GLODAP %>% 
+  mutate(phosphate_star_nit_corr = - nitrate/16  + 2.9,
+         phosphate_star_nit = phosphate + phosphate_star_nit_corr)
+
+```
+
+## Comparison of approaches
+
+```{r phosphate_star_approach_comparison_oxygen_nitrate, fig.asp=0.5}
+
+GLODAP %>% 
+  ggplot(aes(oxygen,
+             nitrate)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)
+
+```
+
+```{r phosphate_star_approach_comparison_phosphate_nitrate, fig.asp=0.5}
+
+GLODAP %>% 
+  ggplot(aes(phosphate,
+             nitrate)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)
+
+```
+
+```{r phosphate_star_approach_comparison_phosphate_oxygen, fig.asp=0.5}
+
+GLODAP %>% 
+  ggplot(aes(phosphate,
+             oxygen)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)
+
+```
+
+```{r phosphate_star_approach_comparison_oxygen_nitrate_corr, fig.asp=0.5}
+
+GLODAP %>% 
+  ggplot(aes(phosphate_star_oxy_corr,
+             phosphate_star_nit_corr)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)
+
+```
+
+
+```{r phosphate_star_approach_comparison, fig.asp=0.5}
+
+GLODAP %>% 
+  ggplot(aes(phosphate_star_oxy, phosphate_star_nit)) +
+  geom_bin2d() +
+  scale_fill_viridis_c() +
+  facet_wrap(~basin)
+
+```
+
+
+
+```{r select_phosphate_star_approach}
+
+GLODAP <- GLODAP %>% 
+  select(-c(
+    phosphate_star_nit,
+    phosphate_star_oxy_corr)) %>% 
+  rename(phosphate_star = phosphate_star_oxy)
+
+```
+
+
+
+# Reference year adjustment
+
+The reference year adjustment relies on an apriori estimate of Cant at a given location and depth, which is used as a scaling factor for the concurrent change in atmospheric CO~2~. The underlying assumption is a transient steady state for the oceanic Cant uptake. Here, Cant from the GLODAP mapped Climatology was used.  
+
+Note that eq. 6 in Clement and Gruber (2018) misses pCO~2~ pre-industrial in the denominator. Here we use the equation published in Gruber et al. (2019).
+
+## Merge data sets
+
+### GLODAP + Cant
+
+```{r merge_Cstar_Cant}
+
+Cant_clim <- Cant_clim %>% 
+  drop_na()
+
+Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim) %>% 
+  select(-n)
+
+# Cant_clim_obs_nr <- Cant_clim_obs %>%
+#   group_by(lon, lat) %>%
+#   summarise(n_cant = n()) %>%
+#   ungroup()
+
+# Cant_clim_obs %>% 
+#   filter(n < 1) %>% 
+#   ggplot(aes(lon,lat)) +
+#   geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
+#   geom_point(col = "red")
+
+rm(Cant_clim, GLODAP_obs_grid)
+
+GLODAP_Cant_obs <- full_join(GLODAP, Cant_clim_obs)
+
+rm(GLODAP, Cant_clim_obs)
+
+```
+
+The mapped Cant product was merged with GLODAP observation by:
+
+- using an identical 1x1° horizontal grid
+- linear interpolation of Cant from standard to sampling depth
+
+```{r interpolate_Cant_to_observations}
+
+# GLODAP_Cant_obs <- full_join(GLODAP_Cant_obs, Cant_clim_obs_nr)
+
+GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
+  # filter(n_cant > 1) %>% 
+  group_by(lat, lon) %>%
+  arrange(depth) %>%
+  mutate(cant_int = approxfun(depth, cant, rule = 2)(depth)) %>%
+  ungroup()
+
+# GLODAP_Cant_obs_set <- GLODAP_Cant_obs %>%
+#   filter(n_cant == 1) %>% 
+#   group_by(lat, lon) %>%
+#   arrange(depth) %>%
+#   mutate(cant_int = mean(cant, na.rm = TRUE)) %>%
+#   ungroup()
+
+ggplot() +
+  geom_path(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+      arrange(depth),
+    aes(cant, depth, col = "mapped")
+  ) +
+  geom_point(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+      arrange(depth),
+    aes(cant, depth, col = "mapped")
+  ) +
+  geom_point(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
+    aes(cant_int, depth, col = "interpolated")
+  ) +
+  scale_y_reverse() +
+  scale_color_brewer(palette = "Dark2", name = "") +
+  labs(title = "Cant interpolation to sampling depth - example profile")
+
+# remove cant data at grid cells without observations
+
+GLODAP <- GLODAP_Cant_obs %>%
+  filter(!is.na(Cstar)) %>%
+  mutate(cant = cant_int) %>%
+  select(-cant_int)
+
+rm(GLODAP_Cant_obs)
+
+```
+
+### GLODAP + atm. pCO~2~
+
+GLODAP observations were merged with mean annual atmospheric pCO~2~ levels by year.
+
+```{r merge_Cstar_pCO2}
+
+GLODAP <- left_join(GLODAP, co2_atm)
+
+```
+
+
+## Calculate adjustment
+
+```{r adjust_reference_year}
+
+GLODAP <- GLODAP %>% 
+  group_by(era) %>% 
+  mutate(tref = median(year)) %>% 
+  ungroup()
+
+tref <- GLODAP %>% 
+  group_by(era) %>% 
+  summarise(year = median(year)) %>% 
+  ungroup()
+
+co2_atm_tref <- right_join(co2_atm, tref) %>% 
+  select(-year) %>% 
+  rename(pCO2_tref = pCO2)
+
+GLODAP <- full_join(GLODAP, co2_atm_tref)
+
+rm(co2_atm, co2_atm_tref, tref)
+
+GLODAP <- GLODAP %>% 
+  mutate(Cstar_tref_delta = 
+           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * cant,
+         Cstar_tref = Cstar - Cstar_tref_delta)
+
+```
+
+## Control plots
+
+### Histogram
+
+```{r Cstar_reference_year_adjustment_histogram}
+
+GLODAP %>% 
+  ggplot(aes(Cstar_tref_delta)) +
+  geom_histogram()
+
+```
+
+### Time series
+
+```{r Cstar_reference_year_adjustment_vs_time_difference_Cant}
+
+GLODAP %>% 
+  sample_n(1e4) %>% 
+  ggplot(aes(year, Cstar_tref_delta, col = cant)) +
+  geom_point() +
+  scale_color_viridis_c() +
+  labs(title = "random subsample 1e4")
+
+```
+
+# Selected section plots
+
+A selected section is plotted to demonstrate the magnitude of various parameters and corrections relevant to C*.
+
+```{r select_cruises}
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% parameters$cruises_meridional)
+
+```
+
+
+```{r meridional_sections, fig.asp=0.6}
+
+GLODAP_cruise %>%
+  arrange(date) %>% 
+  ggplot(aes(lon, lat)) +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_path() +
+  geom_point(aes(col = date)) +
+  coord_quickmap(expand = 0) +
+  scale_color_viridis_c(trans = "date") +
+  labs(title = paste("Cruise year:", mean(GLODAP_cruise$year))) +
+  theme(legend.position = "bottom")
+
+lat_section <- 
+GLODAP_cruise %>%
+  ggplot(aes(lat, depth)) +
+  scale_y_reverse() +
+  scale_color_viridis_c() +
+  theme(legend.position = "bottom")
+
+lat_section +
+  geom_point(aes(col = tco2))
+
+lat_section +
+  geom_point(aes(col = rCP_phosphate))
+
+lat_section +
+  geom_point(aes(col = talk_05))
+
+lat_section +
+  geom_point(aes(col = rNP_phosphate_05))
+
+lat_section +
+  geom_point(aes(col = Cstar))
+
+lat_section +
+  geom_point(aes(col = -Cstar_tref_delta))
+
+rm(lat_section, GLODAP_cruise)
+
+```
+
+
+# Isoneutral slabs
+
+The following boundaries for isoneutral slabs were defined:
+
+- Atlantic: `r parameters$slabs_Atl`
+- Indo-Pacific: `r parameters$slabs_Ind_Pac`
+
+Continuous neutral densities (gamma) values from GLODAP are grouped into isoneutral slabs.
+
+```{r cut_isoneutral_slabs}
+
+GLODAP_Atl <- GLODAP %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
+
+GLODAP_Ind_Pac <- GLODAP %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
+
+GLODAP <- bind_rows(GLODAP_Atl, GLODAP_Ind_Pac)
+
+rm(GLODAP_Atl, GLODAP_Ind_Pac)
+
+```
+
+```{r meridional_sections_isoneutral_slabs, fig.asp=0.6}
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% parameters$cruises_meridional)
+
+lat_section <- 
+GLODAP_cruise %>%
+  ggplot(aes(lat, depth)) +
+  scale_y_reverse() +
+  theme(legend.position = "bottom")
+
+lat_section +
+  geom_point(aes(col = gamma_slab)) +
+  scale_color_viridis_d()
+
+rm(lat_section, GLODAP_cruise)
+
+```
+
+
+```{r test_isoneutral_density_calculation, eval=FALSE}
+
+GLODAP_cruise <- GLODAP %>% 
+  filter(cruise %in% parameters$cruises_meridional)
+
+library(oce)
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(THETA = swTheta(salinity = sal,
+                         temperature = tem,
+                         pressure = depth,
+                         referencePressure = 0,
+                         longitude = lon-180,
+                         latitude = lat))
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  rename(LATITUDE = lat,
+         LONGITUDE = lon,
+         SALNTY = sal,
+         CTDPRS = depth,
+         gamma_provided = gamma)
+
+library(reticulate)
+source_python(here::here("code/python_scripts",
+                         "Gamma_GLODAP_python.py"))
+
+GLODAP_cruise <- calculate_gamma(GLODAP_cruise)
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(gamma_delta = gamma_provided - GAMMA)
+
+lat_section <- 
+GLODAP_cruise %>%
+  ggplot(aes(LATITUDE, CTDPRS)) +
+  scale_y_reverse() +
+  theme(legend.position = "bottom")
+
+lat_section +
+  geom_point(aes(col = gamma_delta)) +
+  scale_color_viridis_c()
+
+GLODAP_cruise %>% 
+  ggplot(aes(gamma_delta))+
+  geom_histogram()
+
+rm(lat_section, GLODAP_cruise, cruises_meridional)
+
+```
+
+
+
+# Observations coverage
+
+```{r obs_gamma_slab_Atl, fig.asp=1}
+
+GLODAP <- GLODAP %>% 
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) %>%
+  mutate(gamma_slab = factor(gamma_slab), 
+         gamma_slab = factor(gamma_slab, levels = rev(levels(gamma_slab))))
+
+GLODAP %>% 
+  filter(basin == "Atlantic") %>% 
+  ggplot(aes(lat, gamma_slab)) +
+  geom_bin2d(binwidth = 5) +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
+                       name = "log10(n)") +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  facet_grid(era~basin)
+
+```
+
+
+```{r obs_gamma_slab_Pac, fig.asp=1}
+
+GLODAP %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  ggplot(aes(lat, gamma_slab)) +
+  geom_bin2d(binwidth = 5) +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
+                       name = "log10(n)") +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  facet_grid(era~basin)
+
+```
+
+
+# Write file
+
+```{r write_csv_GLODAP_used_for_fitting}
+
+GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                "GLODAP_MLR_fitting_ready.csv"))
+
+```
+
+# Open tasks
+
+- 
+
+# Open questions
+
+- Which PO4* calculation is "correct"?
