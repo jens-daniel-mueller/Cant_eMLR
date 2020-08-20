@@ -17,8 +17,10 @@ navbar:
       href: read_GLODAPv2_2020.html
     - text: GLODAPv2_2016 Mapped Climatologies
       href: read_GLODAPv2_2016_MappedClimatologies.html
-    - text: World Ocean Atlas
+    - text: World Ocean Atlas_2018
       href: read_World_Ocean_Atlas_2018.html
+    - text: World Ocean Atlas_2013
+      href: read_World_Ocean_Atlas_2013_Clement.html
     - text: Cant Gruber
       href: read_Gruber_2019_Cant.html
     - text: Cant Sabine

@@ -204,6 +204,52 @@ rm(WOA18_predictors_n)
 ```
 
 
+
+### Neutral density zonal mean section
+
+```{r WOA18_gamma_mean_sections}
+
+WOA18_predictors_zonal <- WOA18_predictors %>%
+  group_by(lat, depth, basin) %>%
+  summarise(gamma_mean = mean(gamma)) %>%
+  ungroup()
+
+WOA18_predictors_zonal_Atl <- WOA18_predictors_zonal %>%
+  filter(basin == "Atlantic") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+
+WOA18_predictors_zonal_Ind_Pac <- WOA18_predictors_zonal %>%
+  filter(basin == "Indo-Pacific") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+
+WOA18_predictors_zonal <- bind_rows(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
+
+rm(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
+
+slab_breaks <- c(parameters$slabs_Atl[1:12], Inf)
+
+WOA18_predictors_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = gamma_mean)) +
+  geom_contour_filled(breaks = slab_breaks) +
+  geom_contour(breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(breaks = slab_breaks,
+                    col = "white",
+                    skip = 1) +
+  scale_fill_viridis_d(name = "Gamma",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin ~ .)
+
+rm(WOA18_predictors_zonal, slab_breaks)
+
+```
+
+
+
 ## WOA18 + GLODAP
 
 WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.
@@ -299,6 +345,51 @@ N_Atl %>%
 rm(N_Atl)
 
 ```
+
+#### Neutral density zonal mean section
+
+```{r predictors_gamma_mean_sections}
+
+predictors_zonal <- predictors %>%
+  group_by(lat, depth, basin) %>%
+  summarise(gamma_mean = mean(gamma)) %>%
+  ungroup()
+
+predictors_zonal_Atl <- predictors_zonal %>%
+  filter(basin == "Atlantic") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+
+predictors_zonal_Ind_Pac <- predictors_zonal %>%
+  filter(basin == "Indo-Pacific") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+
+predictors_zonal <- bind_rows(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
+
+rm(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
+
+slab_breaks <- c(parameters$slabs_Atl[1:12], Inf)
+
+predictors_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = gamma_mean)) +
+  geom_contour_filled(breaks = slab_breaks) +
+  geom_contour(breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(breaks = slab_breaks,
+                    col = "white",
+                    skip = 1) +
+  scale_fill_viridis_d(name = "Gamma",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin ~ .)
+
+rm(predictors_zonal, slab_breaks)
+
+```
+
+
 
 ## WOA13 + GLODAP
 
