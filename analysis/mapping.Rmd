@@ -617,17 +617,19 @@ rm(Cant_model_average_zonal_Atl, Cant_model_average_zonal_Ind_Pac)
 
 ## Mean values
 
-The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Binning here does not reflect the isoneutral density slabs used for MLR fitting.
+The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Binning here does not include two highest isoneutral density slabs in the Atlantic, yet.
 
 ```{r gamma_sections_mean}
+
+slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 
 Cant_model_average_zonal %>% 
   filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = parameters$slabs_Atl[1:12]) +
-  geom_contour(breaks = parameters$slabs_Atl[1:12],
+  geom_contour_filled(breaks = slab_breaks) +
+  geom_contour(breaks = slab_breaks,
                col = "white") +
-  geom_text_contour(breaks = parameters$slabs_Atl[1:12],
+  geom_text_contour(breaks = slab_breaks,
                col = "white",
                skip = 1) +
   scale_fill_viridis_d(name = "Gamma",
@@ -654,11 +656,11 @@ Cant_model_average_zonal %>%
                        breaks = MakeBreaks(5),
                        name = "Cant") +
   geom_contour(aes(lat, depth, z = gamma_mean),
-               breaks = parameters$slabs_Atl[1:12],
+               breaks = slab_breaks,
                col = "black") +
   geom_text_contour(
     aes(lat, depth, z = gamma_mean),
-    breaks = parameters$slabs_Atl[1:12],
+    breaks = slab_breaks,
     col = "black",
     skip = 1
   ) +
@@ -675,17 +677,16 @@ Standard deviation across Cant from all MLR models was calculate for each grid c
 
 ```{r Cant_sections_sd_models}
 
-
 Cant_model_average_zonal %>%
   filter(depth <= parameters$inventory_depth) %>%
   ggplot(aes(lat, depth, z = Cant_sd_mean)) +
   geom_contour_filled() +
   geom_contour(aes(lat, depth, z = gamma_mean),
-               breaks = parameters$slabs_Atl[1:12],
+               breaks = slab_breaks,
                col = "white") +
   geom_text_contour(
     aes(lat, depth, z = gamma_mean),
-    breaks = parameters$slabs_Atl[1:12],
+    breaks = slab_breaks,
     col = "white",
     skip = 1
   ) +
@@ -708,11 +709,11 @@ Cant_model_average_zonal %>%
   ggplot(aes(lat, depth, z = Cant_mean_sd)) +
   geom_contour_filled() +
   geom_contour(aes(lat, depth, z = gamma_mean),
-               breaks = parameters$slabs_Atl[1:12],
+               breaks = slab_breaks,
                col = "white") +
   geom_text_contour(
     aes(lat, depth, z = gamma_mean),
-    breaks = parameters$slabs_Atl[1:12],
+    breaks = slab_breaks,
     col = "white",
     skip = 1
   ) +
@@ -734,11 +735,11 @@ Cant_model_average_zonal %>%
   ggplot(aes(lat, depth, z = Cant_pos_mean)) +
   geom_contour_filled() +
   geom_contour(aes(lat, depth, z = gamma_mean),
-               breaks = parameters$slabs_Atl[1:12],
+               breaks = slab_breaks,
                col = "white") +
   geom_text_contour(
     aes(lat, depth, z = gamma_mean),
-    breaks = parameters$slabs_Atl[1:12],
+    breaks = slab_breaks,
     col = "white",
     skip = 1
   ) +
@@ -749,6 +750,17 @@ Cant_model_average_zonal %>%
   facet_grid(basin~eras)
 
 ```
+
+## Sections
+
+
+```{r Cant_sections_positive_mean_one_long}
+
+section_climatology(Cant_model_average %>% filter(eras == "JGOFS_GO"),
+                    "Cant_mean")
+
+```
+
 
 # Cant maps
 

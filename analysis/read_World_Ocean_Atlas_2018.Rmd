@@ -18,11 +18,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(lubridate)
 library(tidync)
 library(reticulate)
 library(oce)
-
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -136,7 +134,7 @@ rm(landsea_01)
 ```
 
 
-## Plot map
+## Map
 
 ```{r basin_masks_WOA18_map}
 
@@ -262,7 +260,7 @@ WOA18_predictors <- WOA18_predictors %>%
                          temperature = tem,
                          pressure = depth,
                          referencePressure = 0,
-                         longitude = lon-180,
+                         longitude = lon - 180,
                          latitude = lat))
 
 ```
@@ -285,9 +283,11 @@ WOA18_predictors %>%
 
 ```
 
+## Neutral density
 
+Neutral density gamma was calculated with a Python script provided by Serazin et al (2011), which performs a polynomial approximation of the original gamma calculation.
 
-## Neutral density calculation
+### Calculation
 
 ```{r WOA18_neutral_density_calculations, eval=FALSE}
 
@@ -305,7 +305,7 @@ WOA18_predictors_gamma_calc <- calculate_gamma(WOA18_predictors_gamma_prep)
 ```
 
 
-### Write file
+### Write/open file
 
 ```{r write_WOA_predictor_file, eval=FALSE}
 
@@ -321,8 +321,6 @@ WOA18_predictors %>%
                        "WOA18_predictors.csv"))
 
 ```
-
-### Open file
 
 ```{r read_WOA_predictor_file_gamma}
 
@@ -430,117 +428,13 @@ section_climatology_shallow(WOA18_predictors, "gamma")
 ```
 
 
-# WOA13 from D. Clement
-
-Dominic Clement provided a netcdf file with the basin mask and neutral densities used in Clement and Gruber (2018), both derived from the World Ocean Atlas 2013.
-
-## Read ncdfs
-
-```{r read_WOA13_dclement}
-
-# temperature
-
-nd_mask <- tidync(here::here("data/dclement",
-                          "nd_mask.nc"))
-nd_mask_tibble <- nd_mask %>% hyper_tibble()
-
-nd_mask_tibble <- nd_mask_tibble %>% 
-  mutate(gamma = if_else(gamma == -999, NaN, gamma))
-
-```
-
-## Plots
-
-```{r set_criteria_horizons_sections_WOA13}
-
-depth_surface_selection <- c(0)
-Atl_lon <- 335.5
-Pac_lon <- 190.5
-
-```
-
-Below, following subsets of the climatologies are plotted:  
-
-
-- Basin mask at `r depth_surface_selection`m
-- Meridional sections of neutral density at longitudes:
-  - Atlantic: `r Atl_lon`
-  - Pacific: `r Pac_lon`
-
-Section locations are indicated as white lines in the basin map.
-
-## Basin map
-
-```{r basin_map_WOA13_dclement}
-
-nd_mask_tibble %>% 
-  filter(depth == 0) %>% 
-  ggplot(aes(longitude, latitude, fill = as.factor(mask))) +
-  geom_raster() +
-  geom_vline(xintercept = c(Atl_lon, Pac_lon), col = "white") +
-  coord_quickmap(expand = 0) +
-  scale_fill_brewer(palette = "Set1",
-                    name = "basin mask") +
-  theme(legend.position = "top")
-
-```
-
-## Neutral density sections
-
-### Atlantic
-
-```{r gamma_section_WOA13_dclement_Atl}
-
-nd_mask_tibble %>% 
-  filter(longitude == Atl_lon) %>% 
-  ggplot(aes(latitude, depth, z = gamma)) +
-  geom_contour_filled() +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
-
-```
-
-### Pacific
-
-```{r gamma_section_WOA13_dclement_Pac}
-
-nd_mask_tibble %>% 
-  filter(longitude == Pac_lon) %>% 
-  ggplot(aes(latitude, depth, z = gamma)) +
-  geom_contour_filled() +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  theme(legend.position = "top")
-
-```
-
-
-## Write file
-
-```{r write_WOA13_dclement_file, eval=FALSE}
-
-nd_mask_tibble %>%
-  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                       "WOA13_mask_gamma.csv"))
-
-rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
-
-```
-
-
-
-
-
 # Open tasks
 
-- Which temperature is made available from WOA18? Is conversion to pot. temperature required for neutral density calculation?
 - How to convert depth from WOA18 to CTD pressure (dbars) for neutral density calculation?
 
 # Questions
 
 - Which version of the WOA to be used
   - Fields (currently: objectively analyzed mean)
-  - Decades (currently: oall decades)
-  - Grid (currently: o1 deg resolution)
-- How to merge with GLODAP climatology (currently interpolated to GLODAP depth)
+  - Decades (currently: all decades)
+  - Grid (currently: 1 deg resolution)
