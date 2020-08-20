@@ -291,6 +291,38 @@ rm(GLODAP_depths)
 
 ```
 
+### Spatial boundaries
+
+Only observations were taken into consideration with:
+
+- minimum sampling depth:  `r parameters$depth_min`m
+- minimum bottom depth:  `r parameters$bottomdepth_min`m
+- maximum latitude:  `r parameters$lat_max`°N
+
+
+```{r apply_spatial_boundaries, eval=FALSE}
+
+predictors <- predictors %>% 
+  filter(depth >= parameters$depth_min)
+
+predictors <- predictors %>% 
+  filter(lat <= parameters$lat_max)
+
+predictors_grid <- predictors %>% 
+  group_by(lat, lon) %>% 
+  summarise(bottomdepth = max(depth)) %>% 
+  ungroup()
+
+predictors <- full_join(predictors, predictors_grid)
+
+predictors <- predictors %>% 
+  filter(bottomdepth >= parameters$bottomdepth_min) %>% 
+  select(-bottomdepth)
+
+```
+
+
+
 ### Control plots
 
 #### Maps
