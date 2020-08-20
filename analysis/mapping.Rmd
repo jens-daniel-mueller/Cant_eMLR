@@ -599,14 +599,28 @@ Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combi
 
 ```{r Calculate_Cant_mean}
 
-Cant_model_average <- Cant %>% 
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>% 
-  group_by(lon, lat, depth, eras, basin) %>% 
-  summarise(Cant_mean = mean(Cant),
-            Cant_sd = sd(Cant),
-            Cant_pos_mean = mean(Cant_pos),
-            Cant_pos_sd = sd(Cant_pos),
-            gamma_mean = mean(gamma)) %>% 
+Cant <- Cant %>%
+  select(lon, lat, depth, eras, basin, Cant, gamma)
+
+# Cant_model_average <- Cant %>%
+#   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
+#   group_by(lon, lat, depth, eras, basin) %>%
+#   summarise(across(c("Cant", "Cant_pos", "gamma"),
+#                    list(
+#                      mean = ~ mean(.x, na.rm = TRUE),
+#                      sd = ~ sd(.x, na.rm = TRUE)
+#                    ))) %>%
+#   ungroup()
+
+Cant_model_average <- Cant %>%
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
+  group_by(lon, lat, depth, eras, basin) %>%
+  summarise(Cant_mean = mean(Cant, na.rm = TRUE),
+            Cant_sd = sd(Cant, na.rm = TRUE),
+            Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
+            Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
+            gamma_mean = mean(gamma, na.rm = TRUE),
+            gamma_sd = sd(gamma, na.rm = TRUE)) %>%
   ungroup()
 
 Cant_model_average_Atl <- Cant_model_average %>% 
@@ -629,24 +643,42 @@ For each basin and era combination, the zonal mean Cant is calculated, again for
 
 ```{r Calculate_Cant_mean_sections}
 
-Cant_model_average_zonal <- Cant_model_average %>% 
-  group_by(lat, depth, eras, basin) %>% 
-  summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
-            Cant_mean = mean(Cant_mean, na.rm = TRUE),
-            Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
-            Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
-            Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
-            Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
-            gamma_mean = mean(gamma_mean)) %>% 
+Cant_model_average_zonal <- Cant_model_average %>%
+  group_by(lat, depth, eras, basin) %>%
+  summarise(across(
+    c(
+      "Cant_mean",
+      "Cant_pos_mean",
+      "Cant_sd",
+      "Cant_pos_sd",
+      "gamma_mean",
+      "gamma_sd"
+    ),
+    list(mean = ~ mean(.x, na.rm = TRUE),
+         sd = ~ sd(.x, na.rm = TRUE))
+  )) %>%
   ungroup()
+
+
+# Cant_model_average_zonal <- Cant_model_average %>% 
+#   group_by(lat, depth, eras, basin) %>% 
+#   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
+#             Cant_mean = mean(Cant_mean, na.rm = TRUE),
+#             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
+#             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
+#             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
+#             Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
+#             gamma_mean = mean(gamma_mean)) %>% 
+#   ungroup()
+
 
 Cant_model_average_zonal_Atl <- Cant_model_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
 
 Cant_model_average_zonal_Ind_Pac <- Cant_model_average_zonal %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
 
 Cant_model_average_zonal <- bind_rows(Cant_model_average_zonal_Atl, Cant_model_average_zonal_Ind_Pac)
 
@@ -667,7 +699,7 @@ slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 
 Cant_model_average_zonal %>% 
   filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = gamma_mean)) +
+  ggplot(aes(lat, depth, z = gamma_mean_mean)) +
   geom_contour_filled(breaks = slab_breaks) +
   geom_contour(breaks = slab_breaks,
                col = "white") +
@@ -691,17 +723,17 @@ Cant_model_average_zonal %>%
 
 Cant_model_average_zonal %>%
   filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = Cant_mean)) +
+  ggplot(aes(lat, depth, z = Cant_mean_mean)) +
   geom_contour_fill(breaks = MakeBreaks(5),
                     na.fill = TRUE) +
   scale_fill_divergent(guide = "colorstrip",
                        breaks = MakeBreaks(5),
                        name = "Cant") +
-  geom_contour(aes(lat, depth, z = gamma_mean),
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
                breaks = slab_breaks,
                col = "black") +
   geom_text_contour(
-    aes(lat, depth, z = gamma_mean),
+    aes(lat, depth, z = gamma_mean_mean),
     breaks = slab_breaks,
     col = "black",
     skip = 1
@@ -723,11 +755,11 @@ Cant_model_average_zonal %>%
   filter(depth <= parameters$inventory_depth) %>%
   ggplot(aes(lat, depth, z = Cant_sd_mean)) +
   geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean),
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
                breaks = slab_breaks,
                col = "white") +
   geom_text_contour(
-    aes(lat, depth, z = gamma_mean),
+    aes(lat, depth, z = gamma_mean_mean),
     breaks = slab_breaks,
     col = "white",
     skip = 1
@@ -750,11 +782,11 @@ Cant_model_average_zonal %>%
   filter(depth <= parameters$inventory_depth) %>% 
   ggplot(aes(lat, depth, z = Cant_mean_sd)) +
   geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean),
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
                breaks = slab_breaks,
                col = "white") +
   geom_text_contour(
-    aes(lat, depth, z = gamma_mean),
+    aes(lat, depth, z = gamma_mean_mean),
     breaks = slab_breaks,
     col = "white",
     skip = 1
@@ -774,13 +806,13 @@ Cant_model_average_zonal %>%
 
 Cant_model_average_zonal %>% 
   filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_pos_mean)) +
+  ggplot(aes(lat, depth, z = Cant_pos_mean_mean)) +
   geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean),
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
                breaks = slab_breaks,
                col = "white") +
   geom_text_contour(
-    aes(lat, depth, z = gamma_mean),
+    aes(lat, depth, z = gamma_mean_mean),
     breaks = slab_breaks,
     col = "white",
     skip = 1
@@ -795,10 +827,20 @@ Cant_model_average_zonal %>%
 
 ## Sections
 
+### JGOFS_GO
 
-```{r Cant_sections_positive_mean_one_long}
+```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
 
 section_climatology(Cant_model_average %>% filter(eras == "JGOFS_GO"),
+                    "Cant_mean")
+
+```
+
+### GO_new
+
+```{r Cant_sections_positive_mean_one_lon_GO_new}
+
+section_climatology(Cant_model_average %>% filter(eras == "GO_new"),
                     "Cant_mean")
 
 ```
