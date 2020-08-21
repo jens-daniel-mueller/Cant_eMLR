@@ -21,6 +21,7 @@ library(tidyverse)
 library(tidync)
 library(reticulate)
 library(oce)
+library(gsw)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -291,29 +292,38 @@ Neutral density gamma was calculated with a Python script provided by Serazin et
 
 ```{r WOA18_neutral_density_calculations, eval=FALSE}
 
+# calculate pressure from depth
+
+WOA18_predictors <- WOA18_predictors %>% 
+  mutate(CTDPRS = gsw_p_from_z(-depth,
+                               lat))
+# rename variables according to python script
+
 WOA18_predictors_gamma_prep <- WOA18_predictors %>% 
   rename(LATITUDE = lat,
          LONGITUDE = lon,
-         SALNTY = sal,
-         CTDPRS = depth)
+         SALNTY = sal)
+
+# load python scripts
 
 source_python(here::here("code/python_scripts",
                          "Gamma_GLODAP_python.py"))
 
+# calculate gamma
+
 WOA18_predictors_gamma_calc <- calculate_gamma(WOA18_predictors_gamma_prep)
 
 ```
-
 
 ### Write/open file
 
 ```{r write_WOA_predictor_file, eval=FALSE}
 
 WOA18_predictors <- WOA18_predictors_gamma_calc %>% 
+  select(-c(CTDPRS, THETA)) %>% 
   rename(lat = LATITUDE,
          lon = LONGITUDE,
          sal = SALNTY,
-         depth = CTDPRS,
          gamma  = GAMMA)
 
 WOA18_predictors %>% 
@@ -325,6 +335,7 @@ WOA18_predictors %>%
 ```{r read_WOA_predictor_file_gamma}
 
 rm(list = setdiff(ls(), c("landmask", "parameters")))
+source(here::here("code", "plotting_functions.R"))
 
 WOA18_predictors <- 
   read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -346,9 +357,6 @@ Section locations are indicated as white lines in maps.
 ### Surface map
 
 ```{r temperature_surface_WOA18_map, fig.asp=0.6}
-
-source(here::here("code",
-                  "plotting_functions.R"))
 
 map_climatology(WOA18_predictors, "tem")
 
@@ -430,7 +438,7 @@ section_climatology_shallow(WOA18_predictors, "gamma")
 
 # Open tasks
 
-- How to convert depth from WOA18 to CTD pressure (dbars) for neutral density calculation?
+- 
 
 # Questions
 

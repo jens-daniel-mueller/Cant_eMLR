@@ -27,6 +27,7 @@ library(reticulate)
 ```
 
 ```{r read_parameters, include = FALSE}
+
 parameters <-
   read_rds(here::here("data",
                        "parameters.rds"))
@@ -115,10 +116,6 @@ WOA18_predictors <-
       "WOA18_predictors.csv"
     )
   )
-
-
-WOA18_predictors <- WOA18_predictors %>%
-  select(-THETA)
 
 ```
 
@@ -300,7 +297,7 @@ Only observations were taken into consideration with:
 - maximum latitude:  `r parameters$lat_max`°N
 
 
-```{r apply_spatial_boundaries, eval=FALSE}
+```{r apply_spatial_boundaries}
 
 predictors <- predictors %>% 
   filter(depth >= parameters$depth_min)
