@@ -98,6 +98,7 @@ GLODAP_predictors <- GLODAP_predictors %>%
 # GLODAP_predictors <- GLODAP_predictors %>%
 #   rename(sal = salinity,
 #          tem = temperature)
+
 ```
 
 
@@ -163,7 +164,6 @@ Maps of number of observations per horizontal grid cell, which reflects the numb
 ```{r control_plots_pre_merging_GLODAP, fig.asp=0.6}
 
 GLODAP_n <- GLODAP_predictors %>% 
-  drop_na() %>% 
   group_by(lat, lon) %>% 
   summarise(n = n()) %>% 
   ungroup()
@@ -183,8 +183,10 @@ rm(GLODAP_n)
 
 ```{r control_plots_pre_merging_WOA18, fig.asp=0.6}
 
+WOA18_predictors <- WOA18_predictors %>% 
+  filter(depth %in% parameters$depth_levels_33)
+
 WOA18_predictors_n <- WOA18_predictors %>% 
-  drop_na() %>% 
   group_by(lat, lon) %>% 
   summarise(n = n()) %>% 
   ungroup()
@@ -251,8 +253,6 @@ WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells 
 
 ```{r join_WOA18_GLODAP_predictors, fig.asp=0.5}
 
-GLODAP_depths <- unique(GLODAP_predictors$depth)
-
 predictors <- full_join(GLODAP_predictors, WOA18_predictors)
 rm(GLODAP_predictors, WOA18_predictors)
 
@@ -266,48 +266,30 @@ rm(GLODAP_predictors, WOA18_predictors)
 #   filter(n_PO4 > 1,
 #          n_sal > 1) %>% 
 #   select(-c(n_PO4 , n_sal))
-
-predictors <- predictors %>% 
-  group_by(lat, lon) %>% 
-  mutate(n_oxygen = sum(!is.na(oxygen)),
-         n_PO4 = sum(!is.na(PO4)),
-         n_silicate = sum(!is.na(silicate)),
-         n_sal = sum(!is.na(sal)),
-         n_tem = sum(!is.na(tem)),
-         n_gamma = sum(!is.na(gamma))) %>% 
-  ungroup()
-
-predictors <- predictors %>% 
-  filter(n_oxygen > 0,
-         n_PO4 > 0,
-         n_silicate > 0, 
-         n_sal > 1, 
-         n_tem > 1, 
-         n_gamma > 1) %>% 
-  select(-c(n_oxygen, 
-            n_PO4, 
-            n_silicate, 
-            n_sal, 
-            n_tem,
-            n_gamma))
-
-
-```
-
-```{r interpolate_WOA18_vertically}
-
-predictors <- predictors %>% 
-  group_by(lat, lon) %>% 
-  arrange(depth) %>% 
-  mutate(tem =   approxfun(depth, tem,   rule = 2)(depth),
-         sal =   approxfun(depth, sal,   rule = 2)(depth),
-         gamma = approxfun(depth, gamma, rule = 2)(depth)) %>% 
-  ungroup()
-
-predictors <- predictors %>% 
-  filter(depth %in% GLODAP_depths)
-
-rm(GLODAP_depths)
+# 
+# predictors <- predictors %>% 
+#   group_by(lat, lon) %>% 
+#   mutate(n_oxygen = sum(!is.na(oxygen)),
+#          n_PO4 = sum(!is.na(PO4)),
+#          n_silicate = sum(!is.na(silicate)),
+#          n_sal = sum(!is.na(sal)),
+#          n_tem = sum(!is.na(tem)),
+#          n_gamma = sum(!is.na(gamma))) %>% 
+#   ungroup()
+# 
+# predictors <- predictors %>% 
+#   filter(n_oxygen > 0,
+#          n_PO4 > 0,
+#          n_silicate > 0, 
+#          n_sal > 1, 
+#          n_tem > 1, 
+#          n_gamma > 1) %>% 
+#   select(-c(n_oxygen, 
+#             n_PO4, 
+#             n_silicate, 
+#             n_sal, 
+#             n_tem,
+#             n_gamma))
 
 
 ```

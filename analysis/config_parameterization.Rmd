@@ -36,6 +36,13 @@ Following parameterizations were chosen to run analysis and display results:
 
 depth_levels = c(0, 100, 500, 2000)
 
+depth_levels_33 <- c(0, 10, 20, 30, 50,
+                     75, 100, 125, 150,
+                     200, 250, 300,
+                     400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500,
+                     1750, 2000,
+                     2500, 3000, 3500, 4000, 4500, 5000, 5500)
+
 slabs_Atl <-
   c(
     -Inf,
@@ -91,6 +98,7 @@ parameters <-
     predictors_min = 2,
     MLR_number = 10,
     depth_levels = depth_levels,
+    depth_levels_33 = depth_levels_33,
     slabs_Atl = slabs_Atl,
     slabs_Ind_Pac = slabs_Ind_Pac
   )

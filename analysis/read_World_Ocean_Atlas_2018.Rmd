@@ -246,9 +246,10 @@ Data outside the WOA18 basin mask were removed for further analysis.
 ```{r join_basin_mask}
 
 WOA18_predictors <- inner_join(WOA18_predictors, basinmask_01)
-rm(basinmask_01)
+#rm(basinmask_01)
 
 ```
+
 
 ## Potential temperature
 
