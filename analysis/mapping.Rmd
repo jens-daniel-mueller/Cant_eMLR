@@ -265,7 +265,7 @@ predictors <- predictors %>%
   ungroup()
 
 predictors <- predictors %>% 
-  filter(n_PO4 > 0,
+  filter(n_PO4 > 1,
          n_sal > 1) %>% 
   select(-c(n_PO4 , n_sal))
 
@@ -948,6 +948,7 @@ Cant_inv <- Cant_model_average %>%
 library(scales)
 
 Cant_inv %>% 
+  filter(cant_inv < 5) %>% 
   ggplot() +
     geom_raster(data = landmask %>% filter(region == "land"),
                 aes(lon, lat), fill = "grey80") +
