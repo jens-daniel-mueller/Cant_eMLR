@@ -200,8 +200,6 @@ rm(WOA18_predictors_n)
 
 ```
 
-
-
 ### Neutral density zonal mean section
 
 ```{r WOA18_gamma_mean_sections}
@@ -258,16 +256,41 @@ GLODAP_depths <- unique(GLODAP_predictors$depth)
 predictors <- full_join(GLODAP_predictors, WOA18_predictors)
 rm(GLODAP_predictors, WOA18_predictors)
 
+# predictors <- predictors %>% 
+#   group_by(lat, lon) %>% 
+#   mutate(n_PO4 = sum(!is.na(PO4)),
+#          n_sal = sum(!is.na(sal))) %>% 
+#   ungroup()
+# 
+# predictors <- predictors %>% 
+#   filter(n_PO4 > 1,
+#          n_sal > 1) %>% 
+#   select(-c(n_PO4 , n_sal))
+
 predictors <- predictors %>% 
   group_by(lat, lon) %>% 
-  mutate(n_PO4 = sum(!is.na(PO4)),
-         n_sal = sum(!is.na(sal))) %>% 
+  mutate(n_oxygen = sum(!is.na(oxygen)),
+         n_PO4 = sum(!is.na(PO4)),
+         n_silicate = sum(!is.na(silicate)),
+         n_sal = sum(!is.na(sal)),
+         n_tem = sum(!is.na(tem)),
+         n_gamma = sum(!is.na(gamma))) %>% 
   ungroup()
 
 predictors <- predictors %>% 
-  filter(n_PO4 > 1,
-         n_sal > 1) %>% 
-  select(-c(n_PO4 , n_sal))
+  filter(n_oxygen > 0,
+         n_PO4 > 0,
+         n_silicate > 0, 
+         n_sal > 1, 
+         n_tem > 1, 
+         n_gamma > 1) %>% 
+  select(-c(n_oxygen, 
+            n_PO4, 
+            n_silicate, 
+            n_sal, 
+            n_tem,
+            n_gamma))
+
 
 ```
 
@@ -285,6 +308,7 @@ predictors <- predictors %>%
   filter(depth %in% GLODAP_depths)
 
 rm(GLODAP_depths)
+
 
 ```
 
@@ -315,6 +339,8 @@ predictors <- full_join(predictors, predictors_grid)
 predictors <- predictors %>% 
   filter(bottomdepth >= parameters$bottomdepth_min) %>% 
   select(-bottomdepth)
+
+predictors <- predictors %>% drop_na()
 
 ```
 
