@@ -475,7 +475,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">GLODAPv2_2020</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">20 August, 2020</h4>
+<h4 class="date">21 August, 2020</h4>
 
 </div>
 
@@ -500,7 +500,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-20
+<strong>Last updated:</strong> 2020-08-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -591,16 +591,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8cetargetblankcc5d91ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8ce" target="_blank">cc5d91b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee04b03dbb48475a645aaedccec350d24754d1cbctargetblanke04b03da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e04b03dbb48475a645aaedccec350d24754d1cbc" target="_blank">e04b03d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8cetargetblankcc5d91ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee04b03dbb48475a645aaedccec350d24754d1cbctargetblanke04b03da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8ce" target="_blank">cc5d91b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e04b03dbb48475a645aaedccec350d24754d1cbc" target="_blank">e04b03d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -619,10 +619,9 @@ Ignored files:
     Ignored:    data/mapping/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    figure/
 
-Unstaged changes:
-    Modified:   analysis/_site.yml
+Untracked files:
+    Untracked:  output/figure/eMLR/data_preparation/
 
 </code></pre>
 <p>
@@ -661,6 +660,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/e04b03dbb48475a645aaedccec350d24754d1cbc/analysis/read_GLODAPv2_2020.Rmd" target="_blank">e04b03d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+Individual cruise plots with all relevant parameters and histograms in eMLR
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/5ffe18772a4b057c7265d46056f17e3e02363f52/docs/read_GLODAPv2_2020.html" target="_blank">5ffe187</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2497,96 +2530,6 @@ GLODAP %&gt;%
   theme(legend.position = &quot;top&quot;,
         axis.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_maps_era-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="individual-cruise-sections" class="section level1">
-<h1><span class="header-section-number">4</span> Individual cruise sections</h1>
-<p>Zonal and meridional section plots are produce for each cruise individually and can be downloaded <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/data/all_cruises_clean" target="_blank">here</a>.</p>
-<pre class="r"><code>cruises &lt;- GLODAP %&gt;% 
-  group_by(cruise) %&gt;% 
-  summarise(date_mean = mean(date, na.rm = TRUE),
-            n = n()) %&gt;% 
-  ungroup() %&gt;% 
-  arrange(date_mean)
-
-GLODAP &lt;- full_join(GLODAP, cruises)
-
-n &lt;- 0
-for (i_cruise in unique(cruises$cruise)) {
-
-# i_cruise &lt;- unique(cruises$cruise)[1]
-n &lt;- n+1
-print(n)  
-  
-GLODAP_cruise &lt;- GLODAP %&gt;%
-  filter(cruise == i_cruise) %&gt;% 
-  arrange(date)
-
-cruises_cruise &lt;- cruises %&gt;%
-  filter(cruise == i_cruise)
-  
-map &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask %&gt;% filter(region == &quot;land&quot;),
-              aes(lon, lat), fill = &quot;grey80&quot;) +
-  geom_point(aes(col=date)) +
-  coord_quickmap(expand = FALSE) +
-  scale_color_viridis_c(trans = &quot;date&quot;) +
-  labs(title = paste(&quot;Mean date:&quot;, cruises_cruise$date_mean,
-                     &quot;| cruise:&quot;, cruises_cruise$cruise,
-                     &quot;| n(samples):&quot;, cruises_cruise$n))
-
-
-lon_section &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(lon, depth)) +
-  scale_y_reverse() +
-  scale_color_viridis_c()
-
-lon_tco2 &lt;- lon_section+
-  geom_point(aes(col=tco2))
-
-lon_talk &lt;- lon_section+
-  geom_point(aes(col=talk))
-
-lon_phosphate &lt;- lon_section+
-  geom_point(aes(col=phosphate))
-
-
-lat_section &lt;- GLODAP_cruise %&gt;%
-  ggplot(aes(lat, depth)) +
-  scale_y_reverse() +
-  scale_color_viridis_c()
-
-lat_tco2 &lt;- lat_section+
-  geom_point(aes(col=tco2))
-
-lat_talk &lt;- lat_section+
-  geom_point(aes(col=talk))
-
-lat_phosphate &lt;- lat_section+
-  geom_point(aes(col=phosphate))
-
-map /
-((lat_tco2 / lat_talk / lat_phosphate) |
-(lon_tco2 / lon_talk / lon_phosphate))
-
-ggsave(here::here(&quot;output/figure/data/all_cruises_clean&quot;,
-                  paste(&quot;GLODAP_cruise_date&quot;,
-                        cruises_cruise$date_mean,
-                        &quot;n&quot;,
-                        cruises_cruise$n,
-                        &quot;cruise&quot;,
-                        cruises_cruise$cruise,
-                        &quot;.png&quot;,
-                        sep = &quot;_&quot;)),
-                  width = 9, height = 9)
-
-rm(map,
-   lon_section, lat_section,
-   lat_tco2, lat_talk, lat_phosphate, lon_tco2, lon_talk, lon_phosphate,
-   GLODAP_cruise, cruises_cruise)
-
-}</code></pre>
 <pre class="r"><code># library(&quot;rnaturalearth&quot;)
 # library(&quot;rnaturalearthdata&quot;)
 # library(&quot;sf&quot;)
@@ -2609,14 +2552,15 @@ rm(map,
 # https://twitter.com/clauswilke/status/1066024436208406529
 # https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html</code></pre>
 </div>
+</div>
 <div id="open-tasks" class="section level1">
-<h1><span class="header-section-number">5</span> Open tasks</h1>
+<h1><span class="header-section-number">4</span> Open tasks</h1>
 <ul>
 <li></li>
 </ul>
 </div>
 <div id="questions" class="section level1">
-<h1><span class="header-section-number">6</span> Questions</h1>
+<h1><span class="header-section-number">5</span> Questions</h1>
 <ul>
 <li>Apply coastal filter?</li>
 <li>Keep horizontal gridding to 1°x1° (thereby discarding some horizontal information)?</li>
