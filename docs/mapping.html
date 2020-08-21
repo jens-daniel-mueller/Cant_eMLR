@@ -591,16 +591,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed61cc230786bf6bdbe3254dcd6e2ab505412791btargetblankd61cc23a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d61cc230786bf6bdbe3254dcd6e2ab505412791b" target="_blank">d61cc23</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9a50b3be9d1f1a8424006511f15426422015927ctargetblank9a50b3ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9a50b3be9d1f1a8424006511f15426422015927c" target="_blank">9a50b3b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed61cc230786bf6bdbe3254dcd6e2ab505412791btargetblankd61cc23a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9a50b3be9d1f1a8424006511f15426422015927ctargetblank9a50b3ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d61cc230786bf6bdbe3254dcd6e2ab505412791b" target="_blank">d61cc23</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9a50b3be9d1f1a8424006511f15426422015927c" target="_blank">9a50b3b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -658,6 +658,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/9a50b3be9d1f1a8424006511f15426422015927c/analysis/mapping.Rmd" target="_blank">9a50b3b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+require two GLODAP observation per grid cell
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/078df6a160bfbcaf818dd9c70c8f8a4892bc50a9/docs/mapping.html" target="_blank">078df6a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2108,7 +2142,7 @@ predictors &lt;- predictors %&gt;%
   ungroup()
 
 predictors &lt;- predictors %&gt;% 
-  filter(n_PO4 &gt; 0,
+  filter(n_PO4 &gt; 1,
          n_sal &gt; 1) %&gt;% 
   select(-c(n_PO4 , n_sal))</code></pre>
 <pre class="r"><code>predictors &lt;- predictors %&gt;% 
@@ -2665,6 +2699,7 @@ Cant_inv &lt;- Cant_model_average %&gt;%
 <pre class="r"><code>library(scales)
 
 Cant_inv %&gt;% 
+  filter(cant_inv &lt; 5) %&gt;% 
   ggplot() +
     geom_raster(data = landmask %&gt;% filter(region == &quot;land&quot;),
                 aes(lon, lat), fill = &quot;grey80&quot;) +
