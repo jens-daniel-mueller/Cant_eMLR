@@ -588,6 +588,164 @@ GLODAP %>%
 ```
 
 
+# Individual cruise sections
+
+Zonal and meridional section plots are produce for each cruise individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/eMLR/data_preparation/all_cruises_clean){target="_blank"}.
+
+```{r individual_cruises_clean_triplicates, eval = FALSE}
+
+cruises <- GLODAP %>% 
+  group_by(cruise) %>% 
+  summarise(date_mean = mean(date, na.rm = TRUE),
+            n = n()) %>% 
+  ungroup() %>% 
+  arrange(date_mean)
+
+GLODAP <- full_join(GLODAP, cruises)
+
+n <- 0
+for (i_cruise in unique(cruises$cruise)) {
+
+#i_cruise <- unique(cruises$cruise)[1]
+n <- n+1
+print(n)  
+  
+GLODAP_cruise <- GLODAP %>%
+  filter(cruise == i_cruise) %>% 
+  arrange(date)
+
+cruises_cruise <- cruises %>%
+  filter(cruise == i_cruise)
+  
+map <- GLODAP_cruise %>%
+  ggplot(aes(lon, lat)) +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_point(aes(col=date)) +
+  coord_quickmap(expand = FALSE) +
+  scale_color_viridis_c(trans = "date") +
+  labs(title = paste("Mean date:", cruises_cruise$date_mean,
+                     "| cruise:", cruises_cruise$cruise,
+                     "| n(samples):", cruises_cruise$n))
+
+
+lon_section <- GLODAP_cruise %>%
+  ggplot(aes(lon, depth)) +
+  scale_y_reverse() +
+  scale_color_viridis_c()
+
+lon_tco2 <- lon_section+
+  geom_point(aes(col=tco2))
+
+lon_talk <- lon_section+
+  geom_point(aes(col=talk))
+
+lon_phosphate <- lon_section+
+  geom_point(aes(col=phosphate))
+
+lon_oxygen <- lon_section+
+  geom_point(aes(col=oxygen))
+
+lon_aou <- lon_section+
+  geom_point(aes(col=aou))
+
+lon_phosphate_star <- lon_section+
+  geom_point(aes(col=phosphate_star))
+
+lon_nitrate <- lon_section+
+  geom_point(aes(col=nitrate))
+
+lon_Cstar <- lon_section+
+  geom_point(aes(col=Cstar))
+
+
+lat_section <- GLODAP_cruise %>%
+  ggplot(aes(lat, depth)) +
+  scale_y_reverse() +
+  scale_color_viridis_c()
+
+lat_tco2 <- lat_section+
+  geom_point(aes(col=tco2))
+
+lat_talk <- lat_section+
+  geom_point(aes(col=talk))
+
+lat_phosphate <- lat_section+
+  geom_point(aes(col=phosphate))
+
+lat_oxygen <- lat_section+
+  geom_point(aes(col=oxygen))
+
+lat_aou <- lat_section+
+  geom_point(aes(col=aou))
+
+lat_phosphate_star <- lat_section+
+  geom_point(aes(col=phosphate_star))
+
+lat_nitrate <- lat_section+
+  geom_point(aes(col=nitrate))
+
+hist_tco2 <- GLODAP_cruise %>%
+  ggplot(aes(tco2)) +
+  geom_histogram()
+
+hist_talk <- GLODAP_cruise %>%
+  ggplot(aes(talk)) +
+  geom_histogram()
+
+hist_phosphate <- GLODAP_cruise %>%
+  ggplot(aes(phosphate)) +
+  geom_histogram()
+
+hist_oxygen <- GLODAP_cruise %>%
+  ggplot(aes(oxygen)) +
+  geom_histogram()
+
+hist_aou <- GLODAP_cruise %>%
+  ggplot(aes(aou)) +
+  geom_histogram()
+
+hist_phosphate_star <- GLODAP_cruise %>%
+  ggplot(aes(phosphate_star)) +
+  geom_histogram()
+
+hist_nitrate <- GLODAP_cruise %>%
+  ggplot(aes(nitrate)) +
+  geom_histogram()
+
+hist_Cstar <- GLODAP_cruise %>%
+  ggplot(aes(Cstar)) +
+  geom_histogram()
+
+(map /
+    ((hist_tco2 / hist_talk / hist_phosphate / hist_Cstar) |
+       (hist_oxygen / hist_phosphate_star / hist_nitrate / hist_aou)
+    )) |
+  ((lat_tco2 / lat_talk / lat_phosphate / lat_oxygen / lat_aou / lat_phosphate_star / lat_nitrate / lat_Cstar) |
+     (lon_tco2 / lon_talk / lon_phosphate / lon_oxygen /  lon_aou /lon_phosphate_star / lon_nitrate / lon_Cstar))    
+
+ggsave(here::here("output/figure/eMLR/data_preparation/all_cruises_clean",
+                  paste("GLODAP_cruise_date",
+                        cruises_cruise$date_mean,
+                        "n",
+                        cruises_cruise$n,
+                        "cruise",
+                        cruises_cruise$cruise,
+                        ".png",
+                        sep = "_")),
+                  width = 20, height = 12)
+
+rm(map,
+   lon_section, lat_section,
+   lat_tco2, lat_talk, lat_phosphate, lon_tco2, lon_talk, lon_phosphate,
+   GLODAP_cruise, cruises_cruise)
+
+}
+
+
+```
+
+
 # Write file
 
 ```{r write_csv_GLODAP_used_for_fitting}
