@@ -475,7 +475,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">World Ocean Atlas 2018</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">20 August, 2020</h4>
+<h4 class="date">21 August, 2020</h4>
 
 </div>
 
@@ -500,7 +500,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-20
+<strong>Last updated:</strong> 2020-08-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -591,16 +591,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8cetargetblankcc5d91ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8ce" target="_blank">cc5d91b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed61cc230786bf6bdbe3254dcd6e2ab505412791btargetblankd61cc23a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d61cc230786bf6bdbe3254dcd6e2ab505412791b" target="_blank">d61cc23</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreecc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8cetargetblankcc5d91ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreed61cc230786bf6bdbe3254dcd6e2ab505412791btargetblankd61cc23a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/cc5d91b26e93c1e5da2c13ecaa8eb29ac4e5b8ce" target="_blank">cc5d91b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/d61cc230786bf6bdbe3254dcd6e2ab505412791b" target="_blank">d61cc23</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -620,9 +620,6 @@ Ignored files:
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
     Ignored:    figure/
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
 
 </code></pre>
 <p>
@@ -661,6 +658,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/d61cc230786bf6bdbe3254dcd6e2ab505412791b/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">d61cc23</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+gamma WOA18 calculated with pressure rather than depth, spatial boundaries applied to predictors
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/5ffe18772a4b057c7265d46056f17e3e02363f52/docs/read_World_Ocean_Atlas_2018.html" target="_blank">5ffe187</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2235,7 +2266,8 @@ added WOA blank script
 <pre class="r"><code>library(tidyverse)
 library(tidync)
 library(reticulate)
-library(oce)</code></pre>
+library(oce)
+library(gsw)</code></pre>
 <div id="data-source" class="section level1">
 <h1><span class="header-section-number">1</span> Data source</h1>
 <ul>
@@ -2435,30 +2467,41 @@ rm(basinmask_01)</code></pre>
 <p>Neutral density gamma was calculated with a Python script provided by Serazin et al (2011), which performs a polynomial approximation of the original gamma calculation.</p>
 <div id="calculation-1" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Calculation</h3>
-<pre class="r"><code>WOA18_predictors_gamma_prep &lt;- WOA18_predictors %&gt;% 
+<pre class="r"><code># calculate pressure from depth
+
+WOA18_predictors &lt;- WOA18_predictors %&gt;% 
+  mutate(CTDPRS = gsw_p_from_z(-depth,
+                               lat))
+# rename variables according to python script
+
+WOA18_predictors_gamma_prep &lt;- WOA18_predictors %&gt;% 
   rename(LATITUDE = lat,
          LONGITUDE = lon,
-         SALNTY = sal,
-         CTDPRS = depth)
+         SALNTY = sal)
+
+# load python scripts
 
 source_python(here::here(&quot;code/python_scripts&quot;,
                          &quot;Gamma_GLODAP_python.py&quot;))
+
+# calculate gamma
 
 WOA18_predictors_gamma_calc &lt;- calculate_gamma(WOA18_predictors_gamma_prep)</code></pre>
 </div>
 <div id="writeopen-file" class="section level3">
 <h3><span class="header-section-number">3.4.2</span> Write/open file</h3>
 <pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors_gamma_calc %&gt;% 
+  select(-c(CTDPRS, THETA)) %&gt;% 
   rename(lat = LATITUDE,
          lon = LONGITUDE,
          sal = SALNTY,
-         depth = CTDPRS,
          gamma  = GAMMA)
 
 WOA18_predictors %&gt;% 
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                        &quot;WOA18_predictors.csv&quot;))</code></pre>
 <pre class="r"><code>rm(list = setdiff(ls(), c(&quot;landmask&quot;, &quot;parameters&quot;)))
+source(here::here(&quot;code&quot;, &quot;plotting_functions.R&quot;))
 
 WOA18_predictors &lt;- 
   read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
@@ -2479,10 +2522,7 @@ WOA18_predictors &lt;-
 <p>Section locations are indicated as white lines in maps.</p>
 <div id="surface-map" class="section level3">
 <h3><span class="header-section-number">3.5.1</span> Surface map</h3>
-<pre class="r"><code>source(here::here(&quot;code&quot;,
-                  &quot;plotting_functions.R&quot;))
-
-map_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
+<pre class="r"><code>map_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections" class="section level3">
@@ -2536,7 +2576,7 @@ map_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <div id="open-tasks" class="section level1">
 <h1><span class="header-section-number">4</span> Open tasks</h1>
 <ul>
-<li>How to convert depth from WOA18 to CTD pressure (dbars) for neutral density calculation?</li>
+<li></li>
 </ul>
 </div>
 <div id="questions" class="section level1">
