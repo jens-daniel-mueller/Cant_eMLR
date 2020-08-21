@@ -591,16 +591,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree624ce4b8b3599a5863ba79b875e9f12864cbdcfbtargetblank624ce4ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/624ce4b8b3599a5863ba79b875e9f12864cbdcfb" target="_blank">624ce4b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7targetblank79041e4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7" target="_blank">79041e4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree624ce4b8b3599a5863ba79b875e9f12864cbdcfbtargetblank624ce4ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7targetblank79041e4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/624ce4b8b3599a5863ba79b875e9f12864cbdcfb" target="_blank">624ce4b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7" target="_blank">79041e4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -658,6 +658,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7/analysis/mapping.Rmd" target="_blank">79041e4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+removed WOA18 vertical interpolation but rather removed unnecessary depth levels
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/ca9d6168ea53f5a8d64e91bf48fc464e3aea12e6/docs/mapping.html" target="_blank">ca9d616</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2158,7 +2192,6 @@ rm(WOA13)</code></pre>
 <div id="glodap-climatology" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> GLODAP climatology</h3>
 <pre class="r"><code>GLODAP_n &lt;- GLODAP_predictors %&gt;% 
-  drop_na() %&gt;% 
   group_by(lat, lon) %&gt;% 
   summarise(n = n()) %&gt;% 
   ungroup()
@@ -2174,8 +2207,10 @@ GLODAP_n %&gt;%
 </div>
 <div id="woa18-climatology" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> WOA18 climatology</h3>
-<pre class="r"><code>WOA18_predictors_n &lt;- WOA18_predictors %&gt;% 
-  drop_na() %&gt;% 
+<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors %&gt;% 
+  filter(depth %in% parameters$depth_levels_33)
+
+WOA18_predictors_n &lt;- WOA18_predictors %&gt;% 
   group_by(lat, lon) %&gt;% 
   summarise(n = n()) %&gt;% 
   ungroup()
@@ -2232,9 +2267,7 @@ WOA18_predictors_zonal %&gt;%
 <div id="woa18-glodap" class="section level2">
 <h2><span class="header-section-number">2.2</span> WOA18 + GLODAP</h2>
 <p>WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.</p>
-<pre class="r"><code>GLODAP_depths &lt;- unique(GLODAP_predictors$depth)
-
-predictors &lt;- full_join(GLODAP_predictors, WOA18_predictors)
+<pre class="r"><code>predictors &lt;- full_join(GLODAP_predictors, WOA18_predictors)
 rm(GLODAP_predictors, WOA18_predictors)
 
 # predictors &lt;- predictors %&gt;% 
@@ -2247,42 +2280,30 @@ rm(GLODAP_predictors, WOA18_predictors)
 #   filter(n_PO4 &gt; 1,
 #          n_sal &gt; 1) %&gt;% 
 #   select(-c(n_PO4 , n_sal))
-
-predictors &lt;- predictors %&gt;% 
-  group_by(lat, lon) %&gt;% 
-  mutate(n_oxygen = sum(!is.na(oxygen)),
-         n_PO4 = sum(!is.na(PO4)),
-         n_silicate = sum(!is.na(silicate)),
-         n_sal = sum(!is.na(sal)),
-         n_tem = sum(!is.na(tem)),
-         n_gamma = sum(!is.na(gamma))) %&gt;% 
-  ungroup()
-
-predictors &lt;- predictors %&gt;% 
-  filter(n_oxygen &gt; 0,
-         n_PO4 &gt; 0,
-         n_silicate &gt; 0, 
-         n_sal &gt; 1, 
-         n_tem &gt; 1, 
-         n_gamma &gt; 1) %&gt;% 
-  select(-c(n_oxygen, 
-            n_PO4, 
-            n_silicate, 
-            n_sal, 
-            n_tem,
-            n_gamma))</code></pre>
-<pre class="r"><code>predictors &lt;- predictors %&gt;% 
-  group_by(lat, lon) %&gt;% 
-  arrange(depth) %&gt;% 
-  mutate(tem =   approxfun(depth, tem,   rule = 2)(depth),
-         sal =   approxfun(depth, sal,   rule = 2)(depth),
-         gamma = approxfun(depth, gamma, rule = 2)(depth)) %&gt;% 
-  ungroup()
-
-predictors &lt;- predictors %&gt;% 
-  filter(depth %in% GLODAP_depths)
-
-rm(GLODAP_depths)</code></pre>
+# 
+# predictors &lt;- predictors %&gt;% 
+#   group_by(lat, lon) %&gt;% 
+#   mutate(n_oxygen = sum(!is.na(oxygen)),
+#          n_PO4 = sum(!is.na(PO4)),
+#          n_silicate = sum(!is.na(silicate)),
+#          n_sal = sum(!is.na(sal)),
+#          n_tem = sum(!is.na(tem)),
+#          n_gamma = sum(!is.na(gamma))) %&gt;% 
+#   ungroup()
+# 
+# predictors &lt;- predictors %&gt;% 
+#   filter(n_oxygen &gt; 0,
+#          n_PO4 &gt; 0,
+#          n_silicate &gt; 0, 
+#          n_sal &gt; 1, 
+#          n_tem &gt; 1, 
+#          n_gamma &gt; 1) %&gt;% 
+#   select(-c(n_oxygen, 
+#             n_PO4, 
+#             n_silicate, 
+#             n_sal, 
+#             n_tem,
+#             n_gamma))</code></pre>
 <div id="spatial-boundaries" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Spatial boundaries</h3>
 <p>Only observations were taken into consideration with:</p>
