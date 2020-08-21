@@ -70,7 +70,7 @@ Following variables are currently used:
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
 
 variables <-
-  c("oxygen", "PO4", "silicate")
+  c("salinity", "temperature", "oxygen", "PO4", "silicate")
 
 for (i_variable in variables) {
   temp <- read_csv(
@@ -95,9 +95,9 @@ rm(temp, i_variable, variables)
 GLODAP_predictors <- GLODAP_predictors %>%
   drop_na()
 
-# GLODAP_predictors <- GLODAP_predictors %>%
-#   rename(sal = salinity,
-#          tem = temperature)
+GLODAP_predictors <- GLODAP_predictors %>%
+  rename(sal = salinity,
+         tem = temperature)
 ```
 
 
@@ -107,7 +107,7 @@ GLODAP_predictors <- GLODAP_predictors %>%
 - Basin mask
 
 
-```{r load_WOA18}
+```{r load_WOA18, eval=FALSE}
 
 WOA18_predictors <-
   read_csv(
@@ -132,12 +132,12 @@ all_lm <- read_csv(here::here("data/eMLR",
 
 Neutral densities and the basin mask based on WOA13 and provided by Dominic Clement are currently not used.
 
-```{r load_WOA13_gamma, eval=FALSE}
+```{r load_WOA13_gamma}
 
 WOA13 <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "data/World_Ocean_Atlas_2013_Clement/_summarized_files",
       "WOA13_mask_gamma.csv"
     )
   )
@@ -181,7 +181,7 @@ rm(GLODAP_n)
 
 ### WOA18 climatology
 
-```{r control_plots_pre_merging_WOA18, fig.asp=0.6}
+```{r control_plots_pre_merging_WOA18, fig.asp=0.6, eval=FALSE}
 
 WOA18_predictors_n <- WOA18_predictors %>% 
   drop_na() %>% 
@@ -204,7 +204,7 @@ rm(WOA18_predictors_n)
 
 ### Neutral density zonal mean section
 
-```{r WOA18_gamma_mean_sections}
+```{r WOA18_gamma_mean_sections, eval=FALSE}
 
 WOA18_predictors_zonal <- WOA18_predictors %>%
   group_by(lat, depth, basin) %>%
@@ -251,7 +251,7 @@ rm(WOA18_predictors_zonal, slab_breaks)
 
 WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.
 
-```{r join_WOA18_GLODAP_predictors, fig.asp=0.5}
+```{r join_WOA18_GLODAP_predictors, fig.asp=0.5, eval=FALSE}
 
 GLODAP_depths <- unique(GLODAP_predictors$depth)
 
@@ -271,7 +271,7 @@ predictors <- predictors %>%
 
 ```
 
-```{r interpolate_WOA18_vertically}
+```{r interpolate_WOA18_vertically, eval=FALSE}
 
 predictors <- predictors %>% 
   group_by(lat, lon) %>% 
@@ -297,7 +297,7 @@ Only observations were taken into consideration with:
 - maximum latitude:  `r parameters$lat_max`°N
 
 
-```{r apply_spatial_boundaries}
+```{r apply_spatial_boundaries, eval=FALSE}
 
 predictors <- predictors %>% 
   filter(depth >= parameters$depth_min)
@@ -326,17 +326,17 @@ predictors <- predictors %>%
 
 Three maps are generated to control successful merging of data sets.
 
-```{r joined_climatology_control_PO4}
+```{r joined_climatology_control_PO4, eval=FALSE}
 map_climatology(predictors, "PO4")
 ```
 
 
-```{r joined_climatology_control_tem}
+```{r joined_climatology_control_tem, eval=FALSE}
 map_climatology(predictors, "tem")
 ```
 
 
-```{r WOA18_GLODAP_climatology_control_plots, fig.asp=0.6}
+```{r WOA18_GLODAP_climatology_control_plots, fig.asp=0.6, eval=FALSE}
 
 predictors %>%
   ggplot(aes(lon, lat)) +
@@ -352,7 +352,7 @@ predictors %>%
 
 Likewise, predictor profiles for the North Atlantic are plotted to control successful merging of the data sets.
 
-```{r predictor_profiles_N_Atl, fig.asp=1.5}
+```{r predictor_profiles_N_Atl, fig.asp=1.5, eval=FALSE}
 
 N_Atl <- predictors %>% 
   filter(lat == parameters$lat_Atl_profile,
@@ -377,7 +377,7 @@ rm(N_Atl)
 
 #### Neutral density zonal mean section
 
-```{r predictors_gamma_mean_sections}
+```{r predictors_gamma_mean_sections, eval=FALSE}
 
 predictors_zonal <- predictors %>%
   group_by(lat, depth, basin) %>%
@@ -424,7 +424,7 @@ rm(predictors_zonal, slab_breaks)
 
 Currently not used.
 
-```{r join_WOA13_GLODAP_predictors, eval=FALSE}
+```{r join_WOA13_GLODAP_predictors}
 
 predictors <- full_join(GLODAP_predictors, WOA13_gamma)
 GLODAP_depths <- unique(GLODAP_predictors$depth)
@@ -948,7 +948,6 @@ Cant_inv <- Cant_model_average %>%
 library(scales)
 
 Cant_inv %>% 
-  filter(cant_inv < 5) %>% 
   ggplot() +
     geom_raster(data = landmask %>% filter(region == "land"),
                 aes(lon, lat), fill = "grey80") +
