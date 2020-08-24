@@ -36,6 +36,11 @@ navbar:
     - text: Model fitting
       href: eMLR_model_fitting.html
   - text: Mapping
+    menu:
+    - text: Predictor preparation
+      href: mapping_predictor_preparation.html
+    - text: Cant calculation
+      href: mapping_cant_calculation.html
     href: mapping.html
   - text: Analysis
     href: analysis.html
