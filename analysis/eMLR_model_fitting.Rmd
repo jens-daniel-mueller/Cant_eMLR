@@ -79,6 +79,26 @@ GLODAP <-
 
 ```
 
+# Select phosphate star
+
+Currently, MLR fitting is based on PO4* calculated with:  
+- `r parameters$phosphate_star_approach`
+
+```{r select_phosphate_star_aproach}
+
+if (parameters$phosphate_star_approach == "nitrate") {
+  GLODAP <- GLODAP %>%
+    mutate(phosphate_star = phosphate_star_nit) %>%
+    select(-c(phosphate_star_oxy, phosphate_star_nit))
+} else{
+  GLODAP <- GLODAP %>%
+    mutate(phosphate_star = phosphate_star_oxy) %>%
+    select(-c(phosphate_star_oxy, phosphate_star_nit))
+}
+```
+
+
+
 # Model fitting
 
 ## Predictor selection
@@ -158,14 +178,6 @@ RMSE was plotted against the number of predictors (limited to `r parameters$pred
 
 all_lm_stats <- read_csv(here::here("data/eMLR",
                                     "all_lm_stats.csv"))
-
-# nrow(all_lm_stats)
-# length(unique(all_lm_stats$rmse))
-# length(unique(all_lm_stats$adjr))
-# length(unique(all_lm_stats$rsquare))
-# length(unique(all_lm_stats$cp))
-# length(unique(all_lm_stats$aic))
-# length(unique(all_lm_stats$mindex))
 
 all_lm_stats <- all_lm_stats %>% 
   filter(n >= parameters$predictors_min,
@@ -376,6 +388,44 @@ all_lm %>%
   write_csv(here::here("data/eMLR",
                        "all_lm.csv"))
 
+
+# Prepare model coefficients for mapping
+
+all_lm <- all_lm %>% 
+  select(term, estimate, basin, era, eras, gamma_slab, model)
+
+all_lm <- all_lm %>% 
+  mutate(estimate = if_else(is.na(estimate), 0, estimate))
+
+all_lm_wide <- all_lm %>% 
+  pivot_wider(names_from = era, values_from = estimate,
+              names_prefix = "coeff_")
+
+all_lm_wide <- all_lm_wide %>% 
+  mutate(JGOFS_GO = coeff_GO_SHIP - coeff_JGOFS_WOCE,
+         GO_new = coeff_new_era - coeff_GO_SHIP) %>% 
+  select(-c(coeff_JGOFS_WOCE,
+            coeff_GO_SHIP,
+            coeff_new_era))
+
+all_lm_long <- all_lm_wide %>% 
+  pivot_longer(JGOFS_GO:GO_new, names_to = "eras_fit", values_to = "delta_coeff")
+
+all_lm_long <- all_lm_long %>% 
+  filter(eras == eras_fit) %>% 
+  select(-eras_fit)
+
+all_lm_wide <- all_lm_long %>% 
+  pivot_wider(values_from = delta_coeff,
+              names_from = term,
+              names_prefix = "delta_coeff_",
+              values_fill = 0)
+
+all_lm_wide %>%
+  write_csv(here::here("data/eMLR",
+                       "all_lm_wide.csv"))
+
+rm(all_lm_long, all_lm_wide)
 
 ```
 

@@ -1,0 +1,517 @@
+---
+title: "Mapping"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(metR)
+library(marelac)
+# library(lubridate)
+# library(oce)
+# library(reticulate)
+
+```
+
+```{r read_parameters, include = FALSE}
+
+parameters <-
+  read_rds(here::here("data",
+                       "parameters.rds"))
+```
+
+```{r read_mask_files}
+
+basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "basin_mask_WOA18.csv"))
+
+landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                                 "land_mask_WOA18.csv"))
+
+```
+
+```{r read_parameters_functions, include = FALSE}
+source(here::here("code", "plotting_functions.R"))
+```
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Required data
+
+All required data sets were subsetted spatially in the read-in section *Data base*.
+Currently, following data sets are used for mapping:
+
+## GLODAPv2_2016b_MappedClimatologies
+
+Following variables are currently used:  
+
+- Salinity
+- Temperature
+- Phosphate (+Phosphate*)
+- Silicate
+- Oxygen (+AOU)
+
+
+```{r load_GLODAPv2_2016b_MappedClimatologies}
+
+variables <-
+  c("salinity", "temperature", "oxygen", "PO4", "silicate", "NO3")
+
+for (i_variable in variables) {
+  temp <- read_csv(
+    here::here(
+      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+      paste(i_variable, ".csv", sep = "")
+    )
+  )
+  
+  if (exists("GLODAP_predictors")) {
+    GLODAP_predictors <- full_join(GLODAP_predictors, temp)
+  }
+  
+  if (!exists("GLODAP_predictors")) {
+    GLODAP_predictors <- temp
+  }
+}
+
+rm(temp, i_variable, variables)
+
+# removed na's attributable to slightly different coverage of predictor fields
+GLODAP_predictors <- GLODAP_predictors %>%
+  drop_na()
+
+GLODAP_predictors <- GLODAP_predictors %>%
+  rename(sal = salinity,
+         tem = temperature)
+
+```
+
+
+## World Ocean Atlas 2018
+
+- Neutral density
+- Basin mask
+
+
+```{r load_WOA18}
+
+WOA18_predictors <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "WOA18_predictors.csv"
+    )
+  )
+
+```
+
+## WOA13
+
+Neutral densities and the basin mask based on WOA13 and provided by Dominic Clement are currently not used.
+
+```{r load_WOA13_gamma, eval=FALSE}
+
+WOA13 <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2013_Clement/_summarized_files",
+      "WOA13_mask_gamma.csv"
+    )
+  )
+
+WOA13_gamma <- WOA13 %>%
+  select(-mask)
+
+rm(WOA13)
+
+```
+
+
+# Join predictor climatologies
+
+**CAVEAT**: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)
+
+## Control plots
+
+Maps of number of observations per horizontal grid cell, which reflects the number of depth levels.
+
+### GLODAP climatology
+
+```{r control_plots_pre_merging_GLODAP, fig.asp=0.6}
+
+GLODAP_predictors %>% 
+  ggplot(aes(lon, lat)) +
+  geom_bin2d(binwidth = 1) +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "bottom")
+
+```
+
+### WOA18 climatology
+
+```{r control_plots_pre_merging_WOA18, fig.asp=0.6}
+
+WOA18_predictors <- WOA18_predictors %>% 
+  filter(depth %in% parameters$depth_levels_33)
+
+WOA18_predictors %>% 
+  ggplot(aes(lon, lat)) +
+  geom_bin2d(binwidth = 1) +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "bottom")
+
+```
+
+### Neutral density zonal mean section
+
+```{r WOA18_gamma_mean_sections}
+
+WOA18_predictors_zonal <- WOA18_predictors %>%
+  group_by(lat, depth, basin) %>%
+  summarise(gamma_mean = mean(gamma)) %>%
+  ungroup()
+
+WOA18_predictors_zonal_Atl <- WOA18_predictors_zonal %>%
+  filter(basin == "Atlantic") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+
+WOA18_predictors_zonal_Ind_Pac <- WOA18_predictors_zonal %>%
+  filter(basin == "Indo-Pacific") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+
+WOA18_predictors_zonal <- bind_rows(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
+
+rm(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
+
+slab_breaks <- c(parameters$slabs_Atl[1:12], Inf)
+
+WOA18_predictors_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = gamma_mean)) +
+  geom_contour_filled(breaks = slab_breaks) +
+  geom_contour(breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(breaks = slab_breaks,
+                    col = "white",
+                    skip = 1) +
+  scale_fill_viridis_d(name = "Gamma",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin ~ .)
+
+rm(WOA18_predictors_zonal, slab_breaks)
+
+```
+
+
+
+## WOA18 + GLODAP
+
+WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.
+
+```{r join_WOA18_GLODAP_predictors, fig.asp=0.5}
+
+predictors <- full_join(
+  GLODAP_predictors %>% select(-c(sal,tem)),
+  WOA18_predictors)
+
+predictors <- predictors %>% 
+  drop_na()
+
+# rm(GLODAP_predictors, WOA18_predictors)
+
+```
+
+
+### Control plots
+
+#### Maps
+
+Three maps are generated to control successful merging of data sets.
+
+```{r joined_climatology_control_PO4}
+map_climatology(predictors, "PO4")
+```
+
+
+```{r joined_climatology_control_tem}
+map_climatology(predictors, "tem")
+```
+
+
+```{r WOA18_GLODAP_climatology_control_plots, fig.asp=0.6}
+
+predictors %>%
+  ggplot(aes(lon, lat)) +
+  geom_bin2d(binwidth = c(1,1)) +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "bottom")
+
+```
+
+
+#### Predictor profiles
+
+Likewise, predictor profiles for the North Atlantic are plotted to control successful merging of the data sets.
+
+```{r predictor_profiles_N_Atl, fig.asp=1.5}
+
+N_Atl <- predictors %>% 
+  filter(lat == parameters$lat_Atl_profile,
+         lon == parameters$lon_Atl_section)
+
+N_Atl <- N_Atl %>% 
+  select(-basin) %>% 
+  pivot_longer(oxygen:gamma, names_to = "parameter", values_to = "value")
+
+N_Atl %>% 
+  ggplot(aes(value, depth)) +
+  geom_path() +
+  geom_point() +
+  scale_y_reverse() +
+  facet_wrap(~parameter,
+             scales = "free_x",
+             ncol = 2)
+
+rm(N_Atl)
+
+```
+
+#### Neutral density zonal mean section
+
+```{r predictors_gamma_mean_sections}
+
+predictors_zonal <- predictors %>%
+  group_by(lat, depth, basin) %>%
+  summarise(gamma_mean = mean(gamma)) %>%
+  ungroup()
+
+predictors_zonal_Atl <- predictors_zonal %>%
+  filter(basin == "Atlantic") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+
+predictors_zonal_Ind_Pac <- predictors_zonal %>%
+  filter(basin == "Indo-Pacific") %>%
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+
+predictors_zonal <- bind_rows(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
+
+rm(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
+
+slab_breaks <- c(parameters$slabs_Atl[1:12], Inf)
+
+predictors_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = gamma_mean)) +
+  geom_contour_filled(breaks = slab_breaks) +
+  geom_contour(breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(breaks = slab_breaks,
+                    col = "white",
+                    skip = 1) +
+  scale_fill_viridis_d(name = "Gamma",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin ~ .)
+
+rm(predictors_zonal, slab_breaks)
+
+```
+
+# Prepare predictor fields
+
+## PO~4~*
+
+### Calculation 
+
+Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
+
+```{r calculate_phosphate_star_clement}
+
+predictors <- predictors %>% 
+  rename(phosphate = PO4) %>% 
+  mutate(phosphate_star_oxy = phosphate + (oxygen / 170)  - 1.95,
+         phosphate_star_nit = phosphate - NO3 / 16  + 2.9)
+
+```
+
+### Maps
+
+```{r PO4_star_nit_climatology_maps, fig.asp=0.6}
+
+map_climatology(predictors, "phosphate_star_nit")
+
+```
+
+```{r PO4_star_oxy_climatology_maps, fig.asp=0.6}
+
+map_climatology(predictors, "phosphate_star_oxy")
+
+```
+
+### Sections
+
+```{r PO4_star_nit_climatology_section, fig.asp=0.6}
+
+section_climatology(predictors, "phosphate_star_nit")
+
+```
+
+```{r PO4_star_oxy_climatology_section, fig.asp=0.6}
+
+section_climatology(predictors, "phosphate_star_oxy")
+
+```
+
+
+## AOU
+
+### Calculation
+
+AOU was calculated as the difference between saturation concentration and observed concentration.  
+
+**CAVEAT**: Algorithms used to calculate oxygen saturation concentration are not yet identical in GLODAP data set (fitting) and predictor climatologies (mapping).
+
+```{r calculate_aou_climatology}
+
+predictors <- predictors %>% 
+  mutate(oxygen_sat = gas_satconc(S = sal,
+                                  t = tem,
+                                  P = 1.013253,
+                                  species = "O2"),
+         aou = oxygen_sat - oxygen) %>% 
+  select(-oxygen_sat)
+
+
+```
+
+### Maps
+
+```{r aou_climatology_maps, fig.asp=0.6}
+
+map_climatology(predictors, "aou")
+
+```
+
+### Sections
+
+```{r aou_climatology_section, fig.asp=0.6}
+
+section_climatology(predictors, "aou")
+
+```
+
+## Isoneutral slabs
+
+The following boundaries for isoneutral slabs were defined:
+
+- Atlantic: `r parameters$slabs_Atl`
+- Indo-Pacific: `r parameters$slabs_Ind_Pac`
+
+Continuous neutral density (gamma) values based on WOA18 are grouped into isoneutral slabs.
+
+```{r cut_isoneutral_slabs}
+
+predictors_Atl <- predictors %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
+
+predictors_Ind_Pac <- predictors %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
+
+predictors <- bind_rows(predictors_Atl, predictors_Ind_Pac)
+
+rm(predictors_Atl, predictors_Ind_Pac)
+
+```
+
+
+# Write csv
+
+```{r write_joined_predictor_fields}
+
+predictors %>%
+    write_csv(here::here("data/mapping/predictor_fields",
+                         "W18_st_G16_opsn.csv"))
+
+```
+
+
+
+## WOA13 + GLODAP
+
+Currently not used.
+
+```{r join_WOA13_GLODAP_predictors, eval=FALSE}
+
+predictors <- full_join(GLODAP_predictors, WOA13_gamma)
+GLODAP_depths <- unique(GLODAP_predictors$depth)
+
+rm(GLODAP_predictors, WOA13_gamma)
+
+predictors <- predictors %>% 
+  group_by(lat, lon) %>% 
+  mutate(n_oxygen = sum(!is.na(oxygen)),
+         n_PO4 = sum(!is.na(PO4)),
+         n_silicate = sum(!is.na(silicate)),
+         n_sal = sum(!is.na(sal)),
+         n_tem = sum(!is.na(tem)),
+         n_gamma = sum(!is.na(gamma))) %>% 
+  ungroup()
+
+predictors <- predictors %>% 
+  filter(n_oxygen > 0,
+         n_PO4 > 0,
+         n_silicate > 0, 
+         n_sal > 0, 
+         n_tem > 0, 
+         n_gamma > 0) %>% 
+  select(-c(n_oxygen, 
+            n_PO4, 
+            n_silicate, 
+            n_sal, 
+            n_tem,
+            n_gamma))
+
+predictors <- predictors %>% 
+  drop_na()
+
+```
+
+
+
+
+
+
+# Open tasks
+
+- Check PO4* calculation
+- Harmonize AOU calculation in fitting and mapping
+- 
+
+# Open questions
+
+- 

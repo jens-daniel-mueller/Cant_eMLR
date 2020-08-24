@@ -155,7 +155,7 @@ rm(rCP, rNP)
 
 # PO~4~* calculation 
 
-Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate, as claimed in Gruber et al (2019).
+The predictor PO~4~* can be calculated according to Clement and Gruber (2018), ie based on oxygen, or according to Gruber et al (2019), based on nitrate.
 
 ```{r calculate_phosphate_star_oxygen}
 
@@ -168,7 +168,7 @@ GLODAP <- GLODAP %>%
 ```{r calculate_phosphate_star_nitrate}
 
 GLODAP <- GLODAP %>% 
-  mutate(phosphate_star_nit_corr = - nitrate/16  + 2.9,
+  mutate(phosphate_star_nit_corr = -nitrate/16  + 2.9,
          phosphate_star_nit = phosphate + phosphate_star_nit_corr)
 
 ```
@@ -228,17 +228,10 @@ GLODAP %>%
   scale_fill_viridis_c() +
   facet_wrap(~basin)
 
-```
-
-
-
-```{r select_phosphate_star_approach}
-
 GLODAP <- GLODAP %>% 
   select(-c(
-    phosphate_star_nit,
-    phosphate_star_oxy_corr)) %>% 
-  rename(phosphate_star = phosphate_star_oxy)
+    phosphate_star_oxy_corr,
+    phosphate_star_nit_corr))
 
 ```
 
@@ -509,10 +502,17 @@ GLODAP_cruise <- GLODAP %>%
   filter(cruise %in% parameters$cruises_meridional)
 
 library(oce)
+library(gsw)
+# calculate pressure from depth
+
+GLODAP_cruise <- GLODAP_cruise %>% 
+  mutate(CTDPRS = gsw_p_from_z(-depth,
+                               lat))
+
 GLODAP_cruise <- GLODAP_cruise %>% 
   mutate(THETA = swTheta(salinity = sal,
                          temperature = tem,
-                         pressure = depth,
+                         pressure = CTDPRS,
                          referencePressure = 0,
                          longitude = lon-180,
                          latitude = lat))
@@ -521,7 +521,6 @@ GLODAP_cruise <- GLODAP_cruise %>%
   rename(LATITUDE = lat,
          LONGITUDE = lon,
          SALNTY = sal,
-         CTDPRS = depth,
          gamma_provided = gamma)
 
 library(reticulate)
@@ -550,7 +549,6 @@ GLODAP_cruise %>%
 rm(lat_section, GLODAP_cruise, cruises_meridional)
 
 ```
-
 
 
 # Observations coverage
@@ -684,6 +682,9 @@ lat_phosphate_star <- lat_section+
 
 lat_nitrate <- lat_section+
   geom_point(aes(col=nitrate))
+
+lat_Cstar <- lat_section+
+  geom_point(aes(col=Cstar))
 
 hist_tco2 <- GLODAP_cruise %>%
   ggplot(aes(tco2)) +
