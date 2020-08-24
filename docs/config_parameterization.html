@@ -434,8 +434,20 @@ div.tocify {
     </li>
   </ul>
 </li>
-<li>
-  <a href="mapping.html">Mapping</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Mapping
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mapping_predictor_preparation.html">Predictor preparation</a>
+    </li>
+    <li>
+      <a href="mapping_cant_calculation.html">Cant calculation</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="analysis.html">Analysis</a>
@@ -475,7 +487,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Parameterization</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">21 August, 2020</h4>
+<h4 class="date">24 August, 2020</h4>
 
 </div>
 
@@ -500,7 +512,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-21
+<strong>Last updated:</strong> 2020-08-24
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -591,16 +603,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7targetblank79041e4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7" target="_blank">79041e4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea804955d96b133ceebc0dbfb184e66819e028ae2targetblanka804955a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a804955d96b133ceebc0dbfb184e66819e028ae2" target="_blank">a804955</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7targetblank79041e4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea804955d96b133ceebc0dbfb184e66819e028ae2targetblanka804955a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/79041e4830ee58b7f0f0d777f1fbeceb0f9feaf7" target="_blank">79041e4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a804955d96b133ceebc0dbfb184e66819e028ae2" target="_blank">a804955</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -619,7 +631,268 @@ Ignored files:
     Ignored:    data/mapping/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-    Ignored:    figure/
+
+Untracked files:
+    Untracked:  output/figure/mapping/
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/mapping.Rmd
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1983-01-10_n_1235_cruise_238_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1983-11-25_n_407_cruise_239_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1986-03-12_n_1415_cruise_370_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1988-09-10_n_3163_cruise_242_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1989-02-16_n_58_cruise_621_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1989-05-08_n_96_cruise_275_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1989-08-18_n_475_cruise_371_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1991-06-22_n_211_cruise_284_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1991-09-15_n_398_cruise_286_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1992-09-20_n_845_cruise_296_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1993-05-31_n_516_cruise_300_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1993-07-11_n_377_cruise_338_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1993-08-02_n_1416_cruise_301_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1993-09-06_n_187_cruise_712_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1993-10-25_n_683_cruise_302_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-01-27_n_743_cruise_459_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-02-05_n_429_cruise_303_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-02-14_n_1959_cruise_297_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-04-27_n_1093_cruise_248_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-05-05_n_2283_cruise_270_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-05-07_n_231_cruise_428_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-08-31_n_86_cruise_429_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-10-11_n_765_cruise_102_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1994-12-28_n_1422_cruise_249_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-01-10_n_58_cruise_441_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-01-18_n_709_cruise_67_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-01-29_n_654_cruise_361_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-02-13_n_1804_cruise_250_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-03-12_n_211_cruise_362_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-03-29_n_1450_cruise_251_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-05-13_n_1431_cruise_252_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-06-26_n_1064_cruise_253_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-08-01_n_1569_cruise_254_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-09-02_n_341_cruise_431_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-09-21_n_1384_cruise_255_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-10-10_n_1383_cruise_339_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-11-18_n_684_cruise_256_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1995-12-26_n_1338_cruise_257_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1996-02-12_n_1867_cruise_280_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1996-03-07_n_1097_cruise_374_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1996-06-05_n_733_cruise_288_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1996-09-09_n_549_cruise_68_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1996-11-17_n_738_cruise_258_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-04-26_n_20_cruise_648_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-05-26_n_1028_cruise_160_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-05-27_n_307_cruise_42_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-06-14_n_1454_cruise_259_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-07-30_n_1096_cruise_260_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-08-25_n_770_cruise_261_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1997-11-22_n_209_cruise_464_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1998-02-11_n_635_cruise_341_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1998-03-14_n_196_cruise_69_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1998-06-07_n_44_cruise_448_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1998-06-28_n_38_cruise_449_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1998-10-09_n_33_cruise_409_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1998-11-24_n_250_cruise_465_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1999-05-17_n_90_cruise_467_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1999-05-31_n_324_cruise_461_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1999-09-05_n_87_cruise_468_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1999-10-14_n_33_cruise_410_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2000-01-20_n_179_cruise_472_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2000-05-22_n_431_cruise_24_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2000-10-14_n_26_cruise_411_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2000-10-16_n_375_cruise_437_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2000-10-26_n_603_cruise_82_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2001-06-15_n_1120_cruise_83_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2001-06-23_n_361_cruise_476_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2001-08-14_n_814_cruise_477_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2001-09-04_n_31_cruise_478_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2001-09-12_n_390_cruise_438_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2001-11-17_n_898_cruise_70_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2002-04-01_n_46_cruise_682_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2002-05-29_n_26_cruise_706_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2002-06-27_n_146_cruise_263_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-03-14_n_647_cruise_484_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-08-10_n_1036_cruise_56_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-09-07_n_2595_cruise_486_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-10-06_n_1050_cruise_264_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-10-10_n_102_cruise_633_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-11-03_n_975_cruise_265_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2003-11-19_n_1218_cruise_487_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-01-02_n_1630_cruise_488_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-04-06_n_61_cruise_489_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-04-23_n_801_cruise_695_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-05-22_n_200_cruise_167_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-05-26_n_9_cruise_463_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-07-20_n_3224_cruise_272_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-08-18_n_876_cruise_490_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-10-22_n_81_cruise_492_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2004-11-27_n_926_cruise_493_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-01-10_n_682_cruise_72_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-01-25_n_2237_cruise_350_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-03-08_n_66_cruise_494_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-05-25_n_889_cruise_683_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-05-30_n_240_cruise_168_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-06-11_n_1490_cruise_495_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-09-14_n_1833_cruise_266_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-09-21_n_499_cruise_666_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-09-30_n_175_cruise_496_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2005-12-09_n_2541_cruise_497_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2006-03-09_n_1553_cruise_306_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2006-06-16_n_1_cruise_602_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2006-06-22_n_844_cruise_498_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-02-28_n_1668_cruise_352_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-03-09_n_1006_cruise_501_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-04-11_n_1914_cruise_353_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-05-31_n_600_cruise_327_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-08-14_n_1167_cruise_502_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-09-16_n_477_cruise_667_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-09-18_n_299_cruise_503_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-10-30_n_1748_cruise_504_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2007-12-07_n_1627_cruise_505_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-01-09_n_543_cruise_74_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-01-17_n_2443_cruise_345_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-02-20_n_1284_cruise_354_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-03-02_n_957_cruise_385_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-03-14_n_846_cruise_19_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-04-06_n_820_cruise_75_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-05-28_n_411_cruise_171_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2008-10-21_n_311_cruise_506_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-01-07_n_343_cruise_674_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-02-16_n_652_cruise_675_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-02-27_n_1162_cruise_84_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-03-29_n_1062_cruise_676_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-04-17_n_3549_cruise_355_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-05-18_n_2644_cruise_507_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-05-23_n_312_cruise_172_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-07-13_n_143_cruise_635_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-08-02_n_120_cruise_26_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-11-10_n_316_cruise_63_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2009-12-27_n_2668_cruise_273_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-01-25_n_928_cruise_699_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-03-30_n_2265_cruise_346_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-04-03_n_367_cruise_703_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-05-26_n_161_cruise_1085_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-06-26_n_157_cruise_1063_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-07-26_n_1203_cruise_609_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-08-19_n_80_cruise_1064_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-10-17_n_136_cruise_2028_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-11-15_n_83_cruise_2029_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2010-12-22_n_1296_cruise_20_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-01-17_n_107_cruise_1065_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-01-30_n_269_cruise_1087_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-02-18_n_116_cruise_1066_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-03-21_n_1930_cruise_295_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-05-18_n_510_cruise_174_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-06-25_n_249_cruise_1067_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-07-07_n_2107_cruise_517_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-10-09_n_617_cruise_347_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2011-10-26_n_204_cruise_2031_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-02-06_n_144_cruise_1090_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-02-06_n_586_cruise_1002_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-02-19_n_235_cruise_1069_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-04-04_n_1059_cruise_329_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-04-15_n_99_cruise_2033_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-05-01_n_1379_cruise_330_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-06-07_n_141_cruise_1029_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-06-26_n_386_cruise_1092_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-07-20_n_784_cruise_1071_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-08-15_n_1114_cruise_518_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-11-12_n_161_cruise_1073_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-12-05_n_200_cruise_2071_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-12-12_n_113_cruise_1074_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2012-12-15_n_775_cruise_1050_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-01-23_n_823_cruise_1051_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-01-29_n_350_cruise_1093_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-02-19_n_217_cruise_1076_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-03-14_n_208_cruise_2072_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-05-03_n_2792_cruise_1035_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-05-06_n_288_cruise_2073_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-06-09_n_213_cruise_1078_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-07-23_n_668_cruise_1079_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-08-21_n_830_cruise_1096_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-09-03_n_1824_cruise_1041_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-10-11_n_140_cruise_2035_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-11-09_n_121_cruise_2036_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2013-12-06_n_135_cruise_2074_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-01-12_n_1650_cruise_1042_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-01-24_n_281_cruise_2075_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-02-22_n_251_cruise_2038_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-03-13_n_183_cruise_2076_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-04-18_n_2200_cruise_1036_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-04-29_n_75_cruise_2039_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-05-04_n_265_cruise_2077_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-05-18_n_257_cruise_2040_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-06-16_n_181_cruise_2078_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-07-08_n_358_cruise_1098_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-07-24_n_392_cruise_2041_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-08-03_n_1668_cruise_1053_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-08-10_n_697_cruise_1099_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-09-30_n_130_cruise_2042_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-11-24_n_82_cruise_2079_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2014-12-11_n_533_cruise_1004_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-01-19_n_65_cruise_2043_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-01-29_n_311_cruise_2080_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-02-14_n_227_cruise_2044_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-03-04_n_207_cruise_2081_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-03-25_n_17_cruise_1017_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-04-20_n_258_cruise_1103_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-04-20_n_96_cruise_2045_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-05-02_n_229_cruise_2083_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-05-04_n_852_cruise_1043_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-05-12_n_358_cruise_1027_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-05-17_n_136_cruise_2046_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-05-17_n_685_cruise_1011_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-06-09_n_1565_cruise_1044_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-06-13_n_281_cruise_2084_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-07-20_n_442_cruise_2047_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-08-12_n_2_cruise_1040_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-08-17_n_758_cruise_1100_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-11-05_n_130_cruise_2048_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2015-11-20_n_102_cruise_2086_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-01-03_n_644_cruise_1054_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-01-16_n_77_cruise_2049_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-01-25_n_279_cruise_2087_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-02-15_n_378_cruise_2050_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-03-01_n_1326_cruise_1046_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-03-04_n_222_cruise_2088_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-04-13_n_106_cruise_2051_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-05-04_n_304_cruise_2090_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-05-16_n_140_cruise_2052_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-05-31_n_2076_cruise_1020_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-06-16_n_251_cruise_2091_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-06-24_n_101_cruise_2053_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-07-21_n_1095_cruise_1101_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-08-12_n_280_cruise_2054_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-09-25_n_156_cruise_2055_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-11-01_n_129_cruise_2092_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-11-20_n_100_cruise_2056_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2016-12-25_n_3824_cruise_1045_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-01-12_n_102_cruise_2093_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-01-30_n_363_cruise_2057_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-02-16_n_262_cruise_2094_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-02-19_n_427_cruise_1055_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-03-06_n_272_cruise_2058_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-04-16_n_252_cruise_2059_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-05-07_n_146_cruise_2060_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-05-11_n_673_cruise_2027_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-06-20_n_133_cruise_2061_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-07-10_n_1051_cruise_2096_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-08-13_n_216_cruise_2062_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-09-12_n_155_cruise_2097_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-11-16_n_134_cruise_2063_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2017-12-04_n_242_cruise_2098_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-01-24_n_305_cruise_2099_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-01-29_n_1266_cruise_2008_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-02-12_n_274_cruise_2064_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-03-07_n_248_cruise_2100_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-03-18_n_1811_cruise_2105_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-04-16_n_327_cruise_2065_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-05-07_n_148_cruise_2101_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-05-28_n_243_cruise_2066_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-06-22_n_501_cruise_2102_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-08-01_n_185_cruise_2067_.png
+    Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_2018-10-09_n_153_cruise_2068_.png
 
 </code></pre>
 <p>
@@ -658,6 +931,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/a804955d96b133ceebc0dbfb184e66819e028ae2/analysis/config_parameterization.Rmd" target="_blank">a804955</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-24
+</td>
+<td>
+split mapping into 2 rmds, po4star selection in parameters, use po4star nitrate
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b6711a4473d01f3b8bb5e4c8d5027104cb65ff3a/docs/config_parameterization.html" target="_blank">b6711a4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1366,7 +1673,8 @@ parameters &lt;-
     depth_levels = depth_levels,
     depth_levels_33 = depth_levels_33,
     slabs_Atl = slabs_Atl,
-    slabs_Ind_Pac = slabs_Ind_Pac
+    slabs_Ind_Pac = slabs_Ind_Pac,
+    phosphate_star_approach = &quot;nitrate&quot;
   )
 
 rm(slabs_Ind_Pac, slabs_Atl, depth_levels)
@@ -1440,7 +1748,10 @@ $slabs_Atl
 
 $slabs_Ind_Pac
  [1]  -Inf 26.00 26.50 26.75 27.00 27.25 27.50 27.75 27.85 27.95 28.05 28.10
-[13]   Inf</code></pre>
+[13]   Inf
+
+$phosphate_star_approach
+[1] &quot;nitrate&quot;</code></pre>
 </div>
 <div id="write-file" class="section level1">
 <h1><span class="header-section-number">2</span> Write file</h1>
