@@ -296,16 +296,16 @@ for (i_eras in unique(Cant$eras)) {
       filter(lon == i_lon)
     
     Cant_eras_lon %>%
-      ggplot(aes(lat, depth, fill = Cant)) +
-      geom_raster() +
-      scale_color_viridis_c() +
-      scale_fill_divergent(
+      ggplot(aes(lat, depth, col = Cant)) +
+      geom_point() +
+      scale_color_divergent(
         guide = "colorstrip",
         breaks = MakeBreaks(5),
         name = "Cant",
         mid = "grey"
       ) +
-      scale_y_reverse() +
+      scale_y_reverse(limits = c(3000,0)) +
+      scale_x_continuous(limits = c(-75,65)) +
       coord_cartesian(expand = 0) +
       guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
       labs(title = paste("eras:", i_eras, "| lon:", i_lon)) +
