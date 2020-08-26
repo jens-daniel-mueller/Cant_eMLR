@@ -43,7 +43,11 @@ navbar:
       href: mapping_cant_calculation.html
     href: mapping.html
   - text: Analysis
-    href: analysis.html
+    menu:
+    - text: This study
+      href: analysis_this_study.html
+    - text: Previous studies
+      href: analysis_previous_studies.html
   right:
   - icon: fa-github
     text: Source code

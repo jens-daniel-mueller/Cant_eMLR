@@ -18,7 +18,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(lubridate)
+library(scales)
 library(metR)
 ```
 
@@ -84,21 +84,36 @@ Cant_inv <-
 
 ```
 
+All following analysis are restricted to the inventory depth of `r parameters$inventory_depth`m.
+
+```{r subset_inventory_depth}
+
+Cant <- Cant %>%
+  filter(depth <= parameters$inventory_depth)
+
+Cant_average <- Cant_average %>%
+  filter(depth <= parameters$inventory_depth)
+
+Cant_average_zonal <- Cant_average_zonal %>%
+  filter(depth <= parameters$inventory_depth)
+
+
+```
 
 
 
-# Neutral density section
+# Zonal mean sections
 
-## Mean values
+## Neutral density
 
-The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Binning here does not include two highest isoneutral density slabs in the Atlantic, yet.
+The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.
 
 ```{r gamma_sections_mean}
 
 slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 
 Cant_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
+  filter(eras == "JGOFS_GO") %>% 
   ggplot(aes(lat, depth, z = gamma_mean_mean)) +
   geom_contour_filled(breaks = slab_breaks) +
   geom_contour(breaks = slab_breaks,
@@ -111,13 +126,145 @@ Cant_average_zonal %>%
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP~.)
+
+```
+
+## Cant
+
+### Mean
+
+```{r Cant_sections_mean}
+
+Cant_average_zonal %>%
+  ggplot(aes(lat, depth, z = Cant_mean_mean)) +
+  geom_contour_fill(breaks = MakeBreaks(5),
+                    na.fill = TRUE) +
+  scale_fill_divergent(guide = "colorstrip",
+                       breaks = MakeBreaks(5),
+                       name = "Cant") +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "black") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "black",
+    skip = 1
+  ) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP ~ eras)
+
+```
+
+### Mean positive values
+
+```{r Cant_sections_positive_mean}
+
+Cant_average_zonal %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
+  ggplot(aes(lat, depth, z = Cant_pos_mean_mean)) +
+  geom_contour_filled() +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "white",
+    skip = 1
+  ) +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   facet_grid(basin_AIP~eras)
 
 ```
 
-# Cant sections
+
+### Mean standard deviation across MLR models
+
+Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
+
+```{r Cant_sections_sd_models}
+
+Cant_average_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = Cant_sd_mean)) +
+  geom_contour_filled() +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "white",
+    skip = 1
+  ) +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP ~ eras)
+
+```
+
+### Standard deviation across basin
+
+Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
+
+```{r Cant_sections_sd_Cant}
+
+Cant_average_zonal %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
+  ggplot(aes(lat, depth, z = Cant_mean_sd)) +
+  geom_contour_filled() +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "white",
+    skip = 1
+  ) +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP~eras)
+
+```
+
+
+# Sections at longitudes
+
+## JGOFS_GO
+
+```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
+
+section_climatology(Cant_average %>% filter(eras == "JGOFS_GO"),
+                    "Cant_mean")
+
+```
+
+## GO_new
+
+```{r Cant_sections_positive_mean_one_lon_GO_new}
+
+section_climatology(Cant_average %>% filter(eras == "GO_new"),
+                    "Cant_mean")
+
+```
+
 
 ## By model
+
+Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
+
 
 ```{r Cant_section_by_model_eras_lon, eval=FALSE}
 
@@ -162,136 +309,7 @@ for (i_eras in unique(Cant$eras)) {
 ```
 
 
-## Mean values
-
-```{r Cant_sections_mean}
-
-Cant_average_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = Cant_mean_mean)) +
-  geom_contour_fill(breaks = MakeBreaks(5),
-                    na.fill = TRUE) +
-  scale_fill_divergent(guide = "colorstrip",
-                       breaks = MakeBreaks(5),
-                       name = "Cant") +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "black") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "black",
-    skip = 1
-  ) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP ~ eras)
-
-```
-
-## Mean zonal standard deviation across MLR models
-
-Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
-
-```{r Cant_sections_sd_models}
-
-Cant_average_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = Cant_sd_mean)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP ~ eras)
-
-```
-
-## Zonal standard deviation of mean Cant estimates
-
-Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
-
-```{r Cant_sections_sd_Cant}
-
-Cant_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_mean_sd)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
-
-```
-
-
-## Mean positive values
-
-```{r Cant_sections_positive_mean}
-
-Cant_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_pos_mean_mean)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
-
-```
-
-## Sections
-
-### JGOFS_GO
-
-```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
-
-section_climatology(Cant_average %>% filter(eras == "JGOFS_GO"),
-                    "Cant_mean")
-
-```
-
-### GO_new
-
-```{r Cant_sections_positive_mean_one_lon_GO_new}
-
-section_climatology(Cant_average %>% filter(eras == "GO_new"),
-                    "Cant_mean")
-
-```
-
-
-# Cant maps
+# Maps of Cant
 
 ## Depth layers
 
@@ -312,56 +330,11 @@ Cant_average %>%
 
 ```
 
-## Inventory calculation
-
-To calculate Cant column inventories, we:  
-
-1. Multiple layer thickness with Cant concentration to get a layer inventory
-2. For each horizontal grid cell and era, sum Cant layer inventories from 150 - 3000 m
-
-Step 2 is performed again for all Cant and positive Cant values only
-
-```{r calculate_inventories}
-
-depth_level_volume <- tibble(depth = unique(Cant_average$depth))
-
-depth_level_volume <- depth_level_volume %>%
-  mutate(
-    layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
-    layer_thickness_below = replace_na((lead(depth) - depth) / 2, 0),
-    layer_thickness = layer_thickness_above + layer_thickness_below
-  ) %>%
-  select(-c(layer_thickness_above,
-            layer_thickness_below))
-
-Cant_average <-
-  full_join(Cant_average, depth_level_volume)
-
-Cant_average <- Cant_average %>%
-  mutate(layer_inv = Cant_mean * layer_thickness) %>%
-  mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
-  select(-layer_thickness)
-
-Cant_inv <- Cant_average %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  group_by(lon, lat, basin, eras) %>%
-  summarise(
-    cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
-    cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000
-  ) %>%
-  ungroup()
-
-
-```
-
-
 ## Inventories
 
-### All Cant estimates
+### All Cant
 
 ```{r Cant_inventory_map, fig.asp=1}
-
-library(scales)
 
 Cant_inv %>% 
   ggplot() +
@@ -385,7 +358,7 @@ Cant_inv %>%
 ```
 
 
-### Positive Cant estimates
+### Positive Cant
 
 ```{r Cant_pos_inventory_map, fig.asp=1}
 
@@ -404,3 +377,35 @@ Cant_inv %>%
     )
 
 ```
+
+
+# Cant vs SD
+
+```{r Cant_vs_sd_by_basin_era}
+
+Cant_average %>% 
+  ggplot(aes(Cant_mean, Cant_sd)) +
+  geom_vline(xintercept = 0) +
+  geom_bin2d() +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10",
+                       name = "log10(n)") +
+  facet_grid(basin_AIP ~ eras)
+
+```
+
+```{r Cant_vs_sd_by_basin_gamma, fig.asp=2}
+
+Cant_average %>% 
+  ggplot(aes(Cant_mean, Cant_sd)) +
+  geom_vline(xintercept = 0) +
+  geom_bin2d() +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10",
+                       name = "log10(n)") +
+  facet_grid(gamma_slab ~ basin_AIP)
+
+```
+
