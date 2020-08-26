@@ -207,8 +207,11 @@ For each basin and era combination, the zonal mean Cant is calculated, again for
 
 ```{r Calculate_Cant_mean_sections}
 
+Cant_model_average <- full_join(Cant_model_average,
+                                basinmask %>% select(-basin))
+
 Cant_model_average_zonal <- Cant_model_average %>%
-  group_by(lat, depth, eras, basin) %>%
+  group_by(lat, depth, eras, basin, basin_AIP) %>%
   summarise(across(
     c(
       "Cant_mean",
@@ -275,7 +278,7 @@ Cant_model_average_zonal %>%
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin~eras)
+  facet_grid(basin_AIP~eras)
 
 ```
 
@@ -350,7 +353,7 @@ Cant_model_average_zonal %>%
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin ~ eras)
+  facet_grid(basin_AIP ~ eras)
 
 ```
 
@@ -377,7 +380,7 @@ Cant_model_average_zonal %>%
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin ~ eras)
+  facet_grid(basin_AIP ~ eras)
 
 ```
 
@@ -404,7 +407,7 @@ Cant_model_average_zonal %>%
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin~eras)
+  facet_grid(basin_AIP~eras)
 
 ```
 
@@ -430,7 +433,7 @@ Cant_model_average_zonal %>%
   scale_y_reverse() +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin~eras)
+  facet_grid(basin_AIP~eras)
 
 ```
 
