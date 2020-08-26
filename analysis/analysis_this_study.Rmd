@@ -379,7 +379,7 @@ Cant_inv %>%
 ```
 
 
-# Cant vs SD
+# Cant vs model SD
 
 ```{r Cant_vs_sd_by_basin_era}
 
@@ -400,6 +400,38 @@ Cant_average %>%
 
 Cant_average %>% 
   ggplot(aes(Cant_mean, Cant_sd)) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 10) +
+  geom_bin2d() +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10",
+                       name = "log10(n)") +
+  facet_grid(gamma_slab ~ basin_AIP)
+
+```
+
+# Cant vs regional SD
+
+```{r Cant_vs_sd_by_basin_era_zonal}
+
+Cant_average_zonal %>% 
+  ggplot(aes(Cant_mean_mean, Cant_mean_sd)) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 10) +
+  geom_bin2d() +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10",
+                       name = "log10(n)") +
+  facet_grid(basin_AIP ~ eras)
+
+```
+
+```{r Cant_vs_sd_by_basin_gamma_zonal, fig.asp=2}
+
+Cant_average_zonal %>% 
+  ggplot(aes(Cant_mean_mean, Cant_mean_sd)) +
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 10) +
   geom_bin2d() +
