@@ -1,0 +1,406 @@
+---
+title: "Analysis of Cant estimates"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(metR)
+```
+
+
+```{r read_parameters, include = FALSE}
+parameters <-
+  read_rds(here::here("data",
+                       "parameters.rds"))
+```
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+```
+
+```{r read_functions, include = FALSE}
+source(here::here("code", "plotting_functions.R"))
+```
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Data sources
+
+Cant estimates from this study:
+
+- Raw results by each of 10 MLR models per density slab
+- Mean and SD per grid cell (lat, lon, depth)
+- Zonal mean and SD (basin, lat, depth)
+- Inventories (lat, lon)
+
+
+```{r read_cant_files}
+
+Cant <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cant.csv"))
+
+Cant_average <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_average.csv"))
+
+Cant_average_zonal <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_average_zonal.csv"))
+
+Cant_inv <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_inv.csv"))
+
+```
+
+
+
+
+# Neutral density section
+
+## Mean values
+
+The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Binning here does not include two highest isoneutral density slabs in the Atlantic, yet.
+
+```{r gamma_sections_mean}
+
+slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
+
+Cant_average_zonal %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
+  ggplot(aes(lat, depth, z = gamma_mean_mean)) +
+  geom_contour_filled(breaks = slab_breaks) +
+  geom_contour(breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(breaks = slab_breaks,
+               col = "white",
+               skip = 1) +
+  scale_fill_viridis_d(name = "Gamma",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP~eras)
+
+```
+
+# Cant sections
+
+## By model
+
+```{r Cant_section_by_model_eras_lon, eval=FALSE}
+
+for (i_eras in unique(Cant$eras)) {
+  #i_eras <- unique(Cant$eras)[2]
+  Cant_eras <- Cant %>%
+    filter(eras == i_eras)
+  
+  for (i_lon in seq(20.5, 360, 20)) {
+    #i_lon <- seq(20.5, 360, 20)[7]
+    Cant_eras_lon <- Cant_eras %>%
+      filter(lon == i_lon)
+    
+    Cant_eras_lon %>%
+      ggplot(aes(lat, depth, col = Cant)) +
+      geom_point() +
+      scale_color_divergent(
+        guide = "colorstrip",
+        breaks = MakeBreaks(5),
+        name = "Cant",
+        mid = "grey"
+      ) +
+      scale_y_reverse(limits = c(3000,0)) +
+      scale_x_continuous(limits = c(-75,65)) +
+      coord_cartesian(expand = 0) +
+      guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+      labs(title = paste("eras:", i_eras, "| lon:", i_lon)) +
+      facet_wrap(~ model, ncol = 5)
+    
+    ggsave(here::here("output/figure/mapping",
+                  paste(i_eras,
+                        "lon",
+                        i_lon,
+                        "model_Cant.png",
+                        sep = "_")),
+                  width = 17, height = 9)
+    
+  }
+}
+
+
+```
+
+
+## Mean values
+
+```{r Cant_sections_mean}
+
+Cant_average_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = Cant_mean_mean)) +
+  geom_contour_fill(breaks = MakeBreaks(5),
+                    na.fill = TRUE) +
+  scale_fill_divergent(guide = "colorstrip",
+                       breaks = MakeBreaks(5),
+                       name = "Cant") +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "black") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "black",
+    skip = 1
+  ) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP ~ eras)
+
+```
+
+## Mean zonal standard deviation across MLR models
+
+Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
+
+```{r Cant_sections_sd_models}
+
+Cant_average_zonal %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  ggplot(aes(lat, depth, z = Cant_sd_mean)) +
+  geom_contour_filled() +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "white",
+    skip = 1
+  ) +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP ~ eras)
+
+```
+
+## Zonal standard deviation of mean Cant estimates
+
+Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
+
+```{r Cant_sections_sd_Cant}
+
+Cant_average_zonal %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
+  ggplot(aes(lat, depth, z = Cant_mean_sd)) +
+  geom_contour_filled() +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "white",
+    skip = 1
+  ) +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP~eras)
+
+```
+
+
+## Mean positive values
+
+```{r Cant_sections_positive_mean}
+
+Cant_average_zonal %>% 
+  filter(depth <= parameters$inventory_depth) %>% 
+  ggplot(aes(lat, depth, z = Cant_pos_mean_mean)) +
+  geom_contour_filled() +
+  geom_contour(aes(lat, depth, z = gamma_mean_mean),
+               breaks = slab_breaks,
+               col = "white") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean_mean),
+    breaks = slab_breaks,
+    col = "white",
+    skip = 1
+  ) +
+  scale_fill_viridis_d(name = "Cant") +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP~eras)
+
+```
+
+## Sections
+
+### JGOFS_GO
+
+```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
+
+section_climatology(Cant_average %>% filter(eras == "JGOFS_GO"),
+                    "Cant_mean")
+
+```
+
+### GO_new
+
+```{r Cant_sections_positive_mean_one_lon_GO_new}
+
+section_climatology(Cant_average %>% filter(eras == "GO_new"),
+                    "Cant_mean")
+
+```
+
+
+# Cant maps
+
+## Depth layers
+
+Cant concentration for selected depth levels at which mapping was performed.
+
+```{r Cant_depth_layer_maps, fig.asp=1}
+
+Cant_average %>%
+  filter(depth %in% c(150, 500, 1000, 3000)) %>% 
+  ggplot(aes(lon, lat, fill = Cant_mean)) + 
+  geom_raster() +
+  scale_fill_divergent(guide = "colorstrip",
+                       breaks = MakeBreaks(5),
+                       name = "Cant") +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  coord_quickmap(expand = 0) +
+  facet_grid(depth~eras)
+
+```
+
+## Inventory calculation
+
+To calculate Cant column inventories, we:  
+
+1. Multiple layer thickness with Cant concentration to get a layer inventory
+2. For each horizontal grid cell and era, sum Cant layer inventories from 150 - 3000 m
+
+Step 2 is performed again for all Cant and positive Cant values only
+
+```{r calculate_inventories}
+
+depth_level_volume <- tibble(depth = unique(Cant_average$depth))
+
+depth_level_volume <- depth_level_volume %>%
+  mutate(
+    layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
+    layer_thickness_below = replace_na((lead(depth) - depth) / 2, 0),
+    layer_thickness = layer_thickness_above + layer_thickness_below
+  ) %>%
+  select(-c(layer_thickness_above,
+            layer_thickness_below))
+
+Cant_average <-
+  full_join(Cant_average, depth_level_volume)
+
+Cant_average <- Cant_average %>%
+  mutate(layer_inv = Cant_mean * layer_thickness) %>%
+  mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
+  select(-layer_thickness)
+
+Cant_inv <- Cant_average %>%
+  filter(depth <= parameters$inventory_depth) %>%
+  group_by(lon, lat, basin, eras) %>%
+  summarise(
+    cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
+    cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000
+  ) %>%
+  ungroup()
+
+
+```
+
+
+## Inventories
+
+### All Cant estimates
+
+```{r Cant_inventory_map, fig.asp=1}
+
+library(scales)
+
+Cant_inv %>% 
+  ggplot() +
+    geom_raster(data = landmask %>% filter(region == "land"),
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cant_inv)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_gradient2(high = muted("red"),
+                         mid = "white",
+                         low = muted("blue"),
+                         midpoint = 0,
+                         space = "Lab",
+                         na.value = "green") +
+  facet_wrap(~eras, ncol = 1) +
+    theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank()
+    )
+
+```
+
+
+### Positive Cant estimates
+
+```{r Cant_pos_inventory_map, fig.asp=1}
+
+Cant_inv %>% 
+  ggplot() +
+    geom_raster(data = landmask %>% filter(region == "land"),
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cant_inv_pos)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+  facet_wrap(~eras, ncol = 1) +
+    theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank()
+    )
+
+```

@@ -166,7 +166,7 @@ Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combi
 Cant <- Cant %>%
   select(lon, lat, depth, eras, basin, Cant, gamma, model)
 
-# Cant_model_average <- Cant %>%
+# Cant_average <- Cant %>%
 #   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
 #   group_by(lon, lat, depth, eras, basin) %>%
 #   summarise(across(c("Cant", "Cant_pos", "gamma"),
@@ -176,7 +176,7 @@ Cant <- Cant %>%
 #                    ))) %>%
 #   ungroup()
 
-Cant_model_average <- Cant %>%
+Cant_average <- Cant %>%
   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
   group_by(lon, lat, depth, eras, basin) %>%
   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
@@ -187,17 +187,17 @@ Cant_model_average <- Cant %>%
             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
   ungroup()
 
-Cant_model_average_Atl <- Cant_model_average %>% 
+Cant_average_Atl <- Cant_average %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
 
-Cant_model_average_Ind_Pac <- Cant_model_average %>% 
+Cant_average_Ind_Pac <- Cant_average %>% 
   filter(basin == "Indo-Pacific") %>% 
   mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
 
-Cant_model_average <- bind_rows(Cant_model_average_Atl, Cant_model_average_Ind_Pac)
+Cant_average <- bind_rows(Cant_average_Atl, Cant_average_Ind_Pac)
 
-rm(Cant_model_average_Atl, Cant_model_average_Ind_Pac)
+rm(Cant_average_Atl, Cant_average_Ind_Pac)
 
 ```
 
@@ -207,10 +207,10 @@ For each basin and era combination, the zonal mean Cant is calculated, again for
 
 ```{r Calculate_Cant_mean_sections}
 
-Cant_model_average <- full_join(Cant_model_average,
+Cant_average <- full_join(Cant_average,
                                 basinmask %>% select(-basin))
 
-Cant_model_average_zonal <- Cant_model_average %>%
+Cant_average_zonal <- Cant_average %>%
   group_by(lat, depth, eras, basin, basin_AIP) %>%
   summarise(across(
     c(
@@ -227,7 +227,7 @@ Cant_model_average_zonal <- Cant_model_average %>%
   ungroup()
 
 
-# Cant_model_average_zonal <- Cant_model_average %>% 
+# Cant_average_zonal <- Cant_average %>% 
 #   group_by(lat, depth, eras, basin) %>% 
 #   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
 #             Cant_mean = mean(Cant_mean, na.rm = TRUE),
@@ -239,243 +239,17 @@ Cant_model_average_zonal <- Cant_model_average %>%
 #   ungroup()
 
 
-Cant_model_average_zonal_Atl <- Cant_model_average_zonal %>% 
+Cant_average_zonal_Atl <- Cant_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
 
-Cant_model_average_zonal_Ind_Pac <- Cant_model_average_zonal %>% 
+Cant_average_zonal_Ind_Pac <- Cant_average_zonal %>% 
   filter(basin == "Indo-Pacific") %>% 
   mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
 
-Cant_model_average_zonal <- bind_rows(Cant_model_average_zonal_Atl, Cant_model_average_zonal_Ind_Pac)
+Cant_average_zonal <- bind_rows(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
 
-rm(Cant_model_average_zonal_Atl, Cant_model_average_zonal_Ind_Pac)
-
-```
-
-
-# Neutral density section
-
-## Mean values
-
-The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Binning here does not include two highest isoneutral density slabs in the Atlantic, yet.
-
-```{r gamma_sections_mean}
-
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
-
-Cant_model_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = gamma_mean_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(breaks = slab_breaks,
-               col = "white",
-               skip = 1) +
-  scale_fill_viridis_d(name = "Gamma",
-                       direction = -1) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
-
-```
-
-# Cant sections
-
-## By model
-
-```{r Cant_section_by_model_eras_lon, eval=FALSE}
-
-for (i_eras in unique(Cant$eras)) {
-  #i_eras <- unique(Cant$eras)[2]
-  Cant_eras <- Cant %>%
-    filter(eras == i_eras)
-  
-  for (i_lon in seq(20.5, 360, 20)) {
-    #i_lon <- seq(20.5, 360, 20)[7]
-    Cant_eras_lon <- Cant_eras %>%
-      filter(lon == i_lon)
-    
-    Cant_eras_lon %>%
-      ggplot(aes(lat, depth, col = Cant)) +
-      geom_point() +
-      scale_color_divergent(
-        guide = "colorstrip",
-        breaks = MakeBreaks(5),
-        name = "Cant",
-        mid = "grey"
-      ) +
-      scale_y_reverse(limits = c(3000,0)) +
-      scale_x_continuous(limits = c(-75,65)) +
-      coord_cartesian(expand = 0) +
-      guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-      labs(title = paste("eras:", i_eras, "| lon:", i_lon)) +
-      facet_wrap(~ model, ncol = 5)
-    
-    ggsave(here::here("output/figure/mapping",
-                  paste(i_eras,
-                        "lon",
-                        i_lon,
-                        "model_Cant.png",
-                        sep = "_")),
-                  width = 17, height = 9)
-    
-  }
-}
-
-
-```
-
-
-## Mean values
-
-```{r Cant_sections_mean}
-
-Cant_model_average_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = Cant_mean_mean)) +
-  geom_contour_fill(breaks = MakeBreaks(5),
-                    na.fill = TRUE) +
-  scale_fill_divergent(guide = "colorstrip",
-                       breaks = MakeBreaks(5),
-                       name = "Cant") +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "black") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "black",
-    skip = 1
-  ) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP ~ eras)
-
-```
-
-## Mean zonal standard deviation across MLR models
-
-Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
-
-```{r Cant_sections_sd_models}
-
-Cant_model_average_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = Cant_sd_mean)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP ~ eras)
-
-```
-
-## Zonal standard deviation of mean Cant estimates
-
-Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
-
-```{r Cant_sections_sd_Cant}
-
-Cant_model_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_mean_sd)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
-
-```
-
-
-## Mean positive values
-
-```{r Cant_sections_positive_mean}
-
-Cant_model_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_pos_mean_mean)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
-
-```
-
-## Sections
-
-### JGOFS_GO
-
-```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
-
-section_climatology(Cant_model_average %>% filter(eras == "JGOFS_GO"),
-                    "Cant_mean")
-
-```
-
-### GO_new
-
-```{r Cant_sections_positive_mean_one_lon_GO_new}
-
-section_climatology(Cant_model_average %>% filter(eras == "GO_new"),
-                    "Cant_mean")
-
-```
-
-
-# Cant maps
-
-## Depth layers
-
-Cant concentration for selected depth levels at which mapping was performed.
-
-```{r Cant_depth_layer_maps, fig.asp=1}
-
-Cant_model_average %>%
-  filter(depth %in% c(150, 500, 1000, 3000)) %>% 
-  ggplot(aes(lon, lat, fill = Cant_mean)) + 
-  geom_raster() +
-  scale_fill_divergent(guide = "colorstrip",
-                       breaks = MakeBreaks(5),
-                       name = "Cant") +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  coord_quickmap(expand = 0) +
-  facet_grid(depth~eras)
+rm(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
 
 ```
 
@@ -490,7 +264,7 @@ Step 2 is performed again for all Cant and positive Cant values only
 
 ```{r calculate_inventories}
 
-depth_level_volume <- tibble(depth = unique(Cant_model_average$depth))
+depth_level_volume <- tibble(depth = unique(Cant_average$depth))
 
 depth_level_volume <- depth_level_volume %>%
   mutate(
@@ -501,15 +275,15 @@ depth_level_volume <- depth_level_volume %>%
   select(-c(layer_thickness_above,
             layer_thickness_below))
 
-Cant_model_average <-
-  full_join(Cant_model_average, depth_level_volume)
+Cant_average <-
+  full_join(Cant_average, depth_level_volume)
 
-Cant_model_average <- Cant_model_average %>%
+Cant_average <- Cant_average %>%
   mutate(layer_inv = Cant_mean * layer_thickness) %>%
   mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
   select(-layer_thickness)
 
-Cant_inv <- Cant_model_average %>%
+Cant_inv <- Cant_average %>%
   filter(depth <= parameters$inventory_depth) %>%
   group_by(lon, lat, basin, eras) %>%
   summarise(
@@ -522,67 +296,25 @@ Cant_inv <- Cant_model_average %>%
 ```
 
 
-## Inventories
-
-### All Cant estimates
-
-```{r Cant_inventory_map, fig.asp=1}
-
-library(scales)
-
-Cant_inv %>% 
-  ggplot() +
-    geom_raster(data = landmask %>% filter(region == "land"),
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cant_inv)) +
-    coord_quickmap(expand = 0) +
-    scale_fill_gradient2(high = muted("red"),
-                         mid = "white",
-                         low = muted("blue"),
-                         midpoint = 0,
-                         space = "Lab",
-                         na.value = "green") +
-  facet_wrap(~eras, ncol = 1) +
-    theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      axis.ticks = element_blank()
-    )
-
-```
-
-
-### Positive Cant estimates
-
-```{r Cant_pos_inventory_map, fig.asp=1}
-
-Cant_inv %>% 
-  ggplot() +
-    geom_raster(data = landmask %>% filter(region == "land"),
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cant_inv_pos)) +
-    coord_quickmap(expand = 0) +
-    scale_fill_viridis_c() +
-  facet_wrap(~eras, ncol = 1) +
-    theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      axis.ticks = element_blank()
-    )
-
-```
-
 # Write csv
 
-```{r write_cant_inventory}
+```{r write_cant_files}
 
-Cant_model_average %>%
+Cant %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_2020.csv"))
+                         "Cant.csv"))
+
+Cant_average %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_average.csv"))
+
+Cant_average_zonal %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_average_zonal.csv"))
 
 Cant_inv %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_inv_2020.csv"))
+                         "Cant_inv.csv"))
 
 ```
 
