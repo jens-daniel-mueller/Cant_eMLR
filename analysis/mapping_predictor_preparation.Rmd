@@ -325,7 +325,7 @@ predictors %>%
 
 ```
 
-```{r all_predictor_sections, fig.asp=2}
+```{r all_predictor_sections, fig.asp=1.2}
 
 vars <-
   c(
