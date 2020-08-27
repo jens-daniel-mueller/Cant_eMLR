@@ -175,58 +175,58 @@ GLODAP <- GLODAP %>%
 
 ## Comparison of approaches
 
-```{r phosphate_star_approach_comparison_oxygen_nitrate, fig.asp=0.5}
+```{r phosphate_star_approach_comparison_oxygen_nitrate, fig.asp=0.4}
 
 GLODAP %>% 
   ggplot(aes(oxygen,
              nitrate)) +
   geom_bin2d() +
   scale_fill_viridis_c() +
-  facet_wrap(~basin)
+  facet_wrap(~basin_AIP)
 
 ```
 
-```{r phosphate_star_approach_comparison_phosphate_nitrate, fig.asp=0.5}
+```{r phosphate_star_approach_comparison_phosphate_nitrate, fig.asp=0.4}
 
 GLODAP %>% 
   ggplot(aes(phosphate,
              nitrate)) +
   geom_bin2d() +
   scale_fill_viridis_c() +
-  facet_wrap(~basin)
+  facet_wrap(~basin_AIP)
 
 ```
 
-```{r phosphate_star_approach_comparison_phosphate_oxygen, fig.asp=0.5}
+```{r phosphate_star_approach_comparison_phosphate_oxygen, fig.asp=0.4}
 
 GLODAP %>% 
   ggplot(aes(phosphate,
              oxygen)) +
   geom_bin2d() +
   scale_fill_viridis_c() +
-  facet_wrap(~basin)
+  facet_wrap(~basin_AIP)
 
 ```
 
-```{r phosphate_star_approach_comparison_oxygen_nitrate_corr, fig.asp=0.5}
+```{r phosphate_star_approach_comparison_oxygen_nitrate_corr, fig.asp=0.4}
 
 GLODAP %>% 
   ggplot(aes(phosphate_star_oxy_corr,
              phosphate_star_nit_corr)) +
   geom_bin2d() +
   scale_fill_viridis_c() +
-  facet_wrap(~basin)
+  facet_wrap(~basin_AIP)
 
 ```
 
 
-```{r phosphate_star_approach_comparison, fig.asp=0.5}
+```{r phosphate_star_approach_comparison, fig.asp=0.4}
 
 GLODAP %>% 
   ggplot(aes(phosphate_star_oxy, phosphate_star_nit)) +
   geom_bin2d() +
   scale_fill_viridis_c() +
-  facet_wrap(~basin)
+  facet_wrap(~basin_AIP)
 
 GLODAP <- GLODAP %>% 
   select(-c(

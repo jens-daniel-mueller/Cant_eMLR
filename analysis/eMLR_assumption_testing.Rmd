@@ -83,6 +83,7 @@ GLODAP <-
 # Select phosphate star
 
 Currently, correlation analysis is based on PO4* calculated with:  
+
 - `r parameters$phosphate_star_approach`
 
 ```{r select_phosphate_star_aproach}

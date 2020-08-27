@@ -101,8 +101,6 @@ if (parameters$phosphate_star_approach == "nitrate") {
 
 # Model fitting
 
-## Predictor selection
-
 Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.
 
 ```{r eMLR_fitting_predictor_selection, eval=FALSE}
@@ -192,6 +190,7 @@ all_lm_stats %>%
 
 ```
 
+## RMSE alternatives
 
 AIC is an alternative criterion to RMSE to judge model quality, but not (yet) taken into account.
 
@@ -205,6 +204,7 @@ all_lm_stats %>%
 ```
 
 
+## Predictor selection
 
 Within each basin and slab, the `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras were selected.
 
@@ -247,7 +247,11 @@ kable(lm_best) %>%
 
 ```
 
-```{r rmse_correlation_across_eras}
+## Correlations RMSE between eras
+
+### All models
+
+```{r rmse_correlation_across_eras_all_models}
 
 all_lm_stats %>%
   ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
@@ -255,10 +259,24 @@ all_lm_stats %>%
   scale_color_viridis_d() +
   facet_grid(eras ~ basin)
 
-rm(all_lm_stats, all_lm_stats_wide)
+# rm(all_lm_stats, all_lm_stats_wide)
 
 ```
 
+
+### 10 best models
+
+```{r rmse_correlation_across_eras_10_models}
+
+lm_best %>%
+  ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
+  geom_point() +
+  scale_color_viridis_d() +
+  facet_grid(eras ~ basin)
+
+#rm(all_lm_stats, all_lm_stats_wide)
+
+```
 
 
 
