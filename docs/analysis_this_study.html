@@ -376,13 +376,13 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="config_parameterization.html">Parameterization</a>
+      <a href="config_dependencies.html">Dependencies</a>
     </li>
     <li>
       <a href="config_nomenclature.html">Nomenclature</a>
     </li>
     <li>
-      <a href="config_dependencies.html">Dependencies</a>
+      <a href="config_parameterization.html">Parameterization</a>
     </li>
   </ul>
 </li>
@@ -397,19 +397,19 @@ div.tocify {
       <a href="read_GLODAPv2_2020.html">GLODAPv2_2020</a>
     </li>
     <li>
-      <a href="read_GLODAPv2_2016_MappedClimatologies.html">GLODAPv2_2016 Mapped Climatologies</a>
+      <a href="read_GLODAPv2_2016_MappedClimatologies.html">GLODAPv2_2016_MappedClimatologies</a>
     </li>
     <li>
-      <a href="read_World_Ocean_Atlas_2018.html">World Ocean Atlas_2018</a>
+      <a href="read_World_Ocean_Atlas_2018.html">World Ocean Atlas 2018</a>
     </li>
     <li>
       <a href="read_World_Ocean_Atlas_2013_Clement.html">World Ocean Atlas_2013</a>
     </li>
     <li>
-      <a href="read_Gruber_2019_Cant.html">Cant Gruber</a>
+      <a href="read_Gruber_2019_Cant.html">Cant Gruber 2019</a>
     </li>
     <li>
-      <a href="read_Sabine_2004_Cant.html">Cant Sabine</a>
+      <a href="read_Sabine_2004_Cant.html">Cant Sabine 2004</a>
     </li>
     <li>
       <a href="read_CO2_atm.html">Atmospheric CO2</a>
@@ -499,7 +499,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analysis of Cant estimates</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">26 August, 2020</h4>
+<h4 class="date">27 August, 2020</h4>
 
 </div>
 
@@ -524,7 +524,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-26
+<strong>Last updated:</strong> 2020-08-27
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea3e427c0b2de116ebd4f65c801289d161e8d8013targetblanka3e427ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a3e427c0b2de116ebd4f65c801289d161e8d8013" target="_blank">a3e427c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree69a9be4e15e506d7cdfeb1903b976586169d8df1targetblank69a9be4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/69a9be4e15e506d7cdfeb1903b976586169d8df1" target="_blank">69a9be4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea3e427c0b2de116ebd4f65c801289d161e8d8013targetblanka3e427ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree69a9be4e15e506d7cdfeb1903b976586169d8df1targetblank69a9be4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a3e427c0b2de116ebd4f65c801289d161e8d8013" target="_blank">a3e427c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/69a9be4e15e506d7cdfeb1903b976586169d8df1" target="_blank">69a9be4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -643,6 +643,14 @@ Ignored files:
     Ignored:    data/mapping/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
+
+Untracked files:
+    Untracked:  code/test_scripts/model_nested_df.R
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/Workflowr_project_managment.R
+    Deleted:    code/python_scripts/python_integration.Rmd
 
 </code></pre>
 <p>
@@ -681,6 +689,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/fc4f889114840a6ca319dedefcc8a42f5e1b8aaa/docs/analysis_this_study.html" target="_blank">fc4f889</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
