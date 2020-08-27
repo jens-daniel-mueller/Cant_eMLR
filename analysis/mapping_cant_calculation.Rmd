@@ -69,6 +69,7 @@ predictors <-
 # Select phosphate star
 
 Currently, mapping of Cant is based on PO4* calculated with:  
+
 - `r parameters$phosphate_star_approach`
 
 ```{r select_phosphate_star_aproach}
@@ -85,7 +86,7 @@ if (parameters$phosphate_star_approach == "nitrate") {
 ```
 
 
-# Spatial boundaries
+# Apply spatial boundaries
 
 Only predictors were taken into consideration with:
 
@@ -117,7 +118,7 @@ predictors <- predictors %>% drop_na()
 
 ```
 
-# eMLRs
+# Load MLR models
 
 ```{r load_eMLR_models}
 
@@ -127,7 +128,7 @@ all_lm_wide <-
 
 ```
 
-# Merge MLRs + climatology
+# Merge MLRs + climatologies
 
 ```{r merge_model_coeff_predictor_climatology}
 
@@ -321,9 +322,7 @@ Cant_inv %>%
 
 # Open tasks
 
-- Check PO4* calculation
-- Harmonize AOU calculation in fitting and mapping
-- Plot Cant sections for individual MLR models
+- 
 
 # Open questions
 

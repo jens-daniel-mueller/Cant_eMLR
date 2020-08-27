@@ -325,19 +325,20 @@ predictors %>%
 
 ```
 
-```{r all_predictor_sections, fig.asp=1.2}
+```{r all_predictor_sections, fig.asp=1}
 
 vars <-
   c(
-    "phosphate",
-    "silicate",
-    "NO3",
+    "gamma",
     "sal",
     "tem",
-    "gamma",
+    "phosphate",
     "phosphate_star_oxy",
     "phosphate_star_nit",
-    "aou"
+    "oxygen",
+    "aou",
+    "silicate",
+    "NO3"
   )
 
 for (i_var in vars) {
