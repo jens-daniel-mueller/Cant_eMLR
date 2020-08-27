@@ -172,17 +172,6 @@ map_climatology(predictors, "PO4")
 map_climatology(predictors, "tem")
 ```
 
-```{r WOA18_GLODAP_climatology_control_plots, fig.asp=0.6}
-
-predictors %>%
-  ggplot(aes(lon, lat)) +
-  geom_bin2d(binwidth = c(1,1)) +
-  scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = "bottom")
-
-```
-
 
 ### Predictor profiles
 
@@ -217,7 +206,7 @@ rm(N_Atl)
 
 ### Calculation 
 
-Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen rather than nitrate.
+Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen, as well as according to Gruber et al (2019), based on nitrate. Selection of one approach is done before mapping.
 
 ```{r calculate_phosphate_star_clement}
 
@@ -319,6 +308,41 @@ rm(predictors_Atl, predictors_Ind_Pac)
 
 ```
 
+# Plot al predictor sections
+
+```{r predictors_observations_sections_map, fig.asp=0.6}
+
+predictors %>%
+  ggplot(aes(lon, lat)) +
+  geom_bin2d(binwidth = c(1,1)) +
+  geom_vline(xintercept = parameters$longitude_sections_regular,
+             col = "white") +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "bottom")
+
+```
+
+```{r all_predictor_sections, fig.asp=2}
+
+vars <-
+  c(
+    "phosphate",
+    "silicate",
+    "NO3",
+    "sal",
+    "tem",
+    "gamma",
+    "phosphate_star_oxy",
+    "phosphate_star_nit",
+    "aou"
+  )
+
+for (i_var in vars) {
+ section_climatology_regular(predictors, i_var) 
+}
+
+```
 
 # Write csv
 
@@ -329,7 +353,6 @@ predictors %>%
                          "W18_st_G16_opsn.csv"))
 
 ```
-
 
 
 ## WOA13 + GLODAP
@@ -371,9 +394,6 @@ predictors <- predictors %>%
   drop_na()
 
 ```
-
-
-
 
 
 
