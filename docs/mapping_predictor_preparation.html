@@ -403,7 +403,7 @@ div.tocify {
       <a href="read_World_Ocean_Atlas_2018.html">World Ocean Atlas 2018</a>
     </li>
     <li>
-      <a href="read_World_Ocean_Atlas_2013_Clement.html">World Ocean Atlas_2013</a>
+      <a href="read_World_Ocean_Atlas_2013_Clement.html">World Ocean Atlas 2013</a>
     </li>
     <li>
       <a href="read_Gruber_2019_Cant.html">Cant Gruber 2019</a>
@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree69a9be4e15e506d7cdfeb1903b976586169d8df1targetblank69a9be4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/69a9be4e15e506d7cdfeb1903b976586169d8df1" target="_blank">69a9be4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7bf17cd865caf3147adff79e93b0fdf1d0b2f800targetblank7bf17cda"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7bf17cd865caf3147adff79e93b0fdf1d0b2f800" target="_blank">7bf17cd</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree69a9be4e15e506d7cdfeb1903b976586169d8df1targetblank69a9be4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7bf17cd865caf3147adff79e93b0fdf1d0b2f800targetblank7bf17cda" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/69a9be4e15e506d7cdfeb1903b976586169d8df1" target="_blank">69a9be4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7bf17cd865caf3147adff79e93b0fdf1d0b2f800" target="_blank">7bf17cd</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -632,6 +632,7 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv1_1/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
@@ -646,11 +647,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  code/test_scripts/model_nested_df.R
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   code/Workflowr_project_managment.R
-    Deleted:    code/python_scripts/python_integration.Rmd
 
 </code></pre>
 <p>
@@ -689,6 +685,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/7bf17cd865caf3147adff79e93b0fdf1d0b2f800/analysis/mapping_predictor_preparation.Rmd" target="_blank">7bf17cd</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+removed control plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b6d0e6aa0f980124014771cd82b4be772c34ac88/docs/mapping_predictor_preparation.html" target="_blank">b6d0e6a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -749,10 +779,7 @@ split mapping into 2 rmds, po4star selection in parameters, use po4star nitrate
 </div>
 <pre class="r"><code>library(tidyverse)
 library(metR)
-library(marelac)
-# library(lubridate)
-# library(oce)
-# library(reticulate)</code></pre>
+library(marelac)</code></pre>
 <pre class="r"><code>basinmask &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                                  &quot;basin_mask_WOA18.csv&quot;))
 
@@ -832,78 +859,10 @@ WOA13_gamma &lt;- WOA13 %&gt;%
 rm(WOA13)</code></pre>
 </div>
 </div>
-<div id="join-predictor-climatologies" class="section level1">
-<h1><span class="header-section-number">2</span> Join predictor climatologies</h1>
-<p><strong>CAVEAT</strong>: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)</p>
-<div id="control-plots" class="section level2">
-<h2><span class="header-section-number">2.1</span> Control plots</h2>
-<p>Maps of number of observations per horizontal grid cell, which reflects the number of depth levels.</p>
-<div id="glodap-climatology" class="section level3">
-<h3><span class="header-section-number">2.1.1</span> GLODAP climatology</h3>
-<pre class="r"><code>GLODAP_predictors %&gt;% 
-  ggplot(aes(lon, lat)) +
-  geom_bin2d(binwidth = 1) +
-  scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/mapping_predictor_preparation.Rmd/control_plots_pre_merging_GLODAP-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="woa18-climatology" class="section level3">
-<h3><span class="header-section-number">2.1.2</span> WOA18 climatology</h3>
-<pre class="r"><code>WOA18_predictors &lt;- WOA18_predictors %&gt;% 
-  filter(depth %in% parameters$depth_levels_33)
-
-WOA18_predictors %&gt;% 
-  ggplot(aes(lon, lat)) +
-  geom_bin2d(binwidth = 1) +
-  scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="figure/mapping_predictor_preparation.Rmd/control_plots_pre_merging_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="neutral-density-zonal-mean-section" class="section level3">
-<h3><span class="header-section-number">2.1.3</span> Neutral density zonal mean section</h3>
-<pre class="r"><code>WOA18_predictors_zonal &lt;- WOA18_predictors %&gt;%
-  group_by(lat, depth, basin) %&gt;%
-  summarise(gamma_mean = mean(gamma)) %&gt;%
-  ungroup()
-
-WOA18_predictors_zonal_Atl &lt;- WOA18_predictors_zonal %&gt;%
-  filter(basin == &quot;Atlantic&quot;) %&gt;%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
-
-WOA18_predictors_zonal_Ind_Pac &lt;- WOA18_predictors_zonal %&gt;%
-  filter(basin == &quot;Indo-Pacific&quot;) %&gt;%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
-
-WOA18_predictors_zonal &lt;- bind_rows(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
-
-rm(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
-
-slab_breaks &lt;- c(parameters$slabs_Atl[1:12], Inf)
-
-WOA18_predictors_zonal %&gt;%
-  filter(depth &lt;= parameters$inventory_depth) %&gt;%
-  ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = &quot;white&quot;) +
-  geom_text_contour(breaks = slab_breaks,
-                    col = &quot;white&quot;,
-                    skip = 1) +
-  scale_fill_viridis_d(name = &quot;Gamma&quot;,
-                       direction = -1) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
-  facet_grid(basin ~ .)</code></pre>
-<p><img src="figure/mapping_predictor_preparation.Rmd/WOA18_gamma_mean_sections-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(WOA18_predictors_zonal, slab_breaks)</code></pre>
-</div>
-</div>
-<div id="woa18-glodap" class="section level2">
-<h2><span class="header-section-number">2.2</span> WOA18 + GLODAP</h2>
+<div id="join-woa18-glodap" class="section level1">
+<h1><span class="header-section-number">2</span> Join WOA18 + GLODAP</h1>
 <p>WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.</p>
+<p><strong>CAVEAT</strong>: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)</p>
 <pre class="r"><code>predictors &lt;- full_join(
   GLODAP_predictors %&gt;% select(-c(sal,tem)),
   WOA18_predictors)
@@ -912,10 +871,10 @@ predictors &lt;- predictors %&gt;%
   drop_na()
 
 # rm(GLODAP_predictors, WOA18_predictors)</code></pre>
-<div id="control-plots-1" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Control plots</h3>
-<div id="maps" class="section level4">
-<h4><span class="header-section-number">2.2.1.1</span> Maps</h4>
+<div id="control-plots" class="section level2">
+<h2><span class="header-section-number">2.1</span> Control plots</h2>
+<div id="maps" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Maps</h3>
 <p>Three maps are generated to control successful merging of data sets.</p>
 <pre class="r"><code>map_climatology(predictors, &quot;PO4&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_PO4-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -929,9 +888,9 @@ predictors &lt;- predictors %&gt;%
   theme(legend.position = &quot;bottom&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/WOA18_GLODAP_climatology_control_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="predictor-profiles" class="section level4">
-<h4><span class="header-section-number">2.2.1.2</span> Predictor profiles</h4>
-<p>Likewise, predictor profiles for the North Atlantic are plotted to control successful merging of the data sets.</p>
+<div id="predictor-profiles" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Predictor profiles</h3>
+<p>Likewise, predictor profiles for the North Atlantic (40.5 / 335.5) are plotted to control successful merging of the data sets.</p>
 <pre class="r"><code>N_Atl &lt;- predictors %&gt;% 
   filter(lat == parameters$lat_Atl_profile,
          lon == parameters$lon_Atl_section)
@@ -950,46 +909,6 @@ N_Atl %&gt;%
              ncol = 2)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/predictor_profiles_N_Atl-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(N_Atl)</code></pre>
-</div>
-<div id="neutral-density-zonal-mean-section-1" class="section level4">
-<h4><span class="header-section-number">2.2.1.3</span> Neutral density zonal mean section</h4>
-<pre class="r"><code>predictors_zonal &lt;- predictors %&gt;%
-  group_by(lat, depth, basin) %&gt;%
-  summarise(gamma_mean = mean(gamma)) %&gt;%
-  ungroup()
-
-predictors_zonal_Atl &lt;- predictors_zonal %&gt;%
-  filter(basin == &quot;Atlantic&quot;) %&gt;%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
-
-predictors_zonal_Ind_Pac &lt;- predictors_zonal %&gt;%
-  filter(basin == &quot;Indo-Pacific&quot;) %&gt;%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
-
-predictors_zonal &lt;- bind_rows(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
-
-rm(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
-
-slab_breaks &lt;- c(parameters$slabs_Atl[1:12], Inf)
-
-predictors_zonal %&gt;%
-  filter(depth &lt;= parameters$inventory_depth) %&gt;%
-  ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = &quot;white&quot;) +
-  geom_text_contour(breaks = slab_breaks,
-                    col = &quot;white&quot;,
-                    skip = 1) +
-  scale_fill_viridis_d(name = &quot;Gamma&quot;,
-                       direction = -1) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
-  facet_grid(basin ~ .)</code></pre>
-<p><img src="figure/mapping_predictor_preparation.Rmd/predictors_gamma_mean_sections-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(predictors_zonal, slab_breaks)</code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -1150,23 +1069,22 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5        here_0.1          lubridate_1.7.9   assertthat_0.2.1 
- [5] rprojroot_1.3-2   digest_0.6.25     plyr_1.8.6        R6_2.4.1         
- [9] cellranger_1.1.0  backports_1.1.8   reprex_0.3.0      evaluate_0.14    
-[13] httr_1.4.2        pillar_1.4.6      rlang_0.4.7       readxl_1.3.1     
-[17] rstudioapi_0.11   data.table_1.13.0 whisker_0.4       blob_1.2.1       
-[21] checkmate_2.0.0   rmarkdown_2.3     labeling_0.3      munsell_0.5.0    
-[25] broom_0.7.0       compiler_4.0.2    httpuv_1.5.4      modelr_0.1.8     
-[29] xfun_0.16         pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0 
-[33] viridisLite_0.3.0 fansi_0.4.1       crayon_1.3.4      dbplyr_1.4.4     
-[37] withr_2.2.0       later_1.1.0.1     gsw_1.0-5         grid_4.0.2       
-[41] jsonlite_1.7.0    gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0        
-[45] git2r_0.27.1      magrittr_1.5      seacarb_3.2.13    scales_1.1.1     
-[49] oce_1.2-0         cli_2.0.2         stringi_1.4.6     farver_2.0.3     
-[53] fs_1.4.2          promises_1.1.1    testthat_2.3.2    xml2_1.3.2       
-[57] ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.2       tools_4.0.2      
-[61] glue_1.4.1        hms_0.5.3         yaml_2.2.1        colorspace_1.4-1 
-[65] isoband_0.2.2     rvest_0.3.6       memoise_1.1.0     knitr_1.29       
-[69] haven_2.3.1      </code></pre>
+ [5] rprojroot_1.3-2   digest_0.6.25     R6_2.4.1          cellranger_1.1.0 
+ [9] backports_1.1.8   reprex_0.3.0      evaluate_0.14     httr_1.4.2       
+[13] pillar_1.4.6      rlang_0.4.7       readxl_1.3.1      rstudioapi_0.11  
+[17] data.table_1.13.0 whisker_0.4       blob_1.2.1        checkmate_2.0.0  
+[21] rmarkdown_2.3     labeling_0.3      munsell_0.5.0     broom_0.7.0      
+[25] compiler_4.0.2    httpuv_1.5.4      modelr_0.1.8      xfun_0.16        
+[29] pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0  viridisLite_0.3.0
+[33] fansi_0.4.1       crayon_1.3.4      dbplyr_1.4.4      withr_2.2.0      
+[37] later_1.1.0.1     gsw_1.0-5         grid_4.0.2        jsonlite_1.7.0   
+[41] gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0         git2r_0.27.1     
+[45] magrittr_1.5      seacarb_3.2.13    scales_1.1.1      oce_1.2-0        
+[49] cli_2.0.2         stringi_1.4.6     farver_2.0.3      fs_1.4.2         
+[53] promises_1.1.1    testthat_2.3.2    xml2_1.3.2        ellipsis_0.3.1   
+[57] generics_0.0.2    vctrs_0.3.2       tools_4.0.2       glue_1.4.1       
+[61] hms_0.5.3         yaml_2.2.1        colorspace_1.4-1  isoband_0.2.2    
+[65] rvest_0.3.6       knitr_1.29        haven_2.3.1      </code></pre>
 </div>
 </div>
 
