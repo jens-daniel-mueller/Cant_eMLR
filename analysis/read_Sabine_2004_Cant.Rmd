@@ -125,7 +125,7 @@ Cant <- layer_inventory(Cant, "cant")
 
 Cant_inv <- Cant %>% 
   filter(depth <= parameters$inventory_depth) %>% 
-  group_by(lon, lat, basin) %>% 
+  group_by(lon, lat, basin, basin_AIP) %>% 
   summarise(cant_inv = sum(layer_inv_pos, na.rm = TRUE) / 1000,
             cant_inv_incl_neg = sum(layer_inv, na.rm = TRUE) / 1000) %>% 
   ungroup()

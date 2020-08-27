@@ -114,6 +114,34 @@ wflow_publish(all = TRUE, message = "XXX")
 # commit changes including _site.yml (locally) and rebuild site
 wflow_publish(c("analysis/*Rmd"), message = "XXX", republish = TRUE)
 
+# commit changes including _site.yml (locally) and rebuild site in the specified order
+wflow_publish(here::here(
+  "analysis",
+  c(
+    "index.Rmd",
+    "config_dependencies.Rmd",
+    "config_nomenclature.Rmd",
+    "config_parameterization.Rmd",
+    "read_World_Ocean_Atlas_2018.Rmd",
+    "read_GLODAPv2_2020.Rmd",
+    "read_GLODAPv2_2016_MappedClimatologies.Rmd",
+    "read_Gruber_2019_Cant.Rmd",
+    "read_Sabine_2004_Cant.Rmd",
+    "read_CO2_atm.Rmd",
+    "read_World_Ocean_Atlas_2013_Clement.Rmd",
+    "eMLR_data_preparation.Rmd",
+    "eMLR_assumption_testing.Rmd",
+    "eMLR_model_fitting.Rmd",
+    "mapping_predictor_preparation.Rmd",
+    "mapping_cant_calculation.Rmd",
+    "analysis_this_study.Rmd",
+    "analysis_previous_studies.Rmd"
+
+  )
+),
+message = "XXX",
+republish = TRUE)
+
 
 
 # Push latest version to GitHub

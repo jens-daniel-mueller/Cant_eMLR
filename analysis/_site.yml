@@ -5,25 +5,25 @@ navbar:
   left:
   - text: Config
     menu:
-    - text: Parameterization
-      href: config_parameterization.html
-    - text: Nomenclature
-      href: config_nomenclature.html
     - text: Dependencies
       href: config_dependencies.html
+    - text: Nomenclature
+      href: config_nomenclature.html
+    - text: Parameterization
+      href: config_parameterization.html
   - text: Data base
     menu:
     - text: GLODAPv2_2020
       href: read_GLODAPv2_2020.html
-    - text: GLODAPv2_2016 Mapped Climatologies
+    - text: GLODAPv2_2016_MappedClimatologies
       href: read_GLODAPv2_2016_MappedClimatologies.html
-    - text: World Ocean Atlas_2018
+    - text: World Ocean Atlas 2018
       href: read_World_Ocean_Atlas_2018.html
     - text: World Ocean Atlas_2013
       href: read_World_Ocean_Atlas_2013_Clement.html
-    - text: Cant Gruber
+    - text: Cant Gruber 2019
       href: read_Gruber_2019_Cant.html
-    - text: Cant Sabine
+    - text: Cant Sabine 2004
       href: read_Sabine_2004_Cant.html
     - text: Atmospheric CO2
       href: read_CO2_atm.html
