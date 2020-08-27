@@ -107,7 +107,7 @@ slabs_Ind_Pac <-
     Inf)
 
 longitude_sections_basin <- c(335.5, 190.5, 70.5)
-longitude_sections_regular <- seq(20, 380, 20)
+longitude_sections_regular <- seq(20.5, 380.5, 20)
 
 
 parameters <-

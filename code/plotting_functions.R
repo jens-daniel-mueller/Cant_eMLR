@@ -44,7 +44,8 @@ section_climatology <- function(df, var) {
   var <- sym(var)
 
   df %>%
-    filter(lon %in% parameters$longitude_sections_basin) %>%
+    filter(lon %in% parameters$longitude_sections_basin,
+           depth <= parameters$inventory_depth) %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled() +
     scale_fill_viridis_d(name = name_var) +
@@ -53,6 +54,26 @@ section_climatology <- function(df, var) {
     scale_x_continuous(breaks = seq(-80,80,20)) +
     coord_cartesian(expand = 0) +
     facet_wrap(~lon, ncol = 1)
+
+
+}
+
+section_climatology_regular <- function(df, var) {
+
+  name_var <- var
+  var <- sym(var)
+
+  df %>%
+    filter(lon %in% parameters$longitude_sections_regular,
+           depth <= parameters$inventory_depth) %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled() +
+    scale_fill_viridis_d(name = name_var) +
+    guides(fill = guide_colorsteps(barheight = unit(7, "cm"))) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-80,80,40)) +
+    coord_cartesian(expand = 0) +
+    facet_wrap(~lon, ncol = 3)
 
 
 }

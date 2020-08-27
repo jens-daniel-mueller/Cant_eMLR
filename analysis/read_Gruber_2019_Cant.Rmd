@@ -132,11 +132,19 @@ map_climatology_inv(dcant_inv, "cant_inv")
 
 ```
 
-## Sections
+## Sections basin
 
 ```{r Cant_sections, fig.asp=0.8}
 
 section_climatology(dcant, "cant")
+
+```
+
+## Sections at regular longitudes
+
+```{r Cant_sections_regular, fig.asp=2}
+
+section_climatology_regular(dcant %>% filter(cant < 30), "cant")
 
 ```
 
