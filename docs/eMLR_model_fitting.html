@@ -404,7 +404,7 @@ div.tocify {
       <a href="read_World_Ocean_Atlas_2018.html">World Ocean Atlas 2018</a>
     </li>
     <li>
-      <a href="read_World_Ocean_Atlas_2013_Clement.html">World Ocean Atlas_2013</a>
+      <a href="read_World_Ocean_Atlas_2013_Clement.html">World Ocean Atlas 2013</a>
     </li>
     <li>
       <a href="read_Gruber_2019_Cant.html">Cant Gruber 2019</a>
@@ -616,16 +616,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree69a9be4e15e506d7cdfeb1903b976586169d8df1targetblank69a9be4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/69a9be4e15e506d7cdfeb1903b976586169d8df1" target="_blank">69a9be4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree96ab537051679521925db581ef216143e54a6446targetblank96ab537a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/96ab537051679521925db581ef216143e54a6446" target="_blank">96ab537</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree69a9be4e15e506d7cdfeb1903b976586169d8df1targetblank69a9be4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree96ab537051679521925db581ef216143e54a6446targetblank96ab537a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/69a9be4e15e506d7cdfeb1903b976586169d8df1" target="_blank">69a9be4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/96ab537051679521925db581ef216143e54a6446" target="_blank">96ab537</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -647,11 +647,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  code/test_scripts/model_nested_df.R
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   code/Workflowr_project_managment.R
-    Deleted:    code/python_scripts/python_integration.Rmd
 
 </code></pre>
 <p>
@@ -690,6 +685,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/96ab537051679521925db581ef216143e54a6446/analysis/eMLR_model_fitting.Rmd" target="_blank">96ab537</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+revised
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b6d0e6aa0f980124014771cd82b4be772c34ac88/docs/eMLR_model_fitting.html" target="_blank">b6d0e6a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -872,8 +901,6 @@ library(corrr)</code></pre>
 </div>
 <div id="model-fitting" class="section level1">
 <h1><span class="header-section-number">3</span> Model fitting</h1>
-<div id="predictor-selection" class="section level2">
-<h2><span class="header-section-number">3.1</span> Predictor selection</h2>
 <p>Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.</p>
 <pre class="r"><code>for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -952,6 +979,8 @@ all_lm_stats %&gt;%
   facet_grid(gamma_slab~era) +
   scale_color_brewer(palette = &quot;Set1&quot;)</code></pre>
 <p><img src="figure/eMLR_model_fitting.Rmd/eMLR_predictor_model_quality-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="rmse-alternatives" class="section level2">
+<h2><span class="header-section-number">3.1</span> RMSE alternatives</h2>
 <p>AIC is an alternative criterion to RMSE to judge model quality, but not (yet) taken into account.</p>
 <pre class="r"><code>all_lm_stats %&gt;% 
   ggplot(aes(rmse, aic, col = gamma_slab)) +
@@ -959,6 +988,9 @@ all_lm_stats %&gt;%
   scale_color_viridis_d() +
   facet_grid(era~basin)</code></pre>
 <p><img src="figure/eMLR_model_fitting.Rmd/AIC_RMSE-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="predictor-selection" class="section level2">
+<h2><span class="header-section-number">3.2</span> Predictor selection</h2>
 <p>Within each basin and slab, the 10 linear regression models with lowest summed RMSE across all eras were selected.</p>
 <pre class="r"><code>all_lm_stats &lt;- all_lm_stats %&gt;%
   select(basin, era, gamma_slab, predictors, rmse)
@@ -14548,13 +14580,28 @@ JGOFS_GO
 </tbody>
 </table>
 </div>
+</div>
+<div id="correlations-rmse-between-eras" class="section level2">
+<h2><span class="header-section-number">3.3</span> Correlations RMSE between eras</h2>
+<div id="all-models" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> All models</h3>
 <pre class="r"><code>all_lm_stats %&gt;%
   ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
   geom_point() +
   scale_color_viridis_d() +
   facet_grid(eras ~ basin)</code></pre>
-<p><img src="figure/eMLR_model_fitting.Rmd/rmse_correlation_across_eras-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(all_lm_stats, all_lm_stats_wide)</code></pre>
+<p><img src="figure/eMLR_model_fitting.Rmd/rmse_correlation_across_eras_all_models-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># rm(all_lm_stats, all_lm_stats_wide)</code></pre>
+</div>
+<div id="best-models" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> 10 best models</h3>
+<pre class="r"><code>lm_best %&gt;%
+  ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
+  geom_point() +
+  scale_color_viridis_d() +
+  facet_grid(eras ~ basin)</code></pre>
+<p><img src="figure/eMLR_model_fitting.Rmd/rmse_correlation_across_eras_10_models-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#rm(all_lm_stats, all_lm_stats_wide)</code></pre>
 <pre class="r"><code>lm_1 &lt;- GLODAP %&gt;% 
   filter(basin == &quot;Atlantic&quot;,
          gamma_slab == &quot;(-Inf,26]&quot;,
@@ -14573,8 +14620,9 @@ lm_2
 sqrt(mean(lm_1$residuals^2))
 sqrt(mean(lm_2$residuals^2))</code></pre>
 </div>
+</div>
 <div id="fitting-best-models" class="section level2">
-<h2><span class="header-section-number">3.2</span> Fitting best models</h2>
+<h2><span class="header-section-number">3.4</span> Fitting best models</h2>
 <p>After selecting 10 linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.</p>
 <pre class="r"><code>lm_best &lt;- lm_best %&gt;% 
   mutate(lm_coeff = str_replace_all(predictors, &quot; &quot;, &quot; + &quot;),
