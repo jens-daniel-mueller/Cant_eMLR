@@ -20,9 +20,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(metR)
 library(marelac)
-# library(lubridate)
-# library(oce)
-# library(reticulate)
 
 ```
 
@@ -107,7 +104,6 @@ GLODAP_predictors <- GLODAP_predictors %>%
 - Neutral density
 - Basin mask
 
-
 ```{r load_WOA18}
 
 WOA18_predictors <-
@@ -142,91 +138,11 @@ rm(WOA13)
 ```
 
 
-# Join predictor climatologies
-
-**CAVEAT**: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)
-
-## Control plots
-
-Maps of number of observations per horizontal grid cell, which reflects the number of depth levels.
-
-### GLODAP climatology
-
-```{r control_plots_pre_merging_GLODAP, fig.asp=0.6}
-
-GLODAP_predictors %>% 
-  ggplot(aes(lon, lat)) +
-  geom_bin2d(binwidth = 1) +
-  scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = "bottom")
-
-```
-
-### WOA18 climatology
-
-```{r control_plots_pre_merging_WOA18, fig.asp=0.6}
-
-WOA18_predictors <- WOA18_predictors %>% 
-  filter(depth %in% parameters$depth_levels_33)
-
-WOA18_predictors %>% 
-  ggplot(aes(lon, lat)) +
-  geom_bin2d(binwidth = 1) +
-  scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = "bottom")
-
-```
-
-### Neutral density zonal mean section
-
-```{r WOA18_gamma_mean_sections}
-
-WOA18_predictors_zonal <- WOA18_predictors %>%
-  group_by(lat, depth, basin) %>%
-  summarise(gamma_mean = mean(gamma)) %>%
-  ungroup()
-
-WOA18_predictors_zonal_Atl <- WOA18_predictors_zonal %>%
-  filter(basin == "Atlantic") %>%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
-
-WOA18_predictors_zonal_Ind_Pac <- WOA18_predictors_zonal %>%
-  filter(basin == "Indo-Pacific") %>%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
-
-WOA18_predictors_zonal <- bind_rows(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
-
-rm(WOA18_predictors_zonal_Atl, WOA18_predictors_zonal_Ind_Pac)
-
-slab_breaks <- c(parameters$slabs_Atl[1:12], Inf)
-
-WOA18_predictors_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(breaks = slab_breaks,
-                    col = "white",
-                    skip = 1) +
-  scale_fill_viridis_d(name = "Gamma",
-                       direction = -1) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin ~ .)
-
-rm(WOA18_predictors_zonal, slab_breaks)
-
-```
-
-
-
-## WOA18 + GLODAP
+# Join WOA18 + GLODAP
 
 WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.
+
+**CAVEAT**: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)
 
 ```{r join_WOA18_GLODAP_predictors, fig.asp=0.5}
 
@@ -242,9 +158,9 @@ predictors <- predictors %>%
 ```
 
 
-### Control plots
+## Control plots
 
-#### Maps
+### Maps
 
 Three maps are generated to control successful merging of data sets.
 
@@ -252,11 +168,9 @@ Three maps are generated to control successful merging of data sets.
 map_climatology(predictors, "PO4")
 ```
 
-
 ```{r joined_climatology_control_tem}
 map_climatology(predictors, "tem")
 ```
-
 
 ```{r WOA18_GLODAP_climatology_control_plots, fig.asp=0.6}
 
@@ -270,9 +184,9 @@ predictors %>%
 ```
 
 
-#### Predictor profiles
+### Predictor profiles
 
-Likewise, predictor profiles for the North Atlantic are plotted to control successful merging of the data sets.
+Likewise, predictor profiles for the North Atlantic (`r parameters$lat_Atl_profile` / `r parameters$lon_Atl_section`) are plotted to control successful merging of the data sets.
 
 ```{r predictor_profiles_N_Atl, fig.asp=1.5}
 
@@ -294,49 +208,6 @@ N_Atl %>%
              ncol = 2)
 
 rm(N_Atl)
-
-```
-
-#### Neutral density zonal mean section
-
-```{r predictors_gamma_mean_sections}
-
-predictors_zonal <- predictors %>%
-  group_by(lat, depth, basin) %>%
-  summarise(gamma_mean = mean(gamma)) %>%
-  ungroup()
-
-predictors_zonal_Atl <- predictors_zonal %>%
-  filter(basin == "Atlantic") %>%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
-
-predictors_zonal_Ind_Pac <- predictors_zonal %>%
-  filter(basin == "Indo-Pacific") %>%
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
-
-predictors_zonal <- bind_rows(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
-
-rm(predictors_zonal_Atl, predictors_zonal_Ind_Pac)
-
-slab_breaks <- c(parameters$slabs_Atl[1:12], Inf)
-
-predictors_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(breaks = slab_breaks,
-                    col = "white",
-                    skip = 1) +
-  scale_fill_viridis_d(name = "Gamma",
-                       direction = -1) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin ~ .)
-
-rm(predictors_zonal, slab_breaks)
 
 ```
 
