@@ -164,11 +164,11 @@ predictors <- predictors %>%
 
 Three maps are generated to control successful merging of data sets.
 
-```{r joined_climatology_control_PO4}
+```{r joined_climatology_control_PO4, fig.asp=0.6}
 map_climatology(predictors, "PO4")
 ```
 
-```{r joined_climatology_control_tem}
+```{r joined_climatology_control_tem, fig.asp=0.6}
 map_climatology(predictors, "tem")
 ```
 
@@ -310,6 +310,8 @@ rm(predictors_Atl, predictors_Ind_Pac)
 
 # Plot al predictor sections
 
+Predictor sections along with lines are shown below for each (potential) predictor variable.
+
 ```{r predictors_observations_sections_map, fig.asp=0.6}
 
 predictors %>%
@@ -339,7 +341,7 @@ vars <-
   )
 
 for (i_var in vars) {
- section_climatology_regular(predictors, i_var) 
+  print(section_climatology_regular(predictors, i_var))
 }
 
 ```
