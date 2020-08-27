@@ -23,27 +23,28 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 # Variables
 
-Variables from source data files are converted and harmonized to following variables:
+Variables from source data files are converted and harmonized to satisfy following naming convention throughout the project:
 
-- 1x1 degree coordinate grid
-  - lon: 20.5 to 379.5°E longitude (in °E)
-  - lat: -89.5 to 89.5°N latitude (in °N)
-- depth: water depth in m
-- bottomdepth: bottomdepth in m
+- coordinates on 1x1 degree grid
+  - lon: longitude (20.5 to 379.5 °E)
+  - lat: latitude (-89.5 to 89.5 °N)
+- depth: water depth (m)
+- bottomdepth: bottomdepth (m)
 
 - sal: salinity (Check scales!)
 - tem: insitu temperature in deg C (Check scales!)
 - theta: potential temperature in deg C (Check scales!)
 - gamma: neutral density
 
-- Cant: anthropogenic CO~2~ in umol kg-1
+- cant: anthropogenic CO~2~ (mol kg^{-1})
 
 # Data sets / objects
 
-# Chunk labels
+# Chunk label naming within .Rmd files
 
 - read_xxx: open new data set
 - clean_xxx: subset rows of a data set
+- calculate_xxx: perform calculations on a data set (add or modify rows)
 - write_xxx: write summarized data file to disk
 
 # Folder structure

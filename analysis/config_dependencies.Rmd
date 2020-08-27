@@ -18,8 +18,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
-
+library(reticulate)
 ```
+
 
 # Required packages
 
@@ -41,4 +42,19 @@ remotes::install_github("moodymudskipper/cutr")
 
 ## Code
 
+Python code used in this project is stored in /code/python_scripts and sourced from there, when required in .Rmd files.
+
 ## Required packages
+
+To install required python packages from within R-Studio, run the code below.
+
+```{r install_required_python_packages_from_r, eval=FALSE}
+
+# the commands below must only be run once, when you first run the python code and need to install required packages
+
+py_install("pandas")
+py_install("numpy")
+py_install("shapely")
+py_install("math")
+
+```

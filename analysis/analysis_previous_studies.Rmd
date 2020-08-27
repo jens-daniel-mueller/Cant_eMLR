@@ -155,7 +155,7 @@ Cant_inv_wide <- Cant_inv %>%
               names_from = estimate)
 
 Cant_inv_wide <- Cant_inv_wide %>% 
-  drop_na() %>% 
+  # drop_na() %>% 
   mutate(G19_rel = cant_inv_grid_G19 / sum(cant_inv_grid_G19),
          S04_rel = cant_inv_grid_S04 / sum(cant_inv_grid_S04),
          cant_ratio_rel = G19_rel / S04_rel)
