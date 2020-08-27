@@ -110,19 +110,6 @@ basinmask_01 <- basinmask_01 %>%
   select(-Basin_0m) %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
-
-# basinmask_01 <- basinmask_01 %>% 
-#   filter(Basin_0m %in% c("1", "2", "3", "10", "11", "12", "56"),
-#          lat <= parameters$lat_max) %>% 
-#   mutate(basin = if_else(Basin_0m == "10" & lon >= -63 & lon < 20,
-#                          "Atlantic", "Indo-Pacific"),
-#          basin = if_else(Basin_0m == "11",
-#                          "Atlantic", basin),
-#          basin = if_else(Basin_0m == "1",
-#                          "Atlantic", basin)) %>% 
-#   select(-Basin_0m) %>% 
-#   mutate(lon = if_else(lon < 20, lon + 360, lon))
-
 ```
 
 ## Land
@@ -379,9 +366,7 @@ WOA18_predictors <-
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
 
 - Horizontal planes at `r parameters$depth_levels`m
-- Meridional sections at longitudes:
-  - Atlantic: `r parameters$lon_Atl_section`
-  - Pacific: `r parameters$lon_Pac_section`
+- Meridional sections at longitudes: `r parameters$longitude_sections_basin`
 
 Section locations are indicated as white lines in maps.
 
@@ -395,7 +380,7 @@ map_climatology(WOA18_predictors, "tem")
 
 ### Sections
 
-```{r temperature_sections_WOA18, fig.asp=1}
+```{r temperature_sections_WOA18, fig.asp=0.8}
 
 section_climatology(WOA18_predictors, "tem")
 
@@ -424,7 +409,7 @@ map_climatology(WOA18_predictors, "sal")
 
 ### Sections
 
-```{r salinity_sections_WOA18, fig.asp=1}
+```{r salinity_sections_WOA18, fig.asp=0.8}
 
 section_climatology(WOA18_predictors, "sal")
 
@@ -452,7 +437,7 @@ map_climatology(WOA18_predictors, "gamma")
 
 ### Sections
 
-```{r neutral_density_sections_WOA18, fig.asp=1}
+```{r neutral_density_sections_WOA18, fig.asp=0.8}
 
 section_climatology(WOA18_predictors, "gamma")
 

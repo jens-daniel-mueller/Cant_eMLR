@@ -82,9 +82,7 @@ nd_mask_tibble <- nd_mask_tibble %>%
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
 
 - Horizontal planes at `r parameters$depth_levels`m
-- Meridional sections at longitudes:
-  - Atlantic: `r parameters$lon_Atl_section`
-  - Pacific: `r parameters$lon_Pac_section`
+- Meridional sections at longitudes: `r parameters$longitude_sections_basin`
 
 Section locations are indicated as white lines in maps.
 
@@ -126,7 +124,7 @@ map_climatology(nd_mask_tibble, "gamma")
 
 ### Sections
 
-```{r neutral_density_sections_WOA18, fig.asp=1}
+```{r neutral_density_sections_WOA18, fig.asp=0.8}
 
 section_climatology(nd_mask_tibble, "gamma")
 

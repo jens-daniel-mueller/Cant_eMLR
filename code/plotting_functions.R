@@ -16,9 +16,7 @@ map_climatology <- function(df, var) {
     coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
     theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      axis.ticks = element_blank()
+      axis.title = element_blank()
     ) +
     facet_wrap(~ depth)
 
@@ -36,9 +34,7 @@ map_climatology_inv <- function(df, var) {
     coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
     theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      axis.ticks = element_blank()
+      axis.title = element_blank()
     )
 }
 
@@ -48,9 +44,7 @@ section_climatology <- function(df, var) {
   var <- sym(var)
 
   df %>%
-    filter(lon %in% c(parameters$lon_Ind_section,
-                      parameters$lon_Pac_section,
-                      parameters$lon_Atl_section)) %>%
+    filter(lon %in% parameters$longitude_sections_basin) %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled() +
     scale_fill_viridis_d(name = name_var) +
@@ -69,10 +63,8 @@ section_climatology_shallow <- function(df, var) {
   var <- sym(var)
 
   df %>%
-    filter(lon %in% c(parameters$lon_Ind_section,
-                      parameters$lon_Pac_section,
-                      parameters$lon_Atl_section),
-           depth <= 500) %>%
+    filter(lon %in% parameters$longitude_sections_basin,
+           depth <= parameters$depth_shallow_max) %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled() +
     scale_fill_viridis_d(name = name_var) +

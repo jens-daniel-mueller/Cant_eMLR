@@ -76,10 +76,7 @@ print(file_list)
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
 
 - Horizontal planes at `r parameters$depth_levels`m
-- Meridional sections at longitudes:
-  - Atlantic: `r parameters$lon_Atl_section`
-  - Pacific: `r parameters$lon_Pac_section`
-  - Indian ocean: `r parameters$lon_Ind_section`
+- Meridional sections at longitudes: `r parameters$longitude_sections_basin`
 
 Section locations are indicated as white lines in maps.
 
