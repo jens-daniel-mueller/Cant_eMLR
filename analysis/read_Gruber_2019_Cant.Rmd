@@ -134,7 +134,7 @@ map_climatology_inv(dcant_inv, "cant_inv")
 
 ## Sections
 
-```{r Cant_sections, fig.asp=1}
+```{r Cant_sections, fig.asp=0.8}
 
 section_climatology(dcant, "cant")
 
@@ -142,7 +142,7 @@ section_climatology(dcant, "cant")
 
 ## Sections shallow
 
-```{r Cant_sections_shallow, fig.asp=1}
+```{r Cant_sections_shallow, fig.asp=0.8}
 
 section_climatology_shallow(dcant, "cant")
 
