@@ -97,3 +97,62 @@ section_climatology_shallow <- function(df, var) {
 
 
 }
+
+
+section_zonal_average_divergent <- function(df, var, gamma) {
+
+  name_var <- var
+  var <- sym(var)
+  gamma <- sym(gamma)
+
+  df %>%
+    filter(depth <= parameters$inventory_depth) %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_fill(breaks = MakeBreaks(5),
+                      na.fill = TRUE) +
+    scale_fill_divergent(guide = "colorstrip",
+                         breaks = MakeBreaks(5),
+                         name = name_var) +
+    geom_contour(aes(lat, depth, z = !!gamma),
+                 breaks = slab_breaks,
+                 col = "black") +
+    geom_text_contour(
+      aes(lat, depth, z = !!gamma),
+      breaks = slab_breaks,
+      col = "black",
+      skip = 1
+    ) +
+    scale_y_reverse() +
+    coord_cartesian(expand = 0) +
+    guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+    facet_grid(basin_AIP ~ eras)
+
+}
+
+
+section_zonal_average_continous <- function(df, var, gamma) {
+
+  name_var <- var
+  var <- sym(var)
+  gamma <- sym(gamma)
+
+  df %>%
+    filter(depth <= parameters$inventory_depth) %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled() +
+    scale_fill_viridis_d(name = name_var) +
+    geom_contour(aes(lat, depth, z = !!gamma),
+                 breaks = slab_breaks,
+                 col = "white") +
+    geom_text_contour(
+      aes(lat, depth, z = !!gamma),
+      breaks = slab_breaks,
+      col = "white",
+      skip = 1
+    ) +
+    scale_y_reverse() +
+    coord_cartesian(expand = 0) +
+    guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+    facet_grid(basin_AIP ~ eras)
+
+}

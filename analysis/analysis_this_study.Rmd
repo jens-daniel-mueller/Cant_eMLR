@@ -136,26 +136,9 @@ Cant_average_zonal %>%
 
 ```{r Cant_sections_mean}
 
-Cant_average_zonal %>%
-  ggplot(aes(lat, depth, z = Cant_mean_mean)) +
-  geom_contour_fill(breaks = MakeBreaks(5),
-                    na.fill = TRUE) +
-  scale_fill_divergent(guide = "colorstrip",
-                       breaks = MakeBreaks(5),
-                       name = "Cant") +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "black") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "black",
-    skip = 1
-  ) +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP ~ eras)
+section_zonal_average_divergent(Cant_average_zonal,
+                                "Cant_mean_mean",
+                                "gamma_mean_mean")
 
 ```
 
@@ -163,24 +146,10 @@ Cant_average_zonal %>%
 
 ```{r Cant_sections_positive_mean}
 
-Cant_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_pos_mean_mean)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
+
+section_zonal_average_continous(Cant_average_zonal,
+                                "Cant_pos_mean_mean",
+                                "gamma_mean_mean")
 
 ```
 
@@ -191,24 +160,9 @@ Standard deviation across Cant from all MLR models was calculate for each grid c
 
 ```{r Cant_sections_sd_models}
 
-Cant_average_zonal %>%
-  filter(depth <= parameters$inventory_depth) %>%
-  ggplot(aes(lat, depth, z = Cant_sd_mean)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP ~ eras)
+section_zonal_average_continous(Cant_average_zonal,
+                                "Cant_sd_mean",
+                                "gamma_mean_mean")
 
 ```
 
@@ -218,24 +172,9 @@ Standard deviation of mean Cant values was calculate across all longitudes. This
 
 ```{r Cant_sections_sd_Cant}
 
-Cant_average_zonal %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  ggplot(aes(lat, depth, z = Cant_mean_sd)) +
-  geom_contour_filled() +
-  geom_contour(aes(lat, depth, z = gamma_mean_mean),
-               breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean_mean),
-    breaks = slab_breaks,
-    col = "white",
-    skip = 1
-  ) +
-  scale_fill_viridis_d(name = "Cant") +
-  scale_y_reverse() +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~eras)
+section_zonal_average_continous(Cant_average_zonal,
+                                "Cant_mean_sd",
+                                "gamma_mean_mean")
 
 ```
 
@@ -307,7 +246,6 @@ for (i_eras in unique(Cant$eras)) {
 
 
 ```
-
 
 # Maps of Cant
 
