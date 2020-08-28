@@ -404,7 +404,7 @@ predictors <- predictors %>%
 
 - Check PO4* calculation
 - Harmonize AOU calculation in fitting and mapping
-- 
+- Use oxygen and/or nitrate as predictor?
 
 # Open questions
 

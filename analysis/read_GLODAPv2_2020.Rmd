@@ -659,5 +659,4 @@ GLODAP %>%
 - Apply coastal filter?
 - Keep horizontal gridding to 1°x1° (thereby discarding some horizontal information)?
 - Quality of WOA18 basin mask
-  - excluded areas (e.g. Bay of Bengal, South Norwegian Sea, Sea of Japan)
   - Pacific-Atlantic boundary
