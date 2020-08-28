@@ -108,6 +108,8 @@ Cant_average_zonal <- Cant_average_zonal %>%
 
 The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.
 
+### Mean
+
 ```{r gamma_sections_mean}
 
 slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
@@ -129,6 +131,33 @@ Cant_average_zonal %>%
   facet_grid(basin_AIP~.)
 
 ```
+
+### SD
+
+```{r gamma_sections_sd}
+
+Cant_average_zonal %>% 
+  filter(eras == "JGOFS_GO") %>% 
+  ggplot(aes(lat, depth, z = gamma_mean_sd)) +
+  geom_contour_filled() +
+  scale_fill_viridis_d(name = "Gamma SD",
+                       direction = -1) +
+  scale_y_reverse() +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_grid(basin_AIP~.)
+
+```
+
+### Surface map
+
+```{r gamma_surface_map}
+
+map_climatology(Cant_average, "gamma_mean")
+
+```
+
+
 
 ## Cant
 

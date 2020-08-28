@@ -34,7 +34,7 @@ Following parameterizations were chosen to run analysis and display results:
 
 ```{r define_parameters}
 
-depth_levels = c(0, 100, 500, 2000)
+depth_levels = c(150, 500, 1000, 2000)
 
 depth_levels_33 <- c(
   0,
