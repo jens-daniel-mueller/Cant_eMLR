@@ -127,6 +127,8 @@ GLODAP <- GLODAP %>%
   filter(tco2qc == parameters$flag_qc) %>% 
   select(-tco2qc)
 
+GLODAP_tco2 <- GLODAP
+
 GLODAP_stats_temp <- GLODAP %>% 
   summarise(tco2 = n())
 
@@ -312,6 +314,13 @@ GLODAP <- GLODAP %>%
          lon = as.numeric(as.character(lon))) %>% 
   arrange(date)
 
+GLODAP_tco2 <- GLODAP_tco2 %>% 
+  mutate(lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
+         lat = as.numeric(as.character(lat)),
+         lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
+         lon = as.numeric(as.character(lon))) %>% 
+  arrange(date)
+
 ```
 
 
@@ -370,6 +379,12 @@ GLODAP <- GLODAP %>%
          era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
          era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
 
+GLODAP_tco2 <- GLODAP_tco2 %>%
+  filter(year >= parameters$year_JGOFS_start) %>% 
+  mutate(era = "JGOFS_WOCE",
+         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
+         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
+
 ```
 
 ### Manual adjustment A16 cruise
@@ -402,6 +417,10 @@ rm(GLODAP_cruises)
 ```{r switch_eras_manually}
 
 GLODAP <- GLODAP %>%
+  mutate(era = if_else(cruise %in% c(1041, 1042),
+                       "GO_SHIP", era))
+
+GLODAP_tco2 <- GLODAP_tco2 %>%
   mutate(era = if_else(cruise %in% c(1041, 1042),
                        "GO_SHIP", era))
 
@@ -601,18 +620,25 @@ rm(GLODAP_hovmoeller_year)
 
 ## Coverage maps by era
 
-```{r coverage_maps_era, fig.asp=1.5}
+Grey pixels refer to sampling locations filtered for availability of tco2 data only.
+
+```{r coverage_maps_era_clean, fig.asp=1.5}
 
 GLODAP <- GLODAP %>% 
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
+
+GLODAP_tco2_grid <- GLODAP_tco2 %>%
+  count(lat, lon, era)
+
 
 GLODAP %>%
   ggplot(aes(lon, lat)) +
   geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_tco2_grid, aes(lon, lat), fill = "grey80") +
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
-                       name = "log10(n)") +
+                       name = "log10(eMLR observations)") +
   coord_quickmap(expand = FALSE) +
   facet_wrap(~era, ncol = 1) +
   theme(legend.position = "top",
