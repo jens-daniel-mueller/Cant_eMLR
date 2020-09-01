@@ -267,6 +267,27 @@ Summary statistics were calculated during cleaning process.
 GLODAP <- GLODAP %>% 
   filter(!is.na(tco2))
 
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(tco2_value = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "tco2_value")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+###
+
 GLODAP <- GLODAP %>% 
   filter(tco2f == parameters$flag_f) %>% 
   select(-tco2f)
@@ -278,7 +299,7 @@ GLODAP <- GLODAP %>%
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(tco2 = n())
+  summarise(tco2_flag = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -287,7 +308,7 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "tco2")
+  mutate(cleaning_level = "tco2_flag")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -731,10 +752,21 @@ rm(GLODAP_hovmoeller_year)
 
 ```{r coverage_maps_era_subsetting, fig.asp=1.5}
 
-unique(GLODAP_obs_grid$cleaning_level)
-
 GLODAP_obs_grid <- GLODAP_obs_grid %>%
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),
+         cleaning_level = factor(
+           cleaning_level,
+           unique(GLODAP_obs_grid$cleaning_level)
+         ))
+
+unique(GLODAP_obs_grid$cleaning_level)
+GLODAP_obs_grid <- GLODAP_obs_grid %>%
+  filter(cleaning_level %in% c("tco2_value",
+                               "tco2_flag",
+                               "talk_values",
+                               "talk_flag",
+                               "PO4")) %>% 
+   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),
          cleaning_level = factor(
            cleaning_level,
            unique(GLODAP_obs_grid$cleaning_level)
