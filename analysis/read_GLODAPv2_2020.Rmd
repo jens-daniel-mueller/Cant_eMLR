@@ -144,12 +144,11 @@ GLODAP <- GLODAP %>%
 
 ## Spatial boundaries
 
+### Depth
+
 Only observations were taken into consideration with:
 
 - minimum sampling depth:  `r parameters$depth_min`m
-- minimum bottom depth:  `r parameters$bottomdepth_min`m
-- maximum latitude:  `r parameters$lat_max`°N
-
 
 ```{r apply_depth_min}
 
@@ -165,61 +164,39 @@ GLODAP_stats <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   filter(depth >= parameters$depth_min)
 
-##
-
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(below_150m = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp <- GLODAP %>% 
-  count(lat, lon, era) %>% 
-  mutate(cleaning_level = "below_150m")
-
-GLODAP_obs_grid <-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)
-
 ```
 
-```{r apply_lat_max_and_bottomdepth_min}
+### Latitude
 
-##
+Only observations were taken into consideration with:
+
+- maximum latitude:  `r parameters$lat_max`°N
+
+
+```{r apply_lat_max}
 
 GLODAP <- GLODAP %>% 
   filter(lat <= parameters$lat_max)
 
+```
+
+### Bottomdepth
+
+Only observations were taken into consideration with:
+
+- minimum bottom depth:  `r parameters$bottomdepth_min`m
+
+
+```{r apply_bottomdepth_min}
+
 GLODAP <- GLODAP %>% 
   filter(bottomdepth >= parameters$bottomdepth_min)
-
-##
-
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(below_150m_65N_500m = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp <- GLODAP %>% 
-  count(lat, lon, era) %>% 
-  mutate(cleaning_level = "below_150m_65N_500m")
-
-GLODAP_obs_grid <-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)
 
 
 ```
 
 
-## Basin mask
+### Basin mask
 
 The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for [WOA18](https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html) data.
 
@@ -254,7 +231,7 @@ rm(basinmask)
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(basinmask = n())
+  summarise(spatial_boundaries = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -263,7 +240,7 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "basinmask")
+  mutate(cleaning_level = "spatial_boundaries")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -282,6 +259,8 @@ In additions, following flagging criteria were applied:
 - flag_qc:    `r parameters$flag_qc`
   
 Summary statistics were calculated during cleaning process.
+
+### tco2
 
 ```{r tco2_subset}
 
@@ -317,6 +296,7 @@ rm(GLODAP_obs_grid_temp)
 
 ```
 
+### C* variables
 
 ```{r Cstar_subset}
 
@@ -330,6 +310,27 @@ GLODAP <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   filter(talkqc == parameters$flag_qc) %>% 
   select(-talkqc)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(talk = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "talk")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+
 
 ##
 
@@ -348,7 +349,7 @@ GLODAP <- GLODAP %>%
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(Cstar_variables = n())
+  summarise(PO4 = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -357,7 +358,7 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "Cstar_variables")
+  mutate(cleaning_level = "PO4")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -365,6 +366,8 @@ GLODAP_obs_grid <-
 rm(GLODAP_obs_grid_temp)
 
 ```
+
+### eMLR variables
 
 ```{r eMLR_subset}
 
