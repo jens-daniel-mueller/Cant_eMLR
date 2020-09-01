@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb047c4b8d32b7c438a4e58386e516fd3aefbb2a1targetblankb047c4ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b047c4b8d32b7c438a4e58386e516fd3aefbb2a1" target="_blank">b047c4b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebe824b0358c3c6386f585fd8e3e143ea181dc3eatargetblankbe824b0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/be824b0358c3c6386f585fd8e3e143ea181dc3ea" target="_blank">be824b0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb047c4b8d32b7c438a4e58386e516fd3aefbb2a1targetblankb047c4ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebe824b0358c3c6386f585fd8e3e143ea181dc3eatargetblankbe824b0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b047c4b8d32b7c438a4e58386e516fd3aefbb2a1" target="_blank">b047c4b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/be824b0358c3c6386f585fd8e3e143ea181dc3ea" target="_blank">be824b0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -681,6 +681,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/be824b0358c3c6386f585fd8e3e143ea181dc3ea/analysis/read_GLODAPv2_2020.Rmd" target="_blank">be824b0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-01
+</td>
+<td>
+talk subsetting stats flagging resolved
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/3d9b20fa4668baa1952bddc86b2cbbd158fff812/docs/read_GLODAPv2_2020.html" target="_blank">3d9b20f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2480,10 +2514,33 @@ GLODAP_obs_grid &lt;-
 
 rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
-<div id="c-variables" class="section level3">
-<h3><span class="header-section-number">2.4.2</span> C* variables</h3>
+<div id="talk" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> talk</h3>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(talk))
+
+
+##
+
+GLODAP_stats_temp &lt;- GLODAP %&gt;% 
+  summarise(talk_values = n())
+
+GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
+  count(lat, lon, era) %&gt;% 
+  mutate(cleaning_level = &quot;talk_values&quot;)
+
+GLODAP_obs_grid &lt;-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+#####
+
 
 GLODAP &lt;- GLODAP %&gt;% 
   filter(talkf == parameters$flag_f) %&gt;% 
@@ -2496,7 +2553,7 @@ GLODAP &lt;- GLODAP %&gt;%
 ##
 
 GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(talk = n())
+  summarise(talk_flag = n())
 
 GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -2505,16 +2562,16 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
   count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;talk&quot;)
+  mutate(cleaning_level = &quot;talk_flag&quot;)
 
 GLODAP_obs_grid &lt;-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
-rm(GLODAP_obs_grid_temp)
-
-
-
-##
+rm(GLODAP_obs_grid_temp)</code></pre>
+</div>
+<div id="phosphate" class="section level3">
+<h3><span class="header-section-number">2.4.3</span> Phosphate</h3>
+<pre class="r"><code>##
 
 GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(phosphate))
@@ -2548,7 +2605,7 @@ GLODAP_obs_grid &lt;-
 rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
 <div id="emlr-variables" class="section level3">
-<h3><span class="header-section-number">2.4.3</span> eMLR variables</h3>
+<h3><span class="header-section-number">2.4.4</span> eMLR variables</h3>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(tem))
 
@@ -2642,7 +2699,7 @@ GLODAP_obs_grid &lt;-
 rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
 <div id="manual-adjustment-a16-cruise" class="section level3">
-<h3><span class="header-section-number">2.4.4</span> Manual adjustment A16 cruise</h3>
+<h3><span class="header-section-number">2.4.5</span> Manual adjustment A16 cruise</h3>
 <p>For harmonization with Gruber et al. (2019), cruises 1041 (A16N) and 1042 (A16S) were grouped into the GO_SHIP area despite taking place in 2013/14.</p>
 <pre class="r"><code>GLODAP_cruises &lt;- GLODAP %&gt;% 
   filter(basin == &quot;Atlantic&quot;,
@@ -2831,21 +2888,17 @@ GLODAP_hovmoeller_year %&gt;%
 </div>
 <div id="coverage-maps-by-era" class="section level2">
 <h2><span class="header-section-number">3.6</span> Coverage maps by era</h2>
-<div id="subsetting-effect" class="section level3">
-<h3><span class="header-section-number">3.6.1</span> Subsetting effect</h3>
+<div id="subsetting-process" class="section level3">
+<h3><span class="header-section-number">3.6.1</span> Subsetting process</h3>
+<pre class="r"><code>unique(GLODAP_obs_grid$cleaning_level)</code></pre>
+<pre><code>[1] &quot;all&quot;                &quot;spatial_boundaries&quot; &quot;tco2&quot;              
+[4] &quot;talk_values&quot;        &quot;talk_flag&quot;          &quot;PO4&quot;               
+[7] &quot;eMLR_variables&quot;    </code></pre>
 <pre class="r"><code>GLODAP_obs_grid &lt;- GLODAP_obs_grid %&gt;%
   mutate(era = factor(era, c(&quot;JGOFS_WOCE&quot;, &quot;GO_SHIP&quot;, &quot;new_era&quot;)),
          cleaning_level = factor(
            cleaning_level,
-           c(
-             &quot;all&quot;,
-             &quot;below_150m&quot;,
-             &quot;below_150m_65N_500m&quot;,
-             &quot;basinmask&quot;,
-             &quot;tco2&quot;,
-             &quot;Cstar_variables&quot;,
-             &quot;eMLR_variables&quot;
-           )
+           unique(GLODAP_obs_grid$cleaning_level)
          ))
 
 GLODAP_obs_grid %&gt;%
