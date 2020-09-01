@@ -99,6 +99,180 @@ GLODAP <- GLODAP %>%
 
 # Data preparation
 
+## Horizontal gridding
+
+For merging with other data sets, all observations were grouped into latitude intervals of:
+
+- 1° x 1°
+
+```{r grid_spatially_1x1}
+
+GLODAP <- GLODAP %>% 
+  mutate(lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
+         lat = as.numeric(as.character(lat)),
+         lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
+         lon = as.numeric(as.character(lon))) %>% 
+  arrange(date)
+
+
+```
+
+
+## Reference eras
+
+Samples were assigned to following eras:
+
+- JGOFS_WOCE:
+`r parameters$year_JGOFS_start` - `r parameters$year_JGOFS_end`
+
+- GO_SHIP:
+`r parameters$year_JGOFS_end+1` - `r parameters$year_GOSHIP_end`
+
+- new_era:    > `r parameters$year_GOSHIP_end+1`
+
+
+```{r assign_eras}
+
+GLODAP <- GLODAP %>%
+  filter(year >= parameters$year_JGOFS_start) %>% 
+  mutate(era = "JGOFS_WOCE",
+         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
+         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
+
+```
+
+
+## Spatial boundaries
+
+Only observations were taken into consideration with:
+
+- minimum sampling depth:  `r parameters$depth_min`m
+- minimum bottom depth:  `r parameters$bottomdepth_min`m
+- maximum latitude:  `r parameters$lat_max`°N
+
+
+```{r apply_depth_min}
+
+GLODAP_obs_grid <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "all")
+
+GLODAP_stats <- GLODAP %>% 
+  summarise(all = n())
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(depth >= parameters$depth_min)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(below_150m = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "below_150m")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+```
+
+```{r apply_lat_max_and_bottomdepth_min}
+
+##
+
+GLODAP <- GLODAP %>% 
+  filter(lat <= parameters$lat_max)
+
+GLODAP <- GLODAP %>% 
+  filter(bottomdepth >= parameters$bottomdepth_min)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(below_150m_65N_500m = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "below_150m_65N_500m")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+
+```
+
+
+## Basin mask
+
+The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for [WOA18](https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html) data.
+
+```{r WOA_basin_mask_GLODAP_observations_map}
+
+GLODAP_obs <- GLODAP %>% 
+  group_by(lat, lon) %>% 
+  summarise(n = n()) %>% 
+  ungroup()
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
+  geom_raster(data = GLODAP_obs, aes(lon, lat)) +
+  scale_fill_brewer(palette = "Dark2") +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+rm(GLODAP_obs)
+
+```
+
+Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis (eg North Sea, Sea of Japan).
+
+```{r join_basin_mask}
+
+GLODAP <- inner_join(GLODAP, basinmask)
+rm(basinmask)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(basinmask = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "basinmask")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+
+```
+
 ## Flags and missing data
 
 Only rows (samples) for which all relevant parameters are available were selected.
@@ -109,12 +283,7 @@ In additions, following flagging criteria were applied:
   
 Summary statistics were calculated during cleaning process.
 
-```{r clean_GLODAP_master_file}
-
-GLODAP_stats <- GLODAP %>% 
-  summarise(total = n())
-
-##
+```{r tco2_subset}
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(tco2))
@@ -127,7 +296,7 @@ GLODAP <- GLODAP %>%
   filter(tco2qc == parameters$flag_qc) %>% 
   select(-tco2qc)
 
-GLODAP_tco2 <- GLODAP
+##
 
 GLODAP_stats_temp <- GLODAP %>% 
   summarise(tco2 = n())
@@ -136,6 +305,20 @@ GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
 
 ##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "tco2")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+```
+
+
+```{r Cstar_subset}
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(talk))
@@ -161,13 +344,29 @@ GLODAP <- GLODAP %>%
   filter(phosphateqc == parameters$flag_qc) %>% 
   select(-phosphateqc)
 
+
+##
+
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(C_star_variables = n())
+  summarise(Cstar_variables = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
 
 ##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "Cstar_variables")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+```
+
+```{r eMLR_subset}
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(tem))
@@ -250,142 +449,19 @@ GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 
 rm(GLODAP_stats_temp)
 
-```
-
-## Spatial boundaries
-
-Only observations were taken into consideration with:
-
-- minimum sampling depth:  `r parameters$depth_min`m
-- minimum bottom depth:  `r parameters$bottomdepth_min`m
-- maximum latitude:  `r parameters$lat_max`°N
-
-
-```{r apply_spatial_boundaries}
-
-GLODAP <- GLODAP %>% 
-  filter(depth >= parameters$depth_min)
-
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(eMLR_variables_150m = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
 ##
 
-GLODAP <- GLODAP %>% 
-  filter(lat <= parameters$lat_max)
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "eMLR_variables")
 
-GLODAP <- GLODAP %>% 
-  filter(bottomdepth >= parameters$bottomdepth_min)
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(eMLR_variables_150m_65N_500m = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-
-GLODAP_stats_long <- GLODAP_stats %>% 
-  pivot_longer(1:length(GLODAP_stats),
-               names_to = "parameter",
-               values_to = "n")
-
-GLODAP_stats_long  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                             "GLODAPv2.2020_stats.csv"))
-
-rm(GLODAP_stats_long, GLODAP_stats)
+rm(GLODAP_obs_grid_temp)
 
 ```
 
-## Horizontal gridding
-
-For merging with other data sets, all observations were grouped into latitude intervals of:
-
-- 1° x 1°
-
-```{r grid_spatially_1x1}
-
-GLODAP <- GLODAP %>% 
-  mutate(lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
-         lat = as.numeric(as.character(lat)),
-         lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
-         lon = as.numeric(as.character(lon))) %>% 
-  arrange(date)
-
-GLODAP_tco2 <- GLODAP_tco2 %>% 
-  mutate(lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
-         lat = as.numeric(as.character(lat)),
-         lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
-         lon = as.numeric(as.character(lon))) %>% 
-  arrange(date)
-
-```
-
-
-## Basin mask
-
-The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for [WOA18](https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html) data.
-
-```{r WOA_basin_mask_GLODAP_observations_map}
-
-GLODAP_obs <- GLODAP %>% 
-  group_by(lat, lon) %>% 
-  summarise(n = n()) %>% 
-  ungroup()
-
-ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
-              aes(lon, lat), fill = "grey80") +
-  geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
-  geom_raster(data = GLODAP_obs, aes(lon, lat)) +
-  scale_fill_brewer(palette = "Dark2") +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = "top",
-        legend.title = element_blank())
-
-rm(GLODAP_obs)
-
-```
-
-Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis (eg North Sea, Sea of Japan).
-
-```{r join_basin_mask}
-
-GLODAP <- inner_join(GLODAP, basinmask)
-rm(basinmask)
-
-```
-
-## Reference eras
-
-Samples were assigned to following eras:
-
-- JGOFS_WOCE:
-`r parameters$year_JGOFS_start` - `r parameters$year_JGOFS_end`
-
-- GO_SHIP:
-`r parameters$year_JGOFS_end+1` - `r parameters$year_GOSHIP_end`
-
-- new_era:    > `r parameters$year_GOSHIP_end+1`
-
-
-```{r assign_eras}
-
-GLODAP <- GLODAP %>%
-  filter(year >= parameters$year_JGOFS_start) %>% 
-  mutate(era = "JGOFS_WOCE",
-         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
-         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
-
-GLODAP_tco2 <- GLODAP_tco2 %>%
-  filter(year >= parameters$year_JGOFS_start) %>% 
-  mutate(era = "JGOFS_WOCE",
-         era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
-         era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
-
-```
 
 ### Manual adjustment A16 cruise
 
@@ -420,24 +496,6 @@ GLODAP <- GLODAP %>%
   mutate(era = if_else(cruise %in% c(1041, 1042),
                        "GO_SHIP", era))
 
-GLODAP_tco2 <- GLODAP_tco2 %>%
-  mutate(era = if_else(cruise %in% c(1041, 1042),
-                       "GO_SHIP", era))
-
-```
-
-
-## Observations grid
-
-A 1x1 grid containing all coordinates with at least one GLODAP observation was created.
-
-```{r GLODAP_clean_observations_grid}
-
-GLODAP_obs_grid <- GLODAP %>% 
-  group_by(lat, lon) %>% 
-  summarise(n = n()) %>% 
-  ungroup()
-
 ```
 
 
@@ -445,13 +503,41 @@ GLODAP_obs_grid <- GLODAP %>%
  
 ```{r write_clean_data_files}
 
-GLODAP_obs_grid  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                           "GLODAPv2.2020_clean_obs_grid.csv"))
+GLODAP_stats_long <- GLODAP_stats %>%
+  pivot_longer(1:length(GLODAP_stats),
+               names_to = "parameter",
+               values_to = "n")
 
-GLODAP  %>%  write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                  "GLODAPv2.2020_clean.csv"))
+GLODAP_stats_long  %>%  write_csv(
+  here::here(
+    "data/GLODAPv2_2020/_summarized_data_files",
+    "GLODAPv2.2020_stats.csv"
+  )
+)
 
-rm(GLODAP, GLODAP_obs_grid)
+# rm(GLODAP_stats_long, GLODAP_stats)
+
+##
+
+GLODAP_obs_grid  %>%
+  filter(cleaning_level == "eMLR_variables") %>%
+  write_csv(
+    here::here(
+      "data/GLODAPv2_2020/_summarized_data_files",
+      "GLODAPv2.2020_clean_obs_grid.csv"
+    )
+  )
+
+##
+
+GLODAP  %>%  write_csv(
+  here::here(
+    "data/GLODAPv2_2020/_summarized_data_files",
+    "GLODAPv2.2020_clean.csv"
+  )
+)
+
+# rm(GLODAP)
 
 ```
 
@@ -464,8 +550,8 @@ Number of observations at various steps of data cleaning.
 
 ```{r GLODAP_cleaning_stats}
 
-GLODAP_stats_long <-  read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                             "GLODAPv2.2020_stats.csv"))
+# GLODAP_stats_long <-  read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+#                                              "GLODAPv2.2020_stats.csv"))
 
 GLODAP_stats_long <- GLODAP_stats_long %>%
   mutate(parameter = fct_reorder(parameter, n))
@@ -488,16 +574,7 @@ For the following plots, the cleaned data set was re-opened and observations wer
 
 - 5° x 5°
 
-
-```{r read_GLODAP_clean}
-
-GLODAP <- read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                              "GLODAPv2.2020_clean.csv"))
-
-```
-
-```{r grid_spatially_coarse}
-
+```{r grid_spatially_coarse, eval=FALSE}
 
 GLODAP <- GLODAP %>%
   mutate(
@@ -620,6 +697,40 @@ rm(GLODAP_hovmoeller_year)
 
 ## Coverage maps by era
 
+### Subsetting effect
+
+```{r coverage_maps_era_subsetting, fig.asp=1.5}
+
+GLODAP_obs_grid <- GLODAP_obs_grid %>%
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),
+         cleaning_level = factor(
+           cleaning_level,
+           c(
+             "all",
+             "below_150m",
+             "below_150m_65N_500m",
+             "basinmask",
+             "tco2",
+             "Cstar_variables",
+             "eMLR_variables"
+           )
+         ))
+
+GLODAP_obs_grid %>%
+  ggplot(aes(lon, lat, fill = cleaning_level)) +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster() +
+  coord_quickmap(expand = FALSE) +
+  scale_fill_viridis_d(direction = -1) +
+  facet_wrap(~era, ncol = 1) +
+  theme(legend.position = "top",
+        axis.title = element_blank())
+
+```
+
+### eMLR variables
+
 Grey pixels refer to sampling locations filtered for availability of tco2 data only.
 
 ```{r coverage_maps_era_clean, fig.asp=1.5}
@@ -627,9 +738,8 @@ Grey pixels refer to sampling locations filtered for availability of tco2 data o
 GLODAP <- GLODAP %>% 
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
 
-GLODAP_tco2_grid <- GLODAP_tco2 %>%
+GLODAP_tco2_grid <- GLODAP %>%
   count(lat, lon, era)
-
 
 GLODAP %>%
   ggplot(aes(lon, lat)) +
@@ -638,7 +748,7 @@ GLODAP %>%
   geom_raster(data = GLODAP_tco2_grid, aes(lon, lat), fill = "grey80") +
   geom_bin2d(binwidth = c(1,1)) +
   scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
-                       name = "log10(eMLR observations)") +
+                       name = "log10(eMLR_variables)") +
   coord_quickmap(expand = FALSE) +
   facet_wrap(~era, ncol = 1) +
   theme(legend.position = "top",
