@@ -136,8 +136,7 @@ parameters <-
     depth_levels = depth_levels,
     depth_levels_33 = depth_levels_33,
     slabs_Atl = slabs_Atl,
-    slabs_Ind_Pac = slabs_Ind_Pac,
-    phosphate_star_approach = "nitrate"
+    slabs_Ind_Pac = slabs_Ind_Pac
   )
 
 rm(

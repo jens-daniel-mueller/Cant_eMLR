@@ -79,26 +79,6 @@ GLODAP <-
 
 ```
 
-# Select phosphate star
-
-Currently, MLR fitting is based on PO4* calculated with:  
-
-- `r parameters$phosphate_star_approach`
-
-```{r select_phosphate_star_aproach}
-
-if (parameters$phosphate_star_approach == "nitrate") {
-  GLODAP <- GLODAP %>%
-    mutate(phosphate_star = phosphate_star_nit) %>%
-    select(-c(phosphate_star_oxy, phosphate_star_nit))
-} else{
-  GLODAP <- GLODAP %>%
-    mutate(phosphate_star = phosphate_star_oxy) %>%
-    select(-c(phosphate_star_oxy, phosphate_star_nit))
-}
-```
-
-
 
 # Model fitting
 

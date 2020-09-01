@@ -66,25 +66,6 @@ predictors <-
 
 ```
 
-# Select phosphate star
-
-Currently, mapping of Cant is based on PO4* calculated with:  
-
-- `r parameters$phosphate_star_approach`
-
-```{r select_phosphate_star_aproach}
-
-if (parameters$phosphate_star_approach == "nitrate") {
-  predictors <- predictors %>%
-    mutate(phosphate_star = phosphate_star_nit) %>%
-    select(-c(phosphate_star_oxy, phosphate_star_nit))
-} else{
-  predictors <- predictors %>%
-    mutate(phosphate_star = phosphate_star_oxy) %>%
-    select(-c(phosphate_star_oxy, phosphate_star_nit))
-}
-```
-
 
 # Apply spatial boundaries
 

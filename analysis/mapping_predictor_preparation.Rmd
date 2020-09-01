@@ -202,46 +202,31 @@ rm(N_Atl)
 
 # Prepare predictor fields
 
-## PO~4~*
+## PO~4~* calculation 
 
-### Calculation 
-
-Currently, the predictor PO~4~* is calculated according to Clement and Gruber (2018), ie based on oxygen, as well as according to Gruber et al (2019), based on nitrate. Selection of one approach is done before mapping.
+The predictor PO~4~* was be calculated according to Clement and Gruber (2018), ie based on oxygen. Please note that an errornous equations for PO4* calculation is given in the supplement of Gruber et al (2019), based on nitrate.
 
 ```{r calculate_phosphate_star_clement}
 
 predictors <- predictors %>% 
   rename(phosphate = PO4) %>% 
-  mutate(phosphate_star_oxy = phosphate + (oxygen / 170)  - 1.95,
-         phosphate_star_nit = phosphate - NO3 / 16  + 2.9)
+  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
 
 ```
 
 ### Maps
 
-```{r PO4_star_nit_climatology_maps, fig.asp=0.6}
+```{r PO4_star_climatology_maps, fig.asp=0.6}
 
-map_climatology(predictors, "phosphate_star_nit")
-
-```
-
-```{r PO4_star_oxy_climatology_maps, fig.asp=0.6}
-
-map_climatology(predictors, "phosphate_star_oxy")
+map_climatology(predictors, "phosphate_star")
 
 ```
 
 ### Sections
 
-```{r PO4_star_nit_climatology_section, fig.asp=0.6}
+```{r PO4_star_climatology_section, fig.asp=0.6}
 
-section_climatology(predictors, "phosphate_star_nit")
-
-```
-
-```{r PO4_star_oxy_climatology_section, fig.asp=0.6}
-
-section_climatology(predictors, "phosphate_star_oxy")
+section_climatology(predictors, "phosphate_star")
 
 ```
 
@@ -333,8 +318,7 @@ vars <-
     "sal",
     "tem",
     "phosphate",
-    "phosphate_star_oxy",
-    "phosphate_star_nit",
+    "phosphate_star",
     "oxygen",
     "aou",
     "silicate",
@@ -402,7 +386,6 @@ predictors <- predictors %>%
 
 # Open tasks
 
-- Check PO4* calculation
 - Harmonize AOU calculation in fitting and mapping
 - Use oxygen and/or nitrate as predictor?
 

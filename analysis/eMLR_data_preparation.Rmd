@@ -155,86 +155,14 @@ rm(rCP, rNP)
 
 # PO~4~* calculation 
 
-The predictor PO~4~* can be calculated according to Clement and Gruber (2018), ie based on oxygen, or according to Gruber et al (2019), based on nitrate.
+The predictor PO~4~* was be calculated according to Clement and Gruber (2018), ie based on oxygen. Please note that an errornous equations for PO4* calculation is given in the supplement of Gruber et al (2019), based on nitrate.
 
-```{r calculate_phosphate_star_oxygen}
-
-GLODAP <- GLODAP %>% 
-  mutate(phosphate_star_oxy_corr = (oxygen / 170)  - 1.95,
-         phosphate_star_oxy = phosphate + phosphate_star_oxy_corr)
-
-```
-
-```{r calculate_phosphate_star_nitrate}
+```{r calculate_phosphate_star}
 
 GLODAP <- GLODAP %>% 
-  mutate(phosphate_star_nit_corr = -nitrate/16  + 2.9,
-         phosphate_star_nit = phosphate + phosphate_star_nit_corr)
+  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
 
 ```
-
-## Comparison of approaches
-
-```{r phosphate_star_approach_comparison_oxygen_nitrate, fig.asp=0.4}
-
-GLODAP %>% 
-  ggplot(aes(oxygen,
-             nitrate)) +
-  geom_bin2d() +
-  scale_fill_viridis_c() +
-  facet_wrap(~basin_AIP)
-
-```
-
-```{r phosphate_star_approach_comparison_phosphate_nitrate, fig.asp=0.4}
-
-GLODAP %>% 
-  ggplot(aes(phosphate,
-             nitrate)) +
-  geom_bin2d() +
-  scale_fill_viridis_c() +
-  facet_wrap(~basin_AIP)
-
-```
-
-```{r phosphate_star_approach_comparison_phosphate_oxygen, fig.asp=0.4}
-
-GLODAP %>% 
-  ggplot(aes(phosphate,
-             oxygen)) +
-  geom_bin2d() +
-  scale_fill_viridis_c() +
-  facet_wrap(~basin_AIP)
-
-```
-
-```{r phosphate_star_approach_comparison_oxygen_nitrate_corr, fig.asp=0.4}
-
-GLODAP %>% 
-  ggplot(aes(phosphate_star_oxy_corr,
-             phosphate_star_nit_corr)) +
-  geom_bin2d() +
-  scale_fill_viridis_c() +
-  facet_wrap(~basin_AIP)
-
-```
-
-
-```{r phosphate_star_approach_comparison, fig.asp=0.4}
-
-GLODAP %>% 
-  ggplot(aes(phosphate_star_oxy, phosphate_star_nit)) +
-  geom_bin2d() +
-  scale_fill_viridis_c() +
-  facet_wrap(~basin_AIP)
-
-GLODAP <- GLODAP %>% 
-  select(-c(
-    phosphate_star_oxy_corr,
-    phosphate_star_nit_corr))
-
-```
-
 
 
 # Reference year adjustment
