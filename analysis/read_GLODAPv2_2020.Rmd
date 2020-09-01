@@ -270,7 +270,7 @@ GLODAP <- GLODAP %>%
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(tco2_value = n())
+  summarise(tco2_values = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -279,7 +279,7 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "tco2_value")
+  mutate(cleaning_level = "tco2_values")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -385,6 +385,28 @@ rm(GLODAP_obs_grid_temp)
 GLODAP <- GLODAP %>% 
   filter(!is.na(phosphate))
 
+
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(PO4_values = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "PO4_values")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+####
+
 GLODAP <- GLODAP %>% 
   filter(phosphatef == parameters$flag_f) %>% 
   select(-phosphatef)
@@ -397,7 +419,7 @@ GLODAP <- GLODAP %>%
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(PO4 = n())
+  summarise(PO4_flag = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -406,7 +428,7 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "PO4")
+  mutate(cleaning_level = "PO4_flag")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -750,7 +772,7 @@ rm(GLODAP_hovmoeller_year)
 
 ### Subsetting process
 
-```{r coverage_maps_era_subsetting, fig.asp=1.5}
+```{r coverage_maps_era_subsetting, fig.asp=2}
 
 GLODAP_obs_grid <- GLODAP_obs_grid %>%
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),
@@ -759,27 +781,22 @@ GLODAP_obs_grid <- GLODAP_obs_grid %>%
            unique(GLODAP_obs_grid$cleaning_level)
          ))
 
-unique(GLODAP_obs_grid$cleaning_level)
-GLODAP_obs_grid <- GLODAP_obs_grid %>%
-  filter(cleaning_level %in% c("tco2_value",
-                               "tco2_flag",
-                               "talk_values",
-                               "talk_flag",
-                               "PO4")) %>% 
-   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),
-         cleaning_level = factor(
-           cleaning_level,
-           unique(GLODAP_obs_grid$cleaning_level)
-         ))
 
-GLODAP_obs_grid %>%
-  ggplot(aes(lon, lat, fill = cleaning_level)) +
+
+ggplot() +
   geom_raster(data = landmask %>% filter(region == "land"),
-              aes(lon, lat), fill = "grey80") +
-  geom_raster() +
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid %>%
+                filter(cleaning_level == "all") %>% 
+                select(-cleaning_level),
+              aes(lon, lat, fill = "all")) +
+  geom_raster(data = GLODAP_obs_grid %>%
+                filter(cleaning_level != "all"),
+              aes(lon, lat, fill = "subset")) +
   coord_quickmap(expand = FALSE) +
-  scale_fill_viridis_d(direction = -1) +
-  facet_wrap(~era, ncol = 1) +
+  scale_fill_manual(values = c("grey", "red"), name = "") +
+  facet_grid(cleaning_level ~ era) +
   theme(legend.position = "top",
         axis.title = element_blank())
 
