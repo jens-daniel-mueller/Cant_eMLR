@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree782c5954e601379c3806df87fa7a2b8b627c3c49targetblank782c595a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/782c5954e601379c3806df87fa7a2b8b627c3c49" target="_blank">782c595</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb047c4b8d32b7c438a4e58386e516fd3aefbb2a1targetblankb047c4ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b047c4b8d32b7c438a4e58386e516fd3aefbb2a1" target="_blank">b047c4b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree782c5954e601379c3806df87fa7a2b8b627c3c49targetblank782c595a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb047c4b8d32b7c438a4e58386e516fd3aefbb2a1targetblankb047c4ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/782c5954e601379c3806df87fa7a2b8b627c3c49" target="_blank">782c595</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b047c4b8d32b7c438a4e58386e516fd3aefbb2a1" target="_blank">b047c4b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -681,6 +681,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/b047c4b8d32b7c438a4e58386e516fd3aefbb2a1/analysis/read_GLODAPv2_2020.Rmd" target="_blank">b047c4b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-01
+</td>
+<td>
+subsetting stats for talk and po4
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/4049eb01ad7604198af5c98fa8e32c1a75916b6b/docs/read_GLODAPv2_2020.html" target="_blank">4049eb0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2327,11 +2361,11 @@ GLODAP &lt;- GLODAP %&gt;%
 </div>
 <div id="spatial-boundaries" class="section level2">
 <h2><span class="header-section-number">2.3</span> Spatial boundaries</h2>
+<div id="depth" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Depth</h3>
 <p>Only observations were taken into consideration with:</p>
 <ul>
 <li>minimum sampling depth: 150m</li>
-<li>minimum bottom depth: 500m</li>
-<li>maximum latitude: 65°N</li>
 </ul>
 <pre class="r"><code>GLODAP_obs_grid &lt;- GLODAP %&gt;% 
   count(lat, lon, era) %&gt;% 
@@ -2343,55 +2377,28 @@ GLODAP_stats &lt;- GLODAP %&gt;%
 ##
 
 GLODAP &lt;- GLODAP %&gt;% 
-  filter(depth &gt;= parameters$depth_min)
-
-##
-
-GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(below_150m = n())
-
-GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
-  count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;below_150m&quot;)
-
-GLODAP_obs_grid &lt;-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)</code></pre>
-<pre class="r"><code>##
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(lat &lt;= parameters$lat_max)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(bottomdepth &gt;= parameters$bottomdepth_min)
-
-##
-
-GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(below_150m_65N_500m = n())
-
-GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
-  count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;below_150m_65N_500m&quot;)
-
-GLODAP_obs_grid &lt;-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)</code></pre>
+  filter(depth &gt;= parameters$depth_min)</code></pre>
 </div>
-<div id="basin-mask" class="section level2">
-<h2><span class="header-section-number">2.4</span> Basin mask</h2>
+<div id="latitude" class="section level3">
+<h3><span class="header-section-number">2.3.2</span> Latitude</h3>
+<p>Only observations were taken into consideration with:</p>
+<ul>
+<li>maximum latitude: 65°N</li>
+</ul>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
+  filter(lat &lt;= parameters$lat_max)</code></pre>
+</div>
+<div id="bottomdepth" class="section level3">
+<h3><span class="header-section-number">2.3.3</span> Bottomdepth</h3>
+<p>Only observations were taken into consideration with:</p>
+<ul>
+<li>minimum bottom depth: 500m</li>
+</ul>
+<pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
+  filter(bottomdepth &gt;= parameters$bottomdepth_min)</code></pre>
+</div>
+<div id="basin-mask" class="section level3">
+<h3><span class="header-section-number">2.3.4</span> Basin mask</h3>
 <p>The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for <a href="https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html">WOA18</a> data.</p>
 <pre class="r"><code>GLODAP_obs &lt;- GLODAP %&gt;% 
   group_by(lat, lon) %&gt;% 
@@ -2416,7 +2423,7 @@ rm(basinmask)
 ##
 
 GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(basinmask = n())
+  summarise(spatial_boundaries = n())
 
 GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -2425,21 +2432,24 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
   count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;basinmask&quot;)
+  mutate(cleaning_level = &quot;spatial_boundaries&quot;)
 
 GLODAP_obs_grid &lt;-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
 rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
+</div>
 <div id="flags-and-missing-data" class="section level2">
-<h2><span class="header-section-number">2.5</span> Flags and missing data</h2>
+<h2><span class="header-section-number">2.4</span> Flags and missing data</h2>
 <p>Only rows (samples) for which all relevant parameters are available were selected. In additions, following flagging criteria were applied:</p>
 <ul>
 <li>flag_f: 2</li>
 <li>flag_qc: 1</li>
 </ul>
 <p>Summary statistics were calculated during cleaning process.</p>
+<div id="tco2" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> tco2</h3>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(tco2))
 
@@ -2469,6 +2479,9 @@ GLODAP_obs_grid &lt;-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
 rm(GLODAP_obs_grid_temp)</code></pre>
+</div>
+<div id="c-variables" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> C* variables</h3>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(talk))
 
@@ -2479,6 +2492,27 @@ GLODAP &lt;- GLODAP %&gt;%
 GLODAP &lt;- GLODAP %&gt;% 
   filter(talkqc == parameters$flag_qc) %&gt;% 
   select(-talkqc)
+
+##
+
+GLODAP_stats_temp &lt;- GLODAP %&gt;% 
+  summarise(talk = n())
+
+GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
+  count(lat, lon, era) %&gt;% 
+  mutate(cleaning_level = &quot;talk&quot;)
+
+GLODAP_obs_grid &lt;-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+
 
 ##
 
@@ -2497,7 +2531,7 @@ GLODAP &lt;- GLODAP %&gt;%
 ##
 
 GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(Cstar_variables = n())
+  summarise(PO4 = n())
 
 GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -2506,12 +2540,15 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
   count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;Cstar_variables&quot;)
+  mutate(cleaning_level = &quot;PO4&quot;)
 
 GLODAP_obs_grid &lt;-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
 rm(GLODAP_obs_grid_temp)</code></pre>
+</div>
+<div id="emlr-variables" class="section level3">
+<h3><span class="header-section-number">2.4.3</span> eMLR variables</h3>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(tem))
 
@@ -2603,8 +2640,9 @@ GLODAP_obs_grid &lt;-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
 rm(GLODAP_obs_grid_temp)</code></pre>
+</div>
 <div id="manual-adjustment-a16-cruise" class="section level3">
-<h3><span class="header-section-number">2.5.1</span> Manual adjustment A16 cruise</h3>
+<h3><span class="header-section-number">2.4.4</span> Manual adjustment A16 cruise</h3>
 <p>For harmonization with Gruber et al. (2019), cruises 1041 (A16N) and 1042 (A16S) were grouped into the GO_SHIP area despite taking place in 2013/14.</p>
 <pre class="r"><code>GLODAP_cruises &lt;- GLODAP %&gt;% 
   filter(basin == &quot;Atlantic&quot;,
@@ -2629,7 +2667,7 @@ ggplot() +
 </div>
 </div>
 <div id="write-summary-file" class="section level2">
-<h2><span class="header-section-number">2.6</span> Write summary file</h2>
+<h2><span class="header-section-number">2.5</span> Write summary file</h2>
 <pre class="r"><code>GLODAP_stats_long &lt;- GLODAP_stats %&gt;%
   pivot_longer(1:length(GLODAP_stats),
                names_to = &quot;parameter&quot;,
@@ -2822,7 +2860,7 @@ GLODAP_obs_grid %&gt;%
         axis.title = element_blank())</code></pre>
 <p><img src="figure/read_GLODAPv2_2020.Rmd/coverage_maps_era_subsetting-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="emlr-variables" class="section level3">
+<div id="emlr-variables-1" class="section level3">
 <h3><span class="header-section-number">3.6.2</span> eMLR variables</h3>
 <p>Grey pixels refer to sampling locations filtered for availability of tco2 data only.</p>
 <pre class="r"><code>GLODAP &lt;- GLODAP %&gt;% 
