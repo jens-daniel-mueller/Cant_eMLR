@@ -296,12 +296,35 @@ rm(GLODAP_obs_grid_temp)
 
 ```
 
-### C* variables
+### talk
 
-```{r Cstar_subset}
+```{r talk_subset}
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(talk))
+
+
+##
+
+GLODAP_stats_temp <- GLODAP %>% 
+  summarise(talk_values = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>% 
+  count(lat, lon, era) %>% 
+  mutate(cleaning_level = "talk_values")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
+
+#####
+
 
 GLODAP <- GLODAP %>% 
   filter(talkf == parameters$flag_f) %>% 
@@ -314,7 +337,7 @@ GLODAP <- GLODAP %>%
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(talk = n())
+  summarise(talk_flag = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -323,7 +346,7 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "talk")
+  mutate(cleaning_level = "talk_flag")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -331,7 +354,11 @@ GLODAP_obs_grid <-
 rm(GLODAP_obs_grid_temp)
 
 
+```
 
+### Phosphate
+
+```{r Phosphate_subset}
 ##
 
 GLODAP <- GLODAP %>% 
@@ -700,23 +727,17 @@ rm(GLODAP_hovmoeller_year)
 
 ## Coverage maps by era
 
-### Subsetting effect
+### Subsetting process
 
 ```{r coverage_maps_era_subsetting, fig.asp=1.5}
+
+unique(GLODAP_obs_grid$cleaning_level)
 
 GLODAP_obs_grid <- GLODAP_obs_grid %>%
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),
          cleaning_level = factor(
            cleaning_level,
-           c(
-             "all",
-             "below_150m",
-             "below_150m_65N_500m",
-             "basinmask",
-             "tco2",
-             "Cstar_variables",
-             "eMLR_variables"
-           )
+           unique(GLODAP_obs_grid$cleaning_level)
          ))
 
 GLODAP_obs_grid %>%
