@@ -434,7 +434,8 @@ rm(all_lm_long, all_lm_wide)
 - combine correlation, rmse and model calculation into one routine, ideally using the purrr map approach
 - select exactly best 10 models, even if same rmse sum appears more than once (currently, selection is set two ten, even if doublicated rmse occur)
 - check (phosphate_star) NA's in coeffcients -> cases of exact colinearity?
-- test model selection based on AIC 
+- test model selection based on AIC
+- activate all chunks
 
 # Open questions
 
