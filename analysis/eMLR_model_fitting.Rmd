@@ -84,7 +84,7 @@ GLODAP <-
 
 Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.
 
-```{r eMLR_fitting_predictor_selection, eval=FALSE}
+```{r eMLR_fitting_predictor_selection}
 
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -289,7 +289,7 @@ sqrt(mean(lm_2$residuals^2))
 
 After selecting `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
 
-```{r fit_best_models, eval=FALSE}
+```{r fit_best_models}
 
 lm_best <- lm_best %>% 
   mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
@@ -435,7 +435,6 @@ rm(all_lm_long, all_lm_wide)
 - select exactly best 10 models, even if same rmse sum appears more than once (currently, selection is set two ten, even if doublicated rmse occur)
 - check (phosphate_star) NA's in coeffcients -> cases of exact colinearity?
 - test model selection based on AIC
-- activate all chunks
 
 # Open questions
 

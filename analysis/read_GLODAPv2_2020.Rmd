@@ -288,32 +288,32 @@ rm(GLODAP_obs_grid_temp)
 
 ###
 
-GLODAP <- GLODAP %>% 
-  filter(tco2f == parameters$flag_f) %>% 
-  select(-tco2f)
-
-GLODAP <- GLODAP %>% 
-  filter(tco2qc == parameters$flag_qc) %>% 
-  select(-tco2qc)
-
-##
-
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(tco2_flag = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp <- GLODAP %>% 
-  count(lat, lon, era) %>% 
-  mutate(cleaning_level = "tco2_flag")
-
-GLODAP_obs_grid <-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)
+# GLODAP <- GLODAP %>% 
+#   filter(tco2f == parameters$flag_f) %>% 
+#   select(-tco2f)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(tco2qc == parameters$flag_qc) %>% 
+#   select(-tco2qc)
+# 
+# ##
+# 
+# GLODAP_stats_temp <- GLODAP %>% 
+#   summarise(tco2_flag = n())
+# 
+# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp <- GLODAP %>% 
+#   count(lat, lon, era) %>% 
+#   mutate(cleaning_level = "tco2_flag")
+# 
+# GLODAP_obs_grid <-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)
 
 ```
 
@@ -347,32 +347,32 @@ rm(GLODAP_obs_grid_temp)
 #####
 
 
-GLODAP <- GLODAP %>% 
-  filter(talkf == parameters$flag_f) %>% 
-  select(-talkf)
-
-GLODAP <- GLODAP %>% 
-  filter(talkqc == parameters$flag_qc) %>% 
-  select(-talkqc)
-
-##
-
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(talk_flag = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp <- GLODAP %>% 
-  count(lat, lon, era) %>% 
-  mutate(cleaning_level = "talk_flag")
-
-GLODAP_obs_grid <-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)
+# GLODAP <- GLODAP %>% 
+#   filter(talkf == parameters$flag_f) %>% 
+#   select(-talkf)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(talkqc == parameters$flag_qc) %>% 
+#   select(-talkqc)
+# 
+# ##
+# 
+# GLODAP_stats_temp <- GLODAP %>% 
+#   summarise(talk_flag = n())
+# 
+# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp <- GLODAP %>% 
+#   count(lat, lon, era) %>% 
+#   mutate(cleaning_level = "talk_flag")
+# 
+# GLODAP_obs_grid <-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)
 
 
 ```
@@ -407,33 +407,33 @@ rm(GLODAP_obs_grid_temp)
 
 ####
 
-GLODAP <- GLODAP %>% 
-  filter(phosphatef == parameters$flag_f) %>% 
-  select(-phosphatef)
-
-GLODAP <- GLODAP %>% 
-  filter(phosphateqc == parameters$flag_qc) %>% 
-  select(-phosphateqc)
-
-
-##
-
-GLODAP_stats_temp <- GLODAP %>% 
-  summarise(PO4_flag = n())
-
-GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp <- GLODAP %>% 
-  count(lat, lon, era) %>% 
-  mutate(cleaning_level = "PO4_flag")
-
-GLODAP_obs_grid <-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)
+# GLODAP <- GLODAP %>% 
+#   filter(phosphatef == parameters$flag_f) %>% 
+#   select(-phosphatef)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(phosphateqc == parameters$flag_qc) %>% 
+#   select(-phosphateqc)
+# 
+# 
+# ##
+# 
+# GLODAP_stats_temp <- GLODAP %>% 
+#   summarise(PO4_flag = n())
+# 
+# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp <- GLODAP %>% 
+#   count(lat, lon, era) %>% 
+#   mutate(cleaning_level = "PO4_flag")
+# 
+# GLODAP_obs_grid <-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)
 
 ```
 
@@ -449,61 +449,61 @@ GLODAP <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   filter(!is.na(sal))
 
-GLODAP <- GLODAP %>% 
-  filter(salinityf == parameters$flag_f) %>% 
-  select(-salinityf)
-
-GLODAP <- GLODAP %>% 
-  filter(salinityqc == parameters$flag_qc) %>% 
-  select(-salinityqc)
+# GLODAP <- GLODAP %>% 
+#   filter(salinityf == parameters$flag_f) %>% 
+#   select(-salinityf)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(salinityqc == parameters$flag_qc) %>% 
+#   select(-salinityqc)
 
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(silicate))
 
-GLODAP <- GLODAP %>% 
-  filter(silicatef == parameters$flag_f) %>% 
-  select(-silicatef)
-
-GLODAP <- GLODAP %>% 
-  filter(silicateqc == parameters$flag_qc) %>% 
-  select(-silicateqc)
+# GLODAP <- GLODAP %>% 
+#   filter(silicatef == parameters$flag_f) %>% 
+#   select(-silicatef)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(silicateqc == parameters$flag_qc) %>% 
+#   select(-silicateqc)
 
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(oxygen))
 
-GLODAP <- GLODAP %>% 
-  filter(oxygenf == parameters$flag_f) %>% 
-  select(-oxygenf)
-
-GLODAP <- GLODAP %>% 
-  filter(oxygenqc == parameters$flag_qc) %>% 
-  select(-oxygenqc)
+# GLODAP <- GLODAP %>% 
+#   filter(oxygenf == parameters$flag_f) %>% 
+#   select(-oxygenf)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(oxygenqc == parameters$flag_qc) %>% 
+#   select(-oxygenqc)
 
 ##
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(aou))
 
-GLODAP <- GLODAP %>% 
-  filter(aouf == parameters$flag_f) %>% 
-  select(-aouf)
+# GLODAP <- GLODAP %>% 
+#   filter(aouf == parameters$flag_f) %>% 
+#   select(-aouf)
 
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(nitrate))
 
-GLODAP <- GLODAP %>% 
-  filter(nitratef == parameters$flag_f) %>% 
-  select(-nitratef)
-
-GLODAP <- GLODAP %>% 
-  filter(nitrateqc == parameters$flag_qc) %>% 
-  select(-nitrateqc)
+# GLODAP <- GLODAP %>% 
+#   filter(nitratef == parameters$flag_f) %>% 
+#   select(-nitratef)
+# 
+# GLODAP <- GLODAP %>% 
+#   filter(nitrateqc == parameters$flag_qc) %>% 
+#   select(-nitrateqc)
 
 ##
 

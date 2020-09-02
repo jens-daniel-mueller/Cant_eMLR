@@ -177,28 +177,31 @@ Note that eq. 6 in Clement and Gruber (2018) misses pCO~2~ pre-industrial in the
 
 ```{r merge_Cstar_Cant}
 
-Cant_clim <- Cant_clim %>% 
-  drop_na()
-
 Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim) %>% 
   select(-n)
 
-# Cant_clim_obs_nr <- Cant_clim_obs %>%
-#   group_by(lon, lat) %>%
-#   summarise(n_cant = n()) %>%
-#   ungroup()
+Cant_clim_obs <- Cant_clim_obs %>%
+  group_by(lon, lat) %>% 
+  mutate(n = n()) %>% 
+  ungroup()
 
-# Cant_clim_obs %>% 
-#   filter(n < 1) %>% 
-#   ggplot(aes(lon,lat)) +
-#   geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
-#   geom_point(col = "red")
+Cant_clim_obs %>%
+  filter(n <= 1) %>%
+  ggplot(aes(lon,lat)) +
+  geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
+  geom_point(col = "red")
 
 rm(Cant_clim, GLODAP_obs_grid)
 
 GLODAP_Cant_obs <- full_join(GLODAP, Cant_clim_obs)
 
 rm(GLODAP, Cant_clim_obs)
+
+GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
+  group_by(lon, lat) %>% 
+  mutate(n = mean(n, na.rm = TRUE)) %>% 
+  ungroup()
+
 
 ```
 
@@ -212,7 +215,7 @@ The mapped Cant product was merged with GLODAP observation by:
 # GLODAP_Cant_obs <- full_join(GLODAP_Cant_obs, Cant_clim_obs_nr)
 
 GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
-  # filter(n_cant > 1) %>% 
+  filter(n > 1) %>% 
   group_by(lat, lon) %>%
   arrange(depth) %>%
   mutate(cant_int = approxfun(depth, cant, rule = 2)(depth)) %>%
