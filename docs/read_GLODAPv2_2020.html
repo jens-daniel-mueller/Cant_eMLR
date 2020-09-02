@@ -499,7 +499,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">GLODAPv2_2020</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">01 September, 2020</h4>
+<h4 class="date">02 September, 2020</h4>
 
 </div>
 
@@ -524,7 +524,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-01
+<strong>Last updated:</strong> 2020-09-02
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb7a8f922d897625f03b7a05fdc8d8e50d8196a74targetblankb7a8f92a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b7a8f922d897625f03b7a05fdc8d8e50d8196a74" target="_blank">b7a8f92</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeda4907d485323959305ee335376969b72111b498targetblankda4907da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/da4907d485323959305ee335376969b72111b498" target="_blank">da4907d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb7a8f922d897625f03b7a05fdc8d8e50d8196a74targetblankb7a8f92a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeda4907d485323959305ee335376969b72111b498targetblankda4907da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b7a8f922d897625f03b7a05fdc8d8e50d8196a74" target="_blank">b7a8f92</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/da4907d485323959305ee335376969b72111b498" target="_blank">da4907d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -681,6 +681,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/da4907d485323959305ee335376969b72111b498/analysis/read_GLODAPv2_2020.Rmd" target="_blank">da4907d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-02
+</td>
+<td>
+all flagged variables
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/429aab335e86a60b945fcf06df15b62c687daa44/docs/read_GLODAPv2_2020.html" target="_blank">429aab3</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2627,32 +2661,32 @@ rm(GLODAP_obs_grid_temp)
 
 ###
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(tco2f == parameters$flag_f) %&gt;% 
-  select(-tco2f)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(tco2qc == parameters$flag_qc) %&gt;% 
-  select(-tco2qc)
-
-##
-
-GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(tco2_flag = n())
-
-GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
-  count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;tco2_flag&quot;)
-
-GLODAP_obs_grid &lt;-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)</code></pre>
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(tco2f == parameters$flag_f) %&gt;% 
+#   select(-tco2f)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(tco2qc == parameters$flag_qc) %&gt;% 
+#   select(-tco2qc)
+# 
+# ##
+# 
+# GLODAP_stats_temp &lt;- GLODAP %&gt;% 
+#   summarise(tco2_flag = n())
+# 
+# GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
+#   count(lat, lon, era) %&gt;% 
+#   mutate(cleaning_level = &quot;tco2_flag&quot;)
+# 
+# GLODAP_obs_grid &lt;-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
 <div id="talk" class="section level3">
 <h3><span class="header-section-number">2.4.2</span> talk</h3>
@@ -2682,32 +2716,32 @@ rm(GLODAP_obs_grid_temp)
 #####
 
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(talkf == parameters$flag_f) %&gt;% 
-  select(-talkf)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(talkqc == parameters$flag_qc) %&gt;% 
-  select(-talkqc)
-
-##
-
-GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(talk_flag = n())
-
-GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
-  count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;talk_flag&quot;)
-
-GLODAP_obs_grid &lt;-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)</code></pre>
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(talkf == parameters$flag_f) %&gt;% 
+#   select(-talkf)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(talkqc == parameters$flag_qc) %&gt;% 
+#   select(-talkqc)
+# 
+# ##
+# 
+# GLODAP_stats_temp &lt;- GLODAP %&gt;% 
+#   summarise(talk_flag = n())
+# 
+# GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
+#   count(lat, lon, era) %&gt;% 
+#   mutate(cleaning_level = &quot;talk_flag&quot;)
+# 
+# GLODAP_obs_grid &lt;-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
 <div id="phosphate" class="section level3">
 <h3><span class="header-section-number">2.4.3</span> Phosphate</h3>
@@ -2738,33 +2772,33 @@ rm(GLODAP_obs_grid_temp)
 
 ####
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(phosphatef == parameters$flag_f) %&gt;% 
-  select(-phosphatef)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(phosphateqc == parameters$flag_qc) %&gt;% 
-  select(-phosphateqc)
-
-
-##
-
-GLODAP_stats_temp &lt;- GLODAP %&gt;% 
-  summarise(PO4_flag = n())
-
-GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
-rm(GLODAP_stats_temp)
-
-##
-
-GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
-  count(lat, lon, era) %&gt;% 
-  mutate(cleaning_level = &quot;PO4_flag&quot;)
-
-GLODAP_obs_grid &lt;-
-  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-
-rm(GLODAP_obs_grid_temp)</code></pre>
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(phosphatef == parameters$flag_f) %&gt;% 
+#   select(-phosphatef)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(phosphateqc == parameters$flag_qc) %&gt;% 
+#   select(-phosphateqc)
+# 
+# 
+# ##
+# 
+# GLODAP_stats_temp &lt;- GLODAP %&gt;% 
+#   summarise(PO4_flag = n())
+# 
+# GLODAP_stats &lt;- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp &lt;- GLODAP %&gt;% 
+#   count(lat, lon, era) %&gt;% 
+#   mutate(cleaning_level = &quot;PO4_flag&quot;)
+# 
+# GLODAP_obs_grid &lt;-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)</code></pre>
 </div>
 <div id="emlr-variables" class="section level3">
 <h3><span class="header-section-number">2.4.4</span> eMLR variables</h3>
@@ -2776,61 +2810,61 @@ rm(GLODAP_obs_grid_temp)</code></pre>
 GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(sal))
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(salinityf == parameters$flag_f) %&gt;% 
-  select(-salinityf)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(salinityqc == parameters$flag_qc) %&gt;% 
-  select(-salinityqc)
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(salinityf == parameters$flag_f) %&gt;% 
+#   select(-salinityf)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(salinityqc == parameters$flag_qc) %&gt;% 
+#   select(-salinityqc)
 
 ##
   
 GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(silicate))
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(silicatef == parameters$flag_f) %&gt;% 
-  select(-silicatef)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(silicateqc == parameters$flag_qc) %&gt;% 
-  select(-silicateqc)
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(silicatef == parameters$flag_f) %&gt;% 
+#   select(-silicatef)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(silicateqc == parameters$flag_qc) %&gt;% 
+#   select(-silicateqc)
 
 ##
   
 GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(oxygen))
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(oxygenf == parameters$flag_f) %&gt;% 
-  select(-oxygenf)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(oxygenqc == parameters$flag_qc) %&gt;% 
-  select(-oxygenqc)
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(oxygenf == parameters$flag_f) %&gt;% 
+#   select(-oxygenf)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(oxygenqc == parameters$flag_qc) %&gt;% 
+#   select(-oxygenqc)
 
 ##
 
 GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(aou))
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(aouf == parameters$flag_f) %&gt;% 
-  select(-aouf)
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(aouf == parameters$flag_f) %&gt;% 
+#   select(-aouf)
 
 ##
   
 GLODAP &lt;- GLODAP %&gt;% 
   filter(!is.na(nitrate))
 
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(nitratef == parameters$flag_f) %&gt;% 
-  select(-nitratef)
-
-GLODAP &lt;- GLODAP %&gt;% 
-  filter(nitrateqc == parameters$flag_qc) %&gt;% 
-  select(-nitrateqc)
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(nitratef == parameters$flag_f) %&gt;% 
+#   select(-nitratef)
+# 
+# GLODAP &lt;- GLODAP %&gt;% 
+#   filter(nitrateqc == parameters$flag_qc) %&gt;% 
+#   select(-nitrateqc)
 
 ##
 

@@ -499,7 +499,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">eMLR - data preparation</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">01 September, 2020</h4>
+<h4 class="date">02 September, 2020</h4>
 
 </div>
 
@@ -524,7 +524,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-01
+<strong>Last updated:</strong> 2020-09-02
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb7a8f922d897625f03b7a05fdc8d8e50d8196a74targetblankb7a8f92a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b7a8f922d897625f03b7a05fdc8d8e50d8196a74" target="_blank">b7a8f92</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeda4907d485323959305ee335376969b72111b498targetblankda4907da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/da4907d485323959305ee335376969b72111b498" target="_blank">da4907d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb7a8f922d897625f03b7a05fdc8d8e50d8196a74targetblankb7a8f92a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeda4907d485323959305ee335376969b72111b498targetblankda4907da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b7a8f922d897625f03b7a05fdc8d8e50d8196a74" target="_blank">b7a8f92</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/da4907d485323959305ee335376969b72111b498" target="_blank">da4907d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -681,6 +681,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/da4907d485323959305ee335376969b72111b498/analysis/eMLR_data_preparation.Rmd" target="_blank">da4907d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-02
+</td>
+<td>
+all flagged variables
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/429aab335e86a60b945fcf06df15b62c687daa44/docs/eMLR_data_preparation.html" target="_blank">429aab3</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1091,28 +1125,30 @@ rm(rCP, rNP)</code></pre>
 <h2><span class="header-section-number">4.1</span> Merge data sets</h2>
 <div id="glodap-cant" class="section level3">
 <h3><span class="header-section-number">4.1.1</span> GLODAP + Cant</h3>
-<pre class="r"><code>Cant_clim &lt;- Cant_clim %&gt;% 
-  drop_na()
-
-Cant_clim_obs &lt;- left_join(GLODAP_obs_grid, Cant_clim) %&gt;% 
+<pre class="r"><code>Cant_clim_obs &lt;- left_join(GLODAP_obs_grid, Cant_clim) %&gt;% 
   select(-n)
 
-# Cant_clim_obs_nr &lt;- Cant_clim_obs %&gt;%
-#   group_by(lon, lat) %&gt;%
-#   summarise(n_cant = n()) %&gt;%
-#   ungroup()
+Cant_clim_obs &lt;- Cant_clim_obs %&gt;%
+  group_by(lon, lat) %&gt;% 
+  mutate(n = n()) %&gt;% 
+  ungroup()
 
-# Cant_clim_obs %&gt;% 
-#   filter(n &lt; 1) %&gt;% 
-#   ggplot(aes(lon,lat)) +
-#   geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
-#   geom_point(col = &quot;red&quot;)
-
-rm(Cant_clim, GLODAP_obs_grid)
+Cant_clim_obs %&gt;%
+  filter(n &lt;= 1) %&gt;%
+  ggplot(aes(lon,lat)) +
+  geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
+  geom_point(col = &quot;red&quot;)</code></pre>
+<p><img src="figure/eMLR_data_preparation.Rmd/merge_Cstar_Cant-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(Cant_clim, GLODAP_obs_grid)
 
 GLODAP_Cant_obs &lt;- full_join(GLODAP, Cant_clim_obs)
 
-rm(GLODAP, Cant_clim_obs)</code></pre>
+rm(GLODAP, Cant_clim_obs)
+
+GLODAP_Cant_obs &lt;- GLODAP_Cant_obs %&gt;%
+  group_by(lon, lat) %&gt;% 
+  mutate(n = mean(n, na.rm = TRUE)) %&gt;% 
+  ungroup()</code></pre>
 <p>The mapped Cant product was merged with GLODAP observation by:</p>
 <ul>
 <li>using an identical 1x1° horizontal grid</li>
@@ -1121,7 +1157,7 @@ rm(GLODAP, Cant_clim_obs)</code></pre>
 <pre class="r"><code># GLODAP_Cant_obs &lt;- full_join(GLODAP_Cant_obs, Cant_clim_obs_nr)
 
 GLODAP_Cant_obs &lt;- GLODAP_Cant_obs %&gt;%
-  # filter(n_cant &gt; 1) %&gt;% 
+  filter(n &gt; 1) %&gt;% 
   group_by(lat, lon) %&gt;%
   arrange(depth) %&gt;%
   mutate(cant_int = approxfun(depth, cant, rule = 2)(depth)) %&gt;%
