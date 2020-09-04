@@ -747,8 +747,12 @@ rm(GLODAP_cruises)
 ```{r switch_eras_manually}
 
 GLODAP <- GLODAP %>%
-  mutate(era = if_else(cruise %in% c("1041", "1042"),
-                       as.factor("GO_SHIP"), era))
+  mutate(era = as.character(era)) %>% 
+  mutate(era = if_else(cruise %in% c(1041, 1042),
+                      "GO_SHIP", era))
+
+GLODAP <- GLODAP %>% 
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
 
 ```
 
