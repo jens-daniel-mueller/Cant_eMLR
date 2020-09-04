@@ -100,11 +100,32 @@ Cant_average_zonal <- Cant_average_zonal %>%
 
 ```
 
+# Neutral density
+
+## Slab depth
+
+```{r gamma_maps, fig.asp=1}
+
+gamma_maps <- Cant_average %>% 
+  group_by(lat, lon, gamma_slab) %>% 
+  summarise(depth = mean(depth, na.rm = TRUE)) %>% 
+  ungroup()
+
+gamma_maps %>%
+  ggplot(aes(lon, lat, fill = depth)) +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster() +
+  facet_wrap( ~ gamma_slab, ncol = 3) +
+  coord_quickmap(expand = 0) +
+  scico::scale_fill_scico(palette = "batlow",
+                          direction = -1)
 
 
-# Zonal mean sections
+```
 
-## Neutral density
+## Zonal mean sections
 
 The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.
 
@@ -159,7 +180,7 @@ map_climatology(Cant_average, "gamma_mean")
 
 
 
-## Cant
+# Cant
 
 ### Mean
 

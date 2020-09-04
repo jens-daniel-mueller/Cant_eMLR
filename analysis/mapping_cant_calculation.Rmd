@@ -71,15 +71,16 @@ predictors <-
 
 Only predictors were taken into consideration with:
 
-- minimum sampling depth:  `r parameters$depth_min`m
 - minimum bottom depth:  `r parameters$bottomdepth_min`m
 - maximum latitude:  `r parameters$lat_max`°N
+
+The minimum sampling depth of `r parameters$depth_min`m was only taken into account when gamma is >= 26.
 
 
 ```{r apply_spatial_boundaries}
 
-predictors <- predictors %>% 
-  filter(depth >= parameters$depth_min)
+predictors <- predictors %>%
+  filter(depth >= parameters$depth_min | gamma >= 26)
 
 predictors <- predictors %>% 
   filter(lat <= parameters$lat_max)

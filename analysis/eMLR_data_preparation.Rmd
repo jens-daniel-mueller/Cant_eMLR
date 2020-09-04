@@ -228,27 +228,27 @@ GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
 #   mutate(cant_int = mean(cant, na.rm = TRUE)) %>%
 #   ungroup()
 
-ggplot() +
-  geom_path(
-    data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
-      arrange(depth),
-    aes(cant, depth, col = "mapped")
-  ) +
-  geom_point(
-    data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
-      arrange(depth),
-    aes(cant, depth, col = "mapped")
-  ) +
-  geom_point(
-    data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
-    aes(cant_int, depth, col = "interpolated")
-  ) +
-  scale_y_reverse() +
-  scale_color_brewer(palette = "Dark2", name = "") +
-  labs(title = "Cant interpolation to sampling depth - example profile")
+# ggplot() +
+#   geom_path(
+#     data = GLODAP_Cant_obs %>%
+#       filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+#       arrange(depth),
+#     aes(cant, depth, col = "mapped")
+#   ) +
+#   geom_point(
+#     data = GLODAP_Cant_obs %>%
+#       filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+#       arrange(depth),
+#     aes(cant, depth, col = "mapped")
+#   ) +
+#   geom_point(
+#     data = GLODAP_Cant_obs %>%
+#       filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
+#     aes(cant_int, depth, col = "interpolated")
+#   ) +
+#   scale_y_reverse() +
+#   scale_color_brewer(palette = "Dark2", name = "") +
+#   labs(title = "Cant interpolation to sampling depth - example profile")
 
 # remove cant data at grid cells without observations
 
@@ -338,7 +338,7 @@ GLODAP_cruise <- GLODAP %>%
 ```
 
 
-```{r meridional_sections, fig.asp=0.6}
+```{r meridional_sections, fig.asp=0.6, eval=FALSE}
 
 GLODAP_cruise %>%
   arrange(date) %>% 
@@ -346,9 +346,9 @@ GLODAP_cruise %>%
   geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat), fill = "grey80") +
   geom_path() +
-  geom_point(aes(col = date)) +
+  geom_point() +
   coord_quickmap(expand = 0) +
-  scale_color_viridis_c(trans = "date") +
+  #scale_color_viridis_c(trans = "date") +
   labs(title = paste("Cruise year:", mean(GLODAP_cruise$year))) +
   theme(legend.position = "bottom")
 
