@@ -57,7 +57,6 @@ Main data source for this project is `GLODAPv2.2020_Merged_Master_File.csv` down
 
 ```{r read_GLODAPv2_2020_merged_master_file}
 
-
 GLODAP <-
   read_csv(
     here::here(
@@ -68,15 +67,16 @@ GLODAP <-
     col_types = cols(.default = col_double())
   )
 
+
 # select relevant columns
 GLODAP <- GLODAP %>%
   select(cruise:talkqc)
 
-# create date column
-GLODAP <- GLODAP %>%
-  mutate(date = ymd(paste(year, month, day))) %>%
-  #decade = as.factor(floor(year / 10) * 10)) %>%
-  relocate(date)
+# # create date column
+# GLODAP <- GLODAP %>%
+#   mutate(date = ymd(paste(year, month, day))) %>%
+#   #decade = as.factor(floor(year / 10) * 10)) %>%
+#   relocate(date)
 
 # harmonize column names
 GLODAP <- GLODAP  %>%
@@ -92,10 +92,28 @@ GLODAP <- GLODAP  %>%
 # remove irrelevant columns
 GLODAP <- GLODAP %>%
   select(-c(month:minute,
-            maxsampdepth, sigma0:sigma4,
+            maxsampdepth, bottle, sigma0:sigma4,
             nitrite:nitritef))
 
+GLODAP <- GLODAP %>%
+  mutate_at(vars(ends_with(c("f", "qc"))), as.factor)
+
 ```
+
+# Exploratory data analysis
+
+```{r EDA_GLODAP_raw, eval=FALSE}
+
+source("code/eda.R")
+eda(GLODAP, "GLODAPv2_2020")
+rm(eda)
+
+```
+
+The output of an automated Exploratory Data Analysis (EDA) performed with the package `DataExplorer` can be accessed here:
+
+[Link to EDA report of CTD raw data](https://jens-daniel-mueller.github.io/Cant_eMLR/EDA_report_GLODAPv2_2020.html){target="_blank}
+
 
 # Data preparation
 
@@ -111,8 +129,7 @@ GLODAP <- GLODAP %>%
   mutate(lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
          lat = as.numeric(as.character(lat)),
          lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
-         lon = as.numeric(as.character(lon))) %>% 
-  arrange(date)
+         lon = as.numeric(as.character(lon)))
 
 
 ```
@@ -138,6 +155,10 @@ GLODAP <- GLODAP %>%
   mutate(era = "JGOFS_WOCE",
          era = if_else(year > parameters$year_JGOFS_end, "GO_SHIP", era),
          era = if_else(year > parameters$year_GOSHIP_end, "new_era", era))
+
+GLODAP <- GLODAP %>% 
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
+
 
 ```
 
@@ -262,7 +283,9 @@ Summary statistics were calculated during cleaning process.
 
 ### tco2
 
-```{r tco2_subset}
+#### NA
+
+```{r tco2_na_subset}
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(tco2))
@@ -286,29 +309,49 @@ GLODAP_obs_grid <-
 
 rm(GLODAP_obs_grid_temp)
 
-###
 
-# GLODAP <- GLODAP %>% 
-#   filter(tco2f == parameters$flag_f) %>% 
-#   select(-tco2f)
+
+```
+
+#### f flag
+
+```{r tco2_f_subset, fig.asp=1}
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, tco2f)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+    scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era~tco2f) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+
+# ###
 # 
-# GLODAP <- GLODAP %>% 
-#   filter(tco2qc == parameters$flag_qc) %>% 
-#   select(-tco2qc)
+# GLODAP <- GLODAP %>%
+#   filter(tco2f == parameters$flag_f) %>%
+#   select(-tco2f)
 # 
 # ##
 # 
-# GLODAP_stats_temp <- GLODAP %>% 
-#   summarise(tco2_flag = n())
+# GLODAP_stats_temp <- GLODAP %>%
+#   summarise(tco2_f_flag = n())
 # 
 # GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 # rm(GLODAP_stats_temp)
 # 
 # ##
 # 
-# GLODAP_obs_grid_temp <- GLODAP %>% 
-#   count(lat, lon, era) %>% 
-#   mutate(cleaning_level = "tco2_flag")
+# GLODAP_obs_grid_temp <- GLODAP %>%
+#   count(lat, lon, era) %>%
+#   mutate(cleaning_level = "tco2_f_flag")
 # 
 # GLODAP_obs_grid <-
 #   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -317,13 +360,84 @@ rm(GLODAP_obs_grid_temp)
 
 ```
 
+
+#### qc flag
+
+```{r tco2_qc_subset, fig.asp=1}
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, tco2qc)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+    scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era~tco2qc) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+
+# ###
+# 
+# GLODAP <- GLODAP %>%
+#   filter(tco2qc == parameters$flag_qc) %>%
+#   select(-tco2qc)
+# 
+# ##
+# 
+# GLODAP_stats_temp <- GLODAP %>%
+#   summarise(tco2_qc_flag = n())
+# 
+# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp <- GLODAP %>%
+#   count(lat, lon, era) %>%
+#   mutate(cleaning_level = "tco2_qc_flag")
+# 
+# GLODAP_obs_grid <-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)
+
+```
+
+
+
 ### talk
 
-```{r talk_subset}
+#### NA
+
+```{r talk_na_subset, fig.asp=1}
 
 GLODAP <- GLODAP %>% 
-  filter(!is.na(talk))
+  mutate(talkna = if_else(is.na(talk), "NA", "Value"))
 
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, talkna)
+
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era ~ talkna) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top")
+
+GLODAP <- GLODAP %>% 
+  select(-talkna) %>% 
+  filter(!is.na(talk))
 
 ##
 
@@ -344,38 +458,107 @@ GLODAP_obs_grid <-
 
 rm(GLODAP_obs_grid_temp)
 
-#####
+
+```
 
 
-# GLODAP <- GLODAP %>% 
-#   filter(talkf == parameters$flag_f) %>% 
-#   select(-talkf)
+#### f flag
+
+```{r talk_f_subset, fig.asp=1}
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, talkf)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+    scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era~talkf) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+
+# ###
 # 
-# GLODAP <- GLODAP %>% 
-#   filter(talkqc == parameters$flag_qc) %>% 
-#   select(-talkqc)
+# GLODAP <- GLODAP %>%
+#   filter(talkf == parameters$flag_f) %>%
+#   select(-talkf)
 # 
 # ##
 # 
-# GLODAP_stats_temp <- GLODAP %>% 
-#   summarise(talk_flag = n())
+# GLODAP_stats_temp <- GLODAP %>%
+#   summarise(talk_f_flag = n())
 # 
 # GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 # rm(GLODAP_stats_temp)
 # 
 # ##
 # 
-# GLODAP_obs_grid_temp <- GLODAP %>% 
-#   count(lat, lon, era) %>% 
-#   mutate(cleaning_level = "talk_flag")
+# GLODAP_obs_grid_temp <- GLODAP %>%
+#   count(lat, lon, era) %>%
+#   mutate(cleaning_level = "talk_f_flag")
 # 
 # GLODAP_obs_grid <-
 #   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 # 
 # rm(GLODAP_obs_grid_temp)
 
+```
+
+
+#### qc flag
+
+```{r talk_qc_subset, fig.asp=1}
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, talkqc)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+    scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era~talkqc) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+
+# ###
+# 
+# GLODAP <- GLODAP %>%
+#   filter(talkqc == parameters$flag_qc) %>%
+#   select(-talkqc)
+# 
+# ##
+# 
+# GLODAP_stats_temp <- GLODAP %>%
+#   summarise(talk_qc_flag = n())
+# 
+# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp <- GLODAP %>%
+#   count(lat, lon, era) %>%
+#   mutate(cleaning_level = "talk_qc_flag")
+# 
+# GLODAP_obs_grid <-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)
 
 ```
+
+
+
 
 ### Phosphate
 
@@ -545,14 +728,12 @@ For harmonization with Gruber et al. (2019), cruises 1041 (A16N) and 1042 (A16S)
 GLODAP_cruises <- GLODAP %>% 
   filter(basin == "Atlantic",
          year %in% c(2013, 2014)) %>% 
-  group_by(lat, lon, cruise) %>% 
-  summarise(cruise = as.factor(mean(cruise))) %>% 
-  ungroup()
+  count(lat, lon, cruise)
 
 ggplot() +
   geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat), fill = "grey80") +
-  geom_raster(data = GLODAP_cruises, aes(lon, lat, fill = cruise)) +
+  geom_raster(data = GLODAP_cruises, aes(lon, lat, fill = as.factor(cruise))) +
   scale_fill_brewer(palette = "Dark2") +
   coord_quickmap(expand = 0) +
   theme(legend.position = "top",
@@ -566,8 +747,8 @@ rm(GLODAP_cruises)
 ```{r switch_eras_manually}
 
 GLODAP <- GLODAP %>%
-  mutate(era = if_else(cruise %in% c(1041, 1042),
-                       "GO_SHIP", era))
+  mutate(era = if_else(cruise %in% c("1041", "1042"),
+                       as.factor("GO_SHIP"), era))
 
 ```
 
@@ -663,8 +844,7 @@ GLODAP <- GLODAP %>%
       labels = ~ mean(.y)
     ),
     lon_grid = as.numeric(as.character(lon_grid))
-  ) %>%
-  arrange(date)
+  )
 
 ```
 
@@ -675,8 +855,7 @@ GLODAP <- GLODAP %>%
   mutate(lat_grid = cut(lat, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
          lat_grid = as.numeric(as.character(lat_grid)),
          lon_grid = cut(lon, seq(20, 380, 5), seq(22.5, 377.5, 5)),
-         lon_grid = as.numeric(as.character(lon_grid))) %>% 
-  arrange(date)
+         lon_grid = as.numeric(as.character(lon_grid)))
 
 ```
 
