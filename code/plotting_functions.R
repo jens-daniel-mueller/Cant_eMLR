@@ -38,6 +38,7 @@ map_climatology_inv <- function(df, var) {
     )
 }
 
+
 section_climatology <- function(df, var) {
 
   name_var <- var

@@ -300,6 +300,7 @@ Following flagging criteria were previously applied, but are not yet taken into 
 - flag_f:     `r parameters$flag_f`
 - flag_qc:    `r parameters$flag_qc`
 
+
 ### tco2
 
 #### NA
@@ -341,16 +342,15 @@ GLODAP_obs_grid_temp <- GLODAP %>%
 
 ggplot() +
   geom_raster(data = landmask %>% filter(region == "land"),
-              aes(lon, lat), fill = "grey80") +
+              aes(lon, lat),
+              fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
-    scale_fill_viridis_c(option = "magma",
+  scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
-  facet_grid(era~tco2f) +
+  facet_grid(era ~ tco2f) +
   coord_quickmap(expand = 0) +
-  theme(legend.position = "top",
-        legend.title = element_blank())
-
+  theme(legend.position = "top")
 
 # ###
 # 
@@ -389,16 +389,15 @@ GLODAP_obs_grid_temp <- GLODAP %>%
 
 ggplot() +
   geom_raster(data = landmask %>% filter(region == "land"),
-              aes(lon, lat), fill = "grey80") +
+              aes(lon, lat),
+              fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
-    scale_fill_viridis_c(option = "magma",
+  scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
-  facet_grid(era~tco2qc) +
+  facet_grid(era ~ tco2qc) +
   coord_quickmap(expand = 0) +
-  theme(legend.position = "top",
-        legend.title = element_blank())
-
+  theme(legend.position = "top")
 
 # ###
 # 
@@ -443,7 +442,6 @@ GLODAP <- GLODAP %>%
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkna)
 
-
 ggplot() +
   geom_raster(data = landmask %>% filter(region == "land"),
               aes(lon, lat),
@@ -482,8 +480,9 @@ rm(GLODAP_obs_grid_temp)
 
 ```
 
-
 #### f flag
+
+Restricting the f flag to 2 would results in data gaps in the south-east Pacific. Interpolated or calculated data (f flag 0) are therefore included.
 
 ```{r talk_f_subset, fig.asp=1}
 
@@ -530,8 +529,9 @@ ggplot() +
 
 ```
 
-
 #### qc flag
+
+Restricting the qc flag to 1 would results in data gaps in the south Indian ocean and equatorial Pacific. Data for which secondary quality was not applied (qc flag 0) are therefore included.
 
 ```{r talk_qc_subset, fig.asp=1}
 
@@ -579,21 +579,40 @@ ggplot() +
 ```
 
 
-
-
 ### Phosphate
 
-```{r Phosphate_subset}
-##
+#### NA
+
+Quite a few tco2/talk observations are discarded, due to missing phosphate data. However, there seems to be a high number of observations remaining from the affected cruises, so that the coverage does not seem to be reduced drastically.
+
+```{r phosphate_na_subset, fig.asp=1}
 
 GLODAP <- GLODAP %>% 
-  filter(!is.na(phosphate))
+  mutate(phosphatena = if_else(is.na(phosphate), "NA", "Value"))
 
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, phosphatena)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era ~ phosphatena) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top")
+
+GLODAP <- GLODAP %>% 
+  select(-phosphatena) %>% 
+  filter(!is.na(phosphate))
 
 ##
 
 GLODAP_stats_temp <- GLODAP %>% 
-  summarise(PO4_values = n())
+  summarise(phosphate_values = n())
 
 GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 rm(GLODAP_stats_temp)
@@ -602,37 +621,57 @@ rm(GLODAP_stats_temp)
 
 GLODAP_obs_grid_temp <- GLODAP %>% 
   count(lat, lon, era) %>% 
-  mutate(cleaning_level = "PO4_values")
+  mutate(cleaning_level = "phosphate_values")
 
 GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
 rm(GLODAP_obs_grid_temp)
 
-####
 
-# GLODAP <- GLODAP %>% 
-#   filter(phosphatef == parameters$flag_f) %>% 
+```
+
+#### f flag
+
+Restricting the f flag to 2 would not drastically reduce available data. Interpolated or calculated data (f flag 0) are therefore included.
+
+```{r phosphate_f_subset, fig.asp=1}
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, phosphatef)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+    scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era~phosphatef) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+
+# ###
+# 
+# GLODAP <- GLODAP %>%
+#   filter(phosphatef == parameters$flag_f) %>%
 #   select(-phosphatef)
-# 
-# GLODAP <- GLODAP %>% 
-#   filter(phosphateqc == parameters$flag_qc) %>% 
-#   select(-phosphateqc)
-# 
 # 
 # ##
 # 
-# GLODAP_stats_temp <- GLODAP %>% 
-#   summarise(PO4_flag = n())
+# GLODAP_stats_temp <- GLODAP %>%
+#   summarise(phosphate_f_flag = n())
 # 
 # GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
 # rm(GLODAP_stats_temp)
 # 
 # ##
 # 
-# GLODAP_obs_grid_temp <- GLODAP %>% 
-#   count(lat, lon, era) %>% 
-#   mutate(cleaning_level = "PO4_flag")
+# GLODAP_obs_grid_temp <- GLODAP %>%
+#   count(lat, lon, era) %>%
+#   mutate(cleaning_level = "phosphate_f_flag")
 # 
 # GLODAP_obs_grid <-
 #   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
@@ -640,6 +679,57 @@ rm(GLODAP_obs_grid_temp)
 # rm(GLODAP_obs_grid_temp)
 
 ```
+
+#### qc flag
+
+Restricting the qc flag to 1 would results in data gaps in the equatorial Pacific. Data for which secondary quality was not applied (qc flag 0) are therefore included.
+
+```{r phosphate_qc_subset, fig.asp=1}
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era, phosphateqc)
+
+ggplot() +
+  geom_raster(data = landmask %>% filter(region == "land"),
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
+    scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       trans = "log10") +
+  facet_grid(era~phosphateqc) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank())
+
+
+# ###
+# 
+# GLODAP <- GLODAP %>%
+#   filter(phosphateqc == parameters$flag_qc) %>%
+#   select(-phosphateqc)
+# 
+# ##
+# 
+# GLODAP_stats_temp <- GLODAP %>%
+#   summarise(phosphate_qc_flag = n())
+# 
+# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+# rm(GLODAP_stats_temp)
+# 
+# ##
+# 
+# GLODAP_obs_grid_temp <- GLODAP %>%
+#   count(lat, lon, era) %>%
+#   mutate(cleaning_level = "phosphate_qc_flag")
+# 
+# GLODAP_obs_grid <-
+#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+# 
+# rm(GLODAP_obs_grid_temp)
+
+```
+
+
 
 ### eMLR variables
 
