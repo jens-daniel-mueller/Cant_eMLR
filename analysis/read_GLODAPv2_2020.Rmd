@@ -274,16 +274,37 @@ rm(GLODAP_obs_grid_temp)
 ## Flags and missing data
 
 Only rows (samples) for which all relevant parameters are available were selected.
-In additions, following flagging criteria were applied:
+
+According to Olsen et al (2020), flags within the merged master file identify:
+
+- f:  
+
+  - 2: Acceptable
+  - 0: Interpolated or calculated value (or Average of replicate, Manual chromatographic peak measurement)
+  - 9: Data not used (so, only NA data should have this flag)
+  
+  
+- qc:  
+
+  - 1: Adjusted or unadjusted data
+  - 0: Data appear of good quality but have not been subjected to full secondary QC
+  - data with poor or uncertain quality are excluded.
+  
+Below, the data coverage is displayed for each step of the cleaning process. Currently, we only remove rows with missing values, but keep data with all flags.
+
+Summary statistics were calculated during cleaning process.
+
+
+Following flagging criteria were previously applied, but are not yet taken into account anymore:
 
 - flag_f:     `r parameters$flag_f`
 - flag_qc:    `r parameters$flag_qc`
-  
-Summary statistics were calculated during cleaning process.
 
 ### tco2
 
 #### NA
+
+The majority of rows is removed due to missing tco2 observations.
 
 ```{r tco2_na_subset}
 
@@ -308,8 +329,6 @@ GLODAP_obs_grid <-
   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
 
 rm(GLODAP_obs_grid_temp)
-
-
 
 ```
 
@@ -413,6 +432,8 @@ ggplot() +
 ### talk
 
 #### NA
+
+Quite a few tco2 observations are discarded, due to missing talk data, in particular in the JGOFS/WOCE era. However, there seems to be a high number of observations remaining from the affected cruises, so that the coverage does not seem to be reduced drastically.
 
 ```{r talk_na_subset, fig.asp=1}
 
