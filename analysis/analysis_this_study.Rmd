@@ -236,7 +236,13 @@ section_zonal_average_continous(Cant_average_zonal,
 
 for (variable in c(
   "Cant_intercept_mean",
-  "Cant_aou_mean")) {
+  "Cant_aou_mean",
+  "Cant_oxygen_mean",
+  "Cant_phosphate_mean",
+  "Cant_phosphate_star_mean",
+  "Cant_silicate_mean",
+  "Cant_tem_mean",
+  "Cant_sal_mean")) {
 
 print(
 section_zonal_average_continous(Cant_predictor_average_zonal,
