@@ -84,7 +84,7 @@ GLODAP <-
 
 Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.
 
-```{r eMLR_fitting_predictor_selection, results='hide'}
+```{r eMLR_fitting_all_predictor_combinations, results='hide'}
 
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -289,7 +289,168 @@ sqrt(mean(lm_2$residuals^2))
 
 After selecting `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
 
+```{r prepare_model_table}
+
+lm_best <- lm_best %>% 
+  mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
+         lm_coeff = paste("Cstar ~", lm_coeff))
+
+eras_era <-
+  tibble(
+    eras = c("JGOFS_GO", "GO_new", "JGOFS_GO", "GO_new"),
+    era = c("JGOFS_WOCE", "GO_SHIP", "GO_SHIP", "new_era")
+  )
+
+lm_best <- full_join(lm_best, eras_era)
+
+rm(eras_era)
+
+```
+
+
 ```{r fit_best_models, results='hide'}
+
+lm_best <- lm_best %>% 
+  select(basin, gamma_slab, era, eras, predictors, lm_coeff, rmse_sum)
+
+for (i_basin in unique(GLODAP$basin)) {
+  for (i_era in unique(GLODAP$era)) {
+    # i_basin <- unique(GLODAP$basin)[1]
+    # i_era   <- unique(GLODAP$era)[1]
+    
+    print(i_basin)
+    print(i_era)
+    
+    GLODAP_basin_era <- GLODAP %>%
+      filter(basin == i_basin, era == i_era)
+    
+    lm_best_basin_era <- lm_best %>%
+      filter(basin == i_basin, era == i_era)
+    
+    for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
+      # i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[1]
+      print(i_gamma_slab)
+      
+      GLODAP_basin_era_slab <- GLODAP_basin_era %>%
+        filter(gamma_slab == i_gamma_slab)
+      
+      lm_best_basin_era_slab <- lm_best_basin_era %>%
+        filter(gamma_slab == i_gamma_slab)
+      
+      for (i_eras in unique(lm_best_basin_era_slab$eras)) {
+        # i_eras <- unique(lm_best_basin_era_slab$eras)[1]
+        lm_best_basin_era_slab_eras <- lm_best_basin_era_slab %>%
+          filter(eras == i_eras)
+        
+        for (i_predictors in unique(lm_best_basin_era_slab_eras$predictors)) {
+          # i_predictors <- unique(lm_best_basin_era_slab_eras$predictors)[1]
+          
+          lm_best_single <- lm_best_basin_era_slab_eras %>%
+            filter(predictors == i_predictors) %>%
+            select(lm_coeff) %>%
+            pull()
+          
+          i_rmse_sum <- lm_best_basin_era_slab_eras %>%
+            filter(predictors == i_predictors) %>%
+            select(rmse_sum) %>%
+            pull()
+          
+          lm_formula <- as.formula(lm_best_single)
+          
+          model_single <- lm(lm_formula,
+                             data = GLODAP_basin_era_slab)
+          
+          coefficients <- tidy(model_single)
+          coefficients <- coefficients %>%
+            mutate(
+              basin = i_basin,
+              era = i_era,
+              eras = i_eras,
+              gamma_slab = i_gamma_slab,
+              model = lm_best_single,
+              rmse = i_rmse_sum
+            )
+          
+          print(lm_best_single)
+          
+          if (exists("all_lm")) {
+            all_lm <- bind_rows(all_lm, coefficients)
+          }
+          
+          if (!exists("all_lm")) {
+            all_lm <- coefficients
+          }
+          
+          
+        }
+        
+        
+      }
+    }
+    
+  }
+  
+}
+
+
+rm(lm_formula, model_single, coefficients, i_rmse_sum,
+   GLODAP_basin_era, GLODAP_basin_era_slab,
+   lm_best, lm_best_basin_era, lm_best_basin_era_slab, lm_best_basin_era_slab_eras,
+   lm_best_single,
+   i_basin, i_era, i_gamma_slab, i_predictors)
+
+all_lm %>% 
+  filter(era == "new_era") %>% 
+  pull(eras) %>% 
+  unique()
+
+
+all_lm <- all_lm %>% 
+  select(basin, gamma_slab, era, eras, model, term, estimate)
+
+all_lm <- all_lm %>% 
+  mutate(estimate = if_else(is.na(estimate), 0, estimate))
+
+all_lm %>%
+  write_csv(here::here("data/eMLR",
+                       "all_lm.csv"))
+
+# Prepare model coefficients for mapping
+
+all_lm_wide <- all_lm %>% 
+  pivot_wider(names_from = era, values_from = estimate,
+              names_prefix = "coeff_")
+
+all_lm_wide <- all_lm_wide %>% 
+  mutate(JGOFS_GO = coeff_GO_SHIP - coeff_JGOFS_WOCE,
+         GO_new = coeff_new_era - coeff_GO_SHIP) %>% 
+  select(-c(coeff_JGOFS_WOCE,
+            coeff_GO_SHIP,
+            coeff_new_era))
+
+all_lm_long <- all_lm_wide %>% 
+  pivot_longer(JGOFS_GO:GO_new, names_to = "eras_fit", values_to = "delta_coeff")
+
+all_lm_long <- all_lm_long %>% 
+  filter(eras == eras_fit) %>% 
+  select(-eras_fit)
+
+all_lm_wide <- all_lm_long %>% 
+  pivot_wider(values_from = delta_coeff,
+              names_from = term,
+              names_prefix = "delta_coeff_",
+              values_fill = 0)
+
+all_lm_wide %>%
+  write_csv(here::here("data/eMLR",
+                       "all_lm_wide.csv"))
+
+rm(all_lm_long, all_lm_wide)
+
+```
+
+
+```{r fit_best_models_per_eras_old, results='hide', eval=FALSE}
 
 lm_best <- lm_best %>% 
   mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
