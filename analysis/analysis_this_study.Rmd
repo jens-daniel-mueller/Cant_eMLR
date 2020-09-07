@@ -66,9 +66,6 @@ Cant estimates from this study:
 
 ```{r read_cant_files}
 
-Cant <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant.csv"))
 
 Cant_average <-
   read_csv(here::here("data/mapping/_summarized_files",
@@ -77,6 +74,10 @@ Cant_average <-
 Cant_average_zonal <-
   read_csv(here::here("data/mapping/_summarized_files",
                          "Cant_average_zonal.csv"))
+
+Cant_predictor_average_zonal <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_predictor_average_zonal.csv"))
 
 Cant_inv <-
   read_csv(here::here("data/mapping/_summarized_files",
@@ -88,13 +89,14 @@ All following analysis are restricted to the inventory depth of `r parameters$in
 
 ```{r subset_inventory_depth}
 
-Cant <- Cant %>%
-  filter(depth <= parameters$inventory_depth)
 
 Cant_average <- Cant_average %>%
   filter(depth <= parameters$inventory_depth)
 
 Cant_average_zonal <- Cant_average_zonal %>%
+  filter(depth <= parameters$inventory_depth)
+
+Cant_predictor_average_zonal <- Cant_predictor_average_zonal %>%
   filter(depth <= parameters$inventory_depth)
 
 
@@ -228,6 +230,25 @@ section_zonal_average_continous(Cant_average_zonal,
 
 ```
 
+### Predictor contribution
+
+```{r Cant_section_predictor_contribution}
+
+for (variable in c(
+  "Cant_intercept_mean",
+  "Cant_aou_mean")) {
+
+print(
+section_zonal_average_continous(Cant_predictor_average_zonal,
+                                variable,
+                                "gamma_mean_mean")
+)
+    
+}
+
+
+```
+
 
 # Sections at longitudes
 
@@ -256,6 +277,12 @@ Zonal sections plots are produced for every 20° longitude, each era and for all
 
 
 ```{r Cant_section_by_model_eras_lon, eval=FALSE}
+Cant <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cant.csv"))
+
+Cant <- Cant %>%
+  filter(depth <= parameters$inventory_depth)
 
 library(scales)
 

@@ -108,6 +108,10 @@ all_lm_wide <-
   read_csv(here::here("data/eMLR",
                        "all_lm_wide.csv"))
 
+all_lm <-
+  read_csv(here::here("data/eMLR",
+                       "all_lm.csv"))
+
 ```
 
 # Merge MLRs + climatologies
@@ -138,6 +142,24 @@ Cant <- Cant %>%
            delta_coeff_sal * sal + 
            delta_coeff_tem * tem)
 
+Cant <- Cant %>% 
+  mutate(Cant_intercept = `delta_coeff_(Intercept)`,
+         Cant_aou = delta_coeff_aou * aou,
+         Cant_oxygen = delta_coeff_oxygen * oxygen,
+         Cant_phosphate = delta_coeff_phosphate * phosphate,
+         Cant_phosphate_star = delta_coeff_phosphate_star * phosphate_star,
+         Cant_silicate = delta_coeff_silicate * silicate,
+         Cant_sal = delta_coeff_sal * sal,
+         Cant_tem = delta_coeff_tem * tem,
+         Cant_sum = Cant_intercept +
+           Cant_aou +
+           Cant_oxygen +
+           Cant_phosphate +
+           Cant_phosphate_star +
+           Cant_silicate + 
+           Cant_sal +
+           Cant_tem)
+
 ```
 
 ## Mean Cant fields
@@ -146,18 +168,36 @@ Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combi
 
 ```{r Calculate_Cant_mean}
 
-Cant <- Cant %>%
-  select(lon, lat, depth, eras, basin, Cant, gamma, model)
+Cant_predictor_average <- Cant %>%
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
+  group_by(lon, lat, depth, eras, basin) %>%
+  summarise(Cant_intercept = mean(Cant_intercept, na.rm = TRUE),
+            Cant_aou = mean(Cant_aou, na.rm = TRUE),
+            Cant_oxygen = mean(Cant_oxygen, na.rm = TRUE),
+            Cant_phosphate = mean(Cant_phosphate, na.rm = TRUE),
+            Cant_phosphate_star = mean(Cant_phosphate_star, na.rm = TRUE),
+            Cant_silicate = mean(Cant_silicate, na.rm = TRUE),
+            Cant_tem = mean(Cant_tem, na.rm = TRUE),
+            Cant_sal = mean(Cant_sal, na.rm = TRUE),
+            Cant_sum = mean(Cant_sum, na.rm = TRUE),
+            gamma_mean = mean(gamma, na.rm = TRUE)
+            ) %>%
+  ungroup()
 
-# Cant_average <- Cant %>%
-#   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
-#   group_by(lon, lat, depth, eras, basin) %>%
-#   summarise(across(c("Cant", "Cant_pos", "gamma"),
-#                    list(
-#                      mean = ~ mean(.x, na.rm = TRUE),
-#                      sd = ~ sd(.x, na.rm = TRUE)
-#                    ))) %>%
-#   ungroup()
+Cant_predictor_average_Atl <- Cant_predictor_average %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+
+Cant_predictor_average_Ind_Pac <- Cant_predictor_average %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+
+Cant_predictor_average <- bind_rows(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
+
+rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
+
+# Cant <- Cant %>%
+#   select(lon, lat, depth, eras, basin, Cant, gamma, model)
 
 Cant_average <- Cant %>%
   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
@@ -236,6 +276,50 @@ rm(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
 
 ```
 
+## Mean Cant sections by coefficient
+
+For each basin and era combination, the zonal mean Cant is calculated by model coefficient.
+
+```{r Calculate_Cant_predictor_mean_sections}
+
+Cant_predictor_average <- full_join(Cant_predictor_average,
+                                basinmask %>% select(-basin))
+
+Cant_predictor_average_zonal <- Cant_predictor_average %>%
+  group_by(lat, depth, eras, basin, basin_AIP) %>%
+  summarise(across(
+    Cant_intercept:gamma_mean,
+    list(mean = ~ mean(.x, na.rm = TRUE))
+  )) %>%
+  ungroup()
+
+
+# Cant_average_zonal <- Cant_average %>% 
+#   group_by(lat, depth, eras, basin) %>% 
+#   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
+#             Cant_mean = mean(Cant_mean, na.rm = TRUE),
+#             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
+#             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
+#             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
+#             Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
+#             gamma_mean = mean(gamma_mean)) %>% 
+#   ungroup()
+
+
+Cant_predictor_average_zonal_Atl <- Cant_predictor_average_zonal %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
+
+Cant_predictor_average_zonal_Ind_Pac <- Cant_predictor_average_zonal %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
+
+Cant_predictor_average_zonal <- bind_rows(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)
+
+rm(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)
+
+```
+
 ## Inventory calculation
 
 To calculate Cant column inventories, we:  
@@ -291,9 +375,17 @@ Cant_average %>%
     write_csv(here::here("data/mapping/_summarized_files",
                          "Cant_average.csv"))
 
+Cant_predictor_average %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_predictor_average.csv"))
+
 Cant_average_zonal %>%
     write_csv(here::here("data/mapping/_summarized_files",
                          "Cant_average_zonal.csv"))
+
+Cant_predictor_average_zonal %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cant_predictor_average_zonal.csv"))
 
 Cant_inv %>%
     write_csv(here::here("data/mapping/_summarized_files",
