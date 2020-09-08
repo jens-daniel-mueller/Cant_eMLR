@@ -287,7 +287,7 @@ Only predictors were taken into consideration with:
 
 - minimum bottom depth:  `r parameters$bottomdepth_min`m
 
-```{r apply_spatial_boundaries}
+```{r apply_bottomdepth_threshold}
 
 WOA18_predictors_grid <- WOA18_predictors %>% 
   group_by(lat, lon) %>% 
@@ -302,12 +302,23 @@ WOA18_predictors <- left_join(WOA18_predictors_grid, WOA18_predictors)
 
 ```
 
+Only predictors were taken into consideration with:
+
+- maximum depth:  `r parameters$inventory_depth`m
+
+```{r apply_depth_threshold}
+
+WOA18_predictors <- WOA18_predictors %>% 
+  filter(depth <= parameters$inventory_depth)
+
+```
+
 
 ## Potential temperature
 
 ### Calculation
 
-```{r WOA18_potential_temperature_calculation}
+```{r calculate_potential_temperature}
 
 WOA18_predictors <- WOA18_predictors %>% 
   mutate(THETA = swTheta(salinity = sal,
@@ -343,7 +354,7 @@ Neutral density gamma was calculated with a Python script provided by Serazin et
 
 ### Calculation
 
-```{r WOA18_neutral_density_calculations}
+```{r calculate_neutral_density}
 
 # calculate pressure from depth
 
@@ -393,7 +404,7 @@ WOA18_predictors <- WOA18_predictors %>%
 
 ### Write/open file
 
-```{r write_WOA_predictor_file}
+```{r write_WOA18_predictor_file}
 
 WOA18_predictors %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
@@ -401,7 +412,7 @@ WOA18_predictors %>%
 
 ```
 
-```{r read_WOA_predictor_file_gamma}
+```{r read_WOA18_predictor_file_gamma}
 
 rm(list = setdiff(ls(), c("landmask", "parameters")))
 source(here::here("code", "plotting_functions.R"))
