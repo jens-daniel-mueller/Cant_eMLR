@@ -18,10 +18,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(lubridate)
 library(stars)
 library(metR)
-library(patchwork)
 ```
 
 
@@ -82,7 +80,7 @@ Section locations are indicated as white lines in maps.
 
 ```{r GLODAPv2_2016_Mappedclimatologies}
 
-# file <- file_list[1]
+file <- file_list[1]
 
 for (file in file_list) {
  
@@ -121,6 +119,24 @@ clim_tibble <- clim_tibble %>%
 
 clim_tibble <- inner_join(clim_tibble, basinmask)
 
+# apply bottom depth threshold
+
+clim_tibble_grid <- clim_tibble %>% 
+  group_by(lat, lon) %>% 
+  summarise(bottomdepth = max(depth)) %>% 
+  ungroup()
+
+clim_tibble_grid <- clim_tibble_grid %>% 
+  filter(bottomdepth >= parameters$bottomdepth_min) %>% 
+  select(-bottomdepth)
+
+clim_tibble <- left_join(clim_tibble_grid, clim_tibble)
+
+# apply depth threshold
+
+clim_tibble <- clim_tibble %>% 
+  filter(depth <= parameters$inventory_depth)
+
 # write csv file
 
 clim_tibble %>% 
@@ -148,11 +164,3 @@ section_climatology_shallow(clim_tibble, parameter)
 
 
 ```
-
-# Open tasks
-
-- none
-
-# Questions
-
-- none
