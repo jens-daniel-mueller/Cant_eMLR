@@ -1,0 +1,203 @@
+---
+title: "Mapping Cstar"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  workflowr::wflow_html:
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r library, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(metR)
+```
+
+```{r read_parameters, include = FALSE}
+
+parameters <-
+  read_rds(here::here("data",
+                       "parameters.rds"))
+```
+
+```{r read_mask_files}
+
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+
+basinmask_AIP <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18_AIP.csv"
+    )
+  )
+
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
+
+```
+
+```{r read_parameters_functions, include = FALSE}
+source(here::here("code", "plotting_functions.R"))
+```
+
+```{r ggplot_theme, include = FALSE}
+theme_set(theme_bw())
+```
+
+# Predictor fields
+
+Currently, we use combined predictor fields:
+
+- WOA18: S, T, and derived variables
+- GLODAP16: Oxygen, PO4, NO3, Silicate, and derived variables
+
+```{r read_predictor_file}
+
+predictors <- 
+    read_csv(here::here("data/mapping/predictor_fields",
+                         "W18_st_G16_opsn.csv"))
+
+```
+
+
+# Load MLR models
+
+```{r load_eMLR_models}
+
+lm_all_wide_Cstar <-
+  read_csv(here::here("data/eMLR",
+                       "lm_all_wide_Cstar.csv"))
+
+```
+
+# Merge MLRs + climatologies
+
+```{r merge_model_coeff_predictor_climatology}
+
+lm_all_wide_Cstar <- lm_all_wide_Cstar %>% 
+  mutate(model = str_remove(model, "Cstar ~ "))
+         
+Cstar <- full_join(predictors, lm_all_wide_Cstar)
+
+rm(predictors, lm_all_wide_Cstar)
+
+```
+
+
+# Map Cstar
+
+## Apply MLRs to predictor
+
+```{r calculate_Cstar, eval=FALSE}
+
+Cstar <- Cstar %>% 
+  mutate(Cstar =
+          `coeff_(Intercept)` +
+           coeff_aou * aou +
+           coeff_oxygen * oxygen +
+           coeff_phosphate * phosphate +
+           coeff_phosphate_star * phosphate_star +
+           coeff_silicate * silicate +
+           coeff_sal * sal + 
+           coeff_tem * tem)
+
+Cstar <- Cstar %>% 
+  select(lon, lat, depth, era, basin, Cstar, gamma)
+
+```
+
+```{r Cstar_average, eval=FALSE}
+
+Cstar_average <- Cstar %>%
+  group_by(lon, lat, depth, era, basin) %>%
+  summarise(Cstar_mean = mean(Cstar, na.rm = TRUE),
+            Cstar_sd = sd(Cstar, na.rm = TRUE),
+            gamma_mean = mean(gamma, na.rm = TRUE)) %>%
+  ungroup()
+
+rm(Cstar)
+
+Cstar_average_Atl <- Cstar_average %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+
+Cstar_average_Ind_Pac <- Cstar_average %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+
+Cstar_average <- bind_rows(Cstar_average_Atl, Cstar_average_Ind_Pac)
+
+rm(Cstar_average_Atl, Cstar_average_Ind_Pac)
+
+```
+
+## Mean Cstar sections
+
+For each basin and era combination, the zonal mean Cstar is calculated. Likewise, sd is calculated for the averaging of the mean basin fields.
+
+```{r Calculate_Cstar_mean_sections, eval=FALSE}
+
+Cstar_average <- full_join(Cstar_average,
+                                basinmask_AIP %>% select(-basin))
+
+Cstar_average_zonal <- Cstar_average %>%
+  group_by(lat, depth, era, basin, basin_AIP) %>%
+  summarise(across(
+    c(
+      "Cstar_mean",
+      "Cstar_sd",
+      "gamma_mean"
+    ),
+    list(mean = ~ mean(.x, na.rm = TRUE),
+         sd = ~ sd(.x, na.rm = TRUE))
+  )) %>%
+  ungroup()
+
+
+Cstar_average_zonal_Atl <- Cstar_average_zonal %>% 
+  filter(basin == "Atlantic") %>% 
+  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
+
+Cstar_average_zonal_Ind_Pac <- Cstar_average_zonal %>% 
+  filter(basin == "Indo-Pacific") %>% 
+  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
+
+Cstar_average_zonal <- bind_rows(Cstar_average_zonal_Atl, Cstar_average_zonal_Ind_Pac)
+
+rm(Cstar_average_zonal_Atl, Cstar_average_zonal_Ind_Pac)
+
+```
+
+# Write csv
+
+```{r write_Cstar_files, eval=FALSE}
+
+Cstar_average %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cstar_average.csv"))
+
+Cstar_average_zonal %>%
+    write_csv(here::here("data/mapping/_summarized_files",
+                         "Cstar_average_zonal.csv"))
+
+```

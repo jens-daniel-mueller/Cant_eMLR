@@ -33,7 +33,7 @@ basinmask <-
   read_csv(
     here::here(
       "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18.csv"
+      "basin_mask_WOA18_AIP.csv"
     )
   )
 landmask <-
@@ -190,13 +190,3 @@ Cant_inv %>%
 
 
 ```
-
-
-
-# Open tasks
-
-- 
-
-# Questions
-
-- 

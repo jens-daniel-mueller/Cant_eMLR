@@ -150,12 +150,3 @@ nd_mask_tibble %>%
 rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
 
 ```
-
-
-# Open tasks
-
-- 
-
-# Questions
-
-- 

@@ -36,7 +36,7 @@ Variables from source data files are converted and harmonized to satisfy followi
 - theta: potential temperature in deg C (Check scales!)
 - gamma: neutral density
 
-- cant: anthropogenic CO~2~ (mol kg^{-1})
+- cant: anthropogenic CO~2~ (mol kg^-1^)
 
 # Data sets / objects
 

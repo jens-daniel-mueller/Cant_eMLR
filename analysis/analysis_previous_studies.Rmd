@@ -109,7 +109,7 @@ Spanning different time periods, the Cant inventories differ in magnitude.
  
 Cant_inv %>%
   ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(aes(lon, lat, fill = cant_inv)) +
@@ -173,7 +173,7 @@ Cant_inv_rel <- Cant_inv_wide %>%
 
 Cant_inv_rel %>%
   ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(aes(lon, lat, fill = cant_inv_rel*100)) +
@@ -196,7 +196,7 @@ Cant_inv_wide %>%
   filter(cant_ratio_rel < 10,
          cant_ratio_rel > 0.1) %>% 
   ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_contour_filled(aes(lon, lat, z = log10(cant_ratio_rel))) +

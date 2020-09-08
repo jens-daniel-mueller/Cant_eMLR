@@ -211,7 +211,7 @@ dev.off()
 
 Correlation coefficients were calculated indivdually within each slabs, era and basin.
 
-```{r calculate_correlation_coefficients, eval=FALSE}
+```{r calculate_correlation_coefficients, results='hide'}
 
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
@@ -384,12 +384,3 @@ rm(cor_Cstar_predictor, cor_Cstar_predictor_stats)
 
 ```
 
-
-
-# Open tasks
-
-- combine correlation, rmse and model calculation into one routine, ideally using the purrr map approach
-
-# Open questions
-
-- 

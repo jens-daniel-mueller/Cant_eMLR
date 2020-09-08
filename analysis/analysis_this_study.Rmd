@@ -85,10 +85,31 @@ Cant_inv <-
 
 ```
 
+
+```{r read_cstar_files}
+
+
+Cstar_average <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cstar_average.csv"))
+
+Cstar_average_zonal <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "Cstar_average_zonal.csv"))
+
+
+```
+
 All following analysis are restricted to the inventory depth of `r parameters$inventory_depth`m.
 
-```{r subset_inventory_depth}
+```{r subset_inventory_depth, eval=FALSE}
 
+
+Cstar_average <- Cstar_average %>%
+  filter(depth <= parameters$inventory_depth)
+
+Cstar_average_zonal <- Cstar_average_zonal %>%
+  filter(depth <= parameters$inventory_depth)
 
 Cant_average <- Cant_average %>%
   filter(depth <= parameters$inventory_depth)
@@ -115,7 +136,7 @@ gamma_maps <- Cant_average %>%
 
 gamma_maps %>%
   ggplot(aes(lon, lat, fill = depth)) +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster() +
@@ -365,7 +386,7 @@ Cant_average %>%
 
 Cant_inv %>% 
   ggplot() +
-    geom_raster(data = landmask %>% filter(region == "land"),
+    geom_raster(data = landmask,
                 aes(lon, lat), fill = "grey80") +
     geom_raster(aes(lon, lat, fill = cant_inv)) +
     coord_quickmap(expand = 0) +
@@ -389,7 +410,7 @@ Cant_inv %>%
 
 Cant_inv %>% 
   ggplot() +
-    geom_raster(data = landmask %>% filter(region == "land"),
+    geom_raster(data = landmask,
                 aes(lon, lat), fill = "grey80") +
     geom_raster(aes(lon, lat, fill = cant_inv_pos)) +
     coord_quickmap(expand = 0) +
@@ -465,4 +486,37 @@ Cant_average_zonal %>%
   facet_grid(gamma_slab ~ basin_AIP)
 
 ```
+
+# Cstar
+
+```{r Cstar_zonal_mean_era}
+
+slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
+
+Cstar_average_zonal <- Cstar_average_zonal %>% 
+    mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) 
+
+Cstar_average_zonal %>% 
+    ggplot(aes(lat, depth, z = Cstar_mean_mean)) +
+    geom_contour_filled(bins = 11) +
+    scale_fill_viridis_d(name = "Cstar") +
+    geom_contour(aes(lat, depth, z = gamma_mean_mean),
+                 breaks = slab_breaks,
+                 col = "white") +
+    geom_text_contour(
+      aes(lat, depth, z = gamma_mean_mean),
+      breaks = slab_breaks,
+      col = "white",
+      skip = 1
+    ) +
+    scale_y_reverse() +
+    coord_cartesian(expand = 0) +
+    guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+    facet_grid(basin_AIP ~ era)
+
+
+
+```
+
+
 

@@ -32,11 +32,22 @@ parameters <-
 
 ```{r read_mask_files}
 
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
 
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
+
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
 
 ```
 
@@ -67,7 +78,7 @@ Following variables are currently used:
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
 
 variables <-
-  c("salinity", "temperature", "oxygen", "PO4", "silicate", "NO3")
+  c("oxygen", "PO4", "silicate")
 
 for (i_variable in variables) {
   temp <- read_csv(
@@ -92,10 +103,6 @@ rm(temp, i_variable, variables)
 GLODAP_predictors <- GLODAP_predictors %>%
   drop_na()
 
-GLODAP_predictors <- GLODAP_predictors %>%
-  rename(sal = salinity,
-         tem = temperature)
-
 ```
 
 
@@ -116,28 +123,6 @@ WOA18_predictors <-
 
 ```
 
-## WOA13
-
-Neutral densities and the basin mask based on WOA13 and provided by Dominic Clement are currently not used.
-
-```{r load_WOA13_gamma, eval=FALSE}
-
-WOA13 <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2013_Clement/_summarized_files",
-      "WOA13_mask_gamma.csv"
-    )
-  )
-
-WOA13_gamma <- WOA13 %>%
-  select(-mask)
-
-rm(WOA13)
-
-```
-
-
 # Join WOA18 + GLODAP
 
 WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells with observations from both predictor fields are kept.
@@ -147,13 +132,13 @@ WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells 
 ```{r join_WOA18_GLODAP_predictors, fig.asp=0.5}
 
 predictors <- full_join(
-  GLODAP_predictors %>% select(-c(sal,tem)),
+  GLODAP_predictors,
   WOA18_predictors)
 
 predictors <- predictors %>% 
   drop_na()
 
-# rm(GLODAP_predictors, WOA18_predictors)
+rm(GLODAP_predictors, WOA18_predictors)
 
 ```
 
@@ -321,8 +306,7 @@ vars <-
     "phosphate_star",
     "oxygen",
     "aou",
-    "silicate",
-    "NO3"
+    "silicate"
   )
 
 for (i_var in vars) {
@@ -342,9 +326,30 @@ predictors %>%
 ```
 
 
+# Alternative predictors
+
 ## WOA13 + GLODAP
 
 Currently not used.
+
+
+```{r load_WOA13_gamma, eval=FALSE}
+
+WOA13 <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2013_Clement/_summarized_files",
+      "WOA13_mask_gamma.csv"
+    )
+  )
+
+WOA13_gamma <- WOA13 %>%
+  select(-mask)
+
+rm(WOA13)
+
+```
+
 
 ```{r join_WOA13_GLODAP_predictors, eval=FALSE}
 
@@ -381,14 +386,3 @@ predictors <- predictors %>%
   drop_na()
 
 ```
-
-
-
-# Open tasks
-
-- Harmonize AOU calculation in fitting and mapping
-- Use oxygen and/or nitrate as predictor?
-
-# Open questions
-
-- 

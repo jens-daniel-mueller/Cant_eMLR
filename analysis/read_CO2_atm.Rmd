@@ -67,12 +67,3 @@ co2_atm %>%
 rm(co2_atm)
 
 ```
-
-
-# Open tasks
-
-- none
-
-# Questions
-
-- none

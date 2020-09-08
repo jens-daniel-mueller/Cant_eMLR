@@ -72,6 +72,12 @@ GLODAP <-
 GLODAP <- GLODAP %>%
   select(cruise:talkqc)
 
+# create date column
+GLODAP <- GLODAP %>%
+  mutate(date = ymd(paste(year, month, day))) %>%
+  #decade = as.factor(floor(year / 10) * 10)) %>%
+  relocate(date)
+
 # harmonize column names
 GLODAP <- GLODAP  %>%
   rename(sal = salinity,
@@ -830,6 +836,17 @@ GLODAP <- GLODAP %>%
 
 ```
 
+## Create clean observations grid
+
+```{r create_clean_obs_grid}
+
+GLODAP_obs_grid_clean <- GLODAP %>% 
+  count(lat, lon) %>% 
+  select(-n)
+
+```
+
+
 
 ## Write summary file
  
@@ -849,8 +866,7 @@ GLODAP_stats_long  %>%  write_csv(
 
 ##
 
-GLODAP_obs_grid  %>%
-  filter(cleaning_level == "eMLR_variables") %>%
+GLODAP_obs_grid_clean %>% 
   write_csv(
     here::here(
       "data/GLODAPv2_2020/_summarized_data_files",
@@ -861,7 +877,7 @@ GLODAP_obs_grid  %>%
 ##
 
 GLODAP <- GLODAP %>% 
-  select(year, era, basin, lat, lon, cruise,
+  select(year, date, era, basin, lat, lon, cruise,
          bottomdepth, depth, tem, sal, gamma,
          tco2, talk, phosphate,
          oxygen, aou, nitrate, silicate)

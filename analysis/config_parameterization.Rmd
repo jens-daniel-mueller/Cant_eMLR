@@ -34,7 +34,7 @@ Following parameterizations were chosen to run analysis and display results:
 
 ```{r define_parameters}
 
-depth_levels = c(150, 500, 1000, 2000)
+depth_levels = c(0, 150, 500, 2000)
 
 depth_levels_33 <- c(
   0,
@@ -112,12 +112,14 @@ longitude_sections_regular <- seq(30.5, 380.5, 20)
 
 parameters <-
   lst(
-    flag_f = 2,
+    flag_f = c(2, 0),
     flag_qc = 1,
     depth_min = 150,
     depth_shallow_max = 500,
     bottomdepth_min = 500,
     lat_max = 65,
+    lat_min = -85,
+    gamma_min = 26,
     year_JGOFS_start = 1981,
     year_JGOFS_end = 1999,
     year_GOSHIP_end = 2012,
@@ -159,5 +161,7 @@ parameters
 parameters %>%
   write_rds(here::here("data",
                        "parameters.rds"))
+
+rm(list = ls())
 
 ```

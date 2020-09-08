@@ -1,5 +1,5 @@
 ---
-title: "Mapping"
+title: "Mapping Cant"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -19,11 +19,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(metR)
-# library(lubridate)
-# library(oce)
-# library(marelac)
-# library(reticulate)
-
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -35,11 +30,29 @@ parameters <-
 
 ```{r read_mask_files}
 
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
+basinmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18.csv"
+    )
+  )
 
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
+basinmask_AIP <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18_AIP.csv"
+    )
+  )
+
+landmask <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "land_mask_WOA18.csv"
+    )
+  )
 
 ```
 
@@ -67,62 +80,25 @@ predictors <-
 ```
 
 
-# Apply spatial boundaries
-
-Only predictors were taken into consideration with:
-
-- minimum bottom depth:  `r parameters$bottomdepth_min`m
-- maximum latitude:  `r parameters$lat_max`°N
-
-The minimum sampling depth of `r parameters$depth_min`m was only taken into account when gamma is >= 26.
-
-
-```{r apply_spatial_boundaries}
-
-predictors <- predictors %>%
-  filter(depth >= parameters$depth_min | gamma >= 26)
-
-predictors <- predictors %>% 
-  filter(lat <= parameters$lat_max)
-
-predictors_grid <- predictors %>% 
-  group_by(lat, lon) %>% 
-  summarise(bottomdepth = max(depth)) %>% 
-  ungroup()
-
-predictors <- full_join(predictors, predictors_grid)
-
-predictors <- predictors %>% 
-  filter(bottomdepth >= parameters$bottomdepth_min) %>% 
-  select(-bottomdepth)
-
-predictors <- predictors %>% drop_na()
-
-```
-
 # Load MLR models
 
 ```{r load_eMLR_models}
 
-all_lm_wide <-
+lm_all_wide <-
   read_csv(here::here("data/eMLR",
-                       "all_lm_wide.csv"))
-
-all_lm <-
-  read_csv(here::here("data/eMLR",
-                       "all_lm.csv"))
-
+                       "lm_all_wide.csv"))
 ```
 
 # Merge MLRs + climatologies
 
 ```{r merge_model_coeff_predictor_climatology}
 
-all_lm_wide <- all_lm_wide %>% 
+lm_all_wide <- lm_all_wide %>% 
   mutate(model = str_remove(model, "Cstar ~ "))
          
-Cant <- full_join(predictors, all_lm_wide)
-#rm(predictors, all_lm_wide)
+Cant <- full_join(predictors, lm_all_wide)
+
+rm(predictors, lm_all_wide)
 
 ```
 
@@ -141,6 +117,10 @@ Cant <- Cant %>%
            delta_coeff_silicate * silicate +
            delta_coeff_sal * sal + 
            delta_coeff_tem * tem)
+
+```
+
+```{r calculate_predictor_contributions_to_Cant}
 
 Cant <- Cant %>% 
   mutate(Cant_intercept = `delta_coeff_(Intercept)`,
@@ -161,6 +141,8 @@ Cant <- Cant %>%
            Cant_tem)
 
 ```
+
+
 
 ## Mean Cant fields
 
@@ -231,7 +213,7 @@ For each basin and era combination, the zonal mean Cant is calculated, again for
 ```{r Calculate_Cant_mean_sections}
 
 Cant_average <- full_join(Cant_average,
-                                basinmask %>% select(-basin))
+                                basinmask_AIP %>% select(-basin))
 
 Cant_average_zonal <- Cant_average %>%
   group_by(lat, depth, eras, basin, basin_AIP) %>%
@@ -283,7 +265,7 @@ For each basin and era combination, the zonal mean Cant is calculated by model c
 ```{r Calculate_Cant_predictor_mean_sections}
 
 Cant_predictor_average <- full_join(Cant_predictor_average,
-                                basinmask %>% select(-basin))
+                                basinmask_AIP %>% select(-basin))
 
 Cant_predictor_average_zonal <- Cant_predictor_average %>%
   group_by(lat, depth, eras, basin, basin_AIP) %>%
@@ -367,9 +349,9 @@ Cant_inv <- Cant_average %>%
 
 ```{r write_cant_files}
 
-Cant %>%
-    write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant.csv"))
+# Cant %>%
+#     write_csv(here::here("data/mapping/_summarized_files",
+#                          "Cant.csv"))
 
 Cant_average %>%
     write_csv(here::here("data/mapping/_summarized_files",
@@ -391,13 +373,13 @@ Cant_inv %>%
     write_csv(here::here("data/mapping/_summarized_files",
                          "Cant_inv.csv"))
 
+rm(Cant,
+   Cant_average,
+   Cant_predictor_average,
+   Cant_average_zonal,
+   Cant_predictor_average_zonal,
+   Cant_inv)
+
 ```
 
 
-# Open tasks
-
-- 
-
-# Open questions
-
-- 
