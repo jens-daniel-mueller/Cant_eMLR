@@ -34,20 +34,20 @@ parameters <-
 ```
 
 ```{r read_mask_files, include = FALSE}
-basinmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18.csv"
-    )
+
+basinmask <- read_csv(
+  here::here(
+    "data/World_Ocean_Atlas_2018/_summarized_files",
+    "basin_mask_WOA18.csv"
   )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
+)
+
+landmask <-  read_csv(
+  here::here(
+    "data/World_Ocean_Atlas_2018/_summarized_files",
+    "land_mask_WOA18.csv"
   )
+)
 ```
 
 
@@ -71,12 +71,6 @@ GLODAP <-
 # select relevant columns
 GLODAP <- GLODAP %>%
   select(cruise:talkqc)
-
-# # create date column
-# GLODAP <- GLODAP %>%
-#   mutate(date = ymd(paste(year, month, day))) %>%
-#   #decade = as.factor(floor(year / 10) * 10)) %>%
-#   relocate(date)
 
 # harmonize column names
 GLODAP <- GLODAP  %>%
@@ -173,6 +167,8 @@ Only observations were taken into consideration with:
 
 ```{r apply_depth_min}
 
+# create observations grid and summary stats before remving data
+
 GLODAP_obs_grid <- GLODAP %>% 
   count(lat, lon, era) %>% 
   mutate(cleaning_level = "all")
@@ -184,20 +180,6 @@ GLODAP_stats <- GLODAP %>%
 
 GLODAP <- GLODAP %>% 
   filter(depth >= parameters$depth_min)
-
-```
-
-### Latitude
-
-Only observations were taken into consideration with:
-
-- maximum latitude:  `r parameters$lat_max`°N
-
-
-```{r apply_lat_max}
-
-GLODAP <- GLODAP %>% 
-  filter(lat <= parameters$lat_max)
 
 ```
 
@@ -221,33 +203,11 @@ GLODAP <- GLODAP %>%
 
 The basin mask from the World Ocean Atlas was used. For details consult the data base subsection for [WOA18](https://jens-daniel-mueller.github.io/Cant_eMLR/read_World_Ocean_Atlas_2018.html) data.
 
-```{r WOA_basin_mask_GLODAP_observations_map}
-
-GLODAP_obs <- GLODAP %>% 
-  group_by(lat, lon) %>% 
-  summarise(n = n()) %>% 
-  ungroup()
-
-ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
-              aes(lon, lat), fill = "grey80") +
-  geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
-  geom_raster(data = GLODAP_obs, aes(lon, lat)) +
-  scale_fill_brewer(palette = "Dark2") +
-  coord_quickmap(expand = 0) +
-  theme(legend.position = "top",
-        legend.title = element_blank())
-
-rm(GLODAP_obs)
-
-```
-
 Please note that some GLODAP observations were made outside the WOA18 basin mask and will be removed for further analysis (eg North Sea, Sea of Japan).
 
-```{r join_basin_mask}
+```{r join_GLODAP_basin_mask}
 
 GLODAP <- inner_join(GLODAP, basinmask)
-rm(basinmask)
 
 ##
 
@@ -271,6 +231,32 @@ rm(GLODAP_obs_grid_temp)
 
 ```
 
+
+```{r WOA18_basin_mask_GLODAP_observations_map}
+
+GLODAP_obs <- GLODAP %>% 
+  group_by(lat, lon) %>% 
+  summarise(n = n()) %>% 
+  ungroup()
+
+ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
+  geom_raster(data = GLODAP_obs, aes(lon, lat)) +
+  scale_fill_brewer(palette = "Dark2") +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        legend.title = element_blank(),
+        axis.title = element_blank())
+
+rm(GLODAP_obs)
+
+```
+
+
+
+
 ## Flags and missing data
 
 Only rows (samples) for which all relevant parameters are available were selected.
@@ -290,7 +276,7 @@ According to Olsen et al (2020), flags within the merged master file identify:
   - 0: Data appear of good quality but have not been subjected to full secondary QC
   - data with poor or uncertain quality are excluded.
   
-Below, the data coverage is displayed for each step of the cleaning process. Currently, we only remove rows with missing values, but keep data with all flags.
+Below, the data coverage is displayed for each step of the cleaning process. Currently, we remove all rows with missing values, and decide about flagging on a per variable basis.
 
 Summary statistics were calculated during cleaning process.
 
@@ -335,13 +321,15 @@ rm(GLODAP_obs_grid_temp)
 
 #### f flag
 
+We keep tco2 data with f flag = 0 (interpolated or calculated). 
+
 ```{r tco2_f_subset, fig.asp=1}
 
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, tco2f)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
@@ -352,12 +340,12 @@ ggplot() +
   coord_quickmap(expand = 0) +
   theme(legend.position = "top")
 
-# ###
-# 
-# GLODAP <- GLODAP %>%
-#   filter(tco2f == parameters$flag_f) %>%
-#   select(-tco2f)
-# 
+###
+
+GLODAP <- GLODAP %>%
+  # filter(tco2f == parameters$flag_f) %>%
+  select(-tco2f)
+
 # ##
 # 
 # GLODAP_stats_temp <- GLODAP %>%
@@ -382,13 +370,15 @@ ggplot() +
 
 #### qc flag
 
+We discard tco2 data with qc flag = 0 (no sec qc). 
+
 ```{r tco2_qc_subset, fig.asp=1}
 
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, tco2qc)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
@@ -399,30 +389,30 @@ ggplot() +
   coord_quickmap(expand = 0) +
   theme(legend.position = "top")
 
-# ###
-# 
-# GLODAP <- GLODAP %>%
-#   filter(tco2qc == parameters$flag_qc) %>%
-#   select(-tco2qc)
-# 
-# ##
-# 
-# GLODAP_stats_temp <- GLODAP %>%
-#   summarise(tco2_qc_flag = n())
-# 
-# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-# rm(GLODAP_stats_temp)
-# 
-# ##
-# 
-# GLODAP_obs_grid_temp <- GLODAP %>%
-#   count(lat, lon, era) %>%
-#   mutate(cleaning_level = "tco2_qc_flag")
-# 
-# GLODAP_obs_grid <-
-#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-# 
-# rm(GLODAP_obs_grid_temp)
+###
+
+GLODAP <- GLODAP %>%
+  filter(tco2qc == parameters$flag_qc) %>%
+  select(-tco2qc)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>%
+  summarise(tco2_qc_flag = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era) %>%
+  mutate(cleaning_level = "tco2_qc_flag")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
 
 ```
 
@@ -443,7 +433,7 @@ GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkna)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
@@ -490,7 +480,7 @@ GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkf)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
     scale_fill_viridis_c(option = "magma",
@@ -503,12 +493,12 @@ ggplot() +
 
 
 # ###
-# 
-# GLODAP <- GLODAP %>%
-#   filter(talkf == parameters$flag_f) %>%
-#   select(-talkf)
-# 
-# ##
+
+GLODAP <- GLODAP %>%
+  # filter(talkf == parameters$flag_f) %>%
+  select(-talkf)
+
+##
 # 
 # GLODAP_stats_temp <- GLODAP %>%
 #   summarise(talk_f_flag = n())
@@ -531,7 +521,7 @@ ggplot() +
 
 #### qc flag
 
-Restricting the qc flag to 1 would results in data gaps in the south Indian ocean and equatorial Pacific. Data for which secondary quality was not applied (qc flag 0) are therefore included.
+talk ata for which secondary quality was not applied (qc flag 0) were removed.
 
 ```{r talk_qc_subset, fig.asp=1}
 
@@ -539,7 +529,7 @@ GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkqc)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
     scale_fill_viridis_c(option = "magma",
@@ -551,30 +541,30 @@ ggplot() +
         legend.title = element_blank())
 
 
-# ###
-# 
-# GLODAP <- GLODAP %>%
-#   filter(talkqc == parameters$flag_qc) %>%
-#   select(-talkqc)
-# 
-# ##
-# 
-# GLODAP_stats_temp <- GLODAP %>%
-#   summarise(talk_qc_flag = n())
-# 
-# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-# rm(GLODAP_stats_temp)
-# 
-# ##
-# 
-# GLODAP_obs_grid_temp <- GLODAP %>%
-#   count(lat, lon, era) %>%
-#   mutate(cleaning_level = "talk_qc_flag")
-# 
-# GLODAP_obs_grid <-
-#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-# 
-# rm(GLODAP_obs_grid_temp)
+###
+
+GLODAP <- GLODAP %>%
+  filter(talkqc == parameters$flag_qc) %>%
+  select(-talkqc)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>%
+  summarise(talk_qc_flag = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era) %>%
+  mutate(cleaning_level = "talk_qc_flag")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
 
 ```
 
@@ -594,7 +584,7 @@ GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, phosphatena)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
@@ -641,7 +631,7 @@ GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, phosphatef)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
     scale_fill_viridis_c(option = "magma",
@@ -653,12 +643,12 @@ ggplot() +
         legend.title = element_blank())
 
 
-# ###
-# 
-# GLODAP <- GLODAP %>%
-#   filter(phosphatef == parameters$flag_f) %>%
-#   select(-phosphatef)
-# 
+###
+
+GLODAP <- GLODAP %>%
+  # filter(phosphatef == parameters$flag_f) %>%
+  select(-phosphatef)
+
 # ##
 # 
 # GLODAP_stats_temp <- GLODAP %>%
@@ -682,7 +672,7 @@ ggplot() +
 
 #### qc flag
 
-Restricting the qc flag to 1 would results in data gaps in the equatorial Pacific. Data for which secondary quality was not applied (qc flag 0) are therefore included.
+Phosphate data for which secondary quality was not applied (qc flag 0) were removed.
 
 ```{r phosphate_qc_subset, fig.asp=1}
 
@@ -690,7 +680,7 @@ GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, phosphateqc)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
     scale_fill_viridis_c(option = "magma",
@@ -702,30 +692,30 @@ ggplot() +
         legend.title = element_blank())
 
 
-# ###
-# 
-# GLODAP <- GLODAP %>%
-#   filter(phosphateqc == parameters$flag_qc) %>%
-#   select(-phosphateqc)
-# 
-# ##
-# 
-# GLODAP_stats_temp <- GLODAP %>%
-#   summarise(phosphate_qc_flag = n())
-# 
-# GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
-# rm(GLODAP_stats_temp)
-# 
-# ##
-# 
-# GLODAP_obs_grid_temp <- GLODAP %>%
-#   count(lat, lon, era) %>%
-#   mutate(cleaning_level = "phosphate_qc_flag")
-# 
-# GLODAP_obs_grid <-
-#   bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
-# 
-# rm(GLODAP_obs_grid_temp)
+###
+
+GLODAP <- GLODAP %>%
+  filter(phosphateqc == parameters$flag_qc) %>%
+  select(-phosphateqc)
+
+##
+
+GLODAP_stats_temp <- GLODAP %>%
+  summarise(phosphate_qc_flag = n())
+
+GLODAP_stats <- cbind(GLODAP_stats, GLODAP_stats_temp)
+rm(GLODAP_stats_temp)
+
+##
+
+GLODAP_obs_grid_temp <- GLODAP %>%
+  count(lat, lon, era) %>%
+  mutate(cleaning_level = "phosphate_qc_flag")
+
+GLODAP_obs_grid <-
+  bind_rows(GLODAP_obs_grid, GLODAP_obs_grid_temp)
+
+rm(GLODAP_obs_grid_temp)
 
 ```
 
@@ -733,7 +723,7 @@ ggplot() +
 
 ### eMLR variables
 
-Rows with missing eMLR variables were removed, flagging was not considered
+Rows with missing eMLR variables were removed, only the qc flag was considered.
 
 ```{r eMLR_subset}
 
@@ -745,61 +735,61 @@ GLODAP <- GLODAP %>%
 GLODAP <- GLODAP %>% 
   filter(!is.na(sal))
 
-# GLODAP <- GLODAP %>% 
-#   filter(salinityf == parameters$flag_f) %>% 
-#   select(-salinityf)
-# 
-# GLODAP <- GLODAP %>% 
-#   filter(salinityqc == parameters$flag_qc) %>% 
-#   select(-salinityqc)
+GLODAP <- GLODAP %>%
+  # filter(salinityf == parameters$flag_f) %>%
+  select(-salinityf)
+
+GLODAP <- GLODAP %>%
+  filter(salinityqc == parameters$flag_qc) %>%
+  select(-salinityqc)
 
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(silicate))
 
-# GLODAP <- GLODAP %>% 
-#   filter(silicatef == parameters$flag_f) %>% 
-#   select(-silicatef)
-# 
-# GLODAP <- GLODAP %>% 
-#   filter(silicateqc == parameters$flag_qc) %>% 
-#   select(-silicateqc)
+GLODAP <- GLODAP %>%
+  # filter(silicatef == parameters$flag_f) %>%
+  select(-silicatef)
+
+GLODAP <- GLODAP %>%
+  filter(silicateqc == parameters$flag_qc) %>%
+  select(-silicateqc)
 
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(oxygen))
 
-# GLODAP <- GLODAP %>% 
-#   filter(oxygenf == parameters$flag_f) %>% 
-#   select(-oxygenf)
-# 
-# GLODAP <- GLODAP %>% 
-#   filter(oxygenqc == parameters$flag_qc) %>% 
-#   select(-oxygenqc)
+GLODAP <- GLODAP %>%
+  # filter(oxygenf == parameters$flag_f) %>%
+  select(-oxygenf)
+
+GLODAP <- GLODAP %>%
+  filter(oxygenqc == parameters$flag_qc) %>%
+  select(-oxygenqc)
 
 ##
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(aou))
 
-# GLODAP <- GLODAP %>% 
-#   filter(aouf == parameters$flag_f) %>% 
-#   select(-aouf)
+GLODAP <- GLODAP %>%
+  # filter(aouf == parameters$flag_f) %>%
+  select(-aouf)
 
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(nitrate))
 
-# GLODAP <- GLODAP %>% 
-#   filter(nitratef == parameters$flag_f) %>% 
-#   select(-nitratef)
-# 
-# GLODAP <- GLODAP %>% 
-#   filter(nitrateqc == parameters$flag_qc) %>% 
-#   select(-nitrateqc)
+GLODAP <- GLODAP %>%
+  # filter(nitratef == parameters$flag_f) %>%
+  select(-nitratef)
+
+GLODAP <- GLODAP %>%
+  filter(nitrateqc == parameters$flag_qc) %>%
+  select(-nitrateqc)
 
 ##
 
@@ -844,7 +834,7 @@ GLODAP_cruises <- GLODAP %>%
   count(lat, lon, cruise)
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = GLODAP_cruises, aes(lon, lat, fill = as.factor(cruise))) +
   scale_fill_brewer(palette = "Dark2") +
@@ -944,27 +934,6 @@ rm(GLODAP_stats_long)
 For the following plots, the cleaned data set was re-opened and observations were gridded spatially to intervals of:  
 
 - 5° x 5°
-
-```{r grid_spatially_coarse, eval=FALSE}
-
-GLODAP <- GLODAP %>%
-  mutate(
-    lat_grid = smart_cut(
-      lat,
-      seq(-90, 90, parameters$coarse_grid_resolution),
-      labels = ~ mean(.y)
-    ),
-    lat_grid = as.numeric(as.character(lat_grid)),
-    lon_grid = smart_cut(
-      lon,
-      seq(-1000, 1000, parameters$coarse_grid_resolution),
-      labels = ~ mean(.y)
-    ),
-    lon_grid = as.numeric(as.character(lon_grid))
-  )
-
-```
-
 
 ```{r grid_spatially_5x5}
 
@@ -1080,7 +1049,7 @@ GLODAP_obs_grid <- GLODAP_obs_grid %>%
 
 
 ggplot() +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
   geom_raster(data = GLODAP_obs_grid %>%
@@ -1112,7 +1081,7 @@ GLODAP_tco2_grid <- GLODAP %>%
 
 GLODAP %>%
   ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster(data = GLODAP_tco2_grid, aes(lon, lat), fill = "grey80") +
   geom_bin2d(binwidth = c(1,1)) +
@@ -1124,44 +1093,3 @@ GLODAP %>%
         axis.title = element_blank())
 
 ```
-
-
-```{r map_projection, eval=FALSE}
-
-
-# library("rnaturalearth")
-# library("rnaturalearthdata")
-# library("sf")
-# 
-# world <- ne_countries(scale = "small", returnclass = "sf")
-# class(world)
-# 
-# GLODAP_map <- GLODAP %>% 
-#   group_by(lat_grid, lon_grid) %>% 
-#   tally() %>% 
-#   ungroup()
-# 
-# ggplot() +
-#   geom_raster(data = GLODAP_map, aes(lon_grid, lat_grid)) +
-#   geom_sf(data = world) +
-#   coord_sf(crs = "+proj=robin +lat_0=0 +lon_0=0 +x0=0 +y0=0")
-
-
-# https://gist.github.com/clauswilke/783e1a8ee3233775c9c3b8bfe531e28a
-# https://twitter.com/clauswilke/status/1066024436208406529
-# https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html
-
-```
-
-
-
-# Open tasks
-
-- 
-
-# Questions
-
-- Apply coastal filter?
-- Keep horizontal gridding to 1°x1° (thereby discarding some horizontal information)?
-- Quality of WOA18 basin mask
-  - Pacific-Atlantic boundary
