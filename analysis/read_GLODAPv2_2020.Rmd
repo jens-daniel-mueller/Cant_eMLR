@@ -259,7 +259,7 @@ rm(GLODAP_obs)
 
 ## Flags and missing data
 
-Only rows (samples) for which all relevant parameters are available were selected.
+Only rows (samples) for which all relevant parameters are available were selected, ie NA's were removed.
 
 According to Olsen et al (2020), flags within the merged master file identify:
 
@@ -275,23 +275,19 @@ According to Olsen et al (2020), flags within the merged master file identify:
   - 1: Adjusted or unadjusted data
   - 0: Data appear of good quality but have not been subjected to full secondary QC
   - data with poor or uncertain quality are excluded.
-  
-Below, the data coverage is displayed for each step of the cleaning process. Currently, we remove all rows with missing values, and decide about flagging on a per variable basis.
 
-Summary statistics were calculated during cleaning process.
-
-
-Following flagging criteria were previously applied, but are not yet taken into account anymore:
+Following flagging criteria were taken into account:
 
 - flag_f:     `r parameters$flag_f`
 - flag_qc:    `r parameters$flag_qc`
 
+Summary statistics were calculated during cleaning process.
 
 ### tco2
 
 #### NA
 
-The majority of rows is removed due to missing tco2 observations.
+The vast majority of rows is removed due to missing tco2 observations.
 
 ```{r tco2_na_subset}
 
@@ -321,8 +317,6 @@ rm(GLODAP_obs_grid_temp)
 
 #### f flag
 
-We keep tco2 data with f flag = 0 (interpolated or calculated). 
-
 ```{r tco2_f_subset, fig.asp=1}
 
 GLODAP_obs_grid_temp <- GLODAP %>%
@@ -343,8 +337,7 @@ ggplot() +
 ###
 
 GLODAP <- GLODAP %>%
-  # filter(tco2f == parameters$flag_f) %>%
-  select(-tco2f)
+  filter(tco2f %in% parameters$flag_f)
 
 # ##
 # 
@@ -370,8 +363,6 @@ GLODAP <- GLODAP %>%
 
 #### qc flag
 
-We discard tco2 data with qc flag = 0 (no sec qc). 
-
 ```{r tco2_qc_subset, fig.asp=1}
 
 GLODAP_obs_grid_temp <- GLODAP %>%
@@ -392,8 +383,7 @@ ggplot() +
 ###
 
 GLODAP <- GLODAP %>%
-  filter(tco2qc == parameters$flag_qc) %>%
-  select(-tco2qc)
+  filter(tco2qc %in% parameters$flag_qc)
 
 ##
 
@@ -495,8 +485,7 @@ ggplot() +
 # ###
 
 GLODAP <- GLODAP %>%
-  # filter(talkf == parameters$flag_f) %>%
-  select(-talkf)
+  filter(talkf %in% parameters$flag_f)
 
 ##
 # 
@@ -521,8 +510,6 @@ GLODAP <- GLODAP %>%
 
 #### qc flag
 
-talk ata for which secondary quality was not applied (qc flag 0) were removed.
-
 ```{r talk_qc_subset, fig.asp=1}
 
 GLODAP_obs_grid_temp <- GLODAP %>%
@@ -544,8 +531,7 @@ ggplot() +
 ###
 
 GLODAP <- GLODAP %>%
-  filter(talkqc == parameters$flag_qc) %>%
-  select(-talkqc)
+  filter(talkqc %in% parameters$flag_qc)
 
 ##
 
@@ -646,8 +632,7 @@ ggplot() +
 ###
 
 GLODAP <- GLODAP %>%
-  # filter(phosphatef == parameters$flag_f) %>%
-  select(-phosphatef)
+  filter(phosphatef %in% parameters$flag_f)
 
 # ##
 # 
@@ -695,8 +680,7 @@ ggplot() +
 ###
 
 GLODAP <- GLODAP %>%
-  filter(phosphateqc == parameters$flag_qc) %>%
-  select(-phosphateqc)
+  filter(phosphateqc %in% parameters$flag_qc)
 
 ##
 
@@ -736,12 +720,10 @@ GLODAP <- GLODAP %>%
   filter(!is.na(sal))
 
 GLODAP <- GLODAP %>%
-  # filter(salinityf == parameters$flag_f) %>%
-  select(-salinityf)
+  filter(salinityf %in% parameters$flag_f)
 
 GLODAP <- GLODAP %>%
-  filter(salinityqc == parameters$flag_qc) %>%
-  select(-salinityqc)
+  filter(salinityqc %in% parameters$flag_qc)
 
 ##
   
@@ -749,48 +731,37 @@ GLODAP <- GLODAP %>%
   filter(!is.na(silicate))
 
 GLODAP <- GLODAP %>%
-  # filter(silicatef == parameters$flag_f) %>%
-  select(-silicatef)
+  filter(silicatef %in% parameters$flag_f)
 
 GLODAP <- GLODAP %>%
-  filter(silicateqc == parameters$flag_qc) %>%
-  select(-silicateqc)
-
+  filter(silicateqc %in% parameters$flag_qc)
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(oxygen))
 
 GLODAP <- GLODAP %>%
-  # filter(oxygenf == parameters$flag_f) %>%
-  select(-oxygenf)
+  filter(oxygenf %in% parameters$flag_f)
 
 GLODAP <- GLODAP %>%
-  filter(oxygenqc == parameters$flag_qc) %>%
-  select(-oxygenqc)
-
+  filter(oxygenqc %in% parameters$flag_qc)
 ##
 
 GLODAP <- GLODAP %>% 
   filter(!is.na(aou))
 
 GLODAP <- GLODAP %>%
-  # filter(aouf == parameters$flag_f) %>%
-  select(-aouf)
-
+  filter(aouf %in% parameters$flag_f)
 ##
   
 GLODAP <- GLODAP %>% 
   filter(!is.na(nitrate))
 
 GLODAP <- GLODAP %>%
-  # filter(nitratef == parameters$flag_f) %>%
-  select(-nitratef)
+  filter(nitratef %in% parameters$flag_f)
 
 GLODAP <- GLODAP %>%
-  filter(nitrateqc == parameters$flag_qc) %>%
-  select(-nitrateqc)
-
+  filter(nitrateqc %in% parameters$flag_qc)
 ##
 
 GLODAP <- GLODAP %>% 
@@ -876,8 +847,6 @@ GLODAP_stats_long  %>%  write_csv(
   )
 )
 
-# rm(GLODAP_stats_long, GLODAP_stats)
-
 ##
 
 GLODAP_obs_grid  %>%
@@ -891,6 +860,12 @@ GLODAP_obs_grid  %>%
 
 ##
 
+GLODAP <- GLODAP %>% 
+  select(year, era, basin, lat, lon, cruise,
+         bottomdepth, depth, tem, sal, gamma,
+         tco2, talk, phosphate,
+         oxygen, aou, nitrate, silicate)
+
 GLODAP  %>%  write_csv(
   here::here(
     "data/GLODAPv2_2020/_summarized_data_files",
@@ -898,7 +873,6 @@ GLODAP  %>%  write_csv(
   )
 )
 
-# rm(GLODAP)
 
 ```
 
@@ -910,9 +884,6 @@ GLODAP  %>%  write_csv(
 Number of observations at various steps of data cleaning.
 
 ```{r GLODAP_cleaning_stats}
-
-# GLODAP_stats_long <-  read_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-#                                              "GLODAPv2.2020_stats.csv"))
 
 GLODAP_stats_long <- GLODAP_stats_long %>%
   mutate(parameter = fct_reorder(parameter, n))
