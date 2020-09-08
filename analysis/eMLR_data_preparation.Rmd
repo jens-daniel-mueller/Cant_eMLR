@@ -19,8 +19,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(lubridate)
 library(patchwork)
+library(lubridate)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -81,10 +81,6 @@ GLODAP_obs_grid <-
       "GLODAPv2.2020_clean_obs_grid.csv"
     )
   )
-
-# Cant_clim <-
-#   read_csv(here::here("data/GLODAPv1_1/_summarized_files",
-#                       "Cant_94.csv"))
 
 Cant_clim <-
   read_csv(
@@ -177,19 +173,18 @@ Note that eq. 6 in Clement and Gruber (2018) misses pCO~2~ pre-industrial in the
 
 ```{r merge_Cstar_Cant}
 
-Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim) %>% 
-  select(-n)
+Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim)
 
 Cant_clim_obs <- Cant_clim_obs %>%
   group_by(lon, lat) %>% 
   mutate(n = n()) %>% 
   ungroup()
 
-Cant_clim_obs %>%
-  filter(n <= 1) %>%
-  ggplot(aes(lon,lat)) +
-  geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
-  geom_point(col = "red")
+# Cant_clim_obs %>%
+#   filter(n <= 1) %>%
+#   ggplot(aes(lon,lat)) +
+#   geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
+#   geom_point(col = "red")
 
 rm(Cant_clim, GLODAP_obs_grid)
 
@@ -228,34 +223,34 @@ GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
 #   mutate(cant_int = mean(cant, na.rm = TRUE)) %>%
 #   ungroup()
 
-# ggplot() +
-#   geom_path(
-#     data = GLODAP_Cant_obs %>%
-#       filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
-#       arrange(depth),
-#     aes(cant, depth, col = "mapped")
-#   ) +
-#   geom_point(
-#     data = GLODAP_Cant_obs %>%
-#       filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
-#       arrange(depth),
-#     aes(cant, depth, col = "mapped")
-#   ) +
-#   geom_point(
-#     data = GLODAP_Cant_obs %>%
-#       filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
-#     aes(cant_int, depth, col = "interpolated")
-#   ) +
-#   scale_y_reverse() +
-#   scale_color_brewer(palette = "Dark2", name = "") +
-#   labs(title = "Cant interpolation to sampling depth - example profile")
+ggplot() +
+  geom_path(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+      arrange(depth),
+    aes(cant, depth, col = "mapped")
+  ) +
+  geom_point(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+      arrange(depth),
+    aes(cant, depth, col = "mapped")
+  ) +
+  geom_point(
+    data = GLODAP_Cant_obs %>%
+      filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
+    aes(cant_int, depth, col = "interpolated")
+  ) +
+  scale_y_reverse() +
+  scale_color_brewer(palette = "Dark2", name = "") +
+  labs(title = "Cant interpolation to sampling depth - example profile")
 
 # remove cant data at grid cells without observations
 
 GLODAP <- GLODAP_Cant_obs %>%
   filter(!is.na(Cstar)) %>%
   mutate(cant = cant_int) %>%
-  select(-cant_int)
+  select(-cant_int, n)
 
 rm(GLODAP_Cant_obs)
 
@@ -338,26 +333,26 @@ GLODAP_cruise <- GLODAP %>%
 ```
 
 
-```{r meridional_sections, fig.asp=0.6, eval=FALSE}
+```{r meridional_sections, fig.asp=0.6}
 
 GLODAP_cruise %>%
   arrange(date) %>% 
   ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_path() +
-  geom_point() +
+  geom_point(aes(col = date)) +
   coord_quickmap(expand = 0) +
-  #scale_color_viridis_c(trans = "date") +
+  scale_color_viridis_c(trans = "date") +
   labs(title = paste("Cruise year:", mean(GLODAP_cruise$year))) +
-  theme(legend.position = "bottom")
+  theme(axis.title = element_blank())
 
 lat_section <- 
 GLODAP_cruise %>%
   ggplot(aes(lat, depth)) +
   scale_y_reverse() +
   scale_color_viridis_c() +
-  theme(legend.position = "bottom")
+  theme(axis.title.x = element_blank())
 
 lat_section +
   geom_point(aes(col = tco2))
@@ -378,6 +373,9 @@ lat_section +
   geom_point(aes(col = -Cstar_tref_delta))
 
 rm(lat_section, GLODAP_cruise)
+
+GLODAP <- GLODAP %>% 
+  select(-c(rCP_phosphate:Cstar, cant:Cstar_tref_delta))
 
 ```
 
@@ -495,8 +493,7 @@ GLODAP %>%
   filter(basin == "Atlantic") %>% 
   ggplot(aes(lat, gamma_slab)) +
   geom_bin2d(binwidth = 5) +
-  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
-                       name = "log10(n)") +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10") +
   scale_x_continuous(breaks = seq(-100,100,20)) +
   facet_grid(era~basin)
 
@@ -509,8 +506,7 @@ GLODAP %>%
   filter(basin == "Indo-Pacific") %>% 
   ggplot(aes(lat, gamma_slab)) +
   geom_bin2d(binwidth = 5) +
-  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
-                       name = "log10(n)") +
+  scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10") +
   scale_x_continuous(breaks = seq(-100,100,20)) +
   facet_grid(era~basin)
 
@@ -548,7 +544,7 @@ cruises_cruise <- cruises %>%
   
 map <- GLODAP_cruise %>%
   ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask %>% filter(region == "land"),
+  geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_point(aes(col=date)) +
   coord_quickmap(expand = FALSE) +
@@ -682,15 +678,10 @@ rm(map,
 
 ```{r write_csv_GLODAP_used_for_fitting}
 
+GLODAP <- GLODAP %>% 
+  rename(Cstar = Cstar_tref)
+
 GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                 "GLODAP_MLR_fitting_ready.csv"))
 
 ```
-
-# Open tasks
-
-- 
-
-# Open questions
-
-- 
