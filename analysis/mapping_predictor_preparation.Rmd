@@ -20,7 +20,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(metR)
 library(marelac)
-
+library(gsw)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -227,13 +227,14 @@ AOU was calculated as the difference between saturation concentration and observ
 ```{r calculate_aou_climatology}
 
 predictors <- predictors %>% 
-  mutate(oxygen_sat = gas_satconc(S = sal,
+  mutate(oxygen_sat_m3 = gas_satconc(S = sal,
                                   t = tem,
                                   P = 1.013253,
                                   species = "O2"),
-         aou = oxygen_sat - oxygen) %>% 
-  select(-oxygen_sat)
-
+         rho = gsw_pot_rho_t_exact(SA = sal, t = tem, p = depth, p_ref = 10.1325),
+         oxygen_sat_kg = oxygen_sat_m3 * (1000/rho),
+         aou = oxygen_sat_kg - oxygen) %>% 
+  select(-c(oxygen_sat_m3, rho, oxygen_sat_kg))
 
 ```
 

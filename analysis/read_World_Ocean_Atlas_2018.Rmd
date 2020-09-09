@@ -22,6 +22,8 @@ library(tidync)
 library(reticulate)
 library(oce)
 library(gsw)
+library(geosphere)
+library(patchwork)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -155,6 +157,66 @@ landmask <- landmask %>%
 
 rm(landsea_01)
 ```
+
+## Create Atl-SO-Pac section
+
+```{r Create_Atl_SO_Pac_section, eval=FALSE}
+
+df <- basinmask_01 %>%
+  select(lon, lat)
+
+Atl_NS <- df %>%
+  filter(
+    lon == parameters$lon_Atl_section,
+    lat <= parameters$lat_section_N,
+    lat >= parameters$lat_section_S
+  ) %>%
+  arrange(-lat)
+
+Atl_SO <- df %>%
+  filter(lon > parameters$lon_Atl_section,
+         lat == parameters$lat_section_S) %>%
+  arrange(lon)
+
+Pac_SO <- df %>%
+  filter(lon < parameters$lon_Pac_section,
+         lat == parameters$lat_section_S) %>%
+  arrange(lon)
+
+Pac_SN <- df %>%
+  filter(
+    lon == parameters$lon_Pac_section,
+    lat <= parameters$lat_section_N,
+    lat >= parameters$lat_section_S
+  ) %>%
+  arrange(lat)
+
+section <- bind_rows(Atl_NS,
+                     Atl_SO,
+                     Pac_SO,
+                     Pac_SN)
+
+section <- section %>%
+  mutate(lon_180 = if_else(lon > 180, lon - 360, lon))
+
+section <- section %>%
+  mutate(dist_int = distGeo(cbind(lon_180, lat)) / 1e3) %>%
+  mutate(dist = cumsum(dist_int))
+
+
+section <- section %>%
+  select(lon, lat, dist)
+
+section %>%
+  write_csv(here::here("data",
+                       "section_global_coordinates.csv"))
+
+rm(df, 
+   Atl_NS, Atl_SO, Pac_SN, Pac_SO,
+   section)
+
+```
+
 
 
 ## Map
@@ -330,6 +392,19 @@ WOA18_predictors <- WOA18_predictors %>%
 
 ```
 
+### Section
+
+```{r WOA18_pot_temperature_section, fig.asp=0.6}
+
+section_global_coordinates <-
+  read_csv(here::here("data",
+                      "section_global_coordinates.csv"))
+
+section_global(WOA18_predictors, "THETA")
+
+```
+
+
 ### Profile
 
 Example profile from North Atlantic Ocean.
@@ -421,7 +496,6 @@ WOA18_predictors <-
   read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                        "WOA18_predictors.csv"))
 ```
-
 
 ## Temperature plots
 

@@ -19,8 +19,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(patchwork)
 library(lubridate)
+library(patchwork)
+library(marelac)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -159,6 +160,7 @@ GLODAP <- GLODAP %>%
   mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
 
 ```
+
 
 
 # Reference year adjustment
