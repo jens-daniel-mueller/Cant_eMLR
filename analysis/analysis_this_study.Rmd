@@ -100,28 +100,6 @@ Cstar_average_zonal <-
 
 ```
 
-All following analysis are restricted to the inventory depth of `r parameters$inventory_depth`m.
-
-```{r subset_inventory_depth, eval=FALSE}
-
-
-Cstar_average <- Cstar_average %>%
-  filter(depth <= parameters$inventory_depth)
-
-Cstar_average_zonal <- Cstar_average_zonal %>%
-  filter(depth <= parameters$inventory_depth)
-
-Cant_average <- Cant_average %>%
-  filter(depth <= parameters$inventory_depth)
-
-Cant_average_zonal <- Cant_average_zonal %>%
-  filter(depth <= parameters$inventory_depth)
-
-Cant_predictor_average_zonal <- Cant_predictor_average_zonal %>%
-  filter(depth <= parameters$inventory_depth)
-
-
-```
 
 # Neutral density
 

@@ -157,8 +157,8 @@ For each basin and era combination, the zonal mean Cstar is calculated. Likewise
 
 ```{r Calculate_Cstar_mean_sections, eval=FALSE}
 
-Cstar_average <- full_join(Cstar_average,
-                                basinmask_AIP %>% select(-basin))
+Cstar_average <- left_join(Cstar_average,
+                           basinmask_AIP %>% select(-basin))
 
 Cstar_average_zonal <- Cstar_average %>%
   group_by(lat, depth, era, basin, basin_AIP) %>%

@@ -68,8 +68,6 @@ Currently, following data sets are used for mapping:
 
 Following variables are currently used:  
 
-- Salinity
-- Temperature
 - Phosphate (+Phosphate*)
 - Silicate
 - Oxygen (+AOU)
@@ -108,6 +106,8 @@ GLODAP_predictors <- GLODAP_predictors %>%
 
 ## World Ocean Atlas 2018
 
+- Salinity
+- Temperature
 - Neutral density
 - Basin mask
 

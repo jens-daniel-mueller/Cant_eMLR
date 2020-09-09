@@ -13,12 +13,12 @@ navbar:
       href: config_parameterization.html
   - text: Data base
     menu:
+    - text: World Ocean Atlas 2018
+      href: read_World_Ocean_Atlas_2018.html
     - text: GLODAPv2_2020
       href: read_GLODAPv2_2020.html
     - text: GLODAPv2_2016_MappedClimatologies
       href: read_GLODAPv2_2016_MappedClimatologies.html
-    - text: World Ocean Atlas 2018
-      href: read_World_Ocean_Atlas_2018.html
     - text: World Ocean Atlas 2013
       href: read_World_Ocean_Atlas_2013_Clement.html
     - text: Cant Gruber 2019
@@ -41,6 +41,8 @@ navbar:
       href: mapping_predictor_preparation.html
     - text: Cant calculation
       href: mapping_cant_calculation.html
+    - text: Cstar calculation
+      href: mapping_cstar_calculation.html
     href: mapping.html
   - text: Analysis
     menu:

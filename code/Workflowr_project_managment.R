@@ -134,6 +134,7 @@ wflow_publish(here::here(
     "eMLR_model_fitting.Rmd",
     "mapping_predictor_preparation.Rmd",
     "mapping_cant_calculation.Rmd",
+    "mapping_cstar_calculation.Rmd",
     "analysis_this_study.Rmd",
     "analysis_previous_studies.Rmd"
 

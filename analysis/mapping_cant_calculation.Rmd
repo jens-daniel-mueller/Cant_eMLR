@@ -212,8 +212,9 @@ For each basin and era combination, the zonal mean Cant is calculated, again for
 
 ```{r Calculate_Cant_mean_sections}
 
-Cant_average <- full_join(Cant_average,
-                                basinmask_AIP %>% select(-basin))
+
+Cant_average <- left_join(Cant_average,
+                          basinmask_AIP %>% select(-basin))
 
 Cant_average_zonal <- Cant_average %>%
   group_by(lat, depth, eras, basin, basin_AIP) %>%
@@ -226,8 +227,10 @@ Cant_average_zonal <- Cant_average %>%
       "gamma_mean",
       "gamma_sd"
     ),
-    list(mean = ~ mean(.x, na.rm = TRUE),
-         sd = ~ sd(.x, na.rm = TRUE))
+    list(
+      mean = ~ mean(.x, na.rm = TRUE),
+      sd = ~ sd(.x, na.rm = TRUE)
+    )
   )) %>%
   ungroup()
 
