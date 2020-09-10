@@ -162,7 +162,8 @@ section_global <- function(df, var) {
     scale_y_reverse() +
     theme(axis.title.x = element_blank(),
           axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
+          axis.ticks.x = element_blank(),
+          legend.position = "top") +
     labs(y = "Depth (m)")
 
   deep <- df_sub %>%
@@ -173,9 +174,9 @@ section_global <- function(df, var) {
     scale_fill_viridis_d(name = name_var) +
     scale_y_reverse() +
     coord_cartesian(expand = 0, ylim = c(3000,500)) +
-    labs(x = "Distance (km)", y = "Depth (m)")
+    labs(x = "Distance (Mm)", y = "Depth (m)") +
+    theme(legend.position = "none")
 
-  surface / deep +
-    plot_layout(guides = 'collect')
+  surface / deep
 
 }

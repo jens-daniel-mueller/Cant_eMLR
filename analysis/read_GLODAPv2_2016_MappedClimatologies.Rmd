@@ -76,12 +76,9 @@ print(file_list)
 
 # Plot data and write csv
 
-Below, following subsets of the climatologies are plotted for all relevant parameters:  
+Below, subsets of the climatologies are plotted for all relevant parameters.
 
-- Horizontal planes at `r parameters$depth_levels`m
-- Meridional sections at longitudes: `r parameters$longitude_sections_basin`
-
-Section locations are indicated as white lines in maps.
+The global section path is indicated as white line in maps.
 
 ```{r GLODAPv2_2016_Mappedclimatologies}
 

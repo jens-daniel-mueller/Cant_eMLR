@@ -18,6 +18,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(patchwork)
 library(metR)
 library(marelac)
 library(gsw)
@@ -49,6 +50,9 @@ landmask <-
     )
   )
 
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_parameters_functions, include = FALSE}
@@ -211,7 +215,7 @@ map_climatology(predictors, "phosphate_star")
 
 ```{r PO4_star_climatology_section, fig.asp=0.6}
 
-section_climatology(predictors, "phosphate_star")
+section_global(predictors, "phosphate_star")
 
 ```
 
@@ -250,7 +254,7 @@ map_climatology(predictors, "aou")
 
 ```{r aou_climatology_section, fig.asp=0.6}
 
-section_climatology(predictors, "aou")
+section_global(predictors, "aou")
 
 ```
 
