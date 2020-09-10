@@ -198,7 +198,9 @@ Cant_average_zonal %>%
 
 # Cant
 
-## Mean
+## Zonal sections 
+
+### Mean
 
 ```{r Cant_sections_mean}
 
@@ -208,7 +210,7 @@ section_zonal_average_divergent(Cant_average_zonal,
 
 ```
 
-## Mean positive values
+### Mean positive values
 
 ```{r Cant_sections_positive_mean}
 
@@ -269,28 +271,28 @@ section_zonal_average_continous(Cant_predictor_average_zonal,
 ```
 
 
-# Sections at longitudes
+## Sections along path
 
-## JGOFS_GO
+### JGOFS_GO
 
 ```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
 
-section_climatology(Cant_average %>% filter(eras == "JGOFS_GO"),
+section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
                     "Cant_mean")
 
 ```
 
-## GO_new
+### GO_new
 
 ```{r Cant_sections_positive_mean_one_lon_GO_new}
 
-section_climatology(Cant_average %>% filter(eras == "GO_new"),
+section_global(Cant_average %>% filter(eras == "GO_new"),
                     "Cant_mean")
 
 ```
 
 
-## By model
+## Sections by model
 
 Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
 
@@ -349,9 +351,9 @@ for (i_eras in unique(Cant$eras)) {
 
 ```
 
-# Maps of Cant
+## Maps
 
-## Depth layers
+### Surfaces
 
 Cant concentration for selected depth levels at which mapping was performed.
 
@@ -370,9 +372,9 @@ Cant_average %>%
 
 ```
 
-## Inventories
+### Inventories
 
-### All Cant
+#### All Cant
 
 ```{r Cant_inventory_map, fig.asp=1}
 
@@ -396,7 +398,7 @@ Cant_inv %>%
 ```
 
 
-### Positive Cant
+#### Positive Cant
 
 ```{r Cant_pos_inventory_map, fig.asp=1}
 
@@ -415,7 +417,7 @@ Cant_inv %>%
 ```
 
 
-# Cant vs model SD
+## Cant vs model SD
 
 ```{r Cant_vs_sd_by_basin_era}
 
@@ -447,7 +449,7 @@ Cant_average %>%
 
 ```
 
-# Cant vs regional SD
+## Cant vs regional SD
 
 ```{r Cant_vs_sd_by_basin_era_zonal}
 
@@ -482,8 +484,6 @@ Cant_average_zonal %>%
 # Cstar
 
 ```{r Cstar_zonal_mean_era}
-
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 
 Cstar_average_zonal <- Cstar_average_zonal %>% 
     mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) 
