@@ -213,7 +213,7 @@ map_climatology(predictors, "phosphate_star")
 
 ### Sections
 
-```{r PO4_star_climatology_section, fig.asp=0.6}
+```{r PO4_star_climatology_section}
 
 section_global(predictors, "phosphate_star")
 
@@ -252,7 +252,7 @@ map_climatology(predictors, "aou")
 
 ### Sections
 
-```{r aou_climatology_section, fig.asp=0.6}
+```{r aou_climatology_section}
 
 section_global(predictors, "aou")
 

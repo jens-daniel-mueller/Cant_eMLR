@@ -431,7 +431,7 @@ WOA18_predictors %>%
 
 ### Section
 
-```{r WOA18_pot_temperature_section, fig.asp=0.6}
+```{r WOA18_pot_temperature_section}
 
 section_global_coordinates <-
   read_csv(here::here("data",
@@ -526,7 +526,7 @@ map_climatology(WOA18_predictors, "tem")
 
 ### Section
 
-```{r temperature_sections_WOA18, fig.asp=0.6}
+```{r temperature_sections_WOA18}
 
 section_global(WOA18_predictors, "tem")
 
@@ -545,9 +545,7 @@ map_climatology(WOA18_predictors, "sal")
 
 ### Section
 
-```{r salinity_sections_WOA18, fig.asp=0.6}
-
-section_global(WOA18_predictors, "sal")
+```{r salinity_sections_WOA18tion_global(WOA18_predictors, "sal")
 
 ```
 
@@ -566,7 +564,7 @@ map_climatology(WOA18_predictors, "gamma")
 
 ### Sections
 
-```{r neutral_density_sections_WOA18, fig.asp=0.6}
+```{r neutral_density_sections_WOA18}
 
 section_global(WOA18_predictors, "gamma")
 
