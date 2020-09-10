@@ -18,6 +18,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(patchwork)
+library(scico)
 library(scales)
 library(metR)
 ```
@@ -27,6 +29,8 @@ library(metR)
 parameters <-
   read_rds(here::here("data",
                        "parameters.rds"))
+
+slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 ```
 
 ```{r read_mask_files, include = FALSE}
@@ -44,6 +48,10 @@ landmask <-
       "land_mask_WOA18.csv"
     )
   )
+
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -58,7 +66,6 @@ theme_set(theme_bw())
 
 Cant estimates from this study:
 
-- Raw results by each of 10 MLR models per density slab
 - Mean and SD per grid cell (lat, lon, depth)
 - Zonal mean and SD (basin, lat, depth)
 - Inventories (lat, lon)
@@ -105,6 +112,8 @@ Cstar_average_zonal <-
 
 ## Slab depth
 
+Please note that density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin.
+
 ```{r gamma_maps, fig.asp=1}
 
 gamma_maps <- Cant_average %>% 
@@ -120,21 +129,32 @@ gamma_maps %>%
   geom_raster() +
   facet_wrap( ~ gamma_slab, ncol = 3) +
   coord_quickmap(expand = 0) +
-  scico::scale_fill_scico(palette = "batlow",
-                          direction = -1)
+  scale_fill_scico(palette = "batlow",
+                          direction = -1) +
+  theme(axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.position = "top")
 
+rm(gamma_maps)
+```
+
+## Surface maps
+
+```{r gamma_surface_map}
+
+map_climatology(Cant_average, "gamma_mean")
 
 ```
 
-## Zonal mean sections
+
+## Zonal sections
 
 The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.
 
 ### Mean
 
 ```{r gamma_sections_mean}
-
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 
 Cant_average_zonal %>% 
   filter(eras == "JGOFS_GO") %>% 
@@ -148,6 +168,7 @@ Cant_average_zonal %>%
   scale_fill_viridis_d(name = "Gamma",
                        direction = -1) +
   scale_y_reverse() +
+  scale_x_continuous(breaks = seq(-100, 100, 20)) +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   facet_grid(basin_AIP~.)
@@ -155,6 +176,8 @@ Cant_average_zonal %>%
 ```
 
 ### SD
+
+Higher SD of gamma in shallow, subtropical waters results from a more pronounced longitudinal variability.
 
 ```{r gamma_sections_sd}
 
@@ -165,25 +188,17 @@ Cant_average_zonal %>%
   scale_fill_viridis_d(name = "Gamma SD",
                        direction = -1) +
   scale_y_reverse() +
+  scale_x_continuous(breaks = seq(-100, 100, 20)) +
   coord_cartesian(expand = 0) +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   facet_grid(basin_AIP~.)
 
 ```
 
-### Surface map
-
-```{r gamma_surface_map}
-
-map_climatology(Cant_average, "gamma_mean")
-
-```
-
-
 
 # Cant
 
-### Mean
+## Mean
 
 ```{r Cant_sections_mean}
 
@@ -193,10 +208,9 @@ section_zonal_average_divergent(Cant_average_zonal,
 
 ```
 
-### Mean positive values
+## Mean positive values
 
 ```{r Cant_sections_positive_mean}
-
 
 section_zonal_average_continous(Cant_average_zonal,
                                 "Cant_pos_mean_mean",

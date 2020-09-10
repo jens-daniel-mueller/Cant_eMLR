@@ -114,7 +114,8 @@ section_zonal_average_divergent <- function(df, var, gamma) {
     scale_y_reverse() +
     coord_cartesian(expand = 0) +
     guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-    facet_grid(basin_AIP ~ eras)
+    facet_grid(basin_AIP ~ eras) +
+    theme(legend.position = "top")
 
 }
 
@@ -140,7 +141,8 @@ section_zonal_average_continous <- function(df, var, gamma) {
     scale_y_reverse() +
     coord_cartesian(expand = 0) +
     guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-    facet_grid(basin_AIP ~ eras)
+    facet_grid(basin_AIP ~ eras) +
+    theme(legend.position = "top")
 
 }
 
