@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree143fbd78441f801f79ffaa813a0c30d3f61e5269targetblank143fbd7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/143fbd78441f801f79ffaa813a0c30d3f61e5269" target="_blank">143fbd7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree8001403180a078c8d6fa47323d99dd6feb65dc29targetblank8001403a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/8001403180a078c8d6fa47323d99dd6feb65dc29" target="_blank">8001403</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree143fbd78441f801f79ffaa813a0c30d3f61e5269targetblank143fbd7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree8001403180a078c8d6fa47323d99dd6feb65dc29targetblank8001403a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/143fbd78441f801f79ffaa813a0c30d3f61e5269" target="_blank">143fbd7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/8001403180a078c8d6fa47323d99dd6feb65dc29" target="_blank">8001403</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -646,9 +646,6 @@ Ignored files:
     Ignored:    data/mapping/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-
-Unstaged changes:
-    Modified:   code/plotting_functions.R
 
 </code></pre>
 <p>
@@ -687,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/8001403180a078c8d6fa47323d99dd6feb65dc29/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">8001403</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+changed to global section plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/a34a239e46e7f6079fd0a3e4e04c07490eacc6f5/docs/read_World_Ocean_Atlas_2018.html" target="_blank">a34a239</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2698,10 +2729,44 @@ library(patchwork)</code></pre>
 </div>
 <div id="masks" class="section level1">
 <h1><span class="header-section-number">2</span> Masks</h1>
-<div id="basins" class="section level2">
-<h2><span class="header-section-number">2.1</span> Basins</h2>
+<div id="land" class="section level2">
+<h2><span class="header-section-number">2.1</span> Land</h2>
 <div id="read-mask" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Read mask</h3>
+<p>The land sea mask with 1x1° resolution from the file <code>landsea_01.msk</code> was used.</p>
+<pre class="r"><code>landsea_01 &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
+                                  &quot;landsea_01.msk&quot;),
+                         skip = 1,
+                         col_types = list(.default = &quot;d&quot;))</code></pre>
+</div>
+<div id="label" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Label</h3>
+<p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document:</p>
+<p><em>“The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world. Land will have a value of 1, corresponding to the surface.”</em></p>
+<p>The landmask was derived as coordinates with value 1.</p>
+<pre class="r"><code>landmask &lt;- landsea_01 %&gt;% 
+  mutate(region = if_else(Bottom_Standard_Level == &quot;1&quot;,
+                         &quot;land&quot;, &quot;ocean&quot;)) %&gt;% 
+  select(-Bottom_Standard_Level)
+
+landmask &lt;- landmask %&gt;% 
+  rename(lat = Latitude,
+         lon = Longitude) %&gt;% 
+  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
+
+landmask &lt;- landmask %&gt;%
+  filter(region == &quot;land&quot;, 
+         lat &gt;= parameters$lat_min,
+         lat &lt;= parameters$lat_max) %&gt;% 
+  select(-region)
+
+rm(landsea_01)</code></pre>
+</div>
+</div>
+<div id="basins" class="section level2">
+<h2><span class="header-section-number">2.2</span> Basins</h2>
+<div id="read-mask-1" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Read mask</h3>
 <p>The surface mask (0m) with 1x1° resolution from the file <code>basinmask_01.msk</code> was used.</p>
 <pre class="r"><code>basinmask_01 &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
                                     &quot;basinmask_01.msk&quot;),
@@ -2714,7 +2779,7 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
   rename(lat = Latitude, lon = Longitude)</code></pre>
 </div>
 <div id="labels" class="section level3">
-<h3><span class="header-section-number">2.1.2</span> Labels</h3>
+<h3><span class="header-section-number">2.2.2</span> Labels</h3>
 <p>According to <a href="https://www.nodc.noaa.gov/OC5/WOD/wod-woa-faqs.html" target="_blank">WOA FAQ</a> website and <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a>, number codes in the mask files were used to assign ocean basins as follows:</p>
 <p>Atlantic Ocean:</p>
 <ul>
@@ -2755,98 +2820,8 @@ basinmask_01 &lt;- basinmask_01 %&gt;%
   select(-Basin_0m) %&gt;% 
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))</code></pre>
 </div>
-</div>
-<div id="land" class="section level2">
-<h2><span class="header-section-number">2.2</span> Land</h2>
-<div id="read-mask-1" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Read mask</h3>
-<p>The land sea mask with 1x1° resolution from the file <code>landsea_01.msk</code> was used.</p>
-<pre class="r"><code>landsea_01 &lt;- read_csv(here::here(&quot;data/World_Ocean_Atlas_2018&quot;,
-                                  &quot;landsea_01.msk&quot;),
-                         skip = 1,
-                         col_types = list(.default = &quot;d&quot;))</code></pre>
-</div>
-<div id="label" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Label</h3>
-<p>According to the <a href="https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf" target="_blank">WOA18 documentation</a> document:</p>
-<p><em>“The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world. Land will have a value of 1, corresponding to the surface.”</em></p>
-<p>The landmask was derived as coordinates with value 1.</p>
-<pre class="r"><code>landmask &lt;- landsea_01 %&gt;% 
-  mutate(region = if_else(Bottom_Standard_Level == &quot;1&quot;,
-                         &quot;land&quot;, &quot;ocean&quot;)) %&gt;% 
-  select(-Bottom_Standard_Level)
-
-landmask &lt;- landmask %&gt;% 
-  rename(lat = Latitude,
-         lon = Longitude) %&gt;% 
-  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
-
-landmask &lt;- landmask %&gt;%
-  filter(region == &quot;land&quot;, 
-         lat &gt;= parameters$lat_min,
-         lat &lt;= parameters$lat_max) %&gt;% 
-  select(-region)
-
-rm(landsea_01)</code></pre>
-</div>
-</div>
-<div id="create-atl-so-pac-section" class="section level2">
-<h2><span class="header-section-number">2.3</span> Create Atl-SO-Pac section</h2>
-<pre class="r"><code>df &lt;- basinmask_01 %&gt;%
-  select(lon, lat)
-
-Atl_NS &lt;- df %&gt;%
-  filter(
-    lon == parameters$lon_Atl_section,
-    lat &lt;= parameters$lat_section_N,
-    lat &gt;= parameters$lat_section_S
-  ) %&gt;%
-  arrange(-lat)
-
-Atl_SO &lt;- df %&gt;%
-  filter(lon &gt; parameters$lon_Atl_section,
-         lat == parameters$lat_section_S) %&gt;%
-  arrange(lon)
-
-Pac_SO &lt;- df %&gt;%
-  filter(lon &lt; parameters$lon_Pac_section,
-         lat == parameters$lat_section_S) %&gt;%
-  arrange(lon)
-
-Pac_SN &lt;- df %&gt;%
-  filter(
-    lon == parameters$lon_Pac_section,
-    lat &lt;= parameters$lat_section_N,
-    lat &gt;= parameters$lat_section_S
-  ) %&gt;%
-  arrange(lat)
-
-section &lt;- bind_rows(Atl_NS,
-                     Atl_SO,
-                     Pac_SO,
-                     Pac_SN)
-
-section &lt;- section %&gt;%
-  mutate(lon_180 = if_else(lon &gt; 180, lon - 360, lon))
-
-section &lt;- section %&gt;%
-  mutate(dist_int = distGeo(cbind(lon_180, lat)) / 1e3) %&gt;%
-  mutate(dist = cumsum(dist_int))
-
-
-section &lt;- section %&gt;%
-  select(lon, lat, dist)
-
-section %&gt;%
-  write_csv(here::here(&quot;data&quot;,
-                       &quot;section_global_coordinates.csv&quot;))
-
-rm(df, 
-   Atl_NS, Atl_SO, Pac_SN, Pac_SO,
-   section)</code></pre>
-</div>
-<div id="map" class="section level2">
-<h2><span class="header-section-number">2.4</span> Map</h2>
+<div id="map" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Map</h3>
 <pre class="r"><code>ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat), fill = &quot;grey80&quot;) +
@@ -2859,8 +2834,71 @@ rm(df,
         axis.title = element_blank())</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/basin_masks_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+</div>
+<div id="global-section" class="section level2">
+<h2><span class="header-section-number">2.3</span> Global section</h2>
+<p>To plot sections from the North Atlantic south to the Southern Ocean, around Antartica and back North across the Pacific Ocean, corresponding coordinates were subsetted from the basin mask and distances between coordinate grid points calculated.</p>
+<pre class="r"><code>section &lt;- basinmask_01 %&gt;%
+  select(lon, lat)
+
+Atl_NS &lt;- section %&gt;%
+  filter(
+    lon == parameters$lon_Atl_section,
+    lat &lt;= parameters$lat_section_N,
+    lat &gt;= parameters$lat_section_S
+  ) %&gt;%
+  arrange(-lat)
+
+Atl_SO &lt;- section %&gt;%
+  filter(lon &gt; parameters$lon_Atl_section,
+         lat == parameters$lat_section_S) %&gt;%
+  arrange(lon)
+
+Pac_SO &lt;- section %&gt;%
+  filter(lon &lt; parameters$lon_Pac_section,
+         lat == parameters$lat_section_S) %&gt;%
+  arrange(lon)
+
+Pac_SN &lt;- section %&gt;%
+  filter(
+    lon == parameters$lon_Pac_section,
+    lat &lt;= parameters$lat_section_N,
+    lat &gt;= parameters$lat_section_S
+  ) %&gt;%
+  arrange(lat)
+
+section_global_coordinates &lt;- bind_rows(Atl_NS,
+                     Atl_SO,
+                     Pac_SO,
+                     Pac_SN)
+
+section_global_coordinates &lt;- section_global_coordinates %&gt;%
+  mutate(lon_180 = if_else(lon &gt; 180, lon - 360, lon))
+
+section_global_coordinates &lt;- section_global_coordinates %&gt;%
+  mutate(dist_int = distGeo(cbind(lon_180, lat)) / 1e6) %&gt;%
+  mutate(dist = cumsum(dist_int))
+
+
+section_global_coordinates &lt;- section_global_coordinates %&gt;%
+  select(lon, lat, dist) %&gt;% 
+  drop_na()
+
+rm(Atl_NS, Atl_SO, Pac_SN, Pac_SO, section)</code></pre>
+<pre class="r"><code>ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = &quot;grey80&quot;) +
+  geom_point(data = section_global_coordinates,
+             aes(lon, lat, col = dist)) +
+  scale_fill_grey() +
+  scale_colour_viridis_b(name = &quot;Distance (Mm)&quot;) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;top&quot;,
+        axis.title = element_blank())</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/section_global_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="write-files" class="section level2">
-<h2><span class="header-section-number">2.5</span> Write files</h2>
+<h2><span class="header-section-number">2.4</span> Write files</h2>
 <pre class="r"><code>basinmask_01 %&gt;% 
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                        &quot;basin_mask_WOA18_AIP.csv&quot;))
@@ -2874,7 +2912,11 @@ basinmask_01 %&gt;%
 
 landmask %&gt;% 
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
-                       &quot;land_mask_WOA18.csv&quot;))</code></pre>
+                       &quot;land_mask_WOA18.csv&quot;))
+
+section_global_coordinates %&gt;%
+  write_csv(here::here(&quot;data&quot;,
+                       &quot;section_global_coordinates.csv&quot;))</code></pre>
 </div>
 </div>
 <div id="climatologies" class="section level1">
@@ -2974,17 +3016,8 @@ WOA18_predictors &lt;- left_join(WOA18_predictors_grid, WOA18_predictors)</code>
                          longitude = lon - 180,
                          latitude = lat))</code></pre>
 </div>
-<div id="section" class="section level3">
-<h3><span class="header-section-number">3.4.2</span> Section</h3>
-<pre class="r"><code>section_global_coordinates &lt;-
-  read_csv(here::here(&quot;data&quot;,
-                      &quot;section_global_coordinates.csv&quot;))
-
-section_global(WOA18_predictors, &quot;THETA&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/WOA18_pot_temperature_section-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
 <div id="profile" class="section level3">
-<h3><span class="header-section-number">3.4.3</span> Profile</h3>
+<h3><span class="header-section-number">3.4.2</span> Profile</h3>
 <p>Example profile from North Atlantic Ocean.</p>
 <pre class="r"><code>WOA18_predictors %&gt;%
   filter(lat == parameters$lat_Atl_profile,
@@ -2997,6 +3030,15 @@ section_global(WOA18_predictors, &quot;THETA&quot;)</code></pre>
   scale_y_reverse() +
   scale_color_brewer(palette = &quot;Dark2&quot;, name = &quot;Scale&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/WOA18_potential_temperature_profile-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section" class="section level3">
+<h3><span class="header-section-number">3.4.3</span> Section</h3>
+<pre class="r"><code>section_global_coordinates &lt;-
+  read_csv(here::here(&quot;data&quot;,
+                      &quot;section_global_coordinates.csv&quot;))
+
+section_global(WOA18_predictors, &quot;THETA&quot;)</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/WOA18_pot_temperature_section-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="neutral-density" class="section level2">
@@ -3047,7 +3089,7 @@ WOA18_predictors &lt;- as_tibble(WOA18_predictors)</code></pre>
 <pre class="r"><code>WOA18_predictors %&gt;% 
   write_csv(here::here(&quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
                        &quot;WOA18_predictors.csv&quot;))</code></pre>
-<pre class="r"><code>rm(list = setdiff(ls(), c(&quot;landmask&quot;, &quot;parameters&quot;)))
+<pre class="r"><code>rm(list = setdiff(ls(), c(&quot;landmask&quot;, &quot;parameters&quot;, &quot;section_global_coordinates&quot;)))
 source(here::here(&quot;code&quot;, &quot;plotting_functions.R&quot;))
 
 WOA18_predictors &lt;- 
@@ -3068,15 +3110,10 @@ WOA18_predictors &lt;-
 <pre class="r"><code>map_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="sections" class="section level3">
-<h3><span class="header-section-number">3.6.2</span> Sections</h3>
-<pre class="r"><code>section_climatology(WOA18_predictors, &quot;tem&quot;)</code></pre>
+<div id="section-1" class="section level3">
+<h3><span class="header-section-number">3.6.2</span> Section</h3>
+<pre class="r"><code>section_global(WOA18_predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="sections-shallow" class="section level3">
-<h3><span class="header-section-number">3.6.3</span> Sections shallow</h3>
-<pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;tem&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/temperature_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="salinity-plots" class="section level2">
@@ -3086,15 +3123,10 @@ WOA18_predictors &lt;-
 <pre class="r"><code>map_climatology(WOA18_predictors, &quot;sal&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="sections-1" class="section level3">
-<h3><span class="header-section-number">3.7.2</span> Sections</h3>
-<pre class="r"><code>section_climatology(WOA18_predictors, &quot;sal&quot;)</code></pre>
+<div id="section-2" class="section level3">
+<h3><span class="header-section-number">3.7.2</span> Section</h3>
+<pre class="r"><code>section_global(WOA18_predictors, &quot;sal&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="sections-shallow-1" class="section level3">
-<h3><span class="header-section-number">3.7.3</span> Sections shallow</h3>
-<pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;sal&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/salinity_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="neutral-density-plots" class="section level2">
@@ -3104,15 +3136,10 @@ WOA18_predictors &lt;-
 <pre class="r"><code>map_climatology(WOA18_predictors, &quot;gamma&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_surface_WOA18_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="sections-2" class="section level3">
+<div id="sections" class="section level3">
 <h3><span class="header-section-number">3.8.2</span> Sections</h3>
-<pre class="r"><code>section_climatology(WOA18_predictors, &quot;gamma&quot;)</code></pre>
+<pre class="r"><code>section_global(WOA18_predictors, &quot;gamma&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="sections-shallow-2" class="section level3">
-<h3><span class="header-section-number">3.8.3</span> Sections shallow</h3>
-<pre class="r"><code>section_climatology_shallow(WOA18_predictors, &quot;gamma&quot;)</code></pre>
-<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
