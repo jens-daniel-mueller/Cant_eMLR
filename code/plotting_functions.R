@@ -6,14 +6,8 @@ map_climatology <- function(df, var) {
                 aes(lon, lat), fill = "grey80") +
     geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
                 aes(lon, lat, fill = !!var)) +
-    geom_vline(
-      xintercept = c(
-        parameters$lon_Atl_section,
-        parameters$lon_Pac_section,
-        parameters$lon_Ind_section
-      ),
-      col = "white"
-    ) +
+    geom_raster(data = section_global_coordinates,
+               aes(lon, lat), fill = "white") +
     coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
     theme(axis.title = element_blank()) +

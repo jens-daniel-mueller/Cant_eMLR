@@ -507,16 +507,6 @@ WOA18_predictors %>%
 
 ```
 
-```{r read_WOA18_predictor_file_gamma}
-
-rm(list = setdiff(ls(), c("landmask", "parameters", "section_global_coordinates")))
-source(here::here("code", "plotting_functions.R"))
-
-WOA18_predictors <- 
-  read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                       "WOA18_predictors.csv"))
-```
-
 ## Temperature plots
 
 Below, following subsets of the climatologies are plotted for all relevant parameters:  
