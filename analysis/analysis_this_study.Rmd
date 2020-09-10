@@ -268,6 +268,7 @@ section_zonal_average_continous(Cant_predictor_average_zonal,
 }
 
 
+rm(variable)
 ```
 
 
@@ -360,15 +361,17 @@ Cant concentration for selected depth levels at which mapping was performed.
 ```{r Cant_depth_layer_maps, fig.asp=1}
 
 Cant_average %>%
-  filter(depth %in% parameters$depth_levels) %>% 
-  ggplot(aes(lon, lat, fill = Cant_mean)) + 
+  filter(depth %in% parameters$depth_levels) %>%
+  ggplot(aes(lon, lat, fill = Cant_mean)) +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey80") +
   geom_raster() +
   scale_fill_divergent(guide = "colorstrip",
                        breaks = MakeBreaks(5),
                        name = "Cant") +
   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
   coord_quickmap(expand = 0) +
-  facet_grid(depth~eras)
+  facet_grid(depth ~ eras)
 
 ```
 
