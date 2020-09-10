@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree143fbd78441f801f79ffaa813a0c30d3f61e5269targetblank143fbd7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/143fbd78441f801f79ffaa813a0c30d3f61e5269" target="_blank">143fbd7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeacd5ac045f84c84a414313d5b2d066c4386e4f42targetblankacd5ac0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/acd5ac045f84c84a414313d5b2d066c4386e4f42" target="_blank">acd5ac0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree143fbd78441f801f79ffaa813a0c30d3f61e5269targetblank143fbd7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeacd5ac045f84c84a414313d5b2d066c4386e4f42targetblankacd5ac0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/143fbd78441f801f79ffaa813a0c30d3f61e5269" target="_blank">143fbd7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/acd5ac045f84c84a414313d5b2d066c4386e4f42" target="_blank">acd5ac0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -646,9 +646,6 @@ Ignored files:
     Ignored:    data/mapping/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
-
-Unstaged changes:
-    Modified:   code/plotting_functions.R
 
 </code></pre>
 <p>
@@ -687,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/acd5ac045f84c84a414313d5b2d066c4386e4f42/analysis/read_Gruber_2019_Cant.Rmd" target="_blank">acd5ac0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+rebuild with global sections only
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/a34a239e46e7f6079fd0a3e4e04c07490eacc6f5/docs/read_Gruber_2019_Cant.html" target="_blank">a34a239</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1511,6 +1542,7 @@ rebuild with Gruber Cant
 </div>
 </div>
 <pre class="r"><code>library(tidyverse)
+library(patchwork)
 library(lubridate)
 library(tidync)
 library(stars)</code></pre>
@@ -1573,18 +1605,13 @@ dcant_inv &lt;- inner_join(dcant_inv, basinmask)</code></pre>
 </div>
 <div id="sections-basin" class="section level2">
 <h2><span class="header-section-number">4.3</span> Sections basin</h2>
-<pre class="r"><code>section_climatology(dcant, &quot;cant&quot;)</code></pre>
+<pre class="r"><code>section_global(dcant, &quot;cant&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-at-regular-longitudes" class="section level2">
 <h2><span class="header-section-number">4.4</span> Sections at regular longitudes</h2>
 <pre class="r"><code>section_climatology_regular(dcant %&gt;% filter(cant &lt; 30), &quot;cant&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections_regular-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="sections-shallow" class="section level2">
-<h2><span class="header-section-number">4.5</span> Sections shallow</h2>
-<pre class="r"><code>section_climatology_shallow(dcant, &quot;cant&quot;)</code></pre>
-<p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="write-files" class="section level1">
@@ -1620,9 +1647,9 @@ attached base packages:
 
 other attached packages:
  [1] stars_0.4-3     sf_0.9-5        abind_1.4-5     tidync_0.2.4   
- [5] lubridate_1.7.9 forcats_0.5.0   stringr_1.4.0   dplyr_1.0.0    
- [9] purrr_0.3.4     readr_1.3.1     tidyr_1.1.0     tibble_3.0.3   
-[13] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
+ [5] lubridate_1.7.9 patchwork_1.0.1 forcats_0.5.0   stringr_1.4.0  
+ [9] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
+[13] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] httr_1.4.2         jsonlite_1.7.0     viridisLite_0.3.0  here_0.1          
