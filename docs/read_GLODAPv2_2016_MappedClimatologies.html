@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee093533732e8c5db1be3e73da76ced358bd76e11targetblanke093533a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e093533732e8c5db1be3e73da76ced358bd76e11" target="_blank">e093533</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreef74449b18eb6a3474ab9995b20720d8a8406bb19targetblankf74449ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/f74449b18eb6a3474ab9995b20720d8a8406bb19" target="_blank">f74449b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee093533732e8c5db1be3e73da76ced358bd76e11targetblanke093533a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreef74449b18eb6a3474ab9995b20720d8a8406bb19targetblankf74449ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e093533732e8c5db1be3e73da76ced358bd76e11" target="_blank">e093533</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/f74449b18eb6a3474ab9995b20720d8a8406bb19" target="_blank">f74449b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -684,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/f74449b18eb6a3474ab9995b20720d8a8406bb19/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">f74449b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+global section plots added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/3e3cef5a04521880356d4c5e72fbc144ed1813a0/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">3e3cef5</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2290,12 +2324,8 @@ print(file_list)</code></pre>
 </div>
 <div id="plot-data-and-write-csv" class="section level1">
 <h1><span class="header-section-number">2</span> Plot data and write csv</h1>
-<p>Below, following subsets of the climatologies are plotted for all relevant parameters:</p>
-<ul>
-<li>Horizontal planes at 0, 150, 500, 2000m</li>
-<li>Meridional sections at longitudes: 335.5, 190.5, 70.5</li>
-</ul>
-<p>Section locations are indicated as white lines in maps.</p>
+<p>Below, subsets of the climatologies are plotted for all relevant parameters.</p>
+<p>The global section path is indicated as white line in maps.</p>
 <pre class="r"><code># file &lt;- file_list[1]
 
 for (file in file_list) {
