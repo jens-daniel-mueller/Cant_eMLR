@@ -18,6 +18,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(patchwork)
 library(lubridate)
 library(tidync)
 library(stars)
@@ -45,6 +46,9 @@ landmask <-
       "land_mask_WOA18.csv"
     )
   )
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -136,7 +140,7 @@ map_climatology_inv(dcant_inv, "cant_inv")
 
 ```{r Cant_sections, fig.asp=0.8}
 
-section_climatology(dcant, "cant")
+section_global(dcant, "cant")
 
 ```
 
@@ -145,14 +149,6 @@ section_climatology(dcant, "cant")
 ```{r Cant_sections_regular, fig.asp=2}
 
 section_climatology_regular(dcant %>% filter(cant < 30), "cant")
-
-```
-
-## Sections shallow
-
-```{r Cant_sections_shallow, fig.asp=0.8}
-
-section_climatology_shallow(dcant, "cant")
 
 ```
 

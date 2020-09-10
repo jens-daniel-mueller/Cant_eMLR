@@ -18,6 +18,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(patchwork)
 library(lubridate)
 ```
 
@@ -43,6 +44,9 @@ landmask <-
       "land_mask_WOA18.csv"
     )
   )
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -153,19 +157,20 @@ map_climatology(Cant, "cant")
 
 ## Sections
 
-```{r Cant_sections, fig.asp=0.8}
+```{r Cant_sections}
 
-section_climatology(Cant, "cant")
+section_global(Cant, "cant")
+
+```
+
+## Sections at regular longitudes
+
+```{r Cant_sections_regular, fig.asp=2}
+
+section_climatology_regular(Cant, "cant")
 
 ```
 
-## Sections shallow
-
-```{r Cant_sections_shallow, fig.asp=0.8}
-
-section_climatology_shallow(Cant, "cant")
-
-```
 
 ## Inventory maps
 

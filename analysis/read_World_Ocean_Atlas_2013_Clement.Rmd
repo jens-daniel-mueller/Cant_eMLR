@@ -18,6 +18,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(patchwork)
 library(tidync)
 library(reticulate)
 library(oce)
@@ -36,6 +37,9 @@ basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files"
 
 landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                                  "land_mask_WOA18.csv"))
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 
 ```
 
@@ -124,19 +128,12 @@ map_climatology(nd_mask_tibble, "gamma")
 
 ### Sections
 
-```{r neutral_density_sections_WOA18, fig.asp=0.8}
+```{r neutral_density_section_WOA18}
 
-section_climatology(nd_mask_tibble, "gamma")
-
-```
-
-### Sections shallow
-
-```{r neutral_density_sections_WOA18_shallow, fig.asp=0.8}
-
-section_climatology_shallow(nd_mask_tibble, "gamma")
+section_global(nd_mask_tibble, "gamma")
 
 ```
+
 
 
 ## Write file
