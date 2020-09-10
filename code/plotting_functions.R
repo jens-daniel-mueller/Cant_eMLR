@@ -149,3 +149,39 @@ section_zonal_average_continous <- function(df, var, gamma) {
     facet_grid(basin_AIP ~ eras)
 
 }
+
+section_global <- function(df, var) {
+
+  name_var <- var
+  var <- sym(var)
+
+  df_sub <- left_join(section_global_coordinates, df)
+
+  surface <- df_sub %>%
+    ggplot(aes(dist, depth, z = !!var)) +
+    geom_contour_filled() +
+    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
+               aes(xintercept = dist), col = "white") +
+    scale_fill_viridis_d(name = name_var) +
+    coord_cartesian(expand = 0,
+                    ylim = c(500,0)) +
+    scale_y_reverse() +
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    labs(y = "Depth (m)")
+
+  deep <- df_sub %>%
+    ggplot(aes(dist, depth, z = !!var)) +
+    geom_contour_filled() +
+    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
+               aes(xintercept = dist), col = "white") +
+    scale_fill_viridis_d(name = name_var) +
+    scale_y_reverse() +
+    coord_cartesian(expand = 0, ylim = c(3000,500)) +
+    labs(x = "Distance (km)", y = "Depth (m)")
+
+  surface / deep +
+    plot_layout(guides = 'collect')
+
+}

@@ -45,6 +45,51 @@ theme_set(theme_bw())
 
 # Masks
 
+
+## Land
+
+### Read mask
+
+The land sea mask with 1x1° resolution from the file `landsea_01.msk` was used.
+
+```{r read_landsea_mask}
+
+landsea_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
+                                  "landsea_01.msk"),
+                         skip = 1,
+                         col_types = list(.default = "d"))
+
+```
+
+### Label
+
+According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document:  
+
+*"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
+
+The landmask was derived as coordinates with value 1.
+
+```{r assign_region_labels}
+
+landmask <- landsea_01 %>% 
+  mutate(region = if_else(Bottom_Standard_Level == "1",
+                         "land", "ocean")) %>% 
+  select(-Bottom_Standard_Level)
+
+landmask <- landmask %>% 
+  rename(lat = Latitude,
+         lon = Longitude) %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+landmask <- landmask %>%
+  filter(region == "land", 
+         lat >= parameters$lat_min,
+         lat <= parameters$lat_max) %>% 
+  select(-region)
+
+rm(landsea_01)
+```
+
 ## Basins
 
 ### Read mask
@@ -114,114 +159,9 @@ basinmask_01 <- basinmask_01 %>%
 
 ```
 
-## Land
+### Map
 
-### Read mask
-
-The land sea mask with 1x1° resolution from the file `landsea_01.msk` was used.
-
-```{r read_landsea_mask}
-
-landsea_01 <- read_csv(here::here("data/World_Ocean_Atlas_2018",
-                                  "landsea_01.msk"),
-                         skip = 1,
-                         col_types = list(.default = "d"))
-
-```
-
-### Label
-
-According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18documentation.pdf){target="_blank"} document:  
-
-*"The landsea_XX.msk contains the standard depth level number at which the bottom of the ocean is first encountered at each quarter-degree or one-degree square for the entire world.  Land will have a value of 1, corresponding to the surface."*
-
-The landmask was derived as coordinates with value 1.
-
-```{r assign_region_labels}
-
-landmask <- landsea_01 %>% 
-  mutate(region = if_else(Bottom_Standard_Level == "1",
-                         "land", "ocean")) %>% 
-  select(-Bottom_Standard_Level)
-
-landmask <- landmask %>% 
-  rename(lat = Latitude,
-         lon = Longitude) %>% 
-  mutate(lon = if_else(lon < 20, lon + 360, lon))
-
-landmask <- landmask %>%
-  filter(region == "land", 
-         lat >= parameters$lat_min,
-         lat <= parameters$lat_max) %>% 
-  select(-region)
-
-rm(landsea_01)
-```
-
-## Create Atl-SO-Pac section
-
-```{r Create_Atl_SO_Pac_section, eval=FALSE}
-
-df <- basinmask_01 %>%
-  select(lon, lat)
-
-Atl_NS <- df %>%
-  filter(
-    lon == parameters$lon_Atl_section,
-    lat <= parameters$lat_section_N,
-    lat >= parameters$lat_section_S
-  ) %>%
-  arrange(-lat)
-
-Atl_SO <- df %>%
-  filter(lon > parameters$lon_Atl_section,
-         lat == parameters$lat_section_S) %>%
-  arrange(lon)
-
-Pac_SO <- df %>%
-  filter(lon < parameters$lon_Pac_section,
-         lat == parameters$lat_section_S) %>%
-  arrange(lon)
-
-Pac_SN <- df %>%
-  filter(
-    lon == parameters$lon_Pac_section,
-    lat <= parameters$lat_section_N,
-    lat >= parameters$lat_section_S
-  ) %>%
-  arrange(lat)
-
-section <- bind_rows(Atl_NS,
-                     Atl_SO,
-                     Pac_SO,
-                     Pac_SN)
-
-section <- section %>%
-  mutate(lon_180 = if_else(lon > 180, lon - 360, lon))
-
-section <- section %>%
-  mutate(dist_int = distGeo(cbind(lon_180, lat)) / 1e3) %>%
-  mutate(dist = cumsum(dist_int))
-
-
-section <- section %>%
-  select(lon, lat, dist)
-
-section %>%
-  write_csv(here::here("data",
-                       "section_global_coordinates.csv"))
-
-rm(df, 
-   Atl_NS, Atl_SO, Pac_SN, Pac_SO,
-   section)
-
-```
-
-
-
-## Map
-
-```{r basin_masks_WOA18_map}
+```{r basin_masks_WOA18_map, fig.asp=0.6}
 
 ggplot() +
   geom_raster(data = landmask,
@@ -235,6 +175,80 @@ ggplot() +
         axis.title = element_blank())
 
 ```
+
+
+## Global section
+
+To plot sections from the North Atlantic south to the Southern Ocean, around Antartica and back North across the Pacific Ocean, corresponding coordinates were subsetted from the basin mask and distances between coordinate grid points calculated.
+
+```{r Create_section_global}
+
+section <- basinmask_01 %>%
+  select(lon, lat)
+
+Atl_NS <- section %>%
+  filter(
+    lon == parameters$lon_Atl_section,
+    lat <= parameters$lat_section_N,
+    lat >= parameters$lat_section_S
+  ) %>%
+  arrange(-lat)
+
+Atl_SO <- section %>%
+  filter(lon > parameters$lon_Atl_section,
+         lat == parameters$lat_section_S) %>%
+  arrange(lon)
+
+Pac_SO <- section %>%
+  filter(lon < parameters$lon_Pac_section,
+         lat == parameters$lat_section_S) %>%
+  arrange(lon)
+
+Pac_SN <- section %>%
+  filter(
+    lon == parameters$lon_Pac_section,
+    lat <= parameters$lat_section_N,
+    lat >= parameters$lat_section_S
+  ) %>%
+  arrange(lat)
+
+section_global_coordinates <- bind_rows(Atl_NS,
+                     Atl_SO,
+                     Pac_SO,
+                     Pac_SN)
+
+section_global_coordinates <- section_global_coordinates %>%
+  mutate(lon_180 = if_else(lon > 180, lon - 360, lon))
+
+section_global_coordinates <- section_global_coordinates %>%
+  mutate(dist_int = distGeo(cbind(lon_180, lat)) / 1e6) %>%
+  mutate(dist = cumsum(dist_int))
+
+
+section_global_coordinates <- section_global_coordinates %>%
+  select(lon, lat, dist) %>% 
+  drop_na()
+
+rm(Atl_NS, Atl_SO, Pac_SN, Pac_SO, section)
+
+```
+
+```{r section_global_map, fig.asp=0.6}
+
+ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey80") +
+  geom_point(data = section_global_coordinates,
+             aes(lon, lat, col = dist)) +
+  scale_fill_grey() +
+  scale_colour_viridis_b(name = "Distance (Mm)") +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "top",
+        axis.title = element_blank())
+
+```
+
+
 
 
 ## Write files
@@ -255,6 +269,10 @@ basinmask_01 %>%
 landmask %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                        "land_mask_WOA18.csv"))
+
+section_global_coordinates %>%
+  write_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 
 ```
 
@@ -392,18 +410,6 @@ WOA18_predictors <- WOA18_predictors %>%
 
 ```
 
-### Section
-
-```{r WOA18_pot_temperature_section, fig.asp=0.6}
-
-section_global_coordinates <-
-  read_csv(here::here("data",
-                      "section_global_coordinates.csv"))
-
-section_global(WOA18_predictors, "THETA")
-
-```
-
 
 ### Profile
 
@@ -422,6 +428,20 @@ WOA18_predictors %>%
   scale_color_brewer(palette = "Dark2", name = "Scale")
 
 ```
+
+### Section
+
+```{r WOA18_pot_temperature_section, fig.asp=0.6}
+
+section_global_coordinates <-
+  read_csv(here::here("data",
+                      "section_global_coordinates.csv"))
+
+section_global(WOA18_predictors, "THETA")
+
+```
+
+
 
 ## Neutral density
 
@@ -489,7 +509,7 @@ WOA18_predictors %>%
 
 ```{r read_WOA18_predictor_file_gamma}
 
-rm(list = setdiff(ls(), c("landmask", "parameters")))
+rm(list = setdiff(ls(), c("landmask", "parameters", "section_global_coordinates")))
 source(here::here("code", "plotting_functions.R"))
 
 WOA18_predictors <- 
@@ -514,19 +534,11 @@ map_climatology(WOA18_predictors, "tem")
 
 ```
 
-### Sections
+### Section
 
-```{r temperature_sections_WOA18, fig.asp=0.8}
+```{r temperature_sections_WOA18, fig.asp=0.6}
 
-section_climatology(WOA18_predictors, "tem")
-
-```
-
-### Sections shallow
-
-```{r temperature_sections_WOA18_shallow, fig.asp=0.8}
-
-section_climatology_shallow(WOA18_predictors, "tem")
+section_global(WOA18_predictors, "tem")
 
 ```
 
@@ -541,21 +553,14 @@ map_climatology(WOA18_predictors, "sal")
 
 ```
 
-### Sections
+### Section
 
-```{r salinity_sections_WOA18, fig.asp=0.8}
+```{r salinity_sections_WOA18, fig.asp=0.6}
 
-section_climatology(WOA18_predictors, "sal")
-
-```
-
-### Sections shallow
-
-```{r salinity_sections_WOA18_shallow, fig.asp=0.8}
-
-section_climatology_shallow(WOA18_predictors, "sal")
+section_global(WOA18_predictors, "sal")
 
 ```
+
 
 
 
@@ -571,16 +576,8 @@ map_climatology(WOA18_predictors, "gamma")
 
 ### Sections
 
-```{r neutral_density_sections_WOA18, fig.asp=0.8}
+```{r neutral_density_sections_WOA18, fig.asp=0.6}
 
-section_climatology(WOA18_predictors, "gamma")
-
-```
-
-### Sections shallow
-
-```{r neutral_density_sections_WOA18_shallow, fig.asp=0.8}
-
-section_climatology_shallow(WOA18_predictors, "gamma")
+section_global(WOA18_predictors, "gamma")
 
 ```
