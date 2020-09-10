@@ -20,6 +20,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(stars)
 library(metR)
+library(patchwork)
 ```
 
 
@@ -44,6 +45,10 @@ landmask <-
       "land_mask_WOA18.csv"
     )
   )
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
+
 ```
 
 ```{r read_functions, include = FALSE}
@@ -80,7 +85,7 @@ Section locations are indicated as white lines in maps.
 
 ```{r GLODAPv2_2016_Mappedclimatologies}
 
-file <- file_list[1]
+# file <- file_list[1]
 
 for (file in file_list) {
  
@@ -136,11 +141,7 @@ map_climatology(clim_tibble, parameter)
 # plot sections
 
 print(
-section_climatology(clim_tibble, parameter)
-)
-
-print(
-section_climatology_shallow(clim_tibble, parameter)
+section_global(clim_tibble, parameter)
 )
 
 }
