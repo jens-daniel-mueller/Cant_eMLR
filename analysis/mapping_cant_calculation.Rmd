@@ -142,6 +142,58 @@ Cant <- Cant %>%
 
 ```
 
+## Sections by model
+
+Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
+
+
+```{r Cant_section_by_model_eras_lon, eval=FALSE}
+
+library(scales)
+
+for (i_eras in unique(Cant$eras)) {
+  # i_eras <- unique(Cant$eras)[2]
+  Cant_eras <- Cant %>%
+    filter(eras == i_eras)
+  
+  for (i_lon in seq(20.5, 360, 20)) {
+    # i_lon <- seq(20.5, 360, 20)[7]
+    Cant_eras_lon <- Cant_eras %>%
+      filter(lon == i_lon)
+    
+    Cant_eras_lon %>%
+      ggplot(aes(lat, depth, col = Cant)) +
+      geom_point() +
+      scale_color_gradient2(
+        name = "Cant",
+        high = muted("red"),
+        mid = "grey",
+        low = muted("blue")
+      ) +
+      scale_y_reverse(limits = c(parameters$inventory_depth, NA)) +
+      scale_x_continuous(limits = c(-75, 65)) +
+      coord_cartesian(expand = 0) +
+      guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+      labs(title = paste("eras:", i_eras, "| lon:", i_lon)) +
+      facet_wrap( ~ model, ncol = 5)
+    
+    ggsave(
+      here::here(
+        "output/figure/mapping",
+        paste(i_eras,
+              "lon",
+              i_lon,
+              "model_Cant.png",
+              sep = "_")
+      ),
+      width = 17,
+      height = 9
+    )
+    
+  }
+}
+
+```
 
 
 ## Mean Cant fields
