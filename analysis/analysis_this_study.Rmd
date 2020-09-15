@@ -92,6 +92,10 @@ Cant_inv <-
 
 ```
 
+C* estimates from this study:
+
+- Mean and SD per grid cell (lat, lon, depth)
+- Zonal mean and SD (basin, lat, depth)
 
 ```{r read_cstar_files}
 
@@ -107,36 +111,58 @@ Cstar_average_zonal <-
 
 ```
 
+Cleaned GLODAPv2_2020 file as used in this study
+
+```{r read_GLODAP_used_for_fitting}
+
+GLODAP <-
+  read_csv(
+    here::here(
+      "data/GLODAPv2_2020/_summarized_data_files",
+      "GLODAP_MLR_fitting_ready.csv"
+    )
+  )
+
+```
+
 
 # Neutral density
 
 ## Slab depth
 
-Please note that density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin.
+Please note that:
 
-```{r gamma_maps, fig.asp=1}
+- density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin
+- predictor density slabs are only shown for the upper `r parameters$inventory_depth`m as used for the mapping, whereas GLODAP observations are displayed for the entire water column as used for fitting eMLRs (in both cases shallow waters are excluded at low density)
+
+```{r gamma_maps, fig.asp=2}
 
 gamma_maps <- Cant_average %>% 
   group_by(lat, lon, gamma_slab) %>% 
-  summarise(depth = mean(depth, na.rm = TRUE)) %>% 
+  summarise(depth_max = max(depth, na.rm = TRUE)) %>% 
   ungroup()
 
-gamma_maps %>%
-  ggplot(aes(lon, lat, fill = depth)) +
+GLODAP_obs_coverage <- GLODAP %>% 
+  count(lat, lon, gamma_slab, era)
+  
+
+ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat),
               fill = "grey80") +
-  geom_raster() +
-  facet_wrap( ~ gamma_slab, ncol = 3) +
+  geom_raster(data = gamma_maps,
+              aes(lon, lat, fill = depth_max)) +
+  geom_raster(data = GLODAP_obs_coverage,
+              aes(lon, lat), fill = "red") +
+  facet_grid(gamma_slab ~ era) +
   coord_quickmap(expand = 0) +
-  scale_fill_scico(palette = "batlow",
-                          direction = -1) +
+  scale_fill_viridis_c(direction = -1) +
   theme(axis.title = element_blank(),
         axis.ticks = element_blank(),
         axis.text = element_blank(),
         legend.position = "top")
 
-rm(gamma_maps)
+rm(gamma_maps, GLODAP_obs_coverage)
 ```
 
 ## Surface maps
