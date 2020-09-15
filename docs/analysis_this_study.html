@@ -502,7 +502,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analysis of Cant estimates</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">14 September, 2020</h4>
+<h4 class="date">15 September, 2020</h4>
 
 </div>
 
@@ -527,7 +527,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-14
+<strong>Last updated:</strong> 2020-09-15
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1a13af4c7c9fe63e19c774d38cdc653a5fcaca63targetblank1a13af4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1a13af4c7c9fe63e19c774d38cdc653a5fcaca63" target="_blank">1a13af4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb9d37ab66dcd842bd3d11b5fdfb807b8513121b0targetblankb9d37aba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b9d37ab66dcd842bd3d11b5fdfb807b8513121b0" target="_blank">b9d37ab</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1a13af4c7c9fe63e19c774d38cdc653a5fcaca63targetblank1a13af4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb9d37ab66dcd842bd3d11b5fdfb807b8513121b0targetblankb9d37aba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1a13af4c7c9fe63e19c774d38cdc653a5fcaca63" target="_blank">1a13af4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b9d37ab66dcd842bd3d11b5fdfb807b8513121b0" target="_blank">b9d37ab</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -684,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/b9d37ab66dcd842bd3d11b5fdfb807b8513121b0/analysis/analysis_this_study.Rmd" target="_blank">b9d37ab</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-15
+</td>
+<td>
+observations per density slab included
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/2cd847c17b2233dbfff31ab758c91d420f367862/docs/analysis_this_study.html" target="_blank">2cd847c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1399,6 +1433,11 @@ Cant_predictor_average_zonal &lt;-
 Cant_inv &lt;-
   read_csv(here::here(&quot;data/mapping/_summarized_files&quot;,
                          &quot;Cant_inv.csv&quot;))</code></pre>
+<p>C* estimates from this study:</p>
+<ul>
+<li>Mean and SD per grid cell (lat, lon, depth)</li>
+<li>Zonal mean and SD (basin, lat, depth)</li>
+</ul>
 <pre class="r"><code>Cstar_average &lt;-
   read_csv(here::here(&quot;data/mapping/_summarized_files&quot;,
                          &quot;Cstar_average.csv&quot;))
@@ -1406,33 +1445,50 @@ Cant_inv &lt;-
 Cstar_average_zonal &lt;-
   read_csv(here::here(&quot;data/mapping/_summarized_files&quot;,
                          &quot;Cstar_average_zonal.csv&quot;))</code></pre>
+<p>Cleaned GLODAPv2_2020 file as used in this study</p>
+<pre class="r"><code>GLODAP &lt;-
+  read_csv(
+    here::here(
+      &quot;data/GLODAPv2_2020/_summarized_data_files&quot;,
+      &quot;GLODAP_MLR_fitting_ready.csv&quot;
+    )
+  )</code></pre>
 </div>
 <div id="neutral-density" class="section level1">
 <h1><span class="header-section-number">2</span> Neutral density</h1>
 <div id="slab-depth" class="section level2">
 <h2><span class="header-section-number">2.1</span> Slab depth</h2>
-<p>Please note that density slabs covering values &gt;28.1 occur by definition only either in the Atlantic or Indo-Pacific basin.</p>
+<p>Please note that:</p>
+<ul>
+<li>density slabs covering values &gt;28.1 occur by definition only either in the Atlantic or Indo-Pacific basin</li>
+<li>predictor density slabs are only shown for the upper 3000m as used for the mapping, whereas GLODAP observations are displayed for the entire water column as used for fitting eMLRs (in both cases shallow waters are excluded at low density)</li>
+</ul>
 <pre class="r"><code>gamma_maps &lt;- Cant_average %&gt;% 
   group_by(lat, lon, gamma_slab) %&gt;% 
-  summarise(depth = mean(depth, na.rm = TRUE)) %&gt;% 
+  summarise(depth_max = max(depth, na.rm = TRUE)) %&gt;% 
   ungroup()
 
-gamma_maps %&gt;%
-  ggplot(aes(lon, lat, fill = depth)) +
+GLODAP_obs_coverage &lt;- GLODAP %&gt;% 
+  count(lat, lon, gamma_slab, era)
+  
+
+ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat),
               fill = &quot;grey80&quot;) +
-  geom_raster() +
-  facet_wrap( ~ gamma_slab, ncol = 3) +
+  geom_raster(data = gamma_maps,
+              aes(lon, lat, fill = depth_max)) +
+  geom_raster(data = GLODAP_obs_coverage,
+              aes(lon, lat), fill = &quot;red&quot;) +
+  facet_grid(gamma_slab ~ era) +
   coord_quickmap(expand = 0) +
-  scale_fill_scico(palette = &quot;batlow&quot;,
-                          direction = -1) +
+  scale_fill_viridis_c(direction = -1) +
   theme(axis.title = element_blank(),
         axis.ticks = element_blank(),
         axis.text = element_blank(),
         legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/gamma_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(gamma_maps)</code></pre>
+<pre class="r"><code>rm(gamma_maps, GLODAP_obs_coverage)</code></pre>
 </div>
 <div id="surface-maps" class="section level2">
 <h2><span class="header-section-number">2.2</span> Surface maps</h2>
