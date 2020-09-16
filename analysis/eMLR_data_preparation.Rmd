@@ -289,7 +289,7 @@ co2_atm_tref <- right_join(co2_atm, tref) %>%
 
 GLODAP <- full_join(GLODAP, co2_atm_tref)
 
-rm(co2_atm, co2_atm_tref, tref)
+rm(co2_atm, tref)
 
 GLODAP <- GLODAP %>% 
   mutate(Cstar_tref_delta = 
@@ -676,7 +676,7 @@ rm(map,
 ```
 
 
-# Write file
+# Write files
 
 ```{r write_csv_GLODAP_used_for_fitting}
 
@@ -685,5 +685,14 @@ GLODAP <- GLODAP %>%
 
 GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                 "GLODAP_MLR_fitting_ready.csv"))
+
+co2_atm_tref %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
+                                "GLODAP_MLR_fitting_ready.csv"))
+
+co2_atm_tref  %>% 
+  write_csv(here::here(
+    "data/pCO2_atmosphere/_summarized_data_files",
+    "co2_atm_tref.csv"
+  ))
 
 ```

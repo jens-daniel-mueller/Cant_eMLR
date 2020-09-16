@@ -19,6 +19,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r library, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(metR)
+library(seacarb)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -54,6 +55,9 @@ landmask <-
     )
   )
 
+section_global_coordinates <-
+  read_csv(here::here("data",
+                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_parameters_functions, include = FALSE}
@@ -77,7 +81,24 @@ predictors <-
     read_csv(here::here("data/mapping/predictor_fields",
                          "W18_st_G16_opsn.csv"))
 
+predictors_surface <- 
+    read_csv(here::here("data/mapping/predictor_fields",
+                         "W18_st_G16_opsn_surface.csv"))
+
 ```
+
+# Atm. pCO2
+
+```{r read_atm_pCO2}
+
+co2_atm_tref <-
+  read_csv(here::here(
+    "data/pCO2_atmosphere/_summarized_data_files",
+    "co2_atm_tref.csv"
+  ))
+
+```
+
 
 
 # Load MLR models
@@ -103,6 +124,8 @@ rm(predictors, lm_all_wide)
 ```
 
 # Map Cant
+
+## Deep water
 
 ## Apply MLRs to predictor
 
@@ -142,7 +165,7 @@ Cant <- Cant %>%
 
 ```
 
-## Sections by model
+### Sections by model
 
 Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
 
@@ -194,6 +217,75 @@ for (i_eras in unique(Cant$eras)) {
 }
 
 ```
+
+
+## Surface water
+
+As outlined in Gruber et al. (2019), a transient equilibrium approach was applied to estimate Cant in surface waters, assuming that the CO2 system in these waters has followed the increase in atmospheric CO2 closely. 
+
+Using eq 10.2.16 from OBD, the change in anthropogenic CO2 in the upper ocean was computed as:
+
+ΔtCanteq(t2ref − t1ref )= 1∕γ ⋅ DIC/pCO2 ⋅ (pCO2atm (t2ref)− pCO2atm (t1ref))
+
+, where DIC and pCO2 are the in situ values, where γ is the buffer (Revelle) factor and where we evaluated the right-hand side using seacarb employing the Mehrbach constants as refitted by Dickson and Millero using the climatological values for temperature, salinity, DIC and Alk.
+
+
+```{r Cant_surface_calculation}
+
+
+co2_atm_tref <- co2_atm_tref %>% 
+  arrange(pCO2_tref) %>% 
+  mutate(d_pCO2_tref = pCO2_tref - lag(pCO2_tref)) %>% 
+  drop_na() %>% 
+  mutate(eras = c("JGOFS_GO", "GO_new")) %>% 
+  select(eras, d_pCO2_tref)
+
+predictors_surface <- predictors_surface %>% 
+  mutate(pCO2 = carb(flag = 15,
+                     var1 = TAlk*1e-6,
+                     var2 = TCO2*1e-6,
+                     S = sal,
+                     T = tem,
+                     P = depth/10,
+                     k1k2 = "l")$pCO2)
+
+map_climatology(predictors_surface, "pCO2")
+
+predictors_surface <- predictors_surface %>% 
+  mutate(rev_fac = buffer(flag = 15,
+                     var1 = TAlk*1e-6,
+                     var2 = TCO2*1e-6,
+                     S = sal,
+                     T = tem,
+                     P = depth/10,
+                     k1k2 = "l")$BetaD)
+
+map_climatology(predictors_surface, "rev_fac")
+
+Cant_surface <- full_join(predictors_surface, co2_atm_tref,
+                          by = character())
+
+Cant_surface <- Cant_surface %>% 
+  mutate(Cant = (1 / rev_fac) * (TCO2 / pCO2) * d_pCO2_tref)
+
+map_climatology(Cant_surface, "Cant")
+
+left_join(section_global_coordinates, Cant_surface) %>%
+  ggplot(aes(dist, depth, z = Cant)) +
+    geom_contour_filled() +
+    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
+               aes(xintercept = dist), col = "white") +
+    scale_fill_viridis_d(name = "Cant") +
+    coord_cartesian(expand = 0) +
+    scale_y_reverse() +
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          legend.position = "top") +
+    labs(y = "Depth (m)")
+
+```
+
 
 
 ## Mean Cant fields
