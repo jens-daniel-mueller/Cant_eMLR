@@ -229,16 +229,9 @@ Using eq 10.2.16 from OBD, the change in anthropogenic CO2 in the upper ocean wa
 
 , where DIC and pCO2 are the in situ values, where γ is the buffer (Revelle) factor and where we evaluated the right-hand side using seacarb employing the Mehrbach constants as refitted by Dickson and Millero using the climatological values for temperature, salinity, DIC and Alk.
 
+### pCO2 climatology
 
-```{r Cant_surface_calculation}
-
-
-co2_atm_tref <- co2_atm_tref %>% 
-  arrange(pCO2_tref) %>% 
-  mutate(d_pCO2_tref = pCO2_tref - lag(pCO2_tref)) %>% 
-  drop_na() %>% 
-  mutate(eras = c("JGOFS_GO", "GO_new")) %>% 
-  select(eras, d_pCO2_tref)
+```{r pCO2_climatology}
 
 predictors_surface <- predictors_surface %>% 
   mutate(pCO2 = carb(flag = 15,
@@ -247,9 +240,20 @@ predictors_surface <- predictors_surface %>%
                      S = sal,
                      T = tem,
                      P = depth/10,
+                     Pt = PO4*1e-6,
+                     Sit = silicate*1e-6,
                      k1k2 = "l")$pCO2)
 
 map_climatology(predictors_surface, "pCO2")
+
+section_global_surface(predictors_surface, "pCO2")
+
+
+```
+
+### Revelle factor
+
+```{r revelle_factor_climatology}
 
 predictors_surface <- predictors_surface %>% 
   mutate(rev_fac = buffer(flag = 15,
@@ -258,9 +262,26 @@ predictors_surface <- predictors_surface %>%
                      S = sal,
                      T = tem,
                      P = depth/10,
+                     Pt = PO4*1e-6,
+                     Sit = silicate*1e-6,
                      k1k2 = "l")$BetaD)
 
-# map_climatology(predictors_surface, "rev_fac")
+map_climatology(predictors_surface, "rev_fac")
+
+section_global_surface(predictors_surface, "rev_fac")
+
+```
+
+### Cant
+
+```{r Cant_surface}
+
+co2_atm_tref <- co2_atm_tref %>% 
+  arrange(pCO2_tref) %>% 
+  mutate(d_pCO2_tref = pCO2_tref - lag(pCO2_tref)) %>% 
+  drop_na() %>% 
+  mutate(eras = c("JGOFS_GO", "GO_new")) %>% 
+  select(eras, d_pCO2_tref)
 
 Cant_surface <- full_join(predictors_surface, co2_atm_tref,
                           by = character())
@@ -268,21 +289,9 @@ Cant_surface <- full_join(predictors_surface, co2_atm_tref,
 Cant_surface <- Cant_surface %>% 
   mutate(Cant = (1 / rev_fac) * (TCO2 / pCO2) * d_pCO2_tref)
 
-map_climatology(Cant_surface, "Cant")
+map_climatology_eras(Cant_surface, "Cant")
 
-# left_join(section_global_coordinates, Cant_surface) %>%
-#   ggplot(aes(dist, depth, z = Cant)) +
-#     geom_contour_filled() +
-#     geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
-#                aes(xintercept = dist), col = "white") +
-#     scale_fill_viridis_d(name = "Cant") +
-#     coord_cartesian(expand = 0) +
-#     scale_y_reverse() +
-#     theme(axis.title.x = element_blank(),
-#           axis.text.x = element_blank(),
-#           axis.ticks.x = element_blank(),
-#           legend.position = "top") +
-#     labs(y = "Depth (m)")
+section_global_surface_eras(Cant_surface, "Cant")
 
 ```
 
@@ -326,8 +335,10 @@ rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 # Cant <- Cant %>%
 #   select(lon, lat, depth, eras, basin, Cant, gamma, model)
 
+Cant <- Cant %>%
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
+
 Cant_average <- Cant %>%
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
   group_by(lon, lat, depth, eras, basin) %>%
   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
             Cant_sd = sd(Cant, na.rm = TRUE),
@@ -337,6 +348,47 @@ Cant_average <- Cant %>%
             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
   ungroup()
 
+# for (i_basin in unique(Cant$basin)) {
+#   for (i_eras in unique(Cant$eras)) {
+#     for (i_depth in unique(Cant$depth)) {
+#       
+#       # i_basin <- unique(Cant$basin)[1]
+#       # i_eras  <- unique(Cant$eras) [1]
+#       # i_depth <- unique(Cant$depth)[1]
+#       # print(i_basin)
+#       # print(i_eras)
+#       # print(i_depth)
+#       
+#       temp <- Cant %>%
+#         filter(basin == i_basin,
+#                eras == i_eras,
+#                depth == i_depth) %>%
+#         group_by(lon, lat) %>%
+#         summarise(
+#           Cant_mean = mean(Cant, na.rm = TRUE),
+#           Cant_sd = sd(Cant, na.rm = TRUE),
+#           Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
+#           Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
+#           gamma_mean = mean(gamma, na.rm = TRUE),
+#           gamma_sd = sd(gamma, na.rm = TRUE)
+#         ) %>%
+#         ungroup()
+#       
+#       if (exists("Cant_average")) {
+#         Cant_average <- bind_rows(Cant_average, temp)
+#       }
+#       
+#       if (!exists("Cant_average")) {
+#         Cant_average <- temp
+#       }
+#       
+#     }
+#     
+#   }
+#   
+# } 
+
+rm(Cant)
 
 ```
 
@@ -488,7 +540,8 @@ Step 2 is performed again for all Cant and positive Cant values only
 
 ```{r calculate_inventories}
 
-depth_level_volume <- tibble(depth = unique(Cant_average$depth))
+depth_level_volume <- tibble(depth = unique(Cant_average$depth)) %>% 
+  arrange(depth)
 
 depth_level_volume <- depth_level_volume %>%
   mutate(
@@ -499,6 +552,10 @@ depth_level_volume <- depth_level_volume %>%
   select(-c(layer_thickness_above,
             layer_thickness_below))
 
+depth_level_volume %>% 
+  ggplot(aes(depth, layer_thickness)) + 
+  geom_point()
+
 Cant_average <-
   full_join(Cant_average, depth_level_volume)
 
@@ -508,7 +565,6 @@ Cant_average <- Cant_average %>%
   select(-layer_thickness)
 
 Cant_inv <- Cant_average %>%
-  filter(depth <= parameters$inventory_depth) %>%
   group_by(lon, lat, basin, eras) %>%
   summarise(
     cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
@@ -548,8 +604,7 @@ Cant_inv %>%
     write_csv(here::here("data/mapping/_summarized_files",
                          "Cant_inv.csv"))
 
-rm(Cant,
-   Cant_average,
+rm(Cant_average,
    Cant_predictor_average,
    Cant_average_zonal,
    Cant_predictor_average_zonal,

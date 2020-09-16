@@ -75,6 +75,8 @@ Following variables are currently used:
 - Phosphate (+Phosphate*)
 - Silicate
 - Oxygen (+AOU)
+- TAlk (surface only)
+- TCO2 (surface only)
 
 
 ```{r load_GLODAPv2_2016b_MappedClimatologies}
@@ -107,10 +109,11 @@ GLODAP_predictors <- GLODAP_predictors %>%
 
 ```
 
-```{r load_GLODAPv2_2016b_MappedClimatologies_CO2_variables}
+
+```{r load_GLODAPv2_2016b_MappedClimatologies_surface}
 
 variables <-
-  c("TAlk", "TCO2")
+  c("PO4", "silicate", "TAlk", "TCO2")
 
 for (i_variable in variables) {
   temp <- read_csv(
