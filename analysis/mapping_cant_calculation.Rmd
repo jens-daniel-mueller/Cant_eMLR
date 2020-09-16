@@ -260,7 +260,7 @@ predictors_surface <- predictors_surface %>%
                      P = depth/10,
                      k1k2 = "l")$BetaD)
 
-map_climatology(predictors_surface, "rev_fac")
+# map_climatology(predictors_surface, "rev_fac")
 
 Cant_surface <- full_join(predictors_surface, co2_atm_tref,
                           by = character())
@@ -270,27 +270,28 @@ Cant_surface <- Cant_surface %>%
 
 map_climatology(Cant_surface, "Cant")
 
-left_join(section_global_coordinates, Cant_surface) %>%
-  ggplot(aes(dist, depth, z = Cant)) +
-    geom_contour_filled() +
-    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
-               aes(xintercept = dist), col = "white") +
-    scale_fill_viridis_d(name = "Cant") +
-    coord_cartesian(expand = 0) +
-    scale_y_reverse() +
-    theme(axis.title.x = element_blank(),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          legend.position = "top") +
-    labs(y = "Depth (m)")
+# left_join(section_global_coordinates, Cant_surface) %>%
+#   ggplot(aes(dist, depth, z = Cant)) +
+#     geom_contour_filled() +
+#     geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
+#                aes(xintercept = dist), col = "white") +
+#     scale_fill_viridis_d(name = "Cant") +
+#     coord_cartesian(expand = 0) +
+#     scale_y_reverse() +
+#     theme(axis.title.x = element_blank(),
+#           axis.text.x = element_blank(),
+#           axis.ticks.x = element_blank(),
+#           legend.position = "top") +
+#     labs(y = "Depth (m)")
 
 ```
-
 
 
 ## Mean Cant fields
 
 Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combination. Calculations are performed for all Cant values vs positive values only. This averaging step summarizes the information derived from ten best fitting MLRs. 
+
+### Deep water averaging
 
 ```{r Calculate_Cant_mean}
 
@@ -336,6 +337,32 @@ Cant_average <- Cant %>%
             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
   ungroup()
 
+
+```
+
+### Join surface and deep water
+
+```{r join_surface_deep_cant}
+
+Cant_surface <- Cant_surface %>%
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
+  group_by(lon, lat, depth, eras, basin) %>%
+  summarise(Cant_mean = mean(Cant, na.rm = TRUE),
+            Cant_sd = sd(Cant, na.rm = TRUE),
+            Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
+            Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
+            gamma_mean = mean(gamma, na.rm = TRUE),
+            gamma_sd = sd(gamma, na.rm = TRUE)) %>%
+  ungroup()
+
+Cant_average <- full_join(Cant_average, Cant_surface)
+
+```
+
+### Gamma slab zonal mean
+
+```{r calculate_gamma_slab_zonal_mean}
+
 Cant_average_Atl <- Cant_average %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
@@ -349,6 +376,7 @@ Cant_average <- bind_rows(Cant_average_Atl, Cant_average_Ind_Pac)
 rm(Cant_average_Atl, Cant_average_Ind_Pac)
 
 ```
+
 
 ## Mean Cant sections
 
