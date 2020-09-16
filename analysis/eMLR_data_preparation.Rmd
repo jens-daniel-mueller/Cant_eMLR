@@ -686,9 +686,6 @@ GLODAP <- GLODAP %>%
 GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
                                 "GLODAP_MLR_fitting_ready.csv"))
 
-co2_atm_tref %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                "GLODAP_MLR_fitting_ready.csv"))
-
 co2_atm_tref  %>% 
   write_csv(here::here(
     "data/pCO2_atmosphere/_summarized_data_files",
