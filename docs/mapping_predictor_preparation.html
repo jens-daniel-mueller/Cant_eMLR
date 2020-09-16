@@ -502,7 +502,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Mapping</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">10 September, 2020</h4>
+<h4 class="date">16 September, 2020</h4>
 
 </div>
 
@@ -527,7 +527,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-10
+<strong>Last updated:</strong> 2020-09-16
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeacd5ac045f84c84a414313d5b2d066c4386e4f42targetblankacd5ac0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/acd5ac045f84c84a414313d5b2d066c4386e4f42" target="_blank">acd5ac0</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee45d875ef359f4632af3fea07fa66410e8385b28targetblanke45d875a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e45d875ef359f4632af3fea07fa66410e8385b28" target="_blank">e45d875</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeacd5ac045f84c84a414313d5b2d066c4386e4f42targetblankacd5ac0a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee45d875ef359f4632af3fea07fa66410e8385b28targetblanke45d875a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/acd5ac045f84c84a414313d5b2d066c4386e4f42" target="_blank">acd5ac0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e45d875ef359f4632af3fea07fa66410e8385b28" target="_blank">e45d875</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -635,6 +635,7 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv1_1/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
@@ -646,6 +647,9 @@ Ignored files:
     Ignored:    data/mapping/
     Ignored:    data/pCO2_atmosphere/
     Ignored:    dump/
+
+Untracked files:
+    Untracked:  output/figure/eMLR/model_validation/
 
 </code></pre>
 <p>
@@ -684,6 +688,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/e45d875ef359f4632af3fea07fa66410e8385b28/analysis/mapping_predictor_preparation.Rmd" target="_blank">e45d875</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-16
+</td>
+<td>
+jonied surface predictor fields
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/da91d9870f2a212d93247c8d40de7de2a38ac57c/docs/mapping_predictor_preparation.html" target="_blank">da91d98</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1312,6 +1350,31 @@ rm(temp, i_variable, variables)
 # removed na&#39;s attributable to slightly different coverage of predictor fields
 GLODAP_predictors &lt;- GLODAP_predictors %&gt;%
   drop_na()</code></pre>
+<pre class="r"><code>variables &lt;-
+  c(&quot;TAlk&quot;, &quot;TCO2&quot;)
+
+for (i_variable in variables) {
+  temp &lt;- read_csv(
+    here::here(
+      &quot;data/GLODAPv2_2016b_MappedClimatologies/_summarized_files&quot;,
+      paste(i_variable, &quot;.csv&quot;, sep = &quot;&quot;)
+    )
+  )
+  
+  if (exists(&quot;GLODAP_predictors_CO2&quot;)) {
+    GLODAP_predictors_CO2 &lt;- full_join(GLODAP_predictors_CO2, temp)
+  }
+  
+  if (!exists(&quot;GLODAP_predictors_CO2&quot;)) {
+    GLODAP_predictors_CO2 &lt;- temp
+  }
+}
+
+rm(temp, i_variable, variables)
+
+# removed na&#39;s attributable to slightly different coverage of predictor fields
+GLODAP_predictors_CO2 &lt;- GLODAP_predictors_CO2 %&gt;%
+  drop_na()</code></pre>
 </div>
 <div id="world-ocean-atlas-2018" class="section level2">
 <h2><span class="header-section-number">1.2</span> World Ocean Atlas 2018</h2>
@@ -1326,6 +1389,14 @@ GLODAP_predictors &lt;- GLODAP_predictors %&gt;%
     here::here(
       &quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
       &quot;WOA18_predictors.csv&quot;
+    )
+  )
+
+WOA18_predictors_surface &lt;-
+  read_csv(
+    here::here(
+      &quot;data/World_Ocean_Atlas_2018/_summarized_files&quot;,
+      &quot;WOA18_predictors_surface.csv&quot;
     )
   )</code></pre>
 </div>
@@ -1342,6 +1413,14 @@ predictors &lt;- predictors %&gt;%
   drop_na()
 
 rm(GLODAP_predictors, WOA18_predictors)</code></pre>
+<pre class="r"><code>predictors_surface &lt;- full_join(
+  GLODAP_predictors_CO2,
+  WOA18_predictors_surface)
+
+predictors_surface &lt;- predictors_surface %&gt;% 
+  drop_na()
+
+rm(GLODAP_predictors_CO2, WOA18_predictors_surface)</code></pre>
 <div id="control-plots" class="section level2">
 <h2><span class="header-section-number">2.1</span> Control plots</h2>
 <div id="maps" class="section level3">
@@ -1352,8 +1431,20 @@ rm(GLODAP_predictors, WOA18_predictors)</code></pre>
 <pre class="r"><code>map_climatology(predictors, &quot;tem&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_tem-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="maps-surface" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Maps surface</h3>
+<p>Three maps are generated to control successful merging of data sets.</p>
+<pre class="r"><code>map_climatology(predictors_surface, &quot;TAlk&quot;)</code></pre>
+<p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_TAlk_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>map_climatology(predictors_surface, &quot;TCO2&quot;)</code></pre>
+<p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_TCO2_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>map_climatology(predictors_surface, &quot;sal&quot;)</code></pre>
+<p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_sal_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>map_climatology(predictors_surface, &quot;tem&quot;)</code></pre>
+<p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_tem_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="predictor-profiles" class="section level3">
-<h3><span class="header-section-number">2.1.2</span> Predictor profiles</h3>
+<h3><span class="header-section-number">2.1.3</span> Predictor profiles</h3>
 <p>Likewise, predictor profiles for the North Atlantic (40.5 / 335.5) are plotted to control successful merging of the data sets.</p>
 <pre class="r"><code>N_Atl &lt;- predictors %&gt;% 
   filter(lat == parameters$lat_Atl_profile,
@@ -1445,9 +1536,13 @@ rm(predictors_Atl, predictors_Ind_Pac)</code></pre>
 </div>
 <div id="plot-al-predictor-sections" class="section level1">
 <h1><span class="header-section-number">4</span> Plot al predictor sections</h1>
+<div id="deep-waters" class="section level2">
+<h2><span class="header-section-number">4.1</span> Deep waters</h2>
 <p>Predictor sections along with lines are shown below for each (potential) predictor variable.</p>
 <pre class="r"><code>predictors %&gt;%
   ggplot(aes(lon, lat)) +
+      geom_raster(data = landmask,
+                aes(lon, lat), fill = &quot;grey80&quot;) +
   geom_bin2d(binwidth = c(1,1)) +
   geom_vline(xintercept = parameters$longitude_sections_regular,
              col = &quot;white&quot;) +
@@ -1472,11 +1567,44 @@ for (i_var in vars) {
 }</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-8.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="surface-waters" class="section level2">
+<h2><span class="header-section-number">4.2</span> Surface waters</h2>
+<p>Predictor sections along with lines are shown below for each (potential) predictor variable.</p>
+<pre class="r"><code>predictors_surface %&gt;%
+  ggplot(aes(lon, lat)) +
+  geom_raster(data = landmask,
+                aes(lon, lat), fill = &quot;grey80&quot;) +
+  geom_bin2d(binwidth = c(1,1)) +
+  geom_vline(xintercept = parameters$longitude_sections_regular,
+             col = &quot;white&quot;) +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/mapping_predictor_preparation.Rmd/predictors_observations_sections_map_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>vars &lt;-
+  c(
+    &quot;gamma&quot;,
+    &quot;sal&quot;,
+    &quot;tem&quot;,
+    &quot;TCO2&quot;,
+    &quot;TAlk&quot;
+  )
+
+for (i_var in vars) {
+  print(section_climatology_regular(predictors_surface, i_var))
+}</code></pre>
+<p><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-5.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
 <div id="write-csv" class="section level1">
 <h1><span class="header-section-number">5</span> Write csv</h1>
 <pre class="r"><code>predictors %&gt;%
     write_csv(here::here(&quot;data/mapping/predictor_fields&quot;,
-                         &quot;W18_st_G16_opsn.csv&quot;))</code></pre>
+                         &quot;W18_st_G16_opsn.csv&quot;))
+
+predictors_surface %&gt;%
+    write_csv(here::here(&quot;data/mapping/predictor_fields&quot;,
+                         &quot;W18_st_G16_opsn_surface.csv&quot;))</code></pre>
 </div>
 <div id="alternative-predictors" class="section level1">
 <h1><span class="header-section-number">6</span> Alternative predictors</h1>
