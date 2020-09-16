@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeae561aa5df3e9d04713b27d9ed07ee1a0cb8fc04targetblankae561aaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ae561aa5df3e9d04713b27d9ed07ee1a0cb8fc04" target="_blank">ae561aa</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9529ad2315a228977b0f949092a64c3a77f987b2targetblank9529ad2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9529ad2315a228977b0f949092a64c3a77f987b2" target="_blank">9529ad2</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeae561aa5df3e9d04713b27d9ed07ee1a0cb8fc04targetblankae561aaa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9529ad2315a228977b0f949092a64c3a77f987b2targetblank9529ad2a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ae561aa5df3e9d04713b27d9ed07ee1a0cb8fc04" target="_blank">ae561aa</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9529ad2315a228977b0f949092a64c3a77f987b2" target="_blank">9529ad2</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -649,6 +649,9 @@ Ignored files:
 
 Untracked files:
     Untracked:  output/figure/eMLR/model_validation/
+
+Unstaged changes:
+    Modified:   code/plotting_functions.R
 
 </code></pre>
 <p>
@@ -687,6 +690,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/9529ad2315a228977b0f949092a64c3a77f987b2/analysis/mapping_cant_calculation.Rmd" target="_blank">9529ad2</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-16
+</td>
+<td>
+PO4 and silicate included for pCO2 and revelle factor calculation
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/1f3319ac3f70e28415e86121202fc96595b149bd/docs/mapping_cant_calculation.html" target="_blank">1f3319a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1410,24 +1447,26 @@ for (i_eras in unique(Cant$eras)) {
 <p>Using eq 10.2.16 from OBD, the change in anthropogenic CO2 in the upper ocean was computed as:</p>
 <p>ΔtCanteq(t2ref − t1ref )= 1∕γ ⋅ DIC/pCO2 ⋅ (pCO2atm (t2ref)− pCO2atm (t1ref))</p>
 <p>, where DIC and pCO2 are the in situ values, where γ is the buffer (Revelle) factor and where we evaluated the right-hand side using seacarb employing the Mehrbach constants as refitted by Dickson and Millero using the climatological values for temperature, salinity, DIC and Alk.</p>
-<pre class="r"><code>co2_atm_tref &lt;- co2_atm_tref %&gt;% 
-  arrange(pCO2_tref) %&gt;% 
-  mutate(d_pCO2_tref = pCO2_tref - lag(pCO2_tref)) %&gt;% 
-  drop_na() %&gt;% 
-  mutate(eras = c(&quot;JGOFS_GO&quot;, &quot;GO_new&quot;)) %&gt;% 
-  select(eras, d_pCO2_tref)
-
-predictors_surface &lt;- predictors_surface %&gt;% 
+<div id="pco2-climatology" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> pCO2 climatology</h3>
+<pre class="r"><code>predictors_surface &lt;- predictors_surface %&gt;% 
   mutate(pCO2 = carb(flag = 15,
                      var1 = TAlk*1e-6,
                      var2 = TCO2*1e-6,
                      S = sal,
                      T = tem,
                      P = depth/10,
+                     Pt = PO4*1e-6,
+                     Sit = silicate*1e-6,
                      k1k2 = &quot;l&quot;)$pCO2)
 
 map_climatology(predictors_surface, &quot;pCO2&quot;)</code></pre>
-<p><img src="figure/mapping_cant_calculation.Rmd/Cant_surface_calculation-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/mapping_cant_calculation.Rmd/pCO2_climatology-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>section_global_surface(predictors_surface, &quot;pCO2&quot;)</code></pre>
+<p><img src="figure/mapping_cant_calculation.Rmd/pCO2_climatology-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="revelle-factor" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> Revelle factor</h3>
 <pre class="r"><code>predictors_surface &lt;- predictors_surface %&gt;% 
   mutate(rev_fac = buffer(flag = 15,
                      var1 = TAlk*1e-6,
@@ -1435,9 +1474,23 @@ map_climatology(predictors_surface, &quot;pCO2&quot;)</code></pre>
                      S = sal,
                      T = tem,
                      P = depth/10,
+                     Pt = PO4*1e-6,
+                     Sit = silicate*1e-6,
                      k1k2 = &quot;l&quot;)$BetaD)
 
-# map_climatology(predictors_surface, &quot;rev_fac&quot;)
+map_climatology(predictors_surface, &quot;rev_fac&quot;)</code></pre>
+<p><img src="figure/mapping_cant_calculation.Rmd/revelle_factor_climatology-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>section_global_surface(predictors_surface, &quot;rev_fac&quot;)</code></pre>
+<p><img src="figure/mapping_cant_calculation.Rmd/revelle_factor_climatology-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="cant" class="section level3">
+<h3><span class="header-section-number">5.3.3</span> Cant</h3>
+<pre class="r"><code>co2_atm_tref &lt;- co2_atm_tref %&gt;% 
+  arrange(pCO2_tref) %&gt;% 
+  mutate(d_pCO2_tref = pCO2_tref - lag(pCO2_tref)) %&gt;% 
+  drop_na() %&gt;% 
+  mutate(eras = c(&quot;JGOFS_GO&quot;, &quot;GO_new&quot;)) %&gt;% 
+  select(eras, d_pCO2_tref)
 
 Cant_surface &lt;- full_join(predictors_surface, co2_atm_tref,
                           by = character())
@@ -1445,21 +1498,11 @@ Cant_surface &lt;- full_join(predictors_surface, co2_atm_tref,
 Cant_surface &lt;- Cant_surface %&gt;% 
   mutate(Cant = (1 / rev_fac) * (TCO2 / pCO2) * d_pCO2_tref)
 
-map_climatology(Cant_surface, &quot;Cant&quot;)</code></pre>
-<p><img src="figure/mapping_cant_calculation.Rmd/Cant_surface_calculation-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># left_join(section_global_coordinates, Cant_surface) %&gt;%
-#   ggplot(aes(dist, depth, z = Cant)) +
-#     geom_contour_filled() +
-#     geom_vline(data = section_global_coordinates %&gt;% filter(lat == 0.5),
-#                aes(xintercept = dist), col = &quot;white&quot;) +
-#     scale_fill_viridis_d(name = &quot;Cant&quot;) +
-#     coord_cartesian(expand = 0) +
-#     scale_y_reverse() +
-#     theme(axis.title.x = element_blank(),
-#           axis.text.x = element_blank(),
-#           axis.ticks.x = element_blank(),
-#           legend.position = &quot;top&quot;) +
-#     labs(y = &quot;Depth (m)&quot;)</code></pre>
+map_climatology_eras(Cant_surface, &quot;Cant&quot;)</code></pre>
+<p><img src="figure/mapping_cant_calculation.Rmd/Cant_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>section_global_surface_eras(Cant_surface, &quot;Cant&quot;)</code></pre>
+<p><img src="figure/mapping_cant_calculation.Rmd/Cant_surface-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="mean-cant-fields" class="section level2">
 <h2><span class="header-section-number">5.4</span> Mean Cant fields</h2>
@@ -1497,8 +1540,10 @@ rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 # Cant &lt;- Cant %&gt;%
 #   select(lon, lat, depth, eras, basin, Cant, gamma, model)
 
+Cant &lt;- Cant %&gt;%
+  mutate(Cant_pos = if_else(Cant &lt; 0, 0, Cant))
+
 Cant_average &lt;- Cant %&gt;%
-  mutate(Cant_pos = if_else(Cant &lt; 0, 0, Cant)) %&gt;%
   group_by(lon, lat, depth, eras, basin) %&gt;%
   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
             Cant_sd = sd(Cant, na.rm = TRUE),
@@ -1506,7 +1551,49 @@ Cant_average &lt;- Cant %&gt;%
             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
             gamma_mean = mean(gamma, na.rm = TRUE),
             gamma_sd = sd(gamma, na.rm = TRUE)) %&gt;%
-  ungroup()</code></pre>
+  ungroup()
+
+# for (i_basin in unique(Cant$basin)) {
+#   for (i_eras in unique(Cant$eras)) {
+#     for (i_depth in unique(Cant$depth)) {
+#       
+#       # i_basin &lt;- unique(Cant$basin)[1]
+#       # i_eras  &lt;- unique(Cant$eras) [1]
+#       # i_depth &lt;- unique(Cant$depth)[1]
+#       # print(i_basin)
+#       # print(i_eras)
+#       # print(i_depth)
+#       
+#       temp &lt;- Cant %&gt;%
+#         filter(basin == i_basin,
+#                eras == i_eras,
+#                depth == i_depth) %&gt;%
+#         group_by(lon, lat) %&gt;%
+#         summarise(
+#           Cant_mean = mean(Cant, na.rm = TRUE),
+#           Cant_sd = sd(Cant, na.rm = TRUE),
+#           Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
+#           Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
+#           gamma_mean = mean(gamma, na.rm = TRUE),
+#           gamma_sd = sd(gamma, na.rm = TRUE)
+#         ) %&gt;%
+#         ungroup()
+#       
+#       if (exists(&quot;Cant_average&quot;)) {
+#         Cant_average &lt;- bind_rows(Cant_average, temp)
+#       }
+#       
+#       if (!exists(&quot;Cant_average&quot;)) {
+#         Cant_average &lt;- temp
+#       }
+#       
+#     }
+#     
+#   }
+#   
+# } 
+
+rm(Cant)</code></pre>
 </div>
 <div id="join-surface-and-deep-water" class="section level3">
 <h3><span class="header-section-number">5.4.2</span> Join surface and deep water</h3>
@@ -1634,7 +1721,8 @@ rm(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)</code
 <li>For each horizontal grid cell and era, sum Cant layer inventories from 150 - 3000 m</li>
 </ol>
 <p>Step 2 is performed again for all Cant and positive Cant values only</p>
-<pre class="r"><code>depth_level_volume &lt;- tibble(depth = unique(Cant_average$depth))
+<pre class="r"><code>depth_level_volume &lt;- tibble(depth = unique(Cant_average$depth)) %&gt;% 
+  arrange(depth)
 
 depth_level_volume &lt;- depth_level_volume %&gt;%
   mutate(
@@ -1645,7 +1733,11 @@ depth_level_volume &lt;- depth_level_volume %&gt;%
   select(-c(layer_thickness_above,
             layer_thickness_below))
 
-Cant_average &lt;-
+depth_level_volume %&gt;% 
+  ggplot(aes(depth, layer_thickness)) + 
+  geom_point()</code></pre>
+<p><img src="figure/mapping_cant_calculation.Rmd/calculate_inventories-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Cant_average &lt;-
   full_join(Cant_average, depth_level_volume)
 
 Cant_average &lt;- Cant_average %&gt;%
@@ -1654,7 +1746,6 @@ Cant_average &lt;- Cant_average %&gt;%
   select(-layer_thickness)
 
 Cant_inv &lt;- Cant_average %&gt;%
-  filter(depth &lt;= parameters$inventory_depth) %&gt;%
   group_by(lon, lat, basin, eras) %&gt;%
   summarise(
     cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
@@ -1689,8 +1780,7 @@ Cant_inv %&gt;%
     write_csv(here::here(&quot;data/mapping/_summarized_files&quot;,
                          &quot;Cant_inv.csv&quot;))
 
-rm(Cant,
-   Cant_average,
+rm(Cant_average,
    Cant_predictor_average,
    Cant_average_zonal,
    Cant_predictor_average_zonal,
@@ -1738,8 +1828,8 @@ loaded via a namespace (and not attached):
 [45] scales_1.1.1      cli_2.0.2         stringi_1.4.6     farver_2.0.3     
 [49] fs_1.4.2          promises_1.1.1    xml2_1.3.2        ellipsis_0.3.1   
 [53] generics_0.0.2    vctrs_0.3.2       tools_4.0.2       glue_1.4.1       
-[57] hms_0.5.3         yaml_2.2.1        colorspace_1.4-1  rvest_0.3.6      
-[61] knitr_1.29        haven_2.3.1      </code></pre>
+[57] hms_0.5.3         yaml_2.2.1        colorspace_1.4-1  isoband_0.2.2    
+[61] rvest_0.3.6       knitr_1.29        haven_2.3.1      </code></pre>
 </div>
 </div>
 
