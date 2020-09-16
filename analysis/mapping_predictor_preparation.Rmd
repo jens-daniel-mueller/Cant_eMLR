@@ -107,6 +107,36 @@ GLODAP_predictors <- GLODAP_predictors %>%
 
 ```
 
+```{r load_GLODAPv2_2016b_MappedClimatologies_CO2_variables}
+
+variables <-
+  c("TAlk", "TCO2")
+
+for (i_variable in variables) {
+  temp <- read_csv(
+    here::here(
+      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
+      paste(i_variable, ".csv", sep = "")
+    )
+  )
+  
+  if (exists("GLODAP_predictors_CO2")) {
+    GLODAP_predictors_CO2 <- full_join(GLODAP_predictors_CO2, temp)
+  }
+  
+  if (!exists("GLODAP_predictors_CO2")) {
+    GLODAP_predictors_CO2 <- temp
+  }
+}
+
+rm(temp, i_variable, variables)
+
+# removed na's attributable to slightly different coverage of predictor fields
+GLODAP_predictors_CO2 <- GLODAP_predictors_CO2 %>%
+  drop_na()
+
+```
+
 
 ## World Ocean Atlas 2018
 
@@ -125,6 +155,14 @@ WOA18_predictors <-
     )
   )
 
+WOA18_predictors_surface <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "WOA18_predictors_surface.csv"
+    )
+  )
+
 ```
 
 # Join WOA18 + GLODAP
@@ -133,7 +171,7 @@ WOA18 and GLODAP predictor climatologies are merged. Only horizontal grid cells 
 
 **CAVEAT**: Coverage of GLODAP climatologies differs slightly for parameters (some are NA in some regions)
 
-```{r join_WOA18_GLODAP_predictors, fig.asp=0.5}
+```{r join_WOA18_GLODAP_predictors}
 
 predictors <- full_join(
   GLODAP_predictors,
@@ -143,6 +181,19 @@ predictors <- predictors %>%
   drop_na()
 
 rm(GLODAP_predictors, WOA18_predictors)
+
+```
+
+```{r join_WOA18_GLODAP_predictors_surface, fig.asp=0.5}
+
+predictors_surface <- full_join(
+  GLODAP_predictors_CO2,
+  WOA18_predictors_surface)
+
+predictors_surface <- predictors_surface %>% 
+  drop_na()
+
+rm(GLODAP_predictors_CO2, WOA18_predictors_surface)
 
 ```
 
@@ -159,6 +210,26 @@ map_climatology(predictors, "PO4")
 
 ```{r joined_climatology_control_tem, fig.asp=0.6}
 map_climatology(predictors, "tem")
+```
+
+### Maps surface
+
+Three maps are generated to control successful merging of data sets.
+
+```{r joined_climatology_control_TAlk_surface, fig.asp=0.6}
+map_climatology(predictors_surface, "TAlk")
+```
+
+```{r joined_climatology_control_TCO2_surface, fig.asp=0.6}
+map_climatology(predictors_surface, "TCO2")
+```
+
+```{r joined_climatology_control_sal_surface, fig.asp=0.6}
+map_climatology(predictors_surface, "sal")
+```
+
+```{r joined_climatology_control_tem_surface, fig.asp=0.6}
+map_climatology(predictors_surface, "tem")
 ```
 
 
@@ -285,12 +356,16 @@ rm(predictors_Atl, predictors_Ind_Pac)
 
 # Plot al predictor sections
 
+## Deep waters
+
 Predictor sections along with lines are shown below for each (potential) predictor variable.
 
 ```{r predictors_observations_sections_map, fig.asp=0.6}
 
 predictors %>%
   ggplot(aes(lon, lat)) +
+      geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
   geom_bin2d(binwidth = c(1,1)) +
   geom_vline(xintercept = parameters$longitude_sections_regular,
              col = "white") +
@@ -320,6 +395,42 @@ for (i_var in vars) {
 
 ```
 
+## Surface waters
+
+Predictor sections along with lines are shown below for each (potential) predictor variable.
+
+```{r predictors_observations_sections_map_surface, fig.asp=0.6}
+
+predictors_surface %>%
+  ggplot(aes(lon, lat)) +
+  geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+  geom_bin2d(binwidth = c(1,1)) +
+  geom_vline(xintercept = parameters$longitude_sections_regular,
+             col = "white") +
+  scale_fill_viridis_c(direction = -1) +
+  coord_quickmap(expand = 0) +
+  theme(legend.position = "bottom")
+
+```
+
+```{r all_predictor_sections_surface, fig.asp=1}
+
+vars <-
+  c(
+    "gamma",
+    "sal",
+    "tem",
+    "TCO2",
+    "TAlk"
+  )
+
+for (i_var in vars) {
+  print(section_climatology_regular(predictors_surface, i_var))
+}
+
+```
+
 # Write csv
 
 ```{r write_joined_predictor_fields}
@@ -327,6 +438,10 @@ for (i_var in vars) {
 predictors %>%
     write_csv(here::here("data/mapping/predictor_fields",
                          "W18_st_G16_opsn.csv"))
+
+predictors_surface %>%
+    write_csv(here::here("data/mapping/predictor_fields",
+                         "W18_st_G16_opsn_surface.csv"))
 
 ```
 
