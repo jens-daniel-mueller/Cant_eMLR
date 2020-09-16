@@ -483,13 +483,22 @@ WOA18_predictors <- WOA18_predictors_gamma_calc %>%
 
 WOA18_predictors <- as_tibble(WOA18_predictors)
 
+rm(WOA18_predictors_gamma_calc, WOA18_predictors_gamma_prep)
+
 ```
 
 ### Apply density threshold
 
-For water masses with neutral densities below `r parameters$gamma_min`, only predictor fields with a water depth higher than `r parameters$depth_min`m were taken into account.
+The predictor field was split into two parts:
+
+1. Deep water: neutral densities >= `r parameters$gamma_min` and depth >= `r parameters$depth_min`m
+2. Shallow water: rest
 
 ```{r apply_density_threshold}
+
+WOA18_predictors_surface <- WOA18_predictors %>%
+  filter(depth < parameters$depth_min,
+         gamma < parameters$gamma_min)
 
 WOA18_predictors <- WOA18_predictors %>%
   filter(depth >= parameters$depth_min | gamma >= parameters$gamma_min)
@@ -504,6 +513,10 @@ WOA18_predictors <- WOA18_predictors %>%
 WOA18_predictors %>% 
   write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
                        "WOA18_predictors.csv"))
+
+WOA18_predictors_surface %>% 
+  write_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "WOA18_predictors_surface.csv"))
 
 ```
 
@@ -545,7 +558,9 @@ map_climatology(WOA18_predictors, "sal")
 
 ### Section
 
-```{r salinity_sections_WOA18tion_global(WOA18_predictors, "sal")
+```{r salinity_sections_WOA18}
+
+section_global(WOA18_predictors, "sal")
 
 ```
 
@@ -562,10 +577,26 @@ map_climatology(WOA18_predictors, "gamma")
 
 ```
 
-### Sections
+### Section
 
 ```{r neutral_density_sections_WOA18}
 
 section_global(WOA18_predictors, "gamma")
+
+```
+
+### Surface map shallow
+
+```{r neutral_density_surface_WOA18_map_shallow}
+
+map_climatology(WOA18_predictors_surface, "gamma")
+
+```
+
+### Section shallow
+
+```{r neutral_density_sections_WOA18_shallow}
+
+section_global(WOA18_predictors_surface, "gamma")
 
 ```
