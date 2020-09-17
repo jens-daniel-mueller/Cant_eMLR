@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreedbae0600a6bb2756f967bba613739309265e088ftargetblankdbae060a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/dbae0600a6bb2756f967bba613739309265e088f" target="_blank">dbae060</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea7e8ba5fcecd8e13b58bfa4b9488e23a9bc69997targetblanka7e8ba5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a7e8ba5fcecd8e13b58bfa4b9488e23a9bc69997" target="_blank">a7e8ba5</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreedbae0600a6bb2756f967bba613739309265e088ftargetblankdbae060a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreea7e8ba5fcecd8e13b58bfa4b9488e23a9bc69997targetblanka7e8ba5a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/dbae0600a6bb2756f967bba613739309265e088f" target="_blank">dbae060</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/a7e8ba5fcecd8e13b58bfa4b9488e23a9bc69997" target="_blank">a7e8ba5</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -635,7 +635,6 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/GLODAPv1_1/
     Ignored:    data/GLODAPv2_2016b_MappedClimatologies/
     Ignored:    data/GLODAPv2_2020/
@@ -691,6 +690,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/a7e8ba5fcecd8e13b58bfa4b9488e23a9bc69997/analysis/mapping_cant_calculation.Rmd" target="_blank">a7e8ba5</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-17
+</td>
+<td>
+rebuild after complete collapse averaging
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/e7b4981327e3fafcbedfe810e3eb92a80e83ac79/docs/mapping_cant_calculation.html" target="_blank">e7b4981</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1585,24 +1618,7 @@ map_climatology_eras(Cant_surface, &quot;Cant&quot;)</code></pre>
 <p>Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combination. Calculations are performed for all Cant values vs positive values only. This averaging step summarizes the information derived from ten best fitting MLRs.</p>
 <div id="deep-water-averaging" class="section level3">
 <h3><span class="header-section-number">5.4.1</span> Deep water averaging</h3>
-<pre class="r"><code># Cant_predictor_average &lt;- Cant %&gt;%
-#   mutate(Cant_pos = if_else(Cant &lt; 0, 0, Cant)) %&gt;%
-#   group_by(lon, lat, depth, eras, basin) %&gt;%
-#   summarise(Cant_intercept = mean(Cant_intercept, na.rm = TRUE),
-#             Cant_aou = mean(Cant_aou, na.rm = TRUE),
-#             Cant_oxygen = mean(Cant_oxygen, na.rm = TRUE),
-#             Cant_phosphate = mean(Cant_phosphate, na.rm = TRUE),
-#             Cant_phosphate_star = mean(Cant_phosphate_star, na.rm = TRUE),
-#             Cant_silicate = mean(Cant_silicate, na.rm = TRUE),
-#             Cant_tem = mean(Cant_tem, na.rm = TRUE),
-#             Cant_sal = mean(Cant_sal, na.rm = TRUE),
-#             Cant_sum = mean(Cant_sum, na.rm = TRUE),
-#             gamma_mean = mean(gamma, na.rm = TRUE)
-#             ) %&gt;%
-#   ungroup()
-
-
-Cant_predictor_average &lt;- Cant %&gt;%
+<pre class="r"><code>Cant_predictor_average &lt;- Cant %&gt;%
   fselect(lon, lat, depth, eras, basin,
           Cant_intercept,
           Cant_aou,
@@ -1616,117 +1632,54 @@ Cant_predictor_average &lt;- Cant %&gt;%
           gamma) %&gt;% 
   fgroup_by(lon, lat, depth, eras, basin) %&gt;% {
    add_vars(fgroup_vars(.,&quot;unique&quot;),
-            fmean(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_mean&quot;))
+            fmean(., keep.group_vars = FALSE))
   }
-
 
 Cant_predictor_average_Atl &lt;- Cant_predictor_average %&gt;% 
   filter(basin == &quot;Atlantic&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 Cant_predictor_average_Ind_Pac &lt;- Cant_predictor_average %&gt;% 
   filter(basin == &quot;Indo-Pacific&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 Cant_predictor_average &lt;- bind_rows(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 
-rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
-
-# Cant &lt;- Cant %&gt;%
-#   select(lon, lat, depth, eras, basin, Cant, gamma, model)
-
-# Cant_average &lt;- Cant %&gt;%
-#   group_by(lon, lat, depth, eras, basin) %&gt;%
-#   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
-#             Cant_sd = sd(Cant, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-#             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-#             gamma_mean = mean(gamma, na.rm = TRUE),
-#             gamma_sd = sd(gamma, na.rm = TRUE)) %&gt;%
-#   ungroup()
-
-Cant_average &lt;- Cant %&gt;%
+rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)</code></pre>
+<pre class="r"><code>Cant_average &lt;- Cant %&gt;%
   fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %&gt;% 
   fgroup_by(lon, lat, depth, eras, basin) %&gt;% {
    add_vars(fgroup_vars(.,&quot;unique&quot;),
-            fmean(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_mean&quot;),
+            fmean(., keep.group_vars = FALSE),
             fsd(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_sd&quot;))
   }
 
-# for (i_basin in unique(Cant$basin)) {
-#   for (i_eras in unique(Cant$eras)) {
-#     for (i_depth in unique(Cant$depth)) {
-#       
-#       # i_basin &lt;- unique(Cant$basin)[1]
-#       # i_eras  &lt;- unique(Cant$eras) [1]
-#       # i_depth &lt;- unique(Cant$depth)[1]
-#       # print(i_basin)
-#       # print(i_eras)
-#       # print(i_depth)
-#       
-#       temp &lt;- Cant %&gt;%
-#         filter(basin == i_basin,
-#                eras == i_eras,
-#                depth == i_depth) %&gt;%
-#         group_by(lon, lat) %&gt;%
-#         summarise(
-#           Cant_mean = mean(Cant, na.rm = TRUE),
-#           Cant_sd = sd(Cant, na.rm = TRUE),
-#           Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-#           Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-#           gamma_mean = mean(gamma, na.rm = TRUE),
-#           gamma_sd = sd(gamma, na.rm = TRUE)
-#         ) %&gt;%
-#         ungroup()
-#       
-#       if (exists(&quot;Cant_average&quot;)) {
-#         Cant_average &lt;- bind_rows(Cant_average, temp)
-#       }
-#       
-#       if (!exists(&quot;Cant_average&quot;)) {
-#         Cant_average &lt;- temp
-#       }
-#       
-#     }
-#     
-#   }
-#   
-# } 
-
 rm(Cant)</code></pre>
+<pre class="r"><code>Cant_surface_average &lt;- Cant_surface %&gt;%
+  fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %&gt;% 
+  fgroup_by(lon, lat, depth, eras, basin) %&gt;% {
+   add_vars(fgroup_vars(.,&quot;unique&quot;),
+            fmean(., keep.group_vars = FALSE),
+            fsd(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_sd&quot;))
+  }
+
+rm(Cant_surface)</code></pre>
 </div>
 <div id="join-surface-and-deep-water" class="section level3">
 <h3><span class="header-section-number">5.4.2</span> Join surface and deep water</h3>
-<pre class="r"><code># Cant_surface &lt;- Cant_surface %&gt;%
-#   group_by(lon, lat, depth, eras, basin) %&gt;%
-#   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
-#             Cant_sd = sd(Cant, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-#             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-#             gamma_mean = mean(gamma, na.rm = TRUE),
-#             gamma_sd = sd(gamma, na.rm = TRUE)) %&gt;%
-#   ungroup()
+<pre class="r"><code>Cant_average &lt;- full_join(Cant_average, Cant_surface_average)
 
-Cant_surface_average &lt;- Cant_surface %&gt;%
-  fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %&gt;% 
-  fgroup_by(lon, lat, depth, eras, basin) %&gt;% {
-   add_vars(fgroup_vars(.,&quot;unique&quot;),
-            fmean(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_mean&quot;),
-            fsd(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_sd&quot;))
-  }
-
-
-Cant_average &lt;- full_join(Cant_average, Cant_surface)</code></pre>
+rm(Cant_surface_average)</code></pre>
 </div>
 <div id="gamma-slab-zonal-mean" class="section level3">
 <h3><span class="header-section-number">5.4.3</span> Gamma slab zonal mean</h3>
 <pre class="r"><code>Cant_average_Atl &lt;- Cant_average %&gt;% 
   filter(basin == &quot;Atlantic&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 Cant_average_Ind_Pac &lt;- Cant_average %&gt;% 
   filter(basin == &quot;Indo-Pacific&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 Cant_average &lt;- bind_rows(Cant_average_Atl, Cant_average_Ind_Pac)
 
@@ -1740,43 +1693,41 @@ rm(Cant_average_Atl, Cant_average_Ind_Pac)</code></pre>
                           basinmask_AIP %&gt;% select(-basin))
 
 Cant_average_zonal &lt;- Cant_average %&gt;%
-  group_by(lat, depth, eras, basin, basin_AIP) %&gt;%
-  summarise(across(
-    c(
-      &quot;Cant_mean&quot;,
-      &quot;Cant_pos_mean&quot;,
-      &quot;Cant_sd&quot;,
-      &quot;Cant_pos_sd&quot;,
-      &quot;gamma_mean&quot;,
-      &quot;gamma_sd&quot;
-    ),
-    list(
-      mean = ~ mean(.x, na.rm = TRUE),
-      sd = ~ sd(.x, na.rm = TRUE)
-    )
-  )) %&gt;%
-  ungroup()
+  fselect(lat, depth, eras, basin, basin_AIP,
+          Cant, Cant_pos, gamma, Cant_sd, Cant_pos_sd, gamma_sd) %&gt;% 
+  fgroup_by(lat, depth, eras, basin, basin_AIP) %&gt;% {
+   add_vars(fgroup_vars(.,&quot;unique&quot;),
+            fmean(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_mean&quot;),
+            fsd(., keep.group_vars = FALSE) %&gt;% add_stub(pre = FALSE, &quot;_sd&quot;))
+  }
 
 
-# Cant_average_zonal &lt;- Cant_average %&gt;% 
-#   group_by(lat, depth, eras, basin) %&gt;% 
-#   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
-#             Cant_mean = mean(Cant_mean, na.rm = TRUE),
-#             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
-#             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
-#             gamma_mean = mean(gamma_mean)) %&gt;% 
+# Cant_average_zonal &lt;- Cant_average %&gt;%
+#   group_by(lat, depth, eras, basin, basin_AIP) %&gt;%
+#   summarise(across(
+#     c(
+#       &quot;Cant_mean&quot;,
+#       &quot;Cant_pos_mean&quot;,
+#       &quot;Cant_sd&quot;,
+#       &quot;Cant_pos_sd&quot;,
+#       &quot;gamma_mean&quot;,
+#       &quot;gamma_sd&quot;
+#     ),
+#     list(
+#       mean = ~ mean(.x, na.rm = TRUE),
+#       sd = ~ sd(.x, na.rm = TRUE)
+#     )
+#   )) %&gt;%
 #   ungroup()
 
 
 Cant_average_zonal_Atl &lt;- Cant_average_zonal %&gt;% 
   filter(basin == &quot;Atlantic&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
 
 Cant_average_zonal_Ind_Pac &lt;- Cant_average_zonal %&gt;% 
   filter(basin == &quot;Indo-Pacific&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
 
 Cant_average_zonal &lt;- bind_rows(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
 
@@ -1789,33 +1740,30 @@ rm(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)</code></pre>
                                 basinmask_AIP %&gt;% select(-basin))
 
 Cant_predictor_average_zonal &lt;- Cant_predictor_average %&gt;%
-  group_by(lat, depth, eras, basin, basin_AIP) %&gt;%
-  summarise(across(
-    Cant_intercept_mean:gamma_mean,
-    list(mean = ~ mean(.x, na.rm = TRUE))
-  )) %&gt;%
-  ungroup()
+  fselect(lat, depth, eras, basin, basin_AIP,
+          Cant_intercept:gamma) %&gt;% 
+  fgroup_by(lat, depth, eras, basin, basin_AIP) %&gt;% {
+   add_vars(fgroup_vars(.,&quot;unique&quot;),
+            fmean(., keep.group_vars = FALSE))
+  }
 
 
-# Cant_average_zonal &lt;- Cant_average %&gt;% 
-#   group_by(lat, depth, eras, basin) %&gt;% 
-#   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
-#             Cant_mean = mean(Cant_mean, na.rm = TRUE),
-#             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
-#             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
-#             gamma_mean = mean(gamma_mean)) %&gt;% 
+# Cant_predictor_average_zonal &lt;- Cant_predictor_average %&gt;%
+#   group_by(lat, depth, eras, basin, basin_AIP) %&gt;%
+#   summarise(across(
+#     Cant_intercept_mean:gamma_mean,
+#     list(mean = ~ mean(.x, na.rm = TRUE))
+#   )) %&gt;%
 #   ungroup()
 
 
 Cant_predictor_average_zonal_Atl &lt;- Cant_predictor_average_zonal %&gt;% 
   filter(basin == &quot;Atlantic&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 Cant_predictor_average_zonal_Ind_Pac &lt;- Cant_predictor_average_zonal %&gt;% 
   filter(basin == &quot;Indo-Pacific&quot;) %&gt;% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 Cant_predictor_average_zonal &lt;- bind_rows(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)
 
@@ -1841,15 +1789,11 @@ depth_level_volume &lt;- depth_level_volume %&gt;%
   select(-c(layer_thickness_above,
             layer_thickness_below))
 
-depth_level_volume %&gt;% 
-  ggplot(aes(depth, layer_thickness)) + 
-  geom_point()</code></pre>
-<p><img src="figure/mapping_cant_calculation.Rmd/calculate_inventories-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>Cant_average &lt;-
+Cant_average &lt;-
   full_join(Cant_average, depth_level_volume)
 
 Cant_average &lt;- Cant_average %&gt;%
-  mutate(layer_inv = Cant_mean * layer_thickness) %&gt;%
+  mutate(layer_inv = Cant * layer_thickness) %&gt;%
   mutate(layer_inv_pos = if_else(layer_inv &lt; 0, 0, layer_inv)) %&gt;%
   select(-layer_thickness)
 
@@ -1886,13 +1830,7 @@ Cant_predictor_average_zonal %&gt;%
 
 Cant_inv %&gt;%
     write_csv(here::here(&quot;data/mapping/_summarized_files&quot;,
-                         &quot;Cant_inv.csv&quot;))
-
-rm(Cant_average,
-   Cant_predictor_average,
-   Cant_average_zonal,
-   Cant_predictor_average_zonal,
-   Cant_inv)</code></pre>
+                         &quot;Cant_inv.csv&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
