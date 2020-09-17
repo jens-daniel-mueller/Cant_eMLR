@@ -346,6 +346,62 @@ Cant_average %>%
 
 ```
 
+
+### Distribution along slab
+
+
+```{r Cant_gamma_slab_maps, fig.asp=2}
+
+Cant_gamma_maps <- Cant_average %>% 
+  group_by(lat, lon, gamma_slab, eras) %>% 
+  summarise(Cant = mean(Cant, na.rm = TRUE)) %>% 
+  ungroup()
+
+
+ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(data = Cant_gamma_maps,
+              aes(lon, lat, fill = Cant)) +
+  facet_grid(gamma_slab ~ eras) +
+  coord_quickmap(expand = 0) +
+  scale_fill_viridis_c(direction = -1) +
+  theme(axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.position = "top")
+
+rm(Cant_gamma_maps)
+```
+
+```{r Cant_pos_gamma_slab_maps, fig.asp=2}
+
+Cant_gamma_maps <- Cant_average %>% 
+  group_by(lat, lon, gamma_slab, eras) %>% 
+  summarise(Cant_pos = mean(Cant_pos, na.rm = TRUE)) %>% 
+  ungroup()
+
+
+ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat),
+              fill = "grey80") +
+  geom_raster(data = Cant_gamma_maps %>% filter(Cant_pos <= 20),
+              aes(lon, lat, fill = Cant_pos)) +
+  scale_fill_gradientn(colours = c("white","blue","red","yellow")) +
+  facet_grid(gamma_slab ~ eras) +
+  coord_quickmap(expand = 0) +
+  theme(axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.position = "top")
+
+rm(Cant_gamma_maps)
+```
+
+
+
 ### Inventories
 
 #### All Cant
