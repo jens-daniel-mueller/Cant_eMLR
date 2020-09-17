@@ -142,6 +142,9 @@ Cant <- Cant %>%
            delta_coeff_sal * sal + 
            delta_coeff_tem * tem)
 
+Cant <- Cant %>%
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
+
 ```
 
 ```{r calculate_predictor_contributions_to_Cant}
@@ -290,6 +293,9 @@ Cant_surface <- full_join(predictors_surface, co2_atm_tref,
 Cant_surface <- Cant_surface %>% 
   mutate(Cant = (1 / rev_fac) * (TCO2 / pCO2) * d_pCO2_tref)
 
+Cant_surface <- Cant_surface %>%
+  mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
+
 map_climatology_eras(Cant_surface, "Cant")
 
 section_global_surface_eras(Cant_surface, "Cant")
@@ -305,21 +311,40 @@ Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combi
 
 ```{r Calculate_Cant_mean}
 
+# Cant_predictor_average <- Cant %>%
+#   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
+#   group_by(lon, lat, depth, eras, basin) %>%
+#   summarise(Cant_intercept = mean(Cant_intercept, na.rm = TRUE),
+#             Cant_aou = mean(Cant_aou, na.rm = TRUE),
+#             Cant_oxygen = mean(Cant_oxygen, na.rm = TRUE),
+#             Cant_phosphate = mean(Cant_phosphate, na.rm = TRUE),
+#             Cant_phosphate_star = mean(Cant_phosphate_star, na.rm = TRUE),
+#             Cant_silicate = mean(Cant_silicate, na.rm = TRUE),
+#             Cant_tem = mean(Cant_tem, na.rm = TRUE),
+#             Cant_sal = mean(Cant_sal, na.rm = TRUE),
+#             Cant_sum = mean(Cant_sum, na.rm = TRUE),
+#             gamma_mean = mean(gamma, na.rm = TRUE)
+#             ) %>%
+#   ungroup()
+
+
 Cant_predictor_average <- Cant %>%
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
-  group_by(lon, lat, depth, eras, basin) %>%
-  summarise(Cant_intercept = mean(Cant_intercept, na.rm = TRUE),
-            Cant_aou = mean(Cant_aou, na.rm = TRUE),
-            Cant_oxygen = mean(Cant_oxygen, na.rm = TRUE),
-            Cant_phosphate = mean(Cant_phosphate, na.rm = TRUE),
-            Cant_phosphate_star = mean(Cant_phosphate_star, na.rm = TRUE),
-            Cant_silicate = mean(Cant_silicate, na.rm = TRUE),
-            Cant_tem = mean(Cant_tem, na.rm = TRUE),
-            Cant_sal = mean(Cant_sal, na.rm = TRUE),
-            Cant_sum = mean(Cant_sum, na.rm = TRUE),
-            gamma_mean = mean(gamma, na.rm = TRUE)
-            ) %>%
-  ungroup()
+  fselect(lon, lat, depth, eras, basin,
+          Cant_intercept,
+          Cant_aou,
+          Cant_oxygen,
+          Cant_phosphate,
+          Cant_phosphate_star, 
+          Cant_silicate, 
+          Cant_tem, 
+          Cant_sal, 
+          Cant_sum, 
+          gamma) %>% 
+  fgroup_by(lon, lat, depth, eras, basin) %>% {
+   add_vars(fgroup_vars(.,"unique"),
+            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"))
+  }
+
 
 Cant_predictor_average_Atl <- Cant_predictor_average %>% 
   filter(basin == "Atlantic") %>% 
@@ -335,9 +360,6 @@ rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 
 # Cant <- Cant %>%
 #   select(lon, lat, depth, eras, basin, Cant, gamma, model)
-
-Cant <- Cant %>%
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
 
 # Cant_average <- Cant %>%
 #   group_by(lon, lat, depth, eras, basin) %>%
@@ -405,16 +427,24 @@ rm(Cant)
 
 ```{r join_surface_deep_cant}
 
-Cant_surface <- Cant_surface %>%
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
-  group_by(lon, lat, depth, eras, basin) %>%
-  summarise(Cant_mean = mean(Cant, na.rm = TRUE),
-            Cant_sd = sd(Cant, na.rm = TRUE),
-            Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-            Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-            gamma_mean = mean(gamma, na.rm = TRUE),
-            gamma_sd = sd(gamma, na.rm = TRUE)) %>%
-  ungroup()
+# Cant_surface <- Cant_surface %>%
+#   group_by(lon, lat, depth, eras, basin) %>%
+#   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
+#             Cant_sd = sd(Cant, na.rm = TRUE),
+#             Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
+#             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
+#             gamma_mean = mean(gamma, na.rm = TRUE),
+#             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
+#   ungroup()
+
+Cant_surface_average <- Cant_surface %>%
+  fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %>% 
+  fgroup_by(lon, lat, depth, eras, basin) %>% {
+   add_vars(fgroup_vars(.,"unique"),
+            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
+            fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
+  }
+
 
 Cant_average <- full_join(Cant_average, Cant_surface)
 
@@ -506,7 +536,7 @@ Cant_predictor_average <- full_join(Cant_predictor_average,
 Cant_predictor_average_zonal <- Cant_predictor_average %>%
   group_by(lat, depth, eras, basin, basin_AIP) %>%
   summarise(across(
-    Cant_intercept:gamma_mean,
+    Cant_intercept_mean:gamma_mean,
     list(mean = ~ mean(.x, na.rm = TRUE))
   )) %>%
   ungroup()
