@@ -276,14 +276,14 @@ section_zonal_average_continous(Cant_average_zonal,
 ```{r Cant_section_predictor_contribution}
 
 for (variable in c(
-  "Cant_intercept_mean",
-  "Cant_aou_mean",
-  "Cant_oxygen_mean",
-  "Cant_phosphate_mean",
-  "Cant_phosphate_star_mean",
-  "Cant_silicate_mean",
-  "Cant_tem_mean",
-  "Cant_sal_mean")) {
+  "Cant_intercept_mean_mean",
+  "Cant_aou_mean_mean",
+  "Cant_oxygen_mean_mean",
+  "Cant_phosphate_mean_mean",
+  "Cant_phosphate_star_mean_mean",
+  "Cant_silicate_mean_mean",
+  "Cant_tem_mean_mean",
+  "Cant_sal_mean_mean")) {
 
 print(
 section_zonal_average_continous(Cant_predictor_average_zonal,
