@@ -20,6 +20,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(metR)
 library(seacarb)
+library(collapse)
 ```
 
 ```{r read_parameters, include = FALSE}
@@ -338,15 +339,23 @@ rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 Cant <- Cant %>%
   mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
 
+# Cant_average <- Cant %>%
+#   group_by(lon, lat, depth, eras, basin) %>%
+#   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
+#             Cant_sd = sd(Cant, na.rm = TRUE),
+#             Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
+#             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
+#             gamma_mean = mean(gamma, na.rm = TRUE),
+#             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
+#   ungroup()
+
 Cant_average <- Cant %>%
-  group_by(lon, lat, depth, eras, basin) %>%
-  summarise(Cant_mean = mean(Cant, na.rm = TRUE),
-            Cant_sd = sd(Cant, na.rm = TRUE),
-            Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-            Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-            gamma_mean = mean(gamma, na.rm = TRUE),
-            gamma_sd = sd(gamma, na.rm = TRUE)) %>%
-  ungroup()
+  fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %>% 
+  fgroup_by(lon, lat, depth, eras, basin) %>% {
+   add_vars(fgroup_vars(.,"unique"),
+            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
+            fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
+  }
 
 # for (i_basin in unique(Cant$basin)) {
 #   for (i_eras in unique(Cant$eras)) {
