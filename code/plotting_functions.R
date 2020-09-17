@@ -15,6 +15,23 @@ map_climatology <- function(df, var) {
 
 }
 
+map_climatology_eras <- function(df, var) {
+  var <- sym(var)
+
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
+                aes(lon, lat, fill = !!var)) +
+    geom_raster(data = section_global_coordinates,
+               aes(lon, lat), fill = "white") +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+    theme(axis.title = element_blank()) +
+    facet_grid(eras ~ depth, labeller = label_both)
+
+}
+
 map_climatology_inv <- function(df, var) {
   var <- sym(var)
 
@@ -178,6 +195,48 @@ section_global <- function(df, var) {
     theme(legend.position = "none")
 
   surface / deep
+
+}
+
+section_global_surface <- function(df, var) {
+
+  name_var <- var
+  var <- sym(var)
+
+  df_sub <- left_join(section_global_coordinates, df)
+
+  df_sub %>%
+    ggplot(aes(dist, depth, z = !!var)) +
+    geom_contour_filled() +
+    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
+               aes(xintercept = dist), col = "white") +
+    scale_fill_viridis_d(name = name_var) +
+    coord_cartesian(expand = 0) +
+    scale_y_reverse() +
+    theme(legend.position = "top") +
+    labs(y = "Depth (m)")
+
+}
+
+section_global_surface_eras <- function(df, var) {
+
+  name_var <- var
+  var <- sym(var)
+
+  df_sub <- left_join(section_global_coordinates, df)
+
+  df_sub %>%
+    filter(!is.na(eras)) %>%
+    ggplot(aes(dist, depth, z = !!var)) +
+    geom_contour_filled() +
+    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
+               aes(xintercept = dist), col = "white") +
+    scale_fill_viridis_d(name = name_var) +
+    coord_cartesian(expand = 0) +
+    scale_y_reverse() +
+    theme(legend.position = "top") +
+    labs(y = "Depth (m)") +
+    facet_grid(eras ~ .)
 
 }
 
