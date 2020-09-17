@@ -309,24 +309,7 @@ Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combi
 
 ### Deep water averaging
 
-```{r Calculate_Cant_mean}
-
-# Cant_predictor_average <- Cant %>%
-#   mutate(Cant_pos = if_else(Cant < 0, 0, Cant)) %>%
-#   group_by(lon, lat, depth, eras, basin) %>%
-#   summarise(Cant_intercept = mean(Cant_intercept, na.rm = TRUE),
-#             Cant_aou = mean(Cant_aou, na.rm = TRUE),
-#             Cant_oxygen = mean(Cant_oxygen, na.rm = TRUE),
-#             Cant_phosphate = mean(Cant_phosphate, na.rm = TRUE),
-#             Cant_phosphate_star = mean(Cant_phosphate_star, na.rm = TRUE),
-#             Cant_silicate = mean(Cant_silicate, na.rm = TRUE),
-#             Cant_tem = mean(Cant_tem, na.rm = TRUE),
-#             Cant_sal = mean(Cant_sal, na.rm = TRUE),
-#             Cant_sum = mean(Cant_sum, na.rm = TRUE),
-#             gamma_mean = mean(gamma, na.rm = TRUE)
-#             ) %>%
-#   ungroup()
-
+```{r calculate_Cant_predictor_mean}
 
 Cant_predictor_average <- Cant %>%
   fselect(lon, lat, depth, eras, basin,
@@ -342,111 +325,59 @@ Cant_predictor_average <- Cant %>%
           gamma) %>% 
   fgroup_by(lon, lat, depth, eras, basin) %>% {
    add_vars(fgroup_vars(.,"unique"),
-            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"))
+            fmean(., keep.group_vars = FALSE))
   }
-
 
 Cant_predictor_average_Atl <- Cant_predictor_average %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 Cant_predictor_average_Ind_Pac <- Cant_predictor_average %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 Cant_predictor_average <- bind_rows(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 
 rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
 
-# Cant <- Cant %>%
-#   select(lon, lat, depth, eras, basin, Cant, gamma, model)
+```
 
-# Cant_average <- Cant %>%
-#   group_by(lon, lat, depth, eras, basin) %>%
-#   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
-#             Cant_sd = sd(Cant, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-#             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-#             gamma_mean = mean(gamma, na.rm = TRUE),
-#             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
-#   ungroup()
+```{r calculate_Cant_mean}
 
 Cant_average <- Cant %>%
   fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %>% 
   fgroup_by(lon, lat, depth, eras, basin) %>% {
    add_vars(fgroup_vars(.,"unique"),
-            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
+            fmean(., keep.group_vars = FALSE),
             fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
   }
 
-# for (i_basin in unique(Cant$basin)) {
-#   for (i_eras in unique(Cant$eras)) {
-#     for (i_depth in unique(Cant$depth)) {
-#       
-#       # i_basin <- unique(Cant$basin)[1]
-#       # i_eras  <- unique(Cant$eras) [1]
-#       # i_depth <- unique(Cant$depth)[1]
-#       # print(i_basin)
-#       # print(i_eras)
-#       # print(i_depth)
-#       
-#       temp <- Cant %>%
-#         filter(basin == i_basin,
-#                eras == i_eras,
-#                depth == i_depth) %>%
-#         group_by(lon, lat) %>%
-#         summarise(
-#           Cant_mean = mean(Cant, na.rm = TRUE),
-#           Cant_sd = sd(Cant, na.rm = TRUE),
-#           Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-#           Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-#           gamma_mean = mean(gamma, na.rm = TRUE),
-#           gamma_sd = sd(gamma, na.rm = TRUE)
-#         ) %>%
-#         ungroup()
-#       
-#       if (exists("Cant_average")) {
-#         Cant_average <- bind_rows(Cant_average, temp)
-#       }
-#       
-#       if (!exists("Cant_average")) {
-#         Cant_average <- temp
-#       }
-#       
-#     }
-#     
-#   }
-#   
-# } 
-
 rm(Cant)
-
 ```
 
-### Join surface and deep water
 
-```{r join_surface_deep_cant}
-
-# Cant_surface <- Cant_surface %>%
-#   group_by(lon, lat, depth, eras, basin) %>%
-#   summarise(Cant_mean = mean(Cant, na.rm = TRUE),
-#             Cant_sd = sd(Cant, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos, na.rm = TRUE),
-#             Cant_pos_sd = sd(Cant_pos, na.rm = TRUE),
-#             gamma_mean = mean(gamma, na.rm = TRUE),
-#             gamma_sd = sd(gamma, na.rm = TRUE)) %>%
-#   ungroup()
+```{r calculate_Cant_mean_surface}
 
 Cant_surface_average <- Cant_surface %>%
   fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %>% 
   fgroup_by(lon, lat, depth, eras, basin) %>% {
    add_vars(fgroup_vars(.,"unique"),
-            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
+            fmean(., keep.group_vars = FALSE),
             fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
   }
 
+rm(Cant_surface)
+```
 
-Cant_average <- full_join(Cant_average, Cant_surface)
+
+
+### Join surface and deep water
+
+```{r join_surface_deep_cant}
+
+Cant_average <- full_join(Cant_average, Cant_surface_average)
+
+rm(Cant_surface_average)
 
 ```
 
@@ -456,11 +387,11 @@ Cant_average <- full_join(Cant_average, Cant_surface)
 
 Cant_average_Atl <- Cant_average %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 Cant_average_Ind_Pac <- Cant_average %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 Cant_average <- bind_rows(Cant_average_Atl, Cant_average_Ind_Pac)
 
@@ -473,50 +404,47 @@ rm(Cant_average_Atl, Cant_average_Ind_Pac)
 
 For each basin and era combination, the zonal mean Cant is calculated, again for all vs positive only values. Likewise, sd is calculated for the averaging of the mean basin fields.
 
-```{r Calculate_Cant_mean_sections}
-
+```{r Calculate_Cant_zonal_mean_sections}
 
 Cant_average <- left_join(Cant_average,
                           basinmask_AIP %>% select(-basin))
 
 Cant_average_zonal <- Cant_average %>%
-  group_by(lat, depth, eras, basin, basin_AIP) %>%
-  summarise(across(
-    c(
-      "Cant_mean",
-      "Cant_pos_mean",
-      "Cant_sd",
-      "Cant_pos_sd",
-      "gamma_mean",
-      "gamma_sd"
-    ),
-    list(
-      mean = ~ mean(.x, na.rm = TRUE),
-      sd = ~ sd(.x, na.rm = TRUE)
-    )
-  )) %>%
-  ungroup()
+  fselect(lat, depth, eras, basin, basin_AIP,
+          Cant, Cant_pos, gamma, Cant_sd, Cant_pos_sd, gamma_sd) %>% 
+  fgroup_by(lat, depth, eras, basin, basin_AIP) %>% {
+   add_vars(fgroup_vars(.,"unique"),
+            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
+            fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
+  }
 
 
-# Cant_average_zonal <- Cant_average %>% 
-#   group_by(lat, depth, eras, basin) %>% 
-#   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
-#             Cant_mean = mean(Cant_mean, na.rm = TRUE),
-#             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
-#             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
-#             gamma_mean = mean(gamma_mean)) %>% 
+# Cant_average_zonal <- Cant_average %>%
+#   group_by(lat, depth, eras, basin, basin_AIP) %>%
+#   summarise(across(
+#     c(
+#       "Cant_mean",
+#       "Cant_pos_mean",
+#       "Cant_sd",
+#       "Cant_pos_sd",
+#       "gamma_mean",
+#       "gamma_sd"
+#     ),
+#     list(
+#       mean = ~ mean(.x, na.rm = TRUE),
+#       sd = ~ sd(.x, na.rm = TRUE)
+#     )
+#   )) %>%
 #   ungroup()
 
 
 Cant_average_zonal_Atl <- Cant_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
 
 Cant_average_zonal_Ind_Pac <- Cant_average_zonal %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
 
 Cant_average_zonal <- bind_rows(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
 
@@ -534,33 +462,30 @@ Cant_predictor_average <- full_join(Cant_predictor_average,
                                 basinmask_AIP %>% select(-basin))
 
 Cant_predictor_average_zonal <- Cant_predictor_average %>%
-  group_by(lat, depth, eras, basin, basin_AIP) %>%
-  summarise(across(
-    Cant_intercept_mean:gamma_mean,
-    list(mean = ~ mean(.x, na.rm = TRUE))
-  )) %>%
-  ungroup()
+  fselect(lat, depth, eras, basin, basin_AIP,
+          Cant_intercept:gamma) %>% 
+  fgroup_by(lat, depth, eras, basin, basin_AIP) %>% {
+   add_vars(fgroup_vars(.,"unique"),
+            fmean(., keep.group_vars = FALSE))
+  }
 
 
-# Cant_average_zonal <- Cant_average %>% 
-#   group_by(lat, depth, eras, basin) %>% 
-#   summarise(Cant_mean_sd = sd(Cant_mean, na.rm = TRUE),
-#             Cant_mean = mean(Cant_mean, na.rm = TRUE),
-#             Cant_sd_mean = mean(Cant_sd, na.rm = TRUE),
-#             Cant_pos_mean_sd = sd(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_mean = mean(Cant_pos_mean, na.rm = TRUE),
-#             Cant_pos_sd_mean = mean(Cant_pos_sd, na.rm = TRUE),
-#             gamma_mean = mean(gamma_mean)) %>% 
+# Cant_predictor_average_zonal <- Cant_predictor_average %>%
+#   group_by(lat, depth, eras, basin, basin_AIP) %>%
+#   summarise(across(
+#     Cant_intercept_mean:gamma_mean,
+#     list(mean = ~ mean(.x, na.rm = TRUE))
+#   )) %>%
 #   ungroup()
 
 
 Cant_predictor_average_zonal_Atl <- Cant_predictor_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Atl))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
 Cant_predictor_average_zonal_Ind_Pac <- Cant_predictor_average_zonal %>% 
   filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma_mean_mean, parameters$slabs_Ind_Pac))
+  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
 Cant_predictor_average_zonal <- bind_rows(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)
 
@@ -591,15 +516,11 @@ depth_level_volume <- depth_level_volume %>%
   select(-c(layer_thickness_above,
             layer_thickness_below))
 
-depth_level_volume %>% 
-  ggplot(aes(depth, layer_thickness)) + 
-  geom_point()
-
 Cant_average <-
   full_join(Cant_average, depth_level_volume)
 
 Cant_average <- Cant_average %>%
-  mutate(layer_inv = Cant_mean * layer_thickness) %>%
+  mutate(layer_inv = Cant * layer_thickness) %>%
   mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
   select(-layer_thickness)
 
@@ -642,12 +563,6 @@ Cant_predictor_average_zonal %>%
 Cant_inv %>%
     write_csv(here::here("data/mapping/_summarized_files",
                          "Cant_inv.csv"))
-
-rm(Cant_average,
-   Cant_predictor_average,
-   Cant_average_zonal,
-   Cant_predictor_average_zonal,
-   Cant_inv)
 
 ```
 

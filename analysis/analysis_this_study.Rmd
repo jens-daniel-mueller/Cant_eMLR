@@ -169,7 +169,7 @@ rm(gamma_maps, GLODAP_obs_coverage)
 
 ```{r gamma_surface_map}
 
-map_climatology(Cant_average, "gamma_mean")
+map_climatology(Cant_average, "gamma")
 
 ```
 
@@ -184,7 +184,7 @@ The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due
 
 Cant_average_zonal %>% 
   filter(eras == "JGOFS_GO") %>% 
-  ggplot(aes(lat, depth, z = gamma_mean_mean)) +
+  ggplot(aes(lat, depth, z = gamma_mean)) +
   geom_contour_filled(breaks = slab_breaks) +
   geom_contour(breaks = slab_breaks,
                col = "white") +
@@ -209,7 +209,7 @@ Higher SD of gamma in shallow, subtropical waters results from a more pronounced
 
 Cant_average_zonal %>% 
   filter(eras == "JGOFS_GO") %>% 
-  ggplot(aes(lat, depth, z = gamma_mean_sd)) +
+  ggplot(aes(lat, depth, z = gamma_sd)) +
   geom_contour_filled() +
   scale_fill_viridis_d(name = "Gamma SD",
                        direction = -1) +
@@ -231,8 +231,8 @@ Cant_average_zonal %>%
 ```{r Cant_sections_mean}
 
 section_zonal_average_divergent(Cant_average_zonal,
-                                "Cant_mean_mean",
-                                "gamma_mean_mean")
+                                "Cant_mean",
+                                "gamma_mean")
 
 ```
 
@@ -241,8 +241,8 @@ section_zonal_average_divergent(Cant_average_zonal,
 ```{r Cant_sections_positive_mean}
 
 section_zonal_average_continous(Cant_average_zonal,
-                                "Cant_pos_mean_mean",
-                                "gamma_mean_mean")
+                                "Cant_pos_mean",
+                                "gamma_mean")
 
 ```
 
@@ -255,7 +255,7 @@ Standard deviation across Cant from all MLR models was calculate for each grid c
 
 section_zonal_average_continous(Cant_average_zonal,
                                 "Cant_sd_mean",
-                                "gamma_mean_mean")
+                                "gamma_mean")
 
 ```
 
@@ -266,8 +266,8 @@ Standard deviation of mean Cant values was calculate across all longitudes. This
 ```{r Cant_sections_sd_Cant}
 
 section_zonal_average_continous(Cant_average_zonal,
-                                "Cant_mean_sd",
-                                "gamma_mean_mean")
+                                "Cant_sd",
+                                "gamma_mean")
 
 ```
 
@@ -276,19 +276,19 @@ section_zonal_average_continous(Cant_average_zonal,
 ```{r Cant_section_predictor_contribution}
 
 for (variable in c(
-  "Cant_intercept_mean_mean",
-  "Cant_aou_mean_mean",
-  "Cant_oxygen_mean_mean",
-  "Cant_phosphate_mean_mean",
-  "Cant_phosphate_star_mean_mean",
-  "Cant_silicate_mean_mean",
-  "Cant_tem_mean_mean",
-  "Cant_sal_mean_mean")) {
+  "Cant_intercept",
+  "Cant_aou",
+  "Cant_oxygen",
+  "Cant_phosphate",
+  "Cant_phosphate_star",
+  "Cant_silicate",
+  "Cant_tem",
+  "Cant_sal")) {
 
 print(
 section_zonal_average_continous(Cant_predictor_average_zonal,
                                 variable,
-                                "gamma_mean_mean")
+                                "gamma")
 )
     
 }
@@ -305,7 +305,7 @@ rm(variable)
 ```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
 
 section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
-                    "Cant_mean")
+                    "Cant")
 
 ```
 
@@ -314,7 +314,7 @@ section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
 ```{r Cant_sections_positive_mean_one_lon_GO_new}
 
 section_global(Cant_average %>% filter(eras == "GO_new"),
-                    "Cant_mean")
+                    "Cant")
 
 ```
 
@@ -333,7 +333,7 @@ Cant concentration for selected depth levels at which mapping was performed.
 
 Cant_average %>%
   filter(depth %in% parameters$depth_levels) %>%
-  ggplot(aes(lon, lat, fill = Cant_mean)) +
+  ggplot(aes(lon, lat, fill = Cant)) +
   geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
   geom_raster() +
@@ -396,7 +396,7 @@ Cant_inv %>%
 ```{r Cant_vs_sd_by_basin_era}
 
 Cant_average %>% 
-  ggplot(aes(Cant_mean, Cant_sd)) +
+  ggplot(aes(Cant, Cant_sd)) +
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 10) +
   geom_bin2d() +
@@ -411,7 +411,7 @@ Cant_average %>%
 ```{r Cant_vs_sd_by_basin_gamma, fig.asp=2}
 
 Cant_average %>% 
-  ggplot(aes(Cant_mean, Cant_sd)) +
+  ggplot(aes(Cant, Cant_sd)) +
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 10) +
   geom_bin2d() +
@@ -428,7 +428,7 @@ Cant_average %>%
 ```{r Cant_vs_sd_by_basin_era_zonal}
 
 Cant_average_zonal %>% 
-  ggplot(aes(Cant_mean_mean, Cant_mean_sd)) +
+  ggplot(aes(Cant_mean, Cant_sd)) +
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 10) +
   geom_bin2d() +
@@ -443,7 +443,7 @@ Cant_average_zonal %>%
 ```{r Cant_vs_sd_by_basin_gamma_zonal, fig.asp=2}
 
 Cant_average_zonal %>% 
-  ggplot(aes(Cant_mean_mean, Cant_mean_sd)) +
+  ggplot(aes(Cant_mean, Cant_sd)) +
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 10) +
   geom_bin2d() +
