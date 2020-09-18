@@ -696,3 +696,15 @@ Cstar_average_zonal %>%
 Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
 
 
+# Known issues
+
+Deviations between this study and the results by Gruber et al (2019), short G19, for the same period, might be attributable to following known differences in the implementation of the eMLR(C*) method:
+
+- GLODAPv2_2020 here vs an extended version of GLODAPv2 in G19
+- flagging: Here, we accept f flags 0 and 2 (except for tco2, where only 0 is accepted). G19 claim to use 0 throughout, yet have a high coverage of talk observations in the SE Pacific  
+- Neutral density calculation: Here and in GLODAPv2_2020 a polynomial approximation is used, whereas G19 uses the original Matlab code  
+- Predictor climatology: Here we used WOA18, whereas G19 used WOA13
+- Missing data in the GLODAP mapped climatology, eg NO3 at surface, where not filled in this study
+- Cant on neutral density levels calculate as slab mean, rather than on one surface
+- Here, surface delta Cant were calculated based on Luecker constants, rather than Mehrbach as in G19
+- Here, pCO2 was calculated from DIC/TA Climatology
