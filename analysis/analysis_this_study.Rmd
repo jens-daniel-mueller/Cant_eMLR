@@ -301,11 +301,9 @@ In a second series of plots we explore the distribution of Cant, taking positive
 ## Zonal mean sections
 
 ```{r Cant_all_zonal_mean_sections}
-
 section_zonal_average_divergent(Cant_average_zonal,
                                 "Cant_mean",
                                 "gamma_mean")
-
 ```
 
 
@@ -388,10 +386,9 @@ rm(breaks, breaks_n)
 ```
 
 
-## Zonal sections 
+# Cant - standard deviation 
 
-
-### Mean standard deviation across MLR models
+## Across models
 
 Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
 
@@ -403,7 +400,7 @@ section_zonal_average_continous(Cant_average_zonal,
 
 ```
 
-### Standard deviation across basin
+## Across basins
 
 Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
 
@@ -415,7 +412,7 @@ section_zonal_average_continous(Cant_average_zonal,
 
 ```
 
-### Predictor contribution
+# Cant - predictor contribution
 
 ```{r Cant_section_predictor_contribution}
 
@@ -442,14 +439,14 @@ rm(variable)
 ```
 
 
-## Sections along path
+# Cant - globale section
 
 ### JGOFS_GO
 
 ```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
 
 section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
-                    "Cant")
+                    "Cant_pos")
 
 ```
 
@@ -458,12 +455,12 @@ section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
 ```{r Cant_sections_positive_mean_one_lon_GO_new}
 
 section_global(Cant_average %>% filter(eras == "GO_new"),
-                    "Cant")
+                    "Cant_pos")
 
 ```
 
 
-## Sections by model
+# Sections by model
 
 Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
 
@@ -490,34 +487,6 @@ Cant_average %>%
 
 ```
 
-
-### Distribution along slab
-
-
-```{r Cant_gamma_slab_maps, fig.asp=2.5}
-
-Cant_gamma_maps <- Cant_average %>% 
-  group_by(lat, lon, gamma_slab, eras) %>% 
-  summarise(Cant = mean(Cant, na.rm = TRUE)) %>% 
-  ungroup()
-
-
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
-  geom_raster(data = Cant_gamma_maps,
-              aes(lon, lat, fill = Cant)) +
-  facet_grid(gamma_slab ~ eras) +
-  coord_quickmap(expand = 0) +
-  scale_fill_viridis_c(direction = -1) +
-  theme(axis.title = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        legend.position = "top")
-
-rm(Cant_gamma_maps)
-```
 
 
 ## Cant vs model SD
