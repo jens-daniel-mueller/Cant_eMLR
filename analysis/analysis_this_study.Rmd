@@ -258,7 +258,7 @@ section_zonal_average_divergent(Cant_average_zonal,
 
 ### Mean positive values
 
-```{r Cant_sections_positive_mean, fig.asp=1}
+```{r Cant_sections_positive_mean}
 
 breaks <- c(seq(0,18,1),Inf)
 breaks_n <- length(breaks) - 1
