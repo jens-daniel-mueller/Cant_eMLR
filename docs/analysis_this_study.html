@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7c0354db1cfb9c6e5910c223300e170aa93f84cdtargetblank7c0354da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7c0354db1cfb9c6e5910c223300e170aa93f84cd" target="_blank">7c0354d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree4b8cb4eb8647313362c082916828e198197a4c63targetblank4b8cb4ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/4b8cb4eb8647313362c082916828e198197a4c63" target="_blank">4b8cb4e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7c0354db1cfb9c6e5910c223300e170aa93f84cdtargetblank7c0354da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree4b8cb4eb8647313362c082916828e198197a4c63targetblank4b8cb4ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7c0354db1cfb9c6e5910c223300e170aa93f84cd" target="_blank">7c0354d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/4b8cb4eb8647313362c082916828e198197a4c63" target="_blank">4b8cb4e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -684,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/4b8cb4eb8647313362c082916828e198197a4c63/analysis/analysis_this_study.Rmd" target="_blank">4b8cb4e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-18
+</td>
+<td>
+zonal mean section gruber color scale
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b68196dcce79feeadfae491a2345aed3b290f059/docs/analysis_this_study.html" target="_blank">b68196d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1844,27 +1878,86 @@ Cant_average_zonal &lt;- Cant_average_zonal %&gt;%
                                 breaks,
                                 right = FALSE))
 
-Cant_average_zonal %&gt;%
-  ggplot(aes(lat, depth, z = Cant_pos_mean)) +
-  geom_contour_filled(breaks = breaks) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                    name = &quot;Cant&quot;) +
-  geom_contour(aes(lat, depth, z = gamma_mean),
-               breaks = slab_breaks,
-               col = &quot;black&quot;) +
-  geom_text_contour(
-    aes(lat, depth, z = gamma_mean),
-    breaks = slab_breaks,
-    col = &quot;black&quot;,
-    skip = 2
-  ) +
-  scale_y_reverse() +
-  scale_x_continuous(breaks = seq(-100,100,20)) +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
-  facet_wrap(~ basin_AIP + eras, ncol = 1)</code></pre>
-<p><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(breaks, breaks_n)</code></pre>
+
+zonal_section &lt;- function(df, i_basin_AIP, i_eras, var) {
+  
+  name_var &lt;- var
+  var &lt;- sym(var)
+  
+  lat_max &lt;- max(df$lat)
+  lat_min &lt;- min(df$lat)
+  
+  df_sub &lt;- df %&gt;% 
+    filter(eras == i_eras,
+           basin_AIP == i_basin_AIP)
+  
+  surface &lt;- df_sub %&gt;%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                      name = &quot;Cant&quot;) +
+    coord_cartesian(expand = 0,
+                    ylim = c(500, 0),
+                    xlim = c(lat_min, lat_max)) +
+    scale_y_reverse() +
+    theme(
+      axis.title.x = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank()
+    ) +
+    labs(y = &quot;Depth (m)&quot;,
+         title = paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| eras:&quot;, i_eras))
+  
+  deep &lt;- df_sub %&gt;%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                      name = &quot;Cant&quot;) +
+    scale_y_reverse() +
+    coord_cartesian(expand = 0,
+                    ylim = c(3000, 500),
+                    xlim = c(lat_min, lat_max)) +
+    labs(x = &quot;latitude (°N)&quot;, y = &quot;Depth (m)&quot;)
+  
+  surface / deep +
+    plot_layout(guides = &quot;collect&quot;)
+  
+}
+
+
+for (i_basin_AIP in unique(Cant_average_zonal$basin_AIP)) {
+  for (i_eras in unique(Cant_average_zonal$eras)) {
+    
+    print(zonal_section(Cant_average_zonal,
+                        i_basin_AIP = i_basin_AIP,
+                        i_eras = i_eras,
+                        &quot;Cant_pos_mean&quot;))
+    
+  }
+  
+}</code></pre>
+<p><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Cant_average_zonal %&gt;%
+#   ggplot(aes(lat, depth, z = Cant_pos_mean)) +
+#   geom_contour_filled(breaks = breaks) +
+#   scale_fill_manual(values = Gruber_rainbow(breaks_n),
+#                     name = &quot;Cant&quot;) +
+#   geom_contour(aes(lat, depth, z = gamma_mean),
+#                breaks = slab_breaks,
+#                col = &quot;black&quot;) +
+#   geom_text_contour(
+#     aes(lat, depth, z = gamma_mean),
+#     breaks = slab_breaks,
+#     col = &quot;black&quot;,
+#     skip = 2
+#   ) +
+#   scale_y_reverse() +
+#   scale_x_continuous(breaks = seq(-100,100,20)) +
+#   coord_cartesian(expand = 0) +
+#   guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
+#   facet_wrap(~ basin_AIP + eras, ncol = 1)
+
+rm(breaks, breaks_n)</code></pre>
 </div>
 <div id="mean-standard-deviation-across-mlr-models" class="section level3">
 <h3><span class="header-section-number">4.1.3</span> Mean standard deviation across MLR models</h3>
