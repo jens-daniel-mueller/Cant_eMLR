@@ -155,7 +155,7 @@ Please note that:
 - density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin
 - predictor density slabs are only shown for the upper `r parameters$inventory_depth`m as used for the mapping, whereas GLODAP observations are displayed for the entire water column as used for fitting eMLRs (in both cases shallow waters are excluded at low density)
 
-```{r gamma_maps, fig.asp=2}
+```{r gamma_maps, fig.asp=2.5}
 
 gamma_maps <- Cant_average %>% 
   group_by(lat, lon, gamma_slab) %>% 
@@ -258,12 +258,38 @@ section_zonal_average_divergent(Cant_average_zonal,
 
 ### Mean positive values
 
-```{r Cant_sections_positive_mean}
+```{r Cant_sections_positive_mean, fig.asp=2}
 
-section_zonal_average_continous(Cant_average_zonal,
-                                "Cant_pos_mean",
-                                "gamma_mean")
+breaks <- c(seq(0,18,1),Inf)
+breaks_n <- length(breaks) - 1
 
+Cant_average_zonal <- Cant_average_zonal %>% 
+  mutate(Cant_pos_mean_int = cut(Cant_pos_mean, 
+                                breaks,
+                                right = FALSE))
+
+Cant_average_zonal %>%
+  ggplot(aes(lat, depth, z = Cant_pos_mean)) +
+  geom_contour_filled(breaks = breaks) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                    name = "Cant") +
+  geom_contour(aes(lat, depth, z = gamma_mean),
+               breaks = slab_breaks,
+               col = "black") +
+  geom_text_contour(
+    aes(lat, depth, z = gamma_mean),
+    breaks = slab_breaks,
+    col = "black",
+    skip = 2
+  ) +
+  scale_y_reverse() +
+  scale_x_continuous(breaks = seq(-100,100,20)) +
+  coord_cartesian(expand = 0) +
+  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  facet_wrap(~ basin_AIP + eras, ncol = 1)
+
+rm(breaks, breaks_n)
+  
 ```
 
 
@@ -370,7 +396,7 @@ Cant_average %>%
 ### Distribution along slab
 
 
-```{r Cant_gamma_slab_maps, fig.asp=2}
+```{r Cant_gamma_slab_maps, fig.asp=2.5}
 
 Cant_gamma_maps <- Cant_average %>% 
   group_by(lat, lon, gamma_slab, eras) %>% 
@@ -395,7 +421,7 @@ ggplot() +
 rm(Cant_gamma_maps)
 ```
 
-```{r Cant_pos_gamma_slab_maps, fig.asp=2}
+```{r Cant_pos_gamma_slab_maps, fig.asp=2.5}
 
 Cant_gamma_maps <- Cant_average %>% 
   group_by(lat, lon, gamma_slab, eras) %>% 
