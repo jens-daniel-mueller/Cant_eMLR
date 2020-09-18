@@ -502,7 +502,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analysis of Cant estimates</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">17 September, 2020</h4>
+<h4 class="date">18 September, 2020</h4>
 
 </div>
 
@@ -527,7 +527,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-17
+<strong>Last updated:</strong> 2020-09-18
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree10c1a10e92b14633f68d5026d83584b859e0f98btargetblank10c1a10a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/10c1a10e92b14633f68d5026d83584b859e0f98b" target="_blank">10c1a10</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreedf65c0a7be403cb6f034bf72b37633b2c0448ec1targetblankdf65c0aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/df65c0a7be403cb6f034bf72b37633b2c0448ec1" target="_blank">df65c0a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree10c1a10e92b14633f68d5026d83584b859e0f98btargetblank10c1a10a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreedf65c0a7be403cb6f034bf72b37633b2c0448ec1targetblankdf65c0aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/10c1a10e92b14633f68d5026d83584b859e0f98b" target="_blank">10c1a10</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/df65c0a7be403cb6f034bf72b37633b2c0448ec1" target="_blank">df65c0a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -684,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/df65c0a7be403cb6f034bf72b37633b2c0448ec1/analysis/analysis_this_study.Rmd" target="_blank">df65c0a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-18
+</td>
+<td>
+applied Gruber 2019 color scale
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/f5a20ac37fec6f493801e53ba6e8a2cd0f03f23d/docs/analysis_this_study.html" target="_blank">f5a20ac</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1658,10 +1692,25 @@ Cstar_average_zonal &lt;-
     )
   )</code></pre>
 </div>
+<div id="color-scale" class="section level1">
+<h1><span class="header-section-number">2</span> Color scale</h1>
+<p>Definition of color scale as applied in Gruber et al (2019).</p>
+<pre class="r"><code>rgb2hex &lt;- function(r, g, b)
+  rgb(r, g, b, maxColorValue = 100)
+
+cols = c(rgb2hex(95, 95, 95),
+         rgb2hex(0, 0, 95),
+         rgb2hex(100, 0, 0),
+         rgb2hex(100, 100, 0))
+
+Gruber_rainbow &lt;- colorRampPalette(cols)
+
+rm(rgb2hex, cols)</code></pre>
+</div>
 <div id="neutral-density" class="section level1">
-<h1><span class="header-section-number">2</span> Neutral density</h1>
+<h1><span class="header-section-number">3</span> Neutral density</h1>
 <div id="slab-depth" class="section level2">
-<h2><span class="header-section-number">2.1</span> Slab depth</h2>
+<h2><span class="header-section-number">3.1</span> Slab depth</h2>
 <p>Please note that:</p>
 <ul>
 <li>density slabs covering values &gt;28.1 occur by definition only either in the Atlantic or Indo-Pacific basin</li>
@@ -1695,15 +1744,15 @@ ggplot() +
 <pre class="r"><code>rm(gamma_maps, GLODAP_obs_coverage)</code></pre>
 </div>
 <div id="surface-maps" class="section level2">
-<h2><span class="header-section-number">2.2</span> Surface maps</h2>
+<h2><span class="header-section-number">3.2</span> Surface maps</h2>
 <pre class="r"><code>map_climatology(Cant_average, &quot;gamma&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/gamma_surface_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="zonal-sections" class="section level2">
-<h2><span class="header-section-number">2.3</span> Zonal sections</h2>
+<h2><span class="header-section-number">3.3</span> Zonal sections</h2>
 <p>The mean zonal distribution of neutral densities was calculated. <strong>CAVEAT:</strong> Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.</p>
 <div id="mean" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> Mean</h3>
+<h3><span class="header-section-number">3.3.1</span> Mean</h3>
 <pre class="r"><code>Cant_average_zonal %&gt;% 
   filter(eras == &quot;JGOFS_GO&quot;) %&gt;% 
   ggplot(aes(lat, depth, z = gamma_mean)) +
@@ -1723,7 +1772,7 @@ ggplot() +
 <p><img src="figure/analysis_this_study.Rmd/gamma_sections_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sd" class="section level3">
-<h3><span class="header-section-number">2.3.2</span> SD</h3>
+<h3><span class="header-section-number">3.3.2</span> SD</h3>
 <p>Higher SD of gamma in shallow, subtropical waters results from a more pronounced longitudinal variability.</p>
 <pre class="r"><code>Cant_average_zonal %&gt;% 
   filter(eras == &quot;JGOFS_GO&quot;) %&gt;% 
@@ -1741,25 +1790,25 @@ ggplot() +
 </div>
 </div>
 <div id="cant" class="section level1">
-<h1><span class="header-section-number">3</span> Cant</h1>
+<h1><span class="header-section-number">4</span> Cant</h1>
 <div id="zonal-sections-1" class="section level2">
-<h2><span class="header-section-number">3.1</span> Zonal sections</h2>
+<h2><span class="header-section-number">4.1</span> Zonal sections</h2>
 <div id="mean-1" class="section level3">
-<h3><span class="header-section-number">3.1.1</span> Mean</h3>
+<h3><span class="header-section-number">4.1.1</span> Mean</h3>
 <pre class="r"><code>section_zonal_average_divergent(Cant_average_zonal,
                                 &quot;Cant_mean&quot;,
                                 &quot;gamma_mean&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/Cant_sections_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="mean-positive-values" class="section level3">
-<h3><span class="header-section-number">3.1.2</span> Mean positive values</h3>
+<h3><span class="header-section-number">4.1.2</span> Mean positive values</h3>
 <pre class="r"><code>section_zonal_average_continous(Cant_average_zonal,
                                 &quot;Cant_pos_mean&quot;,
                                 &quot;gamma_mean&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="mean-standard-deviation-across-mlr-models" class="section level3">
-<h3><span class="header-section-number">3.1.3</span> Mean standard deviation across MLR models</h3>
+<h3><span class="header-section-number">4.1.3</span> Mean standard deviation across MLR models</h3>
 <p>Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era.</p>
 <pre class="r"><code>section_zonal_average_continous(Cant_average_zonal,
                                 &quot;Cant_sd_mean&quot;,
@@ -1767,7 +1816,7 @@ ggplot() +
 <p><img src="figure/analysis_this_study.Rmd/Cant_sections_sd_models-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="standard-deviation-across-basin" class="section level3">
-<h3><span class="header-section-number">3.1.4</span> Standard deviation across basin</h3>
+<h3><span class="header-section-number">4.1.4</span> Standard deviation across basin</h3>
 <p>Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.</p>
 <pre class="r"><code>section_zonal_average_continous(Cant_average_zonal,
                                 &quot;Cant_sd&quot;,
@@ -1775,7 +1824,7 @@ ggplot() +
 <p><img src="figure/analysis_this_study.Rmd/Cant_sections_sd_Cant-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="predictor-contribution" class="section level3">
-<h3><span class="header-section-number">3.1.5</span> Predictor contribution</h3>
+<h3><span class="header-section-number">4.1.5</span> Predictor contribution</h3>
 <pre class="r"><code>for (variable in c(
   &quot;Cant_intercept&quot;,
   &quot;Cant_aou&quot;,
@@ -1798,28 +1847,28 @@ section_zonal_average_continous(Cant_predictor_average_zonal,
 </div>
 </div>
 <div id="sections-along-path" class="section level2">
-<h2><span class="header-section-number">3.2</span> Sections along path</h2>
+<h2><span class="header-section-number">4.2</span> Sections along path</h2>
 <div id="jgofs_go" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> JGOFS_GO</h3>
+<h3><span class="header-section-number">4.2.1</span> JGOFS_GO</h3>
 <pre class="r"><code>section_global(Cant_average %&gt;% filter(eras == &quot;JGOFS_GO&quot;),
                     &quot;Cant&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean_one_lon_JGOFS_GO-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="go_new" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> GO_new</h3>
+<h3><span class="header-section-number">4.2.2</span> GO_new</h3>
 <pre class="r"><code>section_global(Cant_average %&gt;% filter(eras == &quot;GO_new&quot;),
                     &quot;Cant&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/Cant_sections_positive_mean_one_lon_GO_new-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="sections-by-model" class="section level2">
-<h2><span class="header-section-number">3.3</span> Sections by model</h2>
+<h2><span class="header-section-number">4.3</span> Sections by model</h2>
 <p>Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping" target="_blank">here</a>.</p>
 </div>
 <div id="maps" class="section level2">
-<h2><span class="header-section-number">3.4</span> Maps</h2>
+<h2><span class="header-section-number">4.4</span> Maps</h2>
 <div id="surfaces" class="section level3">
-<h3><span class="header-section-number">3.4.1</span> Surfaces</h3>
+<h3><span class="header-section-number">4.4.1</span> Surfaces</h3>
 <p>Cant concentration for selected depth levels at which mapping was performed.</p>
 <pre class="r"><code>Cant_average %&gt;%
   filter(depth %in% parameters$depth_levels) %&gt;%
@@ -1836,7 +1885,7 @@ section_zonal_average_continous(Cant_predictor_average_zonal,
 <p><img src="figure/analysis_this_study.Rmd/Cant_depth_layer_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="distribution-along-slab" class="section level3">
-<h3><span class="header-section-number">3.4.2</span> Distribution along slab</h3>
+<h3><span class="header-section-number">4.4.2</span> Distribution along slab</h3>
 <pre class="r"><code>Cant_gamma_maps &lt;- Cant_average %&gt;% 
   group_by(lat, lon, gamma_slab, eras) %&gt;% 
   summarise(Cant = mean(Cant, na.rm = TRUE)) %&gt;% 
@@ -1864,13 +1913,21 @@ ggplot() +
   ungroup()
 
 
+breaks &lt;- c(seq(0,16,2),Inf)
+breaks_n &lt;- length(breaks) - 1
+
+Cant_gamma_maps &lt;- Cant_gamma_maps %&gt;% 
+  mutate(Cant_pos_int = cut(Cant_pos, 
+                                breaks,
+                                right = FALSE))
+
 ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat),
-              fill = &quot;grey80&quot;) +
-  geom_raster(data = Cant_gamma_maps %&gt;% filter(Cant_pos &lt;= 20),
-              aes(lon, lat, fill = Cant_pos)) +
-  scale_fill_gradientn(colours = c(&quot;white&quot;,&quot;blue&quot;,&quot;red&quot;,&quot;yellow&quot;)) +
+              fill = &quot;grey30&quot;) +
+  geom_raster(data = Cant_gamma_maps,
+              aes(lon, lat, fill = Cant_pos_int)) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
   facet_grid(gamma_slab ~ eras) +
   coord_quickmap(expand = 0) +
   theme(axis.title = element_blank(),
@@ -1878,12 +1935,12 @@ ggplot() +
         axis.text = element_blank(),
         legend.position = &quot;top&quot;)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/Cant_pos_gamma_slab_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(Cant_gamma_maps)</code></pre>
+<pre class="r"><code>rm(Cant_gamma_maps, breaks, breaks_n)</code></pre>
 </div>
 <div id="inventories" class="section level3">
-<h3><span class="header-section-number">3.4.3</span> Inventories</h3>
+<h3><span class="header-section-number">4.4.3</span> Inventories</h3>
 <div id="all-cant" class="section level4">
-<h4><span class="header-section-number">3.4.3.1</span> All Cant</h4>
+<h4><span class="header-section-number">4.4.3.1</span> All Cant</h4>
 <pre class="r"><code>Cant_inv %&gt;% 
   ggplot() +
     geom_raster(data = landmask,
@@ -1903,24 +1960,30 @@ ggplot() +
 <p><img src="figure/analysis_this_study.Rmd/Cant_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="positive-cant" class="section level4">
-<h4><span class="header-section-number">3.4.3.2</span> Positive Cant</h4>
-<pre class="r"><code>Cant_inv %&gt;% 
+<h4><span class="header-section-number">4.4.3.2</span> Positive Cant</h4>
+<pre class="r"><code>breaks &lt;- c(seq(0,16,2),Inf)
+breaks_n &lt;- length(breaks) - 1
+
+Cant_inv &lt;- Cant_inv %&gt;% 
+  mutate(cant_inv_pos_int = cut(cant_inv_pos, 
+                                breaks,
+                                right = FALSE))
+Cant_inv %&gt;%
   ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = &quot;grey80&quot;) +
-    geom_raster(aes(lon, lat, fill = cant_inv_pos)) +
-    coord_quickmap(expand = 0) +
-    scale_fill_viridis_c() +
-  facet_wrap(~eras, ncol = 1) +
-    theme(
-      axis.title = element_blank()
-    )</code></pre>
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = &quot;grey30&quot;) +
+  geom_raster(aes(lon, lat, fill = cant_inv_pos_int)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
+  facet_wrap( ~ eras, ncol = 1) +
+  theme(axis.title = element_blank())</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/Cant_pos_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(breaks, breaks_n)</code></pre>
 </div>
 </div>
 </div>
 <div id="cant-vs-model-sd" class="section level2">
-<h2><span class="header-section-number">3.5</span> Cant vs model SD</h2>
+<h2><span class="header-section-number">4.5</span> Cant vs model SD</h2>
 <pre class="r"><code>Cant_average %&gt;% 
   ggplot(aes(Cant, Cant_sd)) +
   geom_vline(xintercept = 0) +
@@ -1945,7 +2008,7 @@ ggplot() +
 <p><img src="figure/analysis_this_study.Rmd/Cant_vs_sd_by_basin_gamma-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="cant-vs-regional-sd" class="section level2">
-<h2><span class="header-section-number">3.6</span> Cant vs regional SD</h2>
+<h2><span class="header-section-number">4.6</span> Cant vs regional SD</h2>
 <pre class="r"><code>Cant_average_zonal %&gt;% 
   ggplot(aes(Cant_mean, Cant_sd)) +
   geom_vline(xintercept = 0) +
@@ -1971,7 +2034,7 @@ ggplot() +
 </div>
 </div>
 <div id="cstar" class="section level1">
-<h1><span class="header-section-number">4</span> Cstar</h1>
+<h1><span class="header-section-number">5</span> Cstar</h1>
 <pre class="r"><code>Cstar_average_zonal &lt;- Cstar_average_zonal %&gt;% 
     mutate(era = factor(era, c(&quot;JGOFS_WOCE&quot;, &quot;GO_SHIP&quot;, &quot;new_era&quot;))) 
 
