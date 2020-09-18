@@ -125,6 +125,26 @@ GLODAP <-
 
 ```
 
+# Color scale
+
+Definition of color scale as applied in Gruber et al (2019).
+
+```{r define_Gruber_rainbow}
+
+rgb2hex <- function(r, g, b)
+  rgb(r, g, b, maxColorValue = 100)
+
+cols = c(rgb2hex(95, 95, 95),
+         rgb2hex(0, 0, 95),
+         rgb2hex(100, 0, 0),
+         rgb2hex(100, 100, 0))
+
+Gruber_rainbow <- colorRampPalette(cols)
+
+rm(rgb2hex, cols)
+
+```
+
 
 # Neutral density
 
@@ -383,13 +403,21 @@ Cant_gamma_maps <- Cant_average %>%
   ungroup()
 
 
+breaks <- c(seq(0,16,2),Inf)
+breaks_n <- length(breaks) - 1
+
+Cant_gamma_maps <- Cant_gamma_maps %>% 
+  mutate(Cant_pos_int = cut(Cant_pos, 
+                                breaks,
+                                right = FALSE))
+
 ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat),
-              fill = "grey80") +
-  geom_raster(data = Cant_gamma_maps %>% filter(Cant_pos <= 20),
-              aes(lon, lat, fill = Cant_pos)) +
-  scale_fill_gradientn(colours = c("white","blue","red","yellow")) +
+              fill = "grey30") +
+  geom_raster(data = Cant_gamma_maps,
+              aes(lon, lat, fill = Cant_pos_int)) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
   facet_grid(gamma_slab ~ eras) +
   coord_quickmap(expand = 0) +
   theme(axis.title = element_blank(),
@@ -397,7 +425,7 @@ ggplot() +
         axis.text = element_blank(),
         legend.position = "top")
 
-rm(Cant_gamma_maps)
+rm(Cant_gamma_maps, breaks, breaks_n)
 ```
 
 
@@ -432,17 +460,24 @@ Cant_inv %>%
 
 ```{r Cant_pos_inventory_map, fig.asp=1}
 
-Cant_inv %>% 
+breaks <- c(seq(0,16,2),Inf)
+breaks_n <- length(breaks) - 1
+
+Cant_inv <- Cant_inv %>% 
+  mutate(cant_inv_pos_int = cut(cant_inv_pos, 
+                                breaks,
+                                right = FALSE))
+Cant_inv %>%
   ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cant_inv_pos)) +
-    coord_quickmap(expand = 0) +
-    scale_fill_viridis_c() +
-  facet_wrap(~eras, ncol = 1) +
-    theme(
-      axis.title = element_blank()
-    )
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey30") +
+  geom_raster(aes(lon, lat, fill = cant_inv_pos_int)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
+  facet_wrap( ~ eras, ncol = 1) +
+  theme(axis.title = element_blank())
+
+rm(breaks, breaks_n)
 
 ```
 
