@@ -22,6 +22,7 @@ library(patchwork)
 library(scico)
 library(scales)
 library(metR)
+library(marelac)
 ```
 
 
@@ -39,6 +40,13 @@ basinmask <-
     here::here(
       "data/World_Ocean_Atlas_2018/_summarized_files",
       "basin_mask_WOA18.csv"
+    )
+  )
+basinmask_AIP <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18_AIP.csv"
     )
   )
 landmask <-
@@ -147,6 +155,33 @@ rm(rgb2hex, cols)
 
 # Cant budgets
 
+Global Cant CO2 inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper 3000m and do not apply additional corrections for areas not covered.
+
+```{r calculate_global_inventory}
+
+Cant_inv <- left_join(Cant_inv, basinmask_AIP) 
+
+Cant_inv_budget <- Cant_inv %>% 
+  mutate(surface_area = earth_surf(lat, lon),
+         cant_inv_grid = cant_inv*surface_area) %>% 
+  group_by(eras, basin_AIP) %>% 
+  summarise(cant_total = sum(cant_inv_grid)*12*1e-15) %>% 
+  ungroup() %>% 
+  arrange(desc(eras)) %>% 
+  pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
+  mutate(total = Atlantic + Indian + Pacific)
+
+Cant_inv_budget
+
+library(knitr)
+
+kable(Cant_inv_budget) 
+  # add_header_above() %>%
+  # kable_styling() %>%
+  # scroll_box(width = "100%", height = "400px")
+
+```
+
 
 
 # Cant - positive
@@ -187,6 +222,7 @@ zonal_section <- function(df, i_basin_AIP, i_eras, var) {
                     ylim = c(500, 0),
                     xlim = c(lat_min, lat_max)) +
     scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
     theme(
       axis.title.x = element_blank(),
       axis.text.x = element_blank(),
@@ -201,6 +237,7 @@ zonal_section <- function(df, i_basin_AIP, i_eras, var) {
     scale_fill_manual(values = Gruber_rainbow(breaks_n),
                       name = "Cant") +
     scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
     coord_cartesian(expand = 0,
                     ylim = c(3000, 500),
                     xlim = c(lat_min, lat_max)) +

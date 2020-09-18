@@ -137,7 +137,6 @@ wflow_publish(here::here(
     "mapping_cstar_calculation.Rmd",
     "analysis_this_study.Rmd",
     "analysis_previous_studies.Rmd"
-
   )
 ),
 message = "XXX",
