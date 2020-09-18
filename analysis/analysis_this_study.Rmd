@@ -23,6 +23,7 @@ library(scico)
 library(scales)
 library(metR)
 library(marelac)
+library(kableExtra)
 ```
 
 
@@ -165,20 +166,17 @@ Cant_inv_budget <- Cant_inv %>%
   mutate(surface_area = earth_surf(lat, lon),
          cant_inv_grid = cant_inv*surface_area) %>% 
   group_by(eras, basin_AIP) %>% 
-  summarise(cant_total = sum(cant_inv_grid)*12*1e-15) %>% 
+  summarise(cant_total = sum(cant_inv_grid)*12*1e-15,
+            cant_total = round(cant_total,1)) %>% 
   ungroup() %>% 
   arrange(desc(eras)) %>% 
   pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
   mutate(total = Atlantic + Indian + Pacific)
 
-Cant_inv_budget
-
-library(knitr)
-
-kable(Cant_inv_budget) 
-  # add_header_above() %>%
-  # kable_styling() %>%
-  # scroll_box(width = "100%", height = "400px")
+Cant_inv_budget %>% 
+  kableExtra::kable() %>% 
+  add_header_above() %>%
+  kable_styling(full_width = FALSE)
 
 ```
 
