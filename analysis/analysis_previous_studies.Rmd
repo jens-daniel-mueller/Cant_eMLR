@@ -20,6 +20,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(marelac)
+library(kableExtra)
 ```
 
 
@@ -35,6 +36,13 @@ basinmask <-
     here::here(
       "data/World_Ocean_Atlas_2018/_summarized_files",
       "basin_mask_WOA18.csv"
+    )
+  )
+basinmask_AIP <-
+  read_csv(
+    here::here(
+      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "basin_mask_WOA18_AIP.csv"
     )
   )
 landmask <-
@@ -124,9 +132,9 @@ Cant_inv %>%
 
 ```
 
-## Global inventories
+## Cant budgets
 
-Global anthropogenic CO2 inventories were estimated in Pg-C. Please note that here we onyl added positive Cant values in the upper 3000m and do not apply additional corrections for areas not covered.
+Global Cant inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
@@ -134,14 +142,18 @@ Cant_inv <- Cant_inv %>%
   mutate(surface_area = earth_surf(lat, lon),
          cant_inv_grid = cant_inv*surface_area)
 
-Cant_inv_global <- Cant_inv %>% 
-  mutate(surface_area = earth_surf(lat, lon),
-         cant_inv_grid = cant_inv*surface_area) %>% 
-  group_by(estimate) %>% 
-  summarise(cant_total = sum(cant_inv_grid)*12*1e-15) %>% 
-  ungroup()
+Cant_inv_budget <- Cant_inv %>% 
+  group_by(estimate, basin_AIP) %>% 
+  summarise(cant_total = sum(cant_inv_grid)*12*1e-15,
+            cant_total = round(cant_total,1)) %>% 
+  ungroup() %>% 
+  pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
+  mutate(total = Atlantic + Indian + Pacific)
 
-Cant_inv_global
+Cant_inv_budget %>% 
+  kableExtra::kable() %>% 
+  add_header_above() %>%
+  kable_styling(full_width = FALSE)
 
 ```
 

@@ -156,7 +156,7 @@ rm(rgb2hex, cols)
 
 # Cant budgets
 
-Global Cant CO2 inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper 3000m and do not apply additional corrections for areas not covered.
+Global Cant inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
