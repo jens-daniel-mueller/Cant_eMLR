@@ -178,6 +178,8 @@ Cant_inv_budget %>%
   add_header_above() %>%
   kable_styling(full_width = FALSE)
 
+rm(Cant_inv_budget)
+
 ```
 
 
@@ -189,6 +191,9 @@ In a first series of plots we explore the distribution of Cant, taking only posi
 ## Zonal mean sections
 
 ```{r Cant_pos_zonal_mean_sections}
+
+Cant_average_zonal <- Cant_average_zonal %>% 
+  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
 
 breaks <- c(seq(0,18,1),Inf)
 breaks_n <- length(breaks) - 1
@@ -287,7 +292,9 @@ breaks_n <- length(breaks) - 1
 Cant_gamma_maps <- Cant_gamma_maps %>% 
   mutate(Cant_pos_int = cut(Cant_pos, 
                                 breaks,
-                                right = FALSE))
+                                right = FALSE)) %>% 
+  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+
 
 ggplot() +
   geom_raster(data = landmask,
@@ -318,7 +325,9 @@ breaks_n <- length(breaks) - 1
 Cant_inv <- Cant_inv %>% 
   mutate(cant_inv_pos_int = cut(cant_inv_pos, 
                                 breaks,
-                                right = FALSE))
+                                right = FALSE)) %>% 
+  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+
 Cant_inv %>%
   ggplot() +
   geom_raster(data = landmask,
@@ -379,7 +388,6 @@ Please note that:
 
 ```{r Cant_all_gamma_slab_maps, fig.asp=2.5}
 
-
 Cant_gamma_maps <- Cant_average %>%
   group_by(lat, lon, gamma_slab, eras) %>%
   summarise(Cant = mean(Cant, na.rm = TRUE)) %>%
@@ -392,7 +400,8 @@ breaks_n <- length(breaks) - 1
 Cant_gamma_maps <- Cant_gamma_maps %>%
   mutate(Cant_int = cut(Cant,
                         breaks,
-                        right = FALSE))
+                        right = FALSE)) %>% 
+  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
 
 ggplot() +
   geom_raster(data = landmask,
@@ -477,6 +486,9 @@ section_zonal_average_continous(Cant_average_zonal,
 
 ```{r Cant_vs_sd_by_basin_era}
 
+Cant_average <- Cant_average  %>% 
+  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+
 Cant_average %>% 
   ggplot(aes(Cant, Cant_sd)) +
   geom_vline(xintercept = 0) +
@@ -541,6 +553,10 @@ Cant_average_zonal %>%
 
 ```{r Cant_section_predictor_contribution}
 
+Cant_predictor_average_zonal <- Cant_predictor_average_zonal %>% 
+  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+
+
 for (variable in c(
   "Cant_intercept",
   "Cant_aou",
@@ -581,9 +597,9 @@ gamma_maps <- Cant_average %>%
   ungroup()
 
 GLODAP_obs_coverage <- GLODAP %>% 
-  count(lat, lon, gamma_slab, era)
+  count(lat, lon, gamma_slab, era) %>% 
+  mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
   
-
 ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat),
@@ -683,6 +699,7 @@ Cstar_average_zonal %>%
       skip = 1
     ) +
     scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
     coord_cartesian(expand = 0) +
     guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
     facet_grid(basin_AIP ~ era)
