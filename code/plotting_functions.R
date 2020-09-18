@@ -152,7 +152,7 @@ section_zonal_average_continous <- function(df, var, gamma) {
       aes(lat, depth, z = !!gamma),
       breaks = slab_breaks,
       col = "white",
-      skip = 1
+      skip = 2
     ) +
     scale_y_reverse() +
     coord_cartesian(expand = 0) +

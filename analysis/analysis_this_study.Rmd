@@ -145,6 +145,10 @@ rm(rgb2hex, cols)
 
 ```
 
+# Cant budgets
+
+
+
 # Cant - positive
 
 In a first series of plots we explore the distribution of Cant, taking only positive estimates into account (positive here refers to the mean Cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
@@ -294,6 +298,27 @@ rm(breaks, breaks_n)
 
 ```
 
+# Global section
+
+## JGOFS_GO
+
+```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
+
+section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
+                    "Cant_pos")
+
+```
+
+## GO_new
+
+```{r Cant_sections_positive_mean_one_lon_GO_new}
+
+section_global(Cant_average %>% filter(eras == "GO_new"),
+                    "Cant_pos")
+
+```
+
+
 # Cant - all
 
 In a second series of plots we explore the distribution of Cant, taking positive and negative estimates into account.
@@ -385,7 +410,6 @@ rm(breaks, breaks_n)
 
 ```
 
-
 # Cant - standard deviation 
 
 ## Across models
@@ -412,84 +436,9 @@ section_zonal_average_continous(Cant_average_zonal,
 
 ```
 
-# Cant - predictor contribution
+## Correlation
 
-```{r Cant_section_predictor_contribution}
-
-for (variable in c(
-  "Cant_intercept",
-  "Cant_aou",
-  "Cant_oxygen",
-  "Cant_phosphate",
-  "Cant_phosphate_star",
-  "Cant_silicate",
-  "Cant_tem",
-  "Cant_sal")) {
-
-print(
-section_zonal_average_continous(Cant_predictor_average_zonal,
-                                variable,
-                                "gamma")
-)
-    
-}
-
-
-rm(variable)
-```
-
-
-# Cant - globale section
-
-### JGOFS_GO
-
-```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
-
-section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
-                    "Cant_pos")
-
-```
-
-### GO_new
-
-```{r Cant_sections_positive_mean_one_lon_GO_new}
-
-section_global(Cant_average %>% filter(eras == "GO_new"),
-                    "Cant_pos")
-
-```
-
-
-# Sections by model
-
-Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
-
-## Maps
-
-### Surfaces
-
-Cant concentration for selected depth levels at which mapping was performed.
-
-```{r Cant_depth_layer_maps, fig.asp=1}
-
-Cant_average %>%
-  filter(depth %in% parameters$depth_levels) %>%
-  ggplot(aes(lon, lat, fill = Cant)) +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
-  geom_raster() +
-  scale_fill_divergent(guide = "colorstrip",
-                       breaks = MakeBreaks(5),
-                       name = "Cant") +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  coord_quickmap(expand = 0) +
-  facet_grid(depth ~ eras)
-
-```
-
-
-
-## Cant vs model SD
+### Cant vs model SD
 
 ```{r Cant_vs_sd_by_basin_era}
 
@@ -521,7 +470,7 @@ Cant_average %>%
 
 ```
 
-## Cant vs regional SD
+### Cant vs regional SD
 
 ```{r Cant_vs_sd_by_basin_era_zonal}
 
@@ -551,6 +500,32 @@ Cant_average_zonal %>%
                        name = "log10(n)") +
   facet_grid(gamma_slab ~ basin_AIP)
 
+```
+
+# Cant - predictor contribution
+
+```{r Cant_section_predictor_contribution}
+
+for (variable in c(
+  "Cant_intercept",
+  "Cant_aou",
+  "Cant_oxygen",
+  "Cant_phosphate",
+  "Cant_phosphate_star",
+  "Cant_silicate",
+  "Cant_tem",
+  "Cant_sal")) {
+
+print(
+section_zonal_average_continous(Cant_predictor_average_zonal,
+                                variable,
+                                "gamma")
+)
+    
+}
+
+
+rm(variable)
 ```
 
 
@@ -652,6 +627,8 @@ Cant_average_zonal %>%
 
 # Cstar
 
+## Zonal mean sections
+
 ```{r Cstar_zonal_mean_era}
 
 Cstar_average_zonal <- Cstar_average_zonal %>% 
@@ -679,5 +656,8 @@ Cstar_average_zonal %>%
 
 ```
 
+# Sections by model
+
+Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
 
 
