@@ -316,7 +316,7 @@ zonal_section <- function(df, i_basin_AIP, i_eras, var) {
 
 
 for (i_basin_AIP in unique(Cant_average_zonal$basin_AIP)) {
-  for (i_eras in unique(Cant_average_zonal$eras)) {
+  for (i_eras in rev(unique(Cant_average_zonal$eras))) {
     
     print(zonal_section(Cant_average_zonal,
                         i_basin_AIP = i_basin_AIP,
