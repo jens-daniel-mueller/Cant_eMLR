@@ -342,9 +342,9 @@ rm(breaks, breaks_n)
 
 ```
 
-# Global section
+## Global section
 
-## JGOFS_GO
+### JGOFS_GO
 
 ```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
 
@@ -353,7 +353,7 @@ section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
 
 ```
 
-## GO_new
+### GO_new
 
 ```{r Cant_sections_positive_mean_one_lon_GO_new}
 
@@ -623,7 +623,7 @@ rm(gamma_maps, GLODAP_obs_coverage)
 
 ```{r gamma_surface_map}
 
-map_climatology(Cant_average, "gamma")
+map_climatology_discrete(Cant_average, "gamma_slab")
 
 ```
 

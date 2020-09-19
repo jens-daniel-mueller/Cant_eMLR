@@ -15,6 +15,23 @@ map_climatology <- function(df, var) {
 
 }
 
+map_climatology_discrete <- function(df, var) {
+  var <- sym(var)
+
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
+                aes(lon, lat, fill = !!var)) +
+    geom_raster(data = section_global_coordinates,
+               aes(lon, lat), fill = "white") +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_d() +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ depth, labeller = label_both)
+
+}
+
 map_climatology_eras <- function(df, var) {
   var <- sym(var)
 
