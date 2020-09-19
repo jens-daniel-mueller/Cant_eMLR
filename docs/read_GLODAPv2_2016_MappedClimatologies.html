@@ -502,7 +502,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">GLODAPv2_2016: Mapped Climatologies</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">18 September, 2020</h4>
+<h4 class="date">19 September, 2020</h4>
 
 </div>
 
@@ -527,7 +527,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-09-18
+<strong>Last updated:</strong> 2020-09-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -618,16 +618,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree27809b8939d0399a21b6e9cd9cf0281755cd5dadtargetblank27809b8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/27809b8939d0399a21b6e9cd9cf0281755cd5dad" target="_blank">27809b8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb4afd1481d04587f6c6f8130385e5f43a6235a4atargetblankb4afd14a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b4afd1481d04587f6c6f8130385e5f43a6235a4a" target="_blank">b4afd14</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree27809b8939d0399a21b6e9cd9cf0281755cd5dadtargetblank27809b8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb4afd1481d04587f6c6f8130385e5f43a6235a4atargetblankb4afd14a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/27809b8939d0399a21b6e9cd9cf0281755cd5dad" target="_blank">27809b8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b4afd1481d04587f6c6f8130385e5f43a6235a4a" target="_blank">b4afd14</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -684,6 +684,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/b4afd1481d04587f6c6f8130385e5f43a6235a4a/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">b4afd14</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-19
+</td>
+<td>
+plotted column NA
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/d59f7168f67504f1c0cad8079d097a1c941c17a0/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">d59f716</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-09-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2458,15 +2492,20 @@ clim_tibble &lt;- clim_tibble %&gt;%
          lon = x,
          depth = depth_surface)
 
-# remove NAs
-
-clim_tibble &lt;- clim_tibble %&gt;% 
-  drop_na()
-
 # join with basin mask and remove data outside basin mask
 
 clim_tibble &lt;- inner_join(clim_tibble, basinmask)
 
+# select NAs
+
+clim_tibble_NA_grid &lt;- clim_tibble %&gt;% 
+  filter(is.na(parameter)) %&gt;% 
+  count(lat, lon, name = &quot;n_NA&quot;)
+
+# remove NAs
+
+clim_tibble &lt;- clim_tibble %&gt;% 
+  drop_na()
 
 # write csv file
 
@@ -2480,6 +2519,19 @@ clim_tibble %&gt;%
 print(
 map_climatology(clim_tibble, parameter)
 )
+
+# plot NA map
+
+clim_tibble_NA_grid %&gt;% 
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = &quot;grey80&quot;) +
+    geom_raster(aes(lon, lat, fill = n_NA)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+    theme(axis.title = element_blank()) +
+  labs(title = paste(parameter, &quot;colum NA&quot;))
+
 
 # plot sections
 
