@@ -141,7 +141,7 @@ map_climatology(clim_tibble, parameter)
 )
 
 # plot NA map
-
+print(
 clim_tibble_NA_grid %>% 
   ggplot() +
     geom_raster(data = landmask,
@@ -151,7 +151,7 @@ clim_tibble_NA_grid %>%
     scale_fill_viridis_c() +
     theme(axis.title = element_blank()) +
   labs(title = paste(parameter, "colum NA"))
-
+)
 
 # plot sections
 
