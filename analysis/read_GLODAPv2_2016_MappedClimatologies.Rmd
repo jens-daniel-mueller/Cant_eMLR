@@ -112,15 +112,20 @@ clim_tibble <- clim_tibble %>%
          lon = x,
          depth = depth_surface)
 
-# remove NAs
-
-clim_tibble <- clim_tibble %>% 
-  drop_na()
-
 # join with basin mask and remove data outside basin mask
 
 clim_tibble <- inner_join(clim_tibble, basinmask)
 
+# select NAs
+
+clim_tibble_NA_grid <- clim_tibble %>% 
+  filter(is.na(parameter)) %>% 
+  count(lat, lon, name = "n_NA")
+
+# remove NAs
+
+clim_tibble <- clim_tibble %>% 
+  drop_na()
 
 # write csv file
 
@@ -134,6 +139,19 @@ clim_tibble %>%
 print(
 map_climatology(clim_tibble, parameter)
 )
+
+# plot NA map
+
+clim_tibble_NA_grid %>% 
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = n_NA)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+    theme(axis.title = element_blank()) +
+  labs(title = paste(parameter, "colum NA"))
+
 
 # plot sections
 
