@@ -1035,8 +1035,6 @@ GLODAP_obs_grid <- GLODAP_obs_grid %>%
            unique(GLODAP_obs_grid$cleaning_level)
          ))
 
-
-
 ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat),

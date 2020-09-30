@@ -24,6 +24,7 @@ library(scales)
 library(metR)
 library(marelac)
 library(kableExtra)
+library(threejs)
 ```
 
 
@@ -335,12 +336,38 @@ Cant_inv %>%
   geom_raster(aes(lon, lat, fill = cant_inv_pos_int)) +
   coord_quickmap(expand = 0) +
   scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
+  # scale_fill_scico_d(palette = "batlow", direction = -1) +
   facet_wrap( ~ eras, ncol = 1) +
   theme(axis.title = element_blank())
 
-rm(breaks, breaks_n)
+```
+
+```{r Cant_pos_inventory_globe_JGOFS_GO}
+
+x <- Cant_inv %>%
+  filter(eras == "JGOFS_GO") %>%
+  select(lon, lat, cant_inv_pos) %>%
+  mutate(cant_col = as.character(cut(
+    cant_inv_pos,
+    breaks,
+    Gruber_rainbow(breaks_n)
+  )))
+
+
+globejs(
+  lat = x$lat,
+  long = x$lon,
+  val = 0,
+  color = x$cant_col,
+  pointsize = 2,
+  atmosphere = TRUE
+)
+
+rm(breaks, breaks_n, x)
 
 ```
+
+
 
 ## Global section
 

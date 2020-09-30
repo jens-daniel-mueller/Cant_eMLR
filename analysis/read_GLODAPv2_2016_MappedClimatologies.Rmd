@@ -86,7 +86,7 @@ The global section path is indicated as white line in maps.
 
 ```{r GLODAPv2_2016_Mappedclimatologies}
 
-file <- file_list[2]
+# file <- file_list[2]
 
 for (file in file_list) {
  
