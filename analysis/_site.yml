@@ -48,6 +48,8 @@ navbar:
     menu:
     - text: This study
       href: analysis_this_study.html
+    - text: This study - 3d globes
+      href: analysis_this_study_3d.html
     - text: Previous studies
       href: analysis_previous_studies.html
   right:

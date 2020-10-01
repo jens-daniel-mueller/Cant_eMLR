@@ -136,6 +136,7 @@ wflow_publish(here::here(
     "mapping_cant_calculation.Rmd",
     "mapping_cstar_calculation.Rmd",
     "analysis_this_study.Rmd",
+    "analysis_this_study_3d.Rmd",
     "analysis_previous_studies.Rmd"
   )
 ),
