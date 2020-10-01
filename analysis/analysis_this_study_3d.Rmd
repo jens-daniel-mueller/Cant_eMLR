@@ -76,62 +76,14 @@ theme_set(theme_bw())
 
 Cant estimates from this study:
 
-- Mean and SD per grid cell (lat, lon, depth)
-- Zonal mean and SD (basin, lat, depth)
 - Inventories (lat, lon)
 
 
 ```{r read_cant_files}
 
-
-Cant_average <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_average.csv"))
-
-Cant_average_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_average_zonal.csv"))
-
-Cant_predictor_average_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_predictor_average_zonal.csv"))
-
 Cant_inv <-
   read_csv(here::here("data/mapping/_summarized_files",
                          "Cant_inv.csv"))
-
-```
-
-C* estimates from this study:
-
-- Mean and SD per grid cell (lat, lon, depth)
-- Zonal mean and SD (basin, lat, depth)
-
-```{r read_cstar_files}
-
-
-Cstar_average <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cstar_average.csv"))
-
-Cstar_average_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cstar_average_zonal.csv"))
-
-
-```
-
-Cleaned GLODAPv2_2020 file as used in this study
-
-```{r read_GLODAP_used_for_fitting}
-
-GLODAP <-
-  read_csv(
-    here::here(
-      "data/GLODAPv2_2020/_summarized_data_files",
-      "GLODAP_MLR_fitting_ready.csv"
-    )
-  )
 
 ```
 
@@ -154,35 +106,6 @@ Gruber_rainbow <- colorRampPalette(cols)
 rm(rgb2hex, cols)
 
 ```
-
-# Cant budgets
-
-Global Cant inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
-
-```{r calculate_global_inventory}
-
-Cant_inv <- left_join(Cant_inv, basinmask_AIP) 
-
-Cant_inv_budget <- Cant_inv %>% 
-  mutate(surface_area = earth_surf(lat, lon),
-         cant_inv_grid = cant_inv*surface_area) %>% 
-  group_by(eras, basin_AIP) %>% 
-  summarise(cant_total = sum(cant_inv_grid)*12*1e-15,
-            cant_total = round(cant_total,1)) %>% 
-  ungroup() %>% 
-  arrange(desc(eras)) %>% 
-  pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
-  mutate(total = Atlantic + Indian + Pacific)
-
-Cant_inv_budget %>% 
-  kableExtra::kable() %>% 
-  add_header_above() %>%
-  kable_styling(full_width = FALSE)
-
-rm(Cant_inv_budget)
-
-```
-
 
 
 # Cant - positive
@@ -212,10 +135,11 @@ Cant_inv %>%
               aes(lon, lat), fill = "grey30") +
   geom_raster(aes(lon, lat, fill = cant_inv_pos_int)) +
   coord_quickmap(expand = 0) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  # scale_fill_scico_d(palette = "batlow", direction = -1) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                    name = "Cant") +
   facet_wrap( ~ eras, ncol = 1) +
-  theme(axis.title = element_blank())
+  theme(axis.title = element_blank(),
+        legend.position = "bottom")
 
 ```
 
