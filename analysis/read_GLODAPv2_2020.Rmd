@@ -287,8 +287,6 @@ Following flagging criteria were taken into account:
 - flag_f:     `r parameters$flag_f`
 - flag_qc:    `r parameters$flag_qc`
 
-With one exception being tco2, for which only measured values (ie f = 0) were taken into account
-
 Summary statistics were calculated during cleaning process.
 
 ### tco2
@@ -345,7 +343,7 @@ ggplot() +
 ###
 
 GLODAP <- GLODAP %>%
-  filter(tco2f %in% 2)
+  filter(tco2f %in% parameters$flag_f)
 
 # ##
 # 
@@ -891,6 +889,15 @@ GLODAP  %>%  write_csv(
   )
 )
 
+# GLODAP  %>%
+#   filter(year == 2007) %>%
+#   select(date, lat, lon, depth, tem, sal, tco2:silicate) %>%
+#   write_csv(
+#     here::here(
+#       "data/GLODAPv2_2020/_summarized_data_files",
+#       "GLODAPv2.2020_clean_2007.csv"
+#     )
+#   )
 
 ```
 
