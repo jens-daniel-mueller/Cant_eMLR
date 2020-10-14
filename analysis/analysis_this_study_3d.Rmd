@@ -118,7 +118,7 @@ In a first series of plots we explore the distribution of Cant, taking only posi
 
 Column inventory of positive Cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r Cant_pos_inventory_map, fig.asp=1}
+```{r Cant_pos_inventory_map}
 
 breaks <- c(seq(0,16,2),Inf)
 breaks_n <- length(breaks) - 1
