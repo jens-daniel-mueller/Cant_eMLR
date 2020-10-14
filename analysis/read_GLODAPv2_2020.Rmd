@@ -53,7 +53,7 @@ landmask <-  read_csv(
 
 # Read files
 
-Main data source for this project is `GLODAPv2.2020_Merged_Master_File.csv` downloaded from [glodap.info](https://www.glodap.info/) in June 2020.
+Main data source for this project is `GLODAPv2.2020_Merged_Master_File.csv` downloaded from [glodap.info](https://www.glodap.info/){target="_blank"} in June 2020.
 
 ```{r read_GLODAPv2_2020_merged_master_file}
 
