@@ -100,12 +100,33 @@ dcant_inv <- dcant_inv %>%
 
 ```
 
+
+```{r read_Gruber_V101}
+
+V101 <- tidync(here::here("data/Gruber_2019",
+                               "Cant_V101new.nc"))
+
+V101 <- V101 %>%  activate(Cant)
+V101 <- V101 %>% hyper_tibble()
+
+# harmonize column names and coordinates
+V101 <- V101 %>% 
+  rename(lon = longitude,
+         lat = latitude,
+         cant = Cant) %>% 
+  filter(cant != -999) %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+```
+
+
 # Apply basin mask
 
 ```{r apply_basin_mask}
 
 dcant <- inner_join(dcant, basinmask)
 dcant_inv <- inner_join(dcant_inv, basinmask)
+V101 <- inner_join(V101, basinmask)
 
 ```
 
@@ -122,9 +143,19 @@ Section locations are indicated as white lines in maps.
 
 ## Horizontal plane maps
 
+### Published
+
 ```{r Cant_maps, fig.asp=0.6}
 
-map_climatology(dcant %>% filter(cant < 25), "cant")
+map_climatology(dcant, "cant")
+
+```
+
+### V101
+
+```{r Cant_maps_V101, fig.asp=0.6}
+
+map_climatology(V101, "cant")
 
 ```
 
@@ -138,17 +169,37 @@ map_climatology_inv(dcant_inv, "cant_inv")
 
 ## Sections basin
 
+### Published
+
 ```{r Cant_sections, fig.asp=0.8}
 
 section_global(dcant, "cant")
 
 ```
 
+### V101
+
+```{r Cant_sections_V101, fig.asp=0.8}
+
+section_global(V101, "cant")
+
+```
+
 ## Sections at regular longitudes
+
+### Published
 
 ```{r Cant_sections_regular, fig.asp=2}
 
-section_climatology_regular(dcant %>% filter(cant < 30), "cant")
+section_climatology_regular(dcant, "cant")
+
+```
+
+### V101
+
+```{r Cant_sections_regular_V101, fig.asp=2}
+
+section_climatology_regular(V101, "cant")
 
 ```
 
@@ -163,6 +214,10 @@ dcant %>%
 dcant_inv %>% 
   write_csv(here::here("data/Gruber_2019/_summarized_files",
                        "Cant_07_inv.csv"))
+
+V101 %>% 
+  write_csv(here::here("data/Gruber_2019/_summarized_files",
+                       "Cant_07_V101.csv"))
 
 ```
 

@@ -146,10 +146,10 @@ basinmask_01 <- basinmask_01 %>%
            Basin_0m == "10" & lon >= -63 & lon < 20 ~ "Atlantic",
            Basin_0m == "11" ~ "Atlantic",
            Basin_0m == "3" ~ "Indian",
+           Basin_0m == "56" ~ "Indian",
            Basin_0m == "10" & lon >= 20 & lon < 147 ~ "Indian",
            Basin_0m == "2" ~ "Pacific",
            Basin_0m == "12" ~ "Pacific",
-           Basin_0m == "56" ~ "Pacific",
            Basin_0m == "10" & lon >= 147 | lon < -63 ~ "Pacific")) %>% 
   mutate(basin = if_else(basin_AIP == "Atlantic",
                          "Atlantic",
