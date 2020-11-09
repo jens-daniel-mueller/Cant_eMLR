@@ -21,7 +21,8 @@ library(tidyverse)
 library(patchwork)
 library(lubridate)
 library(tidync)
-library(stars)
+library(collapse)
+library(scico)
 ```
 
 
@@ -53,6 +54,7 @@ section_global_coordinates <-
 
 ```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
+source(here::here("code", "mapping_functions.R"))
 ```
 
 ```{r ggplot_theme, include = FALSE}
@@ -64,6 +66,10 @@ theme_set(theme_bw())
 - Anthropogenic CO2 estimates (1994-2007) by Gruber et al. (2019) downloaded in August 2020 from [NOAA/NCEI Ocean Carbon Data System (OCADS)](https://www.nodc.noaa.gov/ocads/oceans/ndp_100/ndp100.html){target="_blank"}
 
 # Read ncdfs
+
+## Public data sets
+
+The publically available data sets contain only positive Cant estimates.
 
 ```{r read_Gruber_dcant}
 
@@ -78,7 +84,7 @@ dcant <- dcant %>%
   rename(lon = LONGITUDE,
          lat = LATITUDE,
          depth = DEPTH,
-         cant = DCANT_01) %>% 
+         cant_pos = DCANT_01) %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 ```
@@ -95,11 +101,15 @@ dcant_inv <- dcant_inv %>% hyper_tibble()
 dcant_inv <- dcant_inv %>% 
   rename(lon = LONGITUDE,
          lat = LATITUDE,
-         cant_inv = DCANT_INV01) %>% 
-  mutate(lon = if_else(lon < 20, lon + 360, lon))
+         cant_pos_inv = DCANT_INV01) %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon)) %>% 
+  mutate(eras = "JGOFS_GO")
 
 ```
 
+## Raw data
+
+Internally available data sets also contain negative Cant estimates, as they are contained in the "raw" output of the eMLR mapping step.
 
 ```{r read_Gruber_V101}
 
@@ -124,10 +134,80 @@ V101 <- V101 %>%
 
 ```{r apply_basin_mask}
 
+basinmask <- basinmask %>% 
+  select(-basin)
+
 dcant <- inner_join(dcant, basinmask)
 dcant_inv <- inner_join(dcant_inv, basinmask)
 V101 <- inner_join(V101, basinmask)
 
+```
+
+# Join pos and all Cant
+
+```{r join_V101_and_all}
+
+cant_3d <- inner_join(dcant, V101)
+cant_3d <- cant_3d %>% 
+  mutate(eras = "JGOFS_GO")
+
+rm(dcant, V101)
+
+```
+
+# Zonal mean section
+
+```{r calculate_zonal_mean_section}
+
+cant_zonal <- zonal_mean_section(cant_3d)
+
+```
+
+# Column inventory 
+
+## From 3d fields
+
+```{r calculate_column_inventory}
+
+cant_inventory <- calc_cant_inventory(cant_3d)
+
+```
+
+```{r G19_cant_inventory_maps}
+
+map_inventory_divergent(cant_inventory, "cant_inv")
+
+```
+
+```{r G19_cant_pos_inventory_maps}
+
+map_inventory(cant_inventory, "cant_pos_inv")
+
+```
+
+## From pubished inventory data
+
+```{r G19_cant_pos_inventory_maps_published}
+
+map_inventory(dcant_inv, "cant_pos_inv")
+
+```
+
+## Published - 3d
+
+```{r G19_cant_offset_inventory}
+
+cant_offset <- inner_join(
+  cant_inventory %>% rename(cant_re = cant_pos_inv),
+  dcant_inv %>% rename(cant_pub = cant_pos_inv)
+)
+
+cant_offset <- cant_offset %>% 
+  mutate(delta_cant = cant_re - cant_pub)
+
+map_inventory_divergent(cant_offset, "delta_cant")
+
+rm(cant_offset, dcant_inv)
 ```
 
 
@@ -143,63 +223,57 @@ Section locations are indicated as white lines in maps.
 
 ## Horizontal plane maps
 
-### Published
+### All values
 
 ```{r Cant_maps, fig.asp=0.6}
 
-map_climatology(dcant, "cant")
+map_climatology_divergent(cant_3d, "cant")
 
 ```
 
-### V101
+### Positive values
 
 ```{r Cant_maps_V101, fig.asp=0.6}
 
-map_climatology(V101, "cant")
+map_climatology(cant_3d, "cant_pos")
 
 ```
 
-## Surface Inventory map
-
-```{r Cant_inv_map, fig.asp=0.6}
-
-map_climatology_inv(dcant_inv, "cant_inv")
-
-```
 
 ## Sections basin
 
-### Published
-
-```{r Cant_sections, fig.asp=0.8}
-
-section_global(dcant, "cant")
-
-```
-
-### V101
+### All values
 
 ```{r Cant_sections_V101, fig.asp=0.8}
 
-section_global(V101, "cant")
+section_global(cant_3d, "cant")
 
 ```
+
+### Positive values
+
+```{r Cant_sections, fig.asp=0.8}
+
+section_global(cant_3d, "cant_pos")
+
+```
+
 
 ## Sections at regular longitudes
 
-### Published
+### All values
 
 ```{r Cant_sections_regular, fig.asp=2}
 
-section_climatology_regular(dcant, "cant")
+section_climatology_regular(cant_3d, "cant")
 
 ```
 
-### V101
+### Positive values
 
 ```{r Cant_sections_regular_V101, fig.asp=2}
 
-section_climatology_regular(V101, "cant")
+section_climatology_regular(cant_3d, "cant_pos")
 
 ```
 
@@ -207,17 +281,17 @@ section_climatology_regular(V101, "cant")
 
 ```{r write_Gruber_Cant_file}
 
-dcant %>% 
+cant_3d %>% 
   write_csv(here::here("data/Gruber_2019/_summarized_files",
-                       "Cant_07.csv"))
+                       "G19_cant_3d.csv"))
 
-dcant_inv %>% 
+cant_inventory %>% 
   write_csv(here::here("data/Gruber_2019/_summarized_files",
-                       "Cant_07_inv.csv"))
+                       "G19_cant_inv.csv"))
 
-V101 %>% 
+cant_zonal %>% 
   write_csv(here::here("data/Gruber_2019/_summarized_files",
-                       "Cant_07_V101.csv"))
+                       "G19_cant_zonal.csv"))
 
 ```
 

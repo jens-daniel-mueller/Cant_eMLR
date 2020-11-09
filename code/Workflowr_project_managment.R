@@ -135,6 +135,7 @@ wflow_publish(here::here(
     "mapping_predictor_preparation.Rmd",
     "mapping_cant_calculation.Rmd",
     "mapping_cstar_calculation.Rmd",
+    "analysis_this_study_vs_Gruber_2019.Rmd",
     "analysis_this_study.Rmd",
     "analysis_this_study_3d.Rmd",
     "analysis_previous_studies.Rmd"

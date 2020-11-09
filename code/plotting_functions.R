@@ -1,3 +1,42 @@
+map_inventory <- function(df, var) {
+  var <- sym(var)
+
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df,
+                aes(lon, lat, fill = !!var)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_viridis_c() +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ eras, labeller = label_both)
+
+}
+
+map_inventory_divergent <- function(df, var) {
+  var <- sym(var)
+
+  max <- df %>%
+    select(!!var) %>%
+    pull %>%
+    abs() %>%
+    max()
+
+  limits <- c(-1, 1) * max
+
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df,
+                aes(lon, lat, fill = !!var)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_scico(palette = "vik",
+                     limits = limits) +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ eras, labeller = label_both)
+
+}
+
 map_climatology <- function(df, var) {
   var <- sym(var)
 
@@ -10,6 +49,34 @@ map_climatology <- function(df, var) {
                aes(lon, lat), fill = "white") +
     coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ depth, labeller = label_both)
+
+}
+
+map_climatology_divergent <- function(df, var) {
+  var <- sym(var)
+
+  df <- df %>% filter(depth %in% parameters$depth_levels)
+
+  max <- df %>%
+    select(!!var) %>%
+    pull %>%
+    abs() %>%
+    max()
+
+  limits <- c(-1, 1) * max
+
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df,
+                aes(lon, lat, fill = !!var)) +
+    geom_raster(data = section_global_coordinates,
+               aes(lon, lat), fill = "white") +
+    coord_quickmap(expand = 0) +
+    scale_fill_scico(palette = "vik",
+                     limits = limits) +
     theme(axis.title = element_blank()) +
     facet_wrap( ~ depth, labeller = label_both)
 

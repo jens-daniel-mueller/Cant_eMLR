@@ -1,5 +1,5 @@
 ---
-title: "Comparison of Cant estimates to results of Gruber et al 2019"
+title: "Comparison of cant estimates to results of Gruber et al 2019"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -22,9 +22,10 @@ library(patchwork)
 library(scico)
 library(scales)
 library(metR)
-library(marelac)
 library(kableExtra)
-library(threejs)
+library(collapse)
+library(marelac)
+library(gt)
 ```
 
 
@@ -76,7 +77,7 @@ theme_set(theme_bw())
 
 ## This study
 
-Cant estimates from this study:
+cant estimates from this study:
 
 - Mean and SD per grid cell (lat, lon, depth)
 - Zonal mean and SD (basin, lat, depth)
@@ -85,34 +86,98 @@ Cant estimates from this study:
 
 ```{r read_cant_files}
 
-
-Cant_average <-
+cant_3d <-
   read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_average.csv"))
+                         "cant_3d.csv"))
 
-Cant_average_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_average_zonal.csv"))
+cant_3d <- cant_3d %>%
+  filter(eras == "JGOFS_GO") %>%
+  select(lon,
+         lat,
+         depth,
+         basin_AIP,
+         cant,
+         cant_pos) %>%
+  mutate(estimate = "JDM")
 
-Cant_inv <-
+
+cant_zonal <-
   read_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_inv.csv"))
+                         "cant_zonal.csv"))
+
+cant_zonal <- cant_zonal %>%
+  filter(eras == "JGOFS_GO") %>%
+  select(lat,
+         depth,
+         basin_AIP,
+         cant_mean,
+         cant_pos_mean,
+         cant_sd,
+         cant_pos_sd) %>%
+  mutate(estimate = "JDM")
+
+
+cant_inventory <-
+  read_csv(here::here("data/mapping/_summarized_files",
+                         "cant_inv.csv"))
+
+cant_inventory <- cant_inventory %>% 
+  rename(cant_pos_inv = cant_inv_pos)
+
+cant_inventory <- cant_inventory %>% 
+  filter(eras == "JGOFS_GO") %>% 
+  select(-c(eras, basin)) %>% 
+  mutate(estimate = "JDM")
 
 ```
 
 ## Gruber 2019
 
-```{r read_Gruber_Cant_file}
+```{r read_Gruber_cant_file}
 
-Cant_07 <- read_csv(here::here("data/Gruber_2019/_summarized_files",
-                               "Cant_07.csv"))
-
-Cant_07_inv <-
+cant_3d_G19 <- 
   read_csv(here::here("data/Gruber_2019/_summarized_files",
-                      "Cant_07_inv.csv"))
+                       "G19_cant_3d.csv"))
+
+cant_3d_G19 <- cant_3d_G19 %>% 
+  mutate(estimate = "G19") %>% 
+  select(-eras)
+
+
+cant_inventory_G19 <- 
+  read_csv(here::here("data/Gruber_2019/_summarized_files",
+                       "G19_cant_inv.csv"))
+
+cant_inventory_G19 <- cant_inventory_G19 %>% 
+  select(-eras) %>% 
+  mutate(estimate = "G19")
+
+
+cant_zonal_G19 <- 
+  read_csv(here::here("data/Gruber_2019/_summarized_files",
+                       "G19_cant_zonal.csv"))
+
+cant_zonal_G19 <- cant_zonal_G19 %>%
+  filter(eras == "JGOFS_GO") %>%
+  select(lat,
+         depth,
+         basin_AIP,
+         cant_mean,
+         cant_pos_mean,
+         cant_sd,
+         cant_pos_sd) %>%
+  mutate(estimate = "G19")
+
 
 ```
 
+## Join data sets
+
+```{r join_G19_and_this_study}
+
+cant_inventory <- bind_rows(cant_inventory, cant_inventory_G19)
+
+```
 
 
 # Color scale
@@ -135,57 +200,68 @@ rm(rgb2hex, cols)
 
 ```
 
-# Cant budgets
+# cant budgets
 
-Global Cant inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
+Global cant inventories were estimated in Pg-C. Please note that here we only added positive cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
-Cant_inv <- left_join(Cant_inv, basinmask_AIP) 
-
-Cant_inv_budget <- Cant_inv %>% 
+cant_inventory_budget <- cant_inventory %>% 
   mutate(surface_area = earth_surf(lat, lon),
-         cant_inv_grid = cant_inv*surface_area) %>% 
-  group_by(eras, basin_AIP) %>% 
+         cant_inv_grid = cant_inv*surface_area,
+         cant_pos_inv_grid = cant_pos_inv*surface_area) %>% 
+  group_by(basin_AIP, estimate) %>% 
   summarise(cant_total = sum(cant_inv_grid)*12*1e-15,
-            cant_total = round(cant_total,1)) %>% 
-  ungroup() %>% 
-  arrange(desc(eras)) %>% 
-  pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
-  mutate(total = Atlantic + Indian + Pacific)
+            cant_total = round(cant_total,1),
+            cant_pos_total = sum(cant_pos_inv_grid)*12*1e-15,
+            cant_pos_total = round(cant_pos_total,1)) %>% 
+  ungroup()
 
-Cant_inv_budget %>% 
-  kableExtra::kable() %>% 
-  add_header_above() %>%
-  kable_styling(full_width = FALSE)
 
-rm(Cant_inv_budget)
+cant_inventory_budget %>%
+  gt(rowname_col = "basin_AIP",
+     groupname_col = c("estimate")) %>% 
+  summary_rows(
+    groups = TRUE,
+    fns = list(total = "sum")
+  )
+
+# cant_inventory_budget %>% 
+#   kableExtra::kable() %>% 
+#   add_header_above() %>%
+#   kable_styling(full_width = FALSE)
+
+rm(cant_inventory_budget)
 
 ```
 
 
 
-# Cant - positive
+# cant - positive
 
-In a first series of plots we explore the distribution of Cant, taking only positive estimates into account (positive here refers to the mean Cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
+In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
 
 ## Zonal mean sections
 
-```{r Cant_pos_zonal_mean_sections}
+```{r cant_pos_zonal_mean_sections}
 
-Cant_average_zonal <- Cant_average_zonal %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+cant_zonal <- bind_rows(
+  cant_zonal,
+  cant_zonal_G19
+)
+
+rm(cant_zonal_G19)
 
 breaks <- c(seq(0,18,1),Inf)
 breaks_n <- length(breaks) - 1
 
-Cant_average_zonal <- Cant_average_zonal %>% 
-  mutate(Cant_pos_mean_int = cut(Cant_pos_mean, 
+cant_zonal <- cant_zonal %>% 
+  mutate(cant_pos_mean_int = cut(cant_pos_mean, 
                                 breaks,
                                 right = FALSE))
 
 
-zonal_section <- function(df, i_basin_AIP, i_eras, var) {
+zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
   
   name_var <- var
   var <- sym(var)
@@ -194,14 +270,14 @@ zonal_section <- function(df, i_basin_AIP, i_eras, var) {
   lat_min <- min(df$lat)
   
   df_sub <- df %>% 
-    filter(eras == i_eras,
-           basin_AIP == i_basin_AIP)
+    filter(basin_AIP == i_basin_AIP,
+           estimate == i_estimate)
   
   surface <- df_sub %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled(breaks = breaks) +
     scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                      name = "Cant") +
+                      name = "cant") +
     coord_cartesian(expand = 0,
                     ylim = c(500, 0),
                     xlim = c(lat_min, lat_max)) +
@@ -213,13 +289,13 @@ zonal_section <- function(df, i_basin_AIP, i_eras, var) {
       axis.ticks.x = element_blank()
     ) +
     labs(y = "Depth (m)",
-         title = paste("Basin:", i_basin_AIP, "| eras:", i_eras))
+         title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
   
   deep <- df_sub %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled(breaks = breaks) +
     scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                      name = "Cant") +
+                      name = "cant") +
     scale_y_reverse() +
     scale_x_continuous(breaks = seq(-100,100,20)) +
     coord_cartesian(expand = 0,
@@ -233,356 +309,197 @@ zonal_section <- function(df, i_basin_AIP, i_eras, var) {
 }
 
 
-for (i_basin_AIP in unique(Cant_average_zonal$basin_AIP)) {
-  for (i_eras in rev(unique(Cant_average_zonal$eras))) {
-    
-    print(zonal_section(Cant_average_zonal,
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal$estimate)) {
+
+  print(zonal_section(cant_zonal,
                         i_basin_AIP = i_basin_AIP,
-                        i_eras = i_eras,
-                        "Cant_pos_mean"))
+                        i_estimate = i_estimate,
+                        "cant_pos_mean"))
     
   }
-  
 }
+
 
 rm(breaks, breaks_n)
   
 ```
 
-## Isoneutral slab distribution
-
-Mean of positive Cant within each horizontal grid cell (lon x lat) per isoneutral slab.
-
-Please note that:
-
-- density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin
-- gaps in the maps represent areas where (thin) density layers fit between discrete depth levels used for mapping
-
-
-```{r Cant_pos_gamma_slab_maps, fig.asp=2.5}
-
-Cant_gamma_maps <- Cant_average %>% 
-  group_by(lat, lon, gamma_slab, eras) %>% 
-  summarise(Cant_pos = mean(Cant_pos, na.rm = TRUE)) %>% 
-  ungroup()
-
-
-breaks <- c(seq(0,16,2),Inf)
-breaks_n <- length(breaks) - 1
-
-Cant_gamma_maps <- Cant_gamma_maps %>% 
-  mutate(Cant_pos_int = cut(Cant_pos, 
-                                breaks,
-                                right = FALSE)) %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
-
-
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey30") +
-  geom_raster(data = Cant_gamma_maps,
-              aes(lon, lat, fill = Cant_pos_int)) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  facet_grid(gamma_slab ~ eras) +
-  coord_quickmap(expand = 0) +
-  theme(axis.title = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        legend.position = "top")
-
-rm(Cant_gamma_maps, breaks, breaks_n)
-```
 
 ## Inventory map
 
-Column inventory of positive Cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
+Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r Cant_pos_inventory_map, fig.asp=1}
+```{r cant_pos_inventory_map, fig.asp=1}
+
+cant_inventory <- bind_rows(
+  cant_inventory,
+  cant_inventory_G19
+)
+
+rm(cant_inventory_G19)
 
 breaks <- c(seq(0,16,2),Inf)
 breaks_n <- length(breaks) - 1
 
-Cant_inv <- Cant_inv %>% 
-  mutate(cant_inv_pos_int = cut(cant_inv_pos, 
+cant_inventory <- cant_inventory %>% 
+  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
                                 breaks,
-                                right = FALSE)) %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+                                right = FALSE))
 
-Cant_inv %>%
+cant_inventory %>%
   ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat), fill = "grey30") +
-  geom_raster(aes(lon, lat, fill = cant_inv_pos_int)) +
+  geom_raster(aes(lon, lat, fill = cant_pos_inv_int)) +
   coord_quickmap(expand = 0) +
   scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
   # scale_fill_scico_d(palette = "batlow", direction = -1) +
-  facet_wrap( ~ eras, ncol = 1) +
+  facet_wrap( ~ estimate, ncol = 1) +
   theme(axis.title = element_blank())
 
 ```
 
 
-## Global section
 
-### JGOFS_GO
+# cant - all
 
-```{r Cant_sections_positive_mean_one_lon_JGOFS_GO}
-
-section_global(Cant_average %>% filter(eras == "JGOFS_GO"),
-                    "Cant_pos")
-
-```
-
-### GO_new
-
-```{r Cant_sections_positive_mean_one_lon_GO_new}
-
-section_global(Cant_average %>% filter(eras == "GO_new"),
-                    "Cant_pos")
-
-```
-
-
-# Cant - all
-
-In a second series of plots we explore the distribution of Cant, taking positive and negative estimates into account.
+In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
 
 ## Zonal mean sections
 
-```{r Cant_all_zonal_mean_sections}
-section_zonal_average_divergent(Cant_average_zonal,
-                                "Cant_mean",
-                                "gamma_mean")
-```
+```{r cant_zonal_mean_sections}
+
+# breaks <- c(seq(0,18,1),Inf)
+# breaks_n <- length(breaks) - 1
+# 
+# cant_zonal <- cant_zonal %>% 
+#   mutate(cant_pos_mean_int = cut(cant_pos_mean, 
+#                                 breaks,
+#                                 right = FALSE))
+
+  # cant_zonal %>%
+  #   ggplot(aes(lat, depth, z = cant_mean)) +
+  #   geom_contour_fill(breaks = MakeBreaks(5),
+  #                     na.fill = TRUE) +
+  #   scale_fill_divergent(guide = "colorstrip",
+  #                        breaks = MakeBreaks(5),
+  #                        #name = name_var
+  #                        ) +
+  #   scale_y_reverse() +
+  #   coord_cartesian(expand = 0) +
+  #   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
+  #   facet_grid(basin_AIP ~ estimate)
 
 
-## Isoneutral slab distribution
 
-Mean of Cant within each horizontal grid cell (lon x lat) per isoneutral slab.
-
-Please note that:
-
-- density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin
-- gaps in the maps represent areas where (thin) density layers fit between discrete depth levels used for mapping
-
-
-```{r Cant_all_gamma_slab_maps, fig.asp=2.5}
-
-Cant_gamma_maps <- Cant_average %>%
-  group_by(lat, lon, gamma_slab, eras) %>%
-  summarise(Cant = mean(Cant, na.rm = TRUE)) %>%
-  ungroup()
-
-
-breaks <- c(-Inf, seq(-16, 16, 4), Inf)
-breaks_n <- length(breaks) - 1
-
-Cant_gamma_maps <- Cant_gamma_maps %>%
-  mutate(Cant_int = cut(Cant,
-                        breaks,
-                        right = FALSE)) %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
-
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey30") +
-  geom_raster(data = Cant_gamma_maps,
-              aes(lon, lat, fill = Cant_int)) +
-  scale_fill_brewer(palette = "RdBu",
-                    direction = -1) +
-  facet_grid(gamma_slab ~ eras) +
-  coord_quickmap(expand = 0) +
-  theme(
-    axis.title = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    legend.position = "top"
-  )
-
-rm(Cant_gamma_maps, breaks, breaks_n)
-```
-
-## Inventory map
-
-Column inventory of positive Cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
-
-```{r Cant_all_inventory_map, fig.asp=1}
-
-breaks <- c(-Inf, seq(-16,16,4),Inf)
-breaks_n <- length(breaks) - 1
-
-Cant_inv <- Cant_inv %>% 
-  mutate(cant_inv_int = cut(cant_inv, 
-                                breaks,
-                                right = FALSE))
-Cant_inv %>% 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cant_inv_int)) +
-    coord_quickmap(expand = 0) +
-  scale_fill_brewer(palette = "RdBu",
-                    direction = -1) +
-  facet_wrap(~eras, ncol = 1) +
+zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
+  
+  # df <- cant_zonal
+  # i_basin_AIP <- unique(cant_zonal$basin_AIP)[1]
+  # i_estimate  <- unique(cant_zonal$estimate)[1]
+  # var <- "cant_mean"
+  
+  name_var <- var
+  var <- sym(var)
+  
+  lat_max <- max(df$lat)
+  lat_min <- min(df$lat)
+  
+  df_sub <- df %>% 
+    filter(basin_AIP == i_basin_AIP,
+           estimate == i_estimate)
+  
+  surface <- df_sub %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_fill(breaks = MakeBreaks(5),
+                      na.fill = TRUE) +
+    scale_fill_divergent(guide = "colorstrip",
+                         breaks = MakeBreaks(5),
+                         name = name_var
+                         ) +
+    coord_cartesian(expand = 0,
+                    ylim = c(500, 0),
+                    xlim = c(lat_min, lat_max)) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
     theme(
-      axis.title = element_blank()
-    )
+      axis.title.x = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank()
+    ) +
+    labs(y = "Depth (m)",
+         title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
+  
+  deep <- df_sub %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_fill(breaks = MakeBreaks(5),
+                      na.fill = TRUE) +
+    scale_fill_divergent(guide = "colorstrip",
+                         breaks = MakeBreaks(5),
+                         name = name_var
+                         ) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
+    coord_cartesian(expand = 0,
+                    ylim = c(3000, 500),
+                    xlim = c(lat_min, lat_max)) +
+    labs(x = "latitude (°N)", y = "Depth (m)")
+  
+  surface / deep +
+    plot_layout(guides = "collect")
+  
+}
+
+
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal$estimate)) {
+
+  print(zonal_section(cant_zonal,
+                        i_basin_AIP = i_basin_AIP,
+                        i_estimate = i_estimate,
+                        "cant_pos_mean"))
+    
+  }
+}
 
 
 rm(breaks, breaks_n)
-
-```
-
-# Cant - standard deviation 
-
-## Across models
-
-Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
-
-```{r Cant_sections_sd_models}
-
-section_zonal_average_continous(Cant_average_zonal,
-                                "Cant_sd_mean",
-                                "gamma_mean")
-
-```
-
-## Across basins
-
-Standard deviation of mean Cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of Cant within the basin and era.
-
-```{r Cant_sections_sd_Cant}
-
-section_zonal_average_continous(Cant_average_zonal,
-                                "Cant_sd",
-                                "gamma_mean")
-
-```
-
-## Correlation
-
-### Cant vs model SD
-
-```{r Cant_vs_sd_by_basin_era}
-
-Cant_average <- Cant_average  %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
-
-Cant_average %>% 
-  ggplot(aes(Cant, Cant_sd)) +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 10) +
-  geom_bin2d() +
-  scale_fill_viridis_c(option = "magma",
-                       direction = -1,
-                       trans = "log10",
-                       name = "log10(n)") +
-  facet_grid(basin_AIP ~ eras)
-
-```
-
-```{r Cant_vs_sd_by_basin_gamma, fig.asp=2}
-
-Cant_average %>% 
-  ggplot(aes(Cant, Cant_sd)) +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 10) +
-  geom_bin2d() +
-  scale_fill_viridis_c(option = "magma",
-                       direction = -1,
-                       trans = "log10",
-                       name = "log10(n)") +
-  facet_grid(gamma_slab ~ basin_AIP)
-
-```
-
-### Cant vs regional SD
-
-```{r Cant_vs_sd_by_basin_era_zonal}
-
-Cant_average_zonal %>% 
-  ggplot(aes(Cant_mean, Cant_sd)) +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 10) +
-  geom_bin2d() +
-  scale_fill_viridis_c(option = "magma",
-                       direction = -1,
-                       trans = "log10",
-                       name = "log10(n)") +
-  facet_grid(basin_AIP ~ eras)
-
-```
-
-```{r Cant_vs_sd_by_basin_gamma_zonal, fig.asp=2}
-
-Cant_average_zonal %>% 
-  ggplot(aes(Cant_mean, Cant_sd)) +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 10) +
-  geom_bin2d() +
-  scale_fill_viridis_c(option = "magma",
-                       direction = -1,
-                       trans = "log10",
-                       name = "log10(n)") +
-  facet_grid(gamma_slab ~ basin_AIP)
-
-```
-
-## Surface maps
-
-```{r gamma_surface_map}
-
-map_climatology_discrete(Cant_average, "gamma_slab")
-
+  
 ```
 
 
-## Zonal sections
+## Inventory map
 
-The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.
+Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-### Mean
+```{r cant_inventory_map, fig.asp=1, eval=FALSE}
 
-```{r gamma_sections_mean}
+cant_inventory <- bind_rows(
+  cant_inventory,
+  cant_inventory_G19
+)
 
-Cant_average_zonal %>% 
-  filter(eras == "JGOFS_GO") %>% 
-  ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(breaks = slab_breaks,
-               col = "white",
-               skip = 1) +
-  scale_fill_viridis_d(name = "Gamma",
-                       direction = -1) +
-  scale_y_reverse() +
-  scale_x_continuous(breaks = seq(-100, 100, 20)) +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~.)
+rm(cant_inventory_G19)
 
-```
+breaks <- c(seq(0,16,2),Inf)
+breaks_n <- length(breaks) - 1
 
-### SD
+cant_inventory <- cant_inventory %>% 
+  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
+                                breaks,
+                                right = FALSE))
 
-Higher SD of gamma in shallow, subtropical waters results from a more pronounced longitudinal variability.
-
-```{r gamma_sections_sd}
-
-Cant_average_zonal %>% 
-  filter(eras == "JGOFS_GO") %>% 
-  ggplot(aes(lat, depth, z = gamma_sd)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = "Gamma SD",
-                       direction = -1) +
-  scale_y_reverse() +
-  scale_x_continuous(breaks = seq(-100, 100, 20)) +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~.)
+cant_inventory %>%
+  ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey30") +
+  geom_raster(aes(lon, lat, fill = cant_pos_inv_int)) +
+  coord_quickmap(expand = 0) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
+  # scale_fill_scico_d(palette = "batlow", direction = -1) +
+  facet_wrap( ~ estimate, ncol = 1) +
+  theme(axis.title = element_blank())
 
 ```
 
@@ -596,6 +513,6 @@ Deviations between this study and the results by Gruber et al (2019), short G19,
 - Neutral density calculation: Here and in GLODAPv2_2020 a polynomial approximation is used, whereas G19 uses the original Matlab code  
 - Predictor climatology: Here we used WOA18, whereas G19 used WOA13
 - Missing data in the GLODAP mapped climatology, eg NO3 at surface, where not filled in this study
-- Cant on neutral density levels calculate as slab mean, rather than on one surface
-- Here, surface delta Cant were calculated based on Luecker constants, rather than Mehrbach as in G19
+- cant on neutral density levels calculate as slab mean, rather than on one surface
+- Here, surface delta cant were calculated based on Luecker constants, rather than Mehrbach as in G19
 - Here, pCO2 was calculated from DIC/TA Climatology

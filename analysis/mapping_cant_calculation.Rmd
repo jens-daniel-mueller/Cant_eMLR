@@ -1,5 +1,5 @@
 ---
-title: "Mapping Cant"
+title: "Mapping cant"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -118,22 +118,22 @@ lm_all_wide <-
 lm_all_wide <- lm_all_wide %>% 
   mutate(model = str_remove(model, "Cstar ~ "))
          
-Cant <- full_join(predictors, lm_all_wide)
+cant <- full_join(predictors, lm_all_wide)
 
 rm(predictors, lm_all_wide)
 
 ```
 
-# Map Cant
+# Map cant
 
 ## Deep water
 
 ## Apply MLRs to predictor
 
-```{r calculate_Cant}
+```{r calculate_cant}
 
-Cant <- Cant %>% 
-  mutate(Cant = `delta_coeff_(Intercept)` +
+cant <- cant %>% 
+  mutate(cant = `delta_coeff_(Intercept)` +
            delta_coeff_aou * aou +
            delta_coeff_oxygen * oxygen +
            delta_coeff_phosphate * phosphate +
@@ -142,57 +142,57 @@ Cant <- Cant %>%
            delta_coeff_sal * sal + 
            delta_coeff_tem * tem)
 
-Cant <- Cant %>%
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
+cant <- cant %>%
+  mutate(cant_pos = if_else(cant < 0, 0, cant))
 
 ```
 
-```{r calculate_predictor_contributions_to_Cant}
+```{r calculate_predictor_contributions_to_cant}
 
-Cant <- Cant %>% 
-  mutate(Cant_intercept = `delta_coeff_(Intercept)`,
-         Cant_aou = delta_coeff_aou * aou,
-         Cant_oxygen = delta_coeff_oxygen * oxygen,
-         Cant_phosphate = delta_coeff_phosphate * phosphate,
-         Cant_phosphate_star = delta_coeff_phosphate_star * phosphate_star,
-         Cant_silicate = delta_coeff_silicate * silicate,
-         Cant_sal = delta_coeff_sal * sal,
-         Cant_tem = delta_coeff_tem * tem,
-         Cant_sum = Cant_intercept +
-           Cant_aou +
-           Cant_oxygen +
-           Cant_phosphate +
-           Cant_phosphate_star +
-           Cant_silicate + 
-           Cant_sal +
-           Cant_tem)
+cant <- cant %>% 
+  mutate(cant_intercept = `delta_coeff_(Intercept)`,
+         cant_aou = delta_coeff_aou * aou,
+         cant_oxygen = delta_coeff_oxygen * oxygen,
+         cant_phosphate = delta_coeff_phosphate * phosphate,
+         cant_phosphate_star = delta_coeff_phosphate_star * phosphate_star,
+         cant_silicate = delta_coeff_silicate * silicate,
+         cant_sal = delta_coeff_sal * sal,
+         cant_tem = delta_coeff_tem * tem,
+         cant_sum = cant_intercept +
+           cant_aou +
+           cant_oxygen +
+           cant_phosphate +
+           cant_phosphate_star +
+           cant_silicate + 
+           cant_sal +
+           cant_tem)
 
 ```
 
 ### Sections by model
 
-Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
+Zonal sections plots are produced for every 20° longitude, each era and for all models individually and can be downloaded [here](https://github.com/jens-daniel-mueller/cant_eMLR/tree/master/output/figure/mapping){target="_blank"}.
 
 
-```{r Cant_section_by_model_eras_lon, eval=FALSE}
+```{r cant_section_by_model_eras_lon, eval=FALSE}
 
 library(scales)
 
-for (i_eras in unique(Cant$eras)) {
-  # i_eras <- unique(Cant$eras)[2]
-  Cant_eras <- Cant %>%
+for (i_eras in unique(cant$eras)) {
+  # i_eras <- unique(cant$eras)[2]
+  cant_eras <- cant %>%
     filter(eras == i_eras)
   
   for (i_lon in seq(20.5, 360, 20)) {
     # i_lon <- seq(20.5, 360, 20)[7]
-    Cant_eras_lon <- Cant_eras %>%
+    cant_eras_lon <- cant_eras %>%
       filter(lon == i_lon)
     
-    Cant_eras_lon %>%
-      ggplot(aes(lat, depth, col = Cant)) +
+    cant_eras_lon %>%
+      ggplot(aes(lat, depth, col = cant)) +
       geom_point() +
       scale_color_gradient2(
-        name = "Cant",
+        name = "cant",
         high = muted("red"),
         mid = "grey",
         low = muted("blue")
@@ -210,7 +210,7 @@ for (i_eras in unique(Cant$eras)) {
         paste(i_eras,
               "lon",
               i_lon,
-              "model_Cant.png",
+              "model_cant.png",
               sep = "_")
       ),
       width = 17,
@@ -225,11 +225,11 @@ for (i_eras in unique(Cant$eras)) {
 
 ## Surface water
 
-As outlined in Gruber et al. (2019), a transient equilibrium approach was applied to estimate Cant in surface waters, assuming that the CO2 system in these waters has followed the increase in atmospheric CO2 closely. 
+As outlined in Gruber et al. (2019), a transient equilibrium approach was applied to estimate cant in surface waters, assuming that the CO2 system in these waters has followed the increase in atmospheric CO2 closely. 
 
 Using eq 10.2.16 from OBD, the change in anthropogenic CO2 in the upper ocean was computed as:
 
-ΔtCanteq(t2ref − t1ref )= 1∕γ ⋅ DIC/pCO2 ⋅ (pCO2atm (t2ref)− pCO2atm (t1ref))
+Δtcanteq(t2ref − t1ref )= 1∕γ ⋅ DIC/pCO2 ⋅ (pCO2atm (t2ref)− pCO2atm (t1ref))
 
 , where DIC and pCO2 are the in situ values, where γ is the buffer (Revelle) factor and where we evaluated the right-hand side using seacarb employing the Mehrbach constants as refitted by Dickson and Millero using the climatological values for temperature, salinity, DIC and Alk.
 
@@ -276,9 +276,9 @@ section_global_surface(predictors_surface, "rev_fac")
 
 ```
 
-### Cant
+### cant
 
-```{r Cant_surface}
+```{r cant_surface}
 
 co2_atm_tref <- co2_atm_tref %>% 
   arrange(pCO2_tref) %>% 
@@ -287,86 +287,86 @@ co2_atm_tref <- co2_atm_tref %>%
   mutate(eras = c("JGOFS_GO", "GO_new")) %>% 
   select(eras, d_pCO2_tref)
 
-Cant_surface <- full_join(predictors_surface, co2_atm_tref,
+cant_surface <- full_join(predictors_surface, co2_atm_tref,
                           by = character())
 
-Cant_surface <- Cant_surface %>% 
-  mutate(Cant = (1 / rev_fac) * (TCO2 / pCO2) * d_pCO2_tref)
+cant_surface <- cant_surface %>% 
+  mutate(cant = (1 / rev_fac) * (TCO2 / pCO2) * d_pCO2_tref)
 
-Cant_surface <- Cant_surface %>%
-  mutate(Cant_pos = if_else(Cant < 0, 0, Cant))
+cant_surface <- cant_surface %>%
+  mutate(cant_pos = if_else(cant < 0, 0, cant))
 
-map_climatology_eras(Cant_surface, "Cant")
+map_climatology_eras(cant_surface, "cant")
 
-section_global_surface_eras(Cant_surface, "Cant")
+section_global_surface_eras(cant_surface, "cant")
 
 ```
 
 
-## Mean Cant fields
+## Mean cant fields
 
-Mean and sd are calculated for Cant in each grid cell (XYZ), basin and era combination. Calculations are performed for all Cant values vs positive values only. This averaging step summarizes the information derived from ten best fitting MLRs. 
+Mean and sd are calculated for cant in each grid cell (XYZ), basin and era combination. Calculations are performed for all cant values vs positive values only. This averaging step summarizes the information derived from ten best fitting MLRs. 
 
 ### Deep water averaging
 
-```{r calculate_Cant_predictor_mean}
+```{r calculate_cant_predictor_mean}
 
-Cant_predictor_average <- Cant %>%
+cant_predictor_average <- cant %>%
   fselect(lon, lat, depth, eras, basin,
-          Cant_intercept,
-          Cant_aou,
-          Cant_oxygen,
-          Cant_phosphate,
-          Cant_phosphate_star, 
-          Cant_silicate, 
-          Cant_tem, 
-          Cant_sal, 
-          Cant_sum, 
+          cant_intercept,
+          cant_aou,
+          cant_oxygen,
+          cant_phosphate,
+          cant_phosphate_star, 
+          cant_silicate, 
+          cant_tem, 
+          cant_sal, 
+          cant_sum, 
           gamma) %>% 
   fgroup_by(lon, lat, depth, eras, basin) %>% {
    add_vars(fgroup_vars(.,"unique"),
             fmean(., keep.group_vars = FALSE))
   }
 
-Cant_predictor_average_Atl <- Cant_predictor_average %>% 
+cant_predictor_average_Atl <- cant_predictor_average %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
-Cant_predictor_average_Ind_Pac <- Cant_predictor_average %>% 
+cant_predictor_average_Ind_Pac <- cant_predictor_average %>% 
   filter(basin == "Indo-Pacific") %>% 
   mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
-Cant_predictor_average <- bind_rows(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
+cant_predictor_average <- bind_rows(cant_predictor_average_Atl, cant_predictor_average_Ind_Pac)
 
-rm(Cant_predictor_average_Atl, Cant_predictor_average_Ind_Pac)
+rm(cant_predictor_average_Atl, cant_predictor_average_Ind_Pac)
 
 ```
 
-```{r calculate_Cant_mean}
+```{r calculate_cant_mean}
 
-Cant_average <- Cant %>%
-  fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %>% 
+cant_average <- cant %>%
+  fselect(lon, lat, depth, eras, basin, cant, cant_pos, gamma) %>% 
   fgroup_by(lon, lat, depth, eras, basin) %>% {
    add_vars(fgroup_vars(.,"unique"),
             fmean(., keep.group_vars = FALSE),
             fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
   }
 
-rm(Cant)
+rm(cant)
 ```
 
 
-```{r calculate_Cant_mean_surface}
+```{r calculate_cant_mean_surface}
 
-Cant_surface_average <- Cant_surface %>%
-  fselect(lon, lat, depth, eras, basin, Cant, Cant_pos, gamma) %>% 
+cant_surface_average <- cant_surface %>%
+  fselect(lon, lat, depth, eras, basin, cant, cant_pos, gamma) %>% 
   fgroup_by(lon, lat, depth, eras, basin) %>% {
    add_vars(fgroup_vars(.,"unique"),
             fmean(., keep.group_vars = FALSE),
             fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
   }
 
-rm(Cant_surface)
+rm(cant_surface)
 ```
 
 
@@ -375,9 +375,9 @@ rm(Cant_surface)
 
 ```{r join_surface_deep_cant}
 
-Cant_average <- full_join(Cant_average, Cant_surface_average)
+cant_average <- full_join(cant_average, cant_surface_average)
 
-rm(Cant_surface_average)
+rm(cant_surface_average)
 
 ```
 
@@ -385,33 +385,33 @@ rm(Cant_surface_average)
 
 ```{r calculate_gamma_slab_zonal_mean}
 
-Cant_average_Atl <- Cant_average %>% 
+cant_average_Atl <- cant_average %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
-Cant_average_Ind_Pac <- Cant_average %>% 
+cant_average_Ind_Pac <- cant_average %>% 
   filter(basin == "Indo-Pacific") %>% 
   mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
-Cant_average <- bind_rows(Cant_average_Atl, Cant_average_Ind_Pac)
+cant_average <- bind_rows(cant_average_Atl, cant_average_Ind_Pac)
 
-rm(Cant_average_Atl, Cant_average_Ind_Pac)
+rm(cant_average_Atl, cant_average_Ind_Pac)
 
 ```
 
 
-## Mean Cant sections
+## Mean cant sections
 
-For each basin and era combination, the zonal mean Cant is calculated, again for all vs positive only values. Likewise, sd is calculated for the averaging of the mean basin fields.
+For each basin and era combination, the zonal mean cant is calculated, again for all vs positive only values. Likewise, sd is calculated for the averaging of the mean basin fields.
 
-```{r Calculate_Cant_zonal_mean_sections}
+```{r Calculate_cant_zonal_mean_sections}
 
-Cant_average <- left_join(Cant_average,
+cant_average <- left_join(cant_average,
                           basinmask_AIP %>% select(-basin))
 
-Cant_average_zonal <- Cant_average %>%
+cant_average_zonal <- cant_average %>%
   fselect(lat, depth, eras, basin, basin_AIP,
-          Cant, Cant_pos, gamma, Cant_sd, Cant_pos_sd, gamma_sd) %>% 
+          cant, cant_pos, gamma, cant_sd, cant_pos_sd, gamma_sd) %>% 
   fgroup_by(lat, depth, eras, basin, basin_AIP) %>% {
    add_vars(fgroup_vars(.,"unique"),
             fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
@@ -419,14 +419,14 @@ Cant_average_zonal <- Cant_average %>%
   }
 
 
-# Cant_average_zonal <- Cant_average %>%
+# cant_average_zonal <- cant_average %>%
 #   group_by(lat, depth, eras, basin, basin_AIP) %>%
 #   summarise(across(
 #     c(
-#       "Cant_mean",
-#       "Cant_pos_mean",
-#       "Cant_sd",
-#       "Cant_pos_sd",
+#       "cant_mean",
+#       "cant_pos_mean",
+#       "cant_sd",
+#       "cant_pos_sd",
 #       "gamma_mean",
 #       "gamma_sd"
 #     ),
@@ -438,73 +438,73 @@ Cant_average_zonal <- Cant_average %>%
 #   ungroup()
 
 
-Cant_average_zonal_Atl <- Cant_average_zonal %>% 
+cant_average_zonal_Atl <- cant_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
 
-Cant_average_zonal_Ind_Pac <- Cant_average_zonal %>% 
+cant_average_zonal_Ind_Pac <- cant_average_zonal %>% 
   filter(basin == "Indo-Pacific") %>% 
   mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
 
-Cant_average_zonal <- bind_rows(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
+cant_average_zonal <- bind_rows(cant_average_zonal_Atl, cant_average_zonal_Ind_Pac)
 
-rm(Cant_average_zonal_Atl, Cant_average_zonal_Ind_Pac)
+rm(cant_average_zonal_Atl, cant_average_zonal_Ind_Pac)
 
 ```
 
-## Mean Cant sections by coefficient
+## Mean cant sections by coefficient
 
-For each basin and era combination, the zonal mean Cant is calculated by model coefficient.
+For each basin and era combination, the zonal mean cant is calculated by model coefficient.
 
-```{r Calculate_Cant_predictor_mean_sections}
+```{r Calculate_cant_predictor_mean_sections}
 
-Cant_predictor_average <- full_join(Cant_predictor_average,
+cant_predictor_average <- full_join(cant_predictor_average,
                                 basinmask_AIP %>% select(-basin))
 
-Cant_predictor_average_zonal <- Cant_predictor_average %>%
+cant_predictor_average_zonal <- cant_predictor_average %>%
   fselect(lat, depth, eras, basin, basin_AIP,
-          Cant_intercept:gamma) %>% 
+          cant_intercept:gamma) %>% 
   fgroup_by(lat, depth, eras, basin, basin_AIP) %>% {
    add_vars(fgroup_vars(.,"unique"),
             fmean(., keep.group_vars = FALSE))
   }
 
 
-# Cant_predictor_average_zonal <- Cant_predictor_average %>%
+# cant_predictor_average_zonal <- cant_predictor_average %>%
 #   group_by(lat, depth, eras, basin, basin_AIP) %>%
 #   summarise(across(
-#     Cant_intercept_mean:gamma_mean,
+#     cant_intercept_mean:gamma_mean,
 #     list(mean = ~ mean(.x, na.rm = TRUE))
 #   )) %>%
 #   ungroup()
 
 
-Cant_predictor_average_zonal_Atl <- Cant_predictor_average_zonal %>% 
+cant_predictor_average_zonal_Atl <- cant_predictor_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
   mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
 
-Cant_predictor_average_zonal_Ind_Pac <- Cant_predictor_average_zonal %>% 
+cant_predictor_average_zonal_Ind_Pac <- cant_predictor_average_zonal %>% 
   filter(basin == "Indo-Pacific") %>% 
   mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
 
-Cant_predictor_average_zonal <- bind_rows(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)
+cant_predictor_average_zonal <- bind_rows(cant_predictor_average_zonal_Atl, cant_predictor_average_zonal_Ind_Pac)
 
-rm(Cant_predictor_average_zonal_Atl, Cant_predictor_average_zonal_Ind_Pac)
+rm(cant_predictor_average_zonal_Atl, cant_predictor_average_zonal_Ind_Pac)
 
 ```
 
 ## Inventory calculation
 
-To calculate Cant column inventories, we:  
+To calculate cant column inventories, we:  
 
-1. Multiple layer thickness with Cant concentration to get a layer inventory
-2. For each horizontal grid cell and era, sum Cant layer inventories from 150 - 3000 m
+1. Multiple layer thickness with cant concentration to get a layer inventory
+2. For each horizontal grid cell and era, sum cant layer inventories from 150 - 3000 m
 
-Step 2 is performed again for all Cant and positive Cant values only
+Step 2 is performed again for all cant and positive cant values only
 
 ```{r calculate_inventories}
 
-depth_level_volume <- tibble(depth = unique(Cant_average$depth)) %>% 
+depth_level_volume <- tibble(depth = unique(cant_average$depth)) %>% 
   arrange(depth)
 
 depth_level_volume <- depth_level_volume %>%
@@ -516,16 +516,16 @@ depth_level_volume <- depth_level_volume %>%
   select(-c(layer_thickness_above,
             layer_thickness_below))
 
-Cant_average <-
-  full_join(Cant_average, depth_level_volume)
+cant_average <-
+  full_join(cant_average, depth_level_volume)
 
-Cant_average <- Cant_average %>%
-  mutate(layer_inv = Cant * layer_thickness) %>%
+cant_average <- cant_average %>%
+  mutate(layer_inv = cant * layer_thickness) %>%
   mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
   select(-layer_thickness)
 
-Cant_inv <- Cant_average %>%
-  group_by(lon, lat, basin, eras) %>%
+cant_inv <- cant_average %>%
+  group_by(lon, lat, basin, basin_AIP, eras) %>%
   summarise(
     cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
     cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000
@@ -540,29 +540,29 @@ Cant_inv <- Cant_average %>%
 
 ```{r write_cant_files}
 
-# Cant %>%
+# cant %>%
 #     write_csv(here::here("data/mapping/_summarized_files",
-#                          "Cant.csv"))
+#                          "cant.csv"))
 
-Cant_average %>%
+cant_average %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_average.csv"))
+                         "cant_3d.csv"))
 
-Cant_predictor_average %>%
+cant_predictor_average %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_predictor_average.csv"))
+                         "cant_predictor_3d.csv"))
 
-Cant_average_zonal %>%
+cant_average_zonal %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_average_zonal.csv"))
+                         "cant_zonal.csv"))
 
-Cant_predictor_average_zonal %>%
+cant_predictor_average_zonal %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_predictor_average_zonal.csv"))
+                         "cant_predictor_zonal.csv"))
 
-Cant_inv %>%
+cant_inv %>%
     write_csv(here::here("data/mapping/_summarized_files",
-                         "Cant_inv.csv"))
+                         "cant_inv.csv"))
 
 ```
 
