@@ -508,7 +508,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Anthropogenic CO2 from 1994 to 2007</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">03 November, 2020</h4>
+<h4 class="date">09 November, 2020</h4>
 
 </div>
 
@@ -533,7 +533,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-03
+<strong>Last updated:</strong> 2020-11-09
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -624,16 +624,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebfa7a21d446fca1775092c88133905e20a9cac53targetblankbfa7a21a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bfa7a21d446fca1775092c88133905e20a9cac53" target="_blank">bfa7a21</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7786901a02e0c07185f1910d0fa57b5d3539ac7btargetblank7786901a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7786901a02e0c07185f1910d0fa57b5d3539ac7b" target="_blank">7786901</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreebfa7a21d446fca1775092c88133905e20a9cac53targetblankbfa7a21a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7786901a02e0c07185f1910d0fa57b5d3539ac7btargetblank7786901a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/bfa7a21d446fca1775092c88133905e20a9cac53" target="_blank">bfa7a21</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7786901a02e0c07185f1910d0fa57b5d3539ac7b" target="_blank">7786901</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -655,10 +655,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  code/globe_3d.R
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   code/Workflowr_project_managment.R
+    Untracked:  code/mapping_functions.R
 
 </code></pre>
 <p>
@@ -697,6 +694,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/7786901a02e0c07185f1910d0fa57b5d3539ac7b/analysis/read_Gruber_2019_Cant.Rmd" target="_blank">7786901</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-09
+</td>
+<td>
+created comparison plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b170b793e0658f1be77d06fc486ead384c2e674e/docs/read_Gruber_2019_Cant.html" target="_blank">b170b79</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1728,7 +1759,8 @@ rebuild with Gruber Cant
 library(patchwork)
 library(lubridate)
 library(tidync)
-library(stars)</code></pre>
+library(collapse)
+library(scico)</code></pre>
 <div id="data-source" class="section level1">
 <h1><span class="header-section-number">1</span> Data source</h1>
 <ul>
@@ -1737,6 +1769,9 @@ library(stars)</code></pre>
 </div>
 <div id="read-ncdfs" class="section level1">
 <h1><span class="header-section-number">2</span> Read ncdfs</h1>
+<div id="public-data-sets" class="section level2">
+<h2><span class="header-section-number">2.1</span> Public data sets</h2>
+<p>The publically available data sets contain only positive Cant estimates.</p>
 <pre class="r"><code>dcant &lt;- tidync(here::here(&quot;data/Gruber_2019&quot;,
                                &quot;dcant_emlr_cstar_gruber_94-07_vs1.nc&quot;))
 
@@ -1748,7 +1783,7 @@ dcant &lt;- dcant %&gt;%
   rename(lon = LONGITUDE,
          lat = LATITUDE,
          depth = DEPTH,
-         cant = DCANT_01) %&gt;% 
+         cant_pos = DCANT_01) %&gt;% 
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))</code></pre>
 <pre class="r"><code>dcant_inv &lt;- tidync(here::here(&quot;data/Gruber_2019&quot;,
                                &quot;inv_dcant_emlr_cstar_gruber_94-07_vs1.nc&quot;))
@@ -1760,8 +1795,13 @@ dcant_inv &lt;- dcant_inv %&gt;% hyper_tibble()
 dcant_inv &lt;- dcant_inv %&gt;% 
   rename(lon = LONGITUDE,
          lat = LATITUDE,
-         cant_inv = DCANT_INV01) %&gt;% 
-  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))</code></pre>
+         cant_pos_inv = DCANT_INV01) %&gt;% 
+  mutate(lon = if_else(lon &lt; 20, lon + 360, lon)) %&gt;% 
+  mutate(eras = &quot;JGOFS_GO&quot;)</code></pre>
+</div>
+<div id="raw-data" class="section level2">
+<h2><span class="header-section-number">2.2</span> Raw data</h2>
+<p>Internally available data sets also contain negative Cant estimates, as they are contained in the “raw” output of the eMLR mapping step.</p>
 <pre class="r"><code>V101 &lt;- tidync(here::here(&quot;data/Gruber_2019&quot;,
                                &quot;Cant_V101new.nc&quot;))
 
@@ -1776,14 +1816,60 @@ V101 &lt;- V101 %&gt;%
   filter(cant != -999) %&gt;% 
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))</code></pre>
 </div>
+</div>
 <div id="apply-basin-mask" class="section level1">
 <h1><span class="header-section-number">3</span> Apply basin mask</h1>
-<pre class="r"><code>dcant &lt;- inner_join(dcant, basinmask)
+<pre class="r"><code>basinmask &lt;- basinmask %&gt;% 
+  select(-basin)
+
+dcant &lt;- inner_join(dcant, basinmask)
 dcant_inv &lt;- inner_join(dcant_inv, basinmask)
 V101 &lt;- inner_join(V101, basinmask)</code></pre>
 </div>
+<div id="join-pos-and-all-cant" class="section level1">
+<h1><span class="header-section-number">4</span> Join pos and all Cant</h1>
+<pre class="r"><code>cant_3d &lt;- inner_join(dcant, V101)
+cant_3d &lt;- cant_3d %&gt;% 
+  mutate(eras = &quot;JGOFS_GO&quot;)
+
+rm(dcant, V101)</code></pre>
+</div>
+<div id="zonal-mean-section" class="section level1">
+<h1><span class="header-section-number">5</span> Zonal mean section</h1>
+<pre class="r"><code>cant_zonal &lt;- zonal_mean_section(cant_3d)</code></pre>
+</div>
+<div id="column-inventory" class="section level1">
+<h1><span class="header-section-number">6</span> Column inventory</h1>
+<div id="from-3d-fields" class="section level2">
+<h2><span class="header-section-number">6.1</span> From 3d fields</h2>
+<pre class="r"><code>cant_inventory &lt;- calc_cant_inventory(cant_3d)</code></pre>
+<pre class="r"><code>map_inventory_divergent(cant_inventory, &quot;cant_inv&quot;)</code></pre>
+<p><img src="figure/read_Gruber_2019_Cant.Rmd/G19_cant_inventory_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>map_inventory(cant_inventory, &quot;cant_pos_inv&quot;)</code></pre>
+<p><img src="figure/read_Gruber_2019_Cant.Rmd/G19_cant_pos_inventory_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="from-pubished-inventory-data" class="section level2">
+<h2><span class="header-section-number">6.2</span> From pubished inventory data</h2>
+<pre class="r"><code>map_inventory(dcant_inv, &quot;cant_pos_inv&quot;)</code></pre>
+<p><img src="figure/read_Gruber_2019_Cant.Rmd/G19_cant_pos_inventory_maps_published-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="published---3d" class="section level2">
+<h2><span class="header-section-number">6.3</span> Published - 3d</h2>
+<pre class="r"><code>cant_offset &lt;- inner_join(
+  cant_inventory %&gt;% rename(cant_re = cant_pos_inv),
+  dcant_inv %&gt;% rename(cant_pub = cant_pos_inv)
+)
+
+cant_offset &lt;- cant_offset %&gt;% 
+  mutate(delta_cant = cant_re - cant_pub)
+
+map_inventory_divergent(cant_offset, &quot;delta_cant&quot;)</code></pre>
+<p><img src="figure/read_Gruber_2019_Cant.Rmd/G19_cant_offset_inventory-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(cant_offset, dcant_inv)</code></pre>
+</div>
+</div>
 <div id="cant-plots" class="section level1">
-<h1><span class="header-section-number">4</span> Cant plots</h1>
+<h1><span class="header-section-number">7</span> Cant plots</h1>
 <p>Below, following subsets of the climatologies are plotted for all relevant parameters:</p>
 <ul>
 <li>Horizontal planes at 0, 150, 500, 2000m</li>
@@ -1791,63 +1877,58 @@ V101 &lt;- inner_join(V101, basinmask)</code></pre>
 </ul>
 <p>Section locations are indicated as white lines in maps.</p>
 <div id="horizontal-plane-maps" class="section level2">
-<h2><span class="header-section-number">4.1</span> Horizontal plane maps</h2>
-<div id="published" class="section level3">
-<h3><span class="header-section-number">4.1.1</span> Published</h3>
-<pre class="r"><code>map_climatology(dcant, &quot;cant&quot;)</code></pre>
+<h2><span class="header-section-number">7.1</span> Horizontal plane maps</h2>
+<div id="all-values" class="section level3">
+<h3><span class="header-section-number">7.1.1</span> All values</h3>
+<pre class="r"><code>map_climatology_divergent(cant_3d, &quot;cant&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="v101" class="section level3">
-<h3><span class="header-section-number">4.1.2</span> V101</h3>
-<pre class="r"><code>map_climatology(V101, &quot;cant&quot;)</code></pre>
+<div id="positive-values" class="section level3">
+<h3><span class="header-section-number">7.1.2</span> Positive values</h3>
+<pre class="r"><code>map_climatology(cant_3d, &quot;cant_pos&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_maps_V101-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<div id="surface-inventory-map" class="section level2">
-<h2><span class="header-section-number">4.2</span> Surface Inventory map</h2>
-<pre class="r"><code>map_climatology_inv(dcant_inv, &quot;cant_inv&quot;)</code></pre>
-<p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_inv_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
 <div id="sections-basin" class="section level2">
-<h2><span class="header-section-number">4.3</span> Sections basin</h2>
-<div id="published-1" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> Published</h3>
-<pre class="r"><code>section_global(dcant, &quot;cant&quot;)</code></pre>
-<p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="v101-1" class="section level3">
-<h3><span class="header-section-number">4.3.2</span> V101</h3>
-<pre class="r"><code>section_global(V101, &quot;cant&quot;)</code></pre>
+<h2><span class="header-section-number">7.2</span> Sections basin</h2>
+<div id="all-values-1" class="section level3">
+<h3><span class="header-section-number">7.2.1</span> All values</h3>
+<pre class="r"><code>section_global(cant_3d, &quot;cant&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections_V101-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="positive-values-1" class="section level3">
+<h3><span class="header-section-number">7.2.2</span> Positive values</h3>
+<pre class="r"><code>section_global(cant_3d, &quot;cant_pos&quot;)</code></pre>
+<p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="sections-at-regular-longitudes" class="section level2">
-<h2><span class="header-section-number">4.4</span> Sections at regular longitudes</h2>
-<div id="published-2" class="section level3">
-<h3><span class="header-section-number">4.4.1</span> Published</h3>
-<pre class="r"><code>section_climatology_regular(dcant, &quot;cant&quot;)</code></pre>
+<h2><span class="header-section-number">7.3</span> Sections at regular longitudes</h2>
+<div id="all-values-2" class="section level3">
+<h3><span class="header-section-number">7.3.1</span> All values</h3>
+<pre class="r"><code>section_climatology_regular(cant_3d, &quot;cant&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections_regular-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="v101-2" class="section level3">
-<h3><span class="header-section-number">4.4.2</span> V101</h3>
-<pre class="r"><code>section_climatology_regular(V101, &quot;cant&quot;)</code></pre>
+<div id="positive-values-2" class="section level3">
+<h3><span class="header-section-number">7.3.2</span> Positive values</h3>
+<pre class="r"><code>section_climatology_regular(cant_3d, &quot;cant_pos&quot;)</code></pre>
 <p><img src="figure/read_Gruber_2019_Cant.Rmd/Cant_sections_regular_V101-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
 <div id="write-files" class="section level1">
-<h1><span class="header-section-number">5</span> Write files</h1>
-<pre class="r"><code>dcant %&gt;% 
+<h1><span class="header-section-number">8</span> Write files</h1>
+<pre class="r"><code>cant_3d %&gt;% 
   write_csv(here::here(&quot;data/Gruber_2019/_summarized_files&quot;,
-                       &quot;Cant_07.csv&quot;))
+                       &quot;G19_cant_3d.csv&quot;))
 
-dcant_inv %&gt;% 
+cant_inventory %&gt;% 
   write_csv(here::here(&quot;data/Gruber_2019/_summarized_files&quot;,
-                       &quot;Cant_07_inv.csv&quot;))
+                       &quot;G19_cant_inv.csv&quot;))
 
-V101 %&gt;% 
+cant_zonal %&gt;% 
   write_csv(here::here(&quot;data/Gruber_2019/_summarized_files&quot;,
-                       &quot;Cant_07_V101.csv&quot;))</code></pre>
+                       &quot;G19_cant_zonal.csv&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1871,30 +1952,30 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] stars_0.4-3     sf_0.9-5        abind_1.4-5     tidync_0.2.4   
- [5] lubridate_1.7.9 patchwork_1.0.1 forcats_0.5.0   stringr_1.4.0  
- [9] dplyr_1.0.0     purrr_0.3.4     readr_1.3.1     tidyr_1.1.0    
-[13] tibble_3.0.3    ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
+ [1] scico_1.2.0     collapse_1.3.2  tidync_0.2.4    lubridate_1.7.9
+ [5] patchwork_1.0.1 forcats_0.5.0   stringr_1.4.0   dplyr_1.0.0    
+ [9] purrr_0.3.4     readr_1.3.1     tidyr_1.1.0     tibble_3.0.3   
+[13] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.2         jsonlite_1.7.0     viridisLite_0.3.0  here_0.1          
- [5] modelr_0.1.8       assertthat_0.2.1   blob_1.2.1         cellranger_1.1.0  
- [9] yaml_2.2.1         pillar_1.4.6       backports_1.1.8    glue_1.4.1        
-[13] digest_0.6.25      promises_1.1.1     rvest_0.3.6        colorspace_1.4-1  
-[17] htmltools_0.5.0    httpuv_1.5.4       pkgconfig_2.0.3    broom_0.7.0       
-[21] haven_2.3.1        scales_1.1.1       whisker_0.4        later_1.1.0.1     
-[25] git2r_0.27.1       generics_0.0.2     farver_2.0.3       ellipsis_0.3.1    
-[29] withr_2.2.0        cli_2.0.2          magrittr_1.5       crayon_1.3.4      
-[33] readxl_1.3.1       evaluate_0.14      fs_1.4.2           ncdf4_1.17        
-[37] fansi_0.4.1        xml2_1.3.2         lwgeom_0.2-5       class_7.3-17      
-[41] tools_4.0.2        hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0     
-[45] reprex_0.3.0       isoband_0.2.2      compiler_4.0.2     e1071_1.7-3       
-[49] RNetCDF_2.3-1      rlang_0.4.7        classInt_0.4-3     units_0.6-7       
-[53] grid_4.0.2         rstudioapi_0.11    labeling_0.3       rmarkdown_2.3     
-[57] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           ncmeta_0.2.5      
-[61] knitr_1.30         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6     
-[65] parallel_4.0.2     Rcpp_1.0.5         vctrs_0.3.2        dbplyr_1.4.4      
-[69] tidyselect_1.1.0   xfun_0.16         </code></pre>
+ [1] httr_1.4.2        viridisLite_0.3.0 jsonlite_1.7.0    here_0.1         
+ [5] modelr_0.1.8      Formula_1.2-3     assertthat_0.2.1  blob_1.2.1       
+ [9] cellranger_1.1.0  yaml_2.2.1        pillar_1.4.6      backports_1.1.8  
+[13] lattice_0.20-41   glue_1.4.1        digest_0.6.25     promises_1.1.1   
+[17] rvest_0.3.6       colorspace_1.4-1  sandwich_2.5-1    htmltools_0.5.0  
+[21] httpuv_1.5.4      Matrix_1.2-18     pkgconfig_2.0.3   broom_0.7.0      
+[25] haven_2.3.1       xtable_1.8-4      scales_1.1.1      whisker_0.4      
+[29] later_1.1.0.1     git2r_0.27.1      generics_0.0.2    farver_2.0.3     
+[33] ellipsis_0.3.1    withr_2.2.0       cli_2.0.2         magrittr_1.5     
+[37] crayon_1.3.4      readxl_1.3.1      evaluate_0.14     fs_1.4.2         
+[41] ncdf4_1.17        fansi_0.4.1       xml2_1.3.2        tools_4.0.2      
+[45] hms_0.5.3         lifecycle_0.2.0   munsell_0.5.0     reprex_0.3.0     
+[49] isoband_0.2.2     compiler_4.0.2    lfe_2.8-5.1       RNetCDF_2.3-1    
+[53] rlang_0.4.7       grid_4.0.2        rstudioapi_0.11   labeling_0.3     
+[57] rmarkdown_2.3     gtable_0.3.0      DBI_1.1.0         R6_2.4.1         
+[61] ncmeta_0.2.5      zoo_1.8-8         knitr_1.30        rprojroot_1.3-2  
+[65] stringi_1.4.6     parallel_4.0.2    Rcpp_1.0.5        vctrs_0.3.2      
+[69] dbplyr_1.4.4      tidyselect_1.1.0  xfun_0.16        </code></pre>
 </div>
 </div>
 
