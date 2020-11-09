@@ -287,7 +287,8 @@ cant_inventory_wide %>%
               aes(lon, lat), fill = "grey80") +
   geom_raster(aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
   scale_fill_scico_d(palette = "vik", drop = FALSE,
-                     name = "delta Cant") +
+                     name = expression(atop(Delta~C[ant],
+                                            "JDM-G19"))) +
   coord_quickmap(expand = 0) +
   theme(axis.title = element_blank())
 
@@ -482,7 +483,9 @@ cant_inventory_wide %>%
                 aes(lon, lat), fill = "grey80") +
     geom_raster(aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
     coord_quickmap(expand = 0) +
-    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE,
+                     name = expression(atop(Delta~C[ant],
+                                            "JDM-G19"))) +
     theme(axis.title = element_blank())
 
 ```
