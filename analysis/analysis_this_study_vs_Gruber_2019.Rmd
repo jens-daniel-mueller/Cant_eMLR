@@ -370,29 +370,6 @@ In a first series of plots we explore the distribution of cant, taking only posi
 
 ```{r cant_zonal_mean_sections}
 
-# breaks <- c(seq(0,18,1),Inf)
-# breaks_n <- length(breaks) - 1
-# 
-# cant_zonal <- cant_zonal %>% 
-#   mutate(cant_pos_mean_int = cut(cant_pos_mean, 
-#                                 breaks,
-#                                 right = FALSE))
-
-  # cant_zonal %>%
-  #   ggplot(aes(lat, depth, z = cant_mean)) +
-  #   geom_contour_fill(breaks = MakeBreaks(5),
-  #                     na.fill = TRUE) +
-  #   scale_fill_divergent(guide = "colorstrip",
-  #                        breaks = MakeBreaks(5),
-  #                        #name = name_var
-  #                        ) +
-  #   scale_y_reverse() +
-  #   coord_cartesian(expand = 0) +
-  #   guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  #   facet_grid(basin_AIP ~ estimate)
-
-
-
 zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
   
   # df <- cant_zonal
@@ -458,7 +435,7 @@ for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
   print(zonal_section(cant_zonal,
                         i_basin_AIP = i_basin_AIP,
                         i_estimate = i_estimate,
-                        "cant_pos_mean"))
+                        "cant_mean"))
     
   }
 }
