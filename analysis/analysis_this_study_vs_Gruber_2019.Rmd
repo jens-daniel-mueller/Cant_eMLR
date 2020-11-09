@@ -447,6 +447,7 @@ rm(breaks, breaks_n)
 # Cant - all
 
 In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
+
 ## Inventory map
 
 ### Absolute values
@@ -471,7 +472,7 @@ cant_inventory_long %>%
 
 ### Offset
 
-```{r cant_delta_inventory_map, fig.asp=0.5}
+```{r cant_delta_inventory_map, fig.asp = 0.5}
 
 breaks <- c(-Inf,seq(-15,15,3),Inf)
 
@@ -561,7 +562,6 @@ for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
 rm(breaks, breaks_n)
 
 ```
-
 
 ### Offset
 
