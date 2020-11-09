@@ -37,6 +37,30 @@ map_inventory_divergent <- function(df, var) {
 
 }
 
+map_inventory_divergent_estimate <- function(df, var) {
+  var <- sym(var)
+
+  max <- df %>%
+    select(!!var) %>%
+    pull %>%
+    abs() %>%
+    max()
+
+  limits <- c(-1, 1) * max
+
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(data = df,
+                aes(lon, lat, fill = !!var)) +
+    coord_quickmap(expand = 0) +
+    scale_fill_scico(palette = "vik",
+                     limits = limits) +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
+
+}
+
 map_climatology <- function(df, var) {
   var <- sym(var)
 

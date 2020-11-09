@@ -452,31 +452,17 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 
 ```{r cant_inventory_map, fig.asp=1, eval=FALSE}
 
-cant_inventory <- bind_rows(
-  cant_inventory,
-  cant_inventory_G19
-)
+# breaks <- c(-Inf,seq(-16,16,2),Inf)
+# breaks_n <- length(breaks) - 1
+# 
+# cant_inventory <- cant_inventory %>%
+#   mutate(cant_inv_int = cut(cant_inv,
+#                                 breaks,
+#                                 right = FALSE))
 
-rm(cant_inventory_G19)
 
-breaks <- c(seq(0,16,2),Inf)
-breaks_n <- length(breaks) - 1
+map_inventory_divergent_estimate(cant_inventory, "cant_inv")
 
-cant_inventory <- cant_inventory %>% 
-  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
-                                breaks,
-                                right = FALSE))
-
-cant_inventory %>%
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey30") +
-  geom_raster(aes(lon, lat, fill = cant_pos_inv_int)) +
-  coord_quickmap(expand = 0) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  # scale_fill_scico_d(palette = "batlow", direction = -1) +
-  facet_wrap( ~ estimate, ncol = 1) +
-  theme(axis.title = element_blank())
 
 ```
 
