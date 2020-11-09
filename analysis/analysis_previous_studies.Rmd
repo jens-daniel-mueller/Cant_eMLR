@@ -83,11 +83,11 @@ Cant_94_inv <-
 ```{r read_Gruber_Cant_file}
 
 Cant_07 <- read_csv(here::here("data/Gruber_2019/_summarized_files",
-                               "Cant_07.csv"))
+                               "G19_cant_3d.csv"))
 
 Cant_07_inv <-
   read_csv(here::here("data/Gruber_2019/_summarized_files",
-                      "Cant_07_inv.csv"))
+                      "G19_cant_inv.csv"))
 
 ```
 
@@ -100,7 +100,10 @@ Cant inventory estimates of S04 (Sabine et al, 2004) and G19 (Gruber et al, 2019
 ```{r merge_Cant_data_sets}
 
 Cant_94_inv <- Cant_94_inv %>% 
-  select(-cant_inv_incl_neg)
+  select(-c(cant_inv_incl_neg, basin))
+
+Cant_07_inv <- Cant_07_inv %>% 
+  select(-c(cant_pos_inv, eras))
 
 Cant_inv <- full_join(Cant_07_inv %>% mutate(estimate = "G19"),
                       Cant_94_inv %>% mutate(estimate = "S04"))
