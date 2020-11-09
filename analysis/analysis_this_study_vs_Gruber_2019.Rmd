@@ -162,8 +162,8 @@ cant_inventory_wide <- cant_inventory_long %>%
   drop_na()
 
 cant_inventory_wide <- cant_inventory_wide %>% 
-  mutate(cant_pos_inv_delta = cant_pos_inv_G19 - cant_pos_inv_JDM,
-         cant_inv_delta = cant_inv_G19 - cant_inv_JDM)
+  mutate(cant_pos_inv_delta = cant_pos_inv_JDM - cant_pos_inv_G19,
+         cant_inv_delta = cant_inv_JDM - cant_inv_G19)
 
 ```
 
@@ -180,8 +180,8 @@ cant_zonal_wide <- cant_zonal_long %>%
   drop_na()
 
 cant_zonal_wide <- cant_zonal_wide %>% 
-  mutate(cant_pos_mean_delta = cant_pos_mean_G19 - cant_pos_mean_JDM,
-         cant_mean_delta = cant_mean_G19 - cant_mean_JDM)
+  mutate(cant_pos_mean_delta = cant_pos_mean_JDM - cant_pos_mean_G19,
+         cant_mean_delta = cant_mean_JDM - cant_mean_G19)
 
 ```
 
@@ -206,9 +206,9 @@ rm(rgb2hex, cols)
 
 ```
 
-# cant budgets
+# Cant budgets
 
-Global cant inventories were estimated in Pg-C. Please note that here we only added positive cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
+Global Cant inventories were estimated in Pg-C, based on all vs positive only Cant estimates. Please note that here we only added cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
@@ -238,7 +238,7 @@ rm(cant_inventory_budget)
 
 
 
-# cant - positive
+# Cant - positive only
 
 In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
 
@@ -444,19 +444,62 @@ rm(breaks, breaks_n)
 
 
 
-# cant - all
+# Cant - all
 
 In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
+## Inventory map
+
+### Absolute values
+
+Column inventory of Cant (including positive and negative values) between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
+
+```{r cant_inventory_map, fig.asp=1}
+
+breaks <- c(-Inf,seq(-16,16,2),Inf)
+
+cant_inventory_long %>% 
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cut(cant_inv, breaks))) +
+    coord_quickmap(expand = 0) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
+
+```
+
+### Offset
+
+```{r cant_delta_inventory_map, fig.asp=1}
+
+breaks <- c(-Inf,seq(-15,15,3),Inf)
+
+cant_inventory_wide %>% 
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
+    coord_quickmap(expand = 0) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    theme(axis.title = element_blank())
+
+```
 
 ## Zonal mean sections
 
-```{r cant_zonal_mean_sections}
+### Absolute values
+
+```{r cant_mean_zonal_section, fig.asp=1}
+
+breaks <- c(-Inf,seq(-16,16,2),Inf)
+breaks_n <- length(breaks) - 1
 
 zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
   
-  # df <- cant_zonal
-  # i_basin_AIP <- unique(cant_zonal$basin_AIP)[1]
-  # i_estimate  <- unique(cant_zonal$estimate)[1]
+  # df <- cant_zonal_long
+  # i_basin_AIP <- unique(cant_zonal_long$basin_AIP)[1]
+  # i_estimate <- unique(cant_zonal_long$estimate)[1]
   # var <- "cant_mean"
   
   name_var <- var
@@ -471,12 +514,8 @@ zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
   
   surface <- df_sub %>%
     ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_fill(breaks = MakeBreaks(5),
-                      na.fill = TRUE) +
-    scale_fill_divergent(guide = "colorstrip",
-                         breaks = MakeBreaks(5),
-                         name = name_var
-                         ) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
     coord_cartesian(expand = 0,
                     ylim = c(500, 0),
                     xlim = c(lat_min, lat_max)) +
@@ -488,16 +527,12 @@ zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
       axis.ticks.x = element_blank()
     ) +
     labs(y = "Depth (m)",
-         title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
+         title = paste("Basin:", i_basin_AIP))
   
   deep <- df_sub %>%
     ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_fill(breaks = MakeBreaks(5),
-                      na.fill = TRUE) +
-    scale_fill_divergent(guide = "colorstrip",
-                         breaks = MakeBreaks(5),
-                         name = name_var
-                         ) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
     scale_y_reverse() +
     scale_x_continuous(breaks = seq(-100,100,20)) +
     coord_cartesian(expand = 0,
@@ -523,31 +558,80 @@ for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
 }
 
 
+rm(breaks, breaks_n)
+
 ```
 
 
-## Inventory map
+### Offset
 
-### Absolute values
+```{r cant_mean_delta_zonal_section, fig.asp=1}
 
-Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
+breaks <- c(-Inf,seq(-15,15,3),Inf)
+breaks_n <- length(breaks) - 1
 
-```{r cant_inventory_map, fig.asp=1}
-
-breaks <- c(-Inf,seq(-16,16,2),Inf)
-
-cant_inventory_long %>% 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cut(cant_inv, breaks))) +
-    coord_quickmap(expand = 0) +
+zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
+  
+  df <- cant_zonal_wide
+  i_basin_AIP <- unique(cant_zonal_long$basin_AIP)[1]
+  var <- "cant_mean_delta"
+  
+  name_var <- var
+  var <- sym(var)
+  
+  lat_max <- max(df$lat)
+  lat_min <- min(df$lat)
+  
+  df_sub <- df %>% 
+    filter(basin_AIP == i_basin_AIP)
+  
+  surface <- df_sub %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled(breaks = breaks) +
     scale_fill_scico_d(palette = "vik", drop = FALSE) +
-    theme(axis.title = element_blank()) +
-    facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
+    coord_cartesian(expand = 0,
+                    ylim = c(500, 0),
+                    xlim = c(lat_min, lat_max)) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
+    theme(
+      axis.title.x = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank()
+    ) +
+    labs(y = "Depth (m)",
+         title = paste("Basin:", i_basin_AIP))
+  
+  deep <- df_sub %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
+    coord_cartesian(expand = 0,
+                    ylim = c(3000, 500),
+                    xlim = c(lat_min, lat_max)) +
+    labs(x = "latitude (°N)", y = "Depth (m)")
+  
+  surface / deep +
+    plot_layout(guides = "collect")
+  
+}
+
+
+for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
+
+  print(zonal_section(cant_zonal_wide,
+                        i_basin_AIP = i_basin_AIP,
+                        "cant_mean_delta"))
+    
+
+}
+
+
+rm(breaks, breaks_n)
 
 ```
-
 
 
 
