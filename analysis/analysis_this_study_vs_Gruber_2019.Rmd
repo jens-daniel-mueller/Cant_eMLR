@@ -38,20 +38,7 @@ slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 ```
 
 ```{r read_mask_files, include = FALSE}
-basinmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18.csv"
-    )
-  )
-basinmask_AIP <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18_AIP.csv"
-    )
-  )
+
 landmask <-
   read_csv(
     here::here(
@@ -59,10 +46,6 @@ landmask <-
       "land_mask_WOA18.csv"
     )
   )
-
-section_global_coordinates <-
-  read_csv(here::here("data",
-                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -86,26 +69,26 @@ cant estimates from this study:
 
 ```{r read_cant_files}
 
-cant_3d <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "cant_3d.csv"))
+# cant_3d_JDM <-
+#   read_csv(here::here("data/mapping/_summarized_files",
+#                          "cant_3d.csv"))
+# 
+# cant_3d_JDM <- cant_3d_JDM %>%
+#   filter(eras == "JGOFS_GO") %>%
+#   select(lon,
+#          lat,
+#          depth,
+#          basin_AIP,
+#          cant,
+#          cant_pos) %>%
+#   mutate(estimate = "JDM")
 
-cant_3d <- cant_3d %>%
-  filter(eras == "JGOFS_GO") %>%
-  select(lon,
-         lat,
-         depth,
-         basin_AIP,
-         cant,
-         cant_pos) %>%
-  mutate(estimate = "JDM")
 
-
-cant_zonal <-
+cant_zonal_JDM <-
   read_csv(here::here("data/mapping/_summarized_files",
                          "cant_zonal.csv"))
 
-cant_zonal <- cant_zonal %>%
+cant_zonal_JDM <- cant_zonal_JDM %>%
   filter(eras == "JGOFS_GO") %>%
   select(lat,
          depth,
@@ -113,21 +96,19 @@ cant_zonal <- cant_zonal %>%
          cant_mean,
          cant_pos_mean,
          cant_sd,
-         cant_pos_sd) %>%
-  mutate(estimate = "JDM")
+         cant_pos_sd)
 
 
-cant_inventory <-
+cant_inventory_JDM <-
   read_csv(here::here("data/mapping/_summarized_files",
                          "cant_inv.csv"))
 
-cant_inventory <- cant_inventory %>% 
+cant_inventory_JDM <- cant_inventory_JDM %>% 
   rename(cant_pos_inv = cant_inv_pos)
 
-cant_inventory <- cant_inventory %>% 
+cant_inventory_JDM <- cant_inventory_JDM %>% 
   filter(eras == "JGOFS_GO") %>% 
-  select(-c(eras, basin)) %>% 
-  mutate(estimate = "JDM")
+  select(-c(eras, basin))
 
 ```
 
@@ -135,23 +116,20 @@ cant_inventory <- cant_inventory %>%
 
 ```{r read_Gruber_cant_file}
 
-cant_3d_G19 <- 
-  read_csv(here::here("data/Gruber_2019/_summarized_files",
-                       "G19_cant_3d.csv"))
-
-cant_3d_G19 <- cant_3d_G19 %>% 
-  mutate(estimate = "G19") %>% 
-  select(-eras)
-
+# cant_3d_G19 <- 
+#   read_csv(here::here("data/Gruber_2019/_summarized_files",
+#                        "G19_cant_3d.csv"))
+# 
+# cant_3d_G19 <- cant_3d_G19 %>% 
+#   mutate(estimate = "G19") %>% 
+#   select(-eras)
 
 cant_inventory_G19 <- 
   read_csv(here::here("data/Gruber_2019/_summarized_files",
                        "G19_cant_inv.csv"))
 
 cant_inventory_G19 <- cant_inventory_G19 %>% 
-  select(-eras) %>% 
-  mutate(estimate = "G19")
-
+  select(-eras)
 
 cant_zonal_G19 <- 
   read_csv(here::here("data/Gruber_2019/_summarized_files",
@@ -165,17 +143,45 @@ cant_zonal_G19 <- cant_zonal_G19 %>%
          cant_mean,
          cant_pos_mean,
          cant_sd,
-         cant_pos_sd) %>%
-  mutate(estimate = "G19")
+         cant_pos_sd)
 
 
 ```
 
 ## Join data sets
 
-```{r join_G19_and_this_study}
+```{r join_G19_and_JDM_inventories}
 
-cant_inventory <- bind_rows(cant_inventory, cant_inventory_G19)
+cant_inventory_long <- bind_rows(
+  cant_inventory_JDM %>%  mutate(estimate = "JDM"),
+  cant_inventory_G19 %>%  mutate(estimate = "G19")
+  )
+
+cant_inventory_wide <- cant_inventory_long %>% 
+  pivot_wider(names_from = estimate, values_from = cant_pos_inv:cant_inv) %>% 
+  drop_na()
+
+cant_inventory_wide <- cant_inventory_wide %>% 
+  mutate(cant_pos_inv_delta = cant_pos_inv_G19 - cant_pos_inv_JDM,
+         cant_inv_delta = cant_inv_G19 - cant_inv_JDM)
+
+```
+
+
+```{r join_G19_and_JDM_zonal_sections}
+
+cant_zonal_long <- bind_rows(
+  cant_zonal_JDM %>%  mutate(estimate = "JDM"),
+  cant_zonal_G19 %>%  mutate(estimate = "G19")
+  )
+
+cant_zonal_wide <- cant_zonal_long %>% 
+  pivot_wider(names_from = estimate, values_from = cant_mean:cant_pos_sd) %>% 
+  drop_na()
+
+cant_zonal_wide <- cant_zonal_wide %>% 
+  mutate(cant_pos_mean_delta = cant_pos_mean_G19 - cant_pos_mean_JDM,
+         cant_mean_delta = cant_mean_G19 - cant_mean_JDM)
 
 ```
 
@@ -206,7 +212,7 @@ Global cant inventories were estimated in Pg-C. Please note that here we only ad
 
 ```{r calculate_global_inventory}
 
-cant_inventory_budget <- cant_inventory %>% 
+cant_inventory_budget <- cant_inventory_long %>% 
   mutate(surface_area = earth_surf(lat, lon),
          cant_inv_grid = cant_inv*surface_area,
          cant_pos_inv_grid = cant_pos_inv*surface_area) %>% 
@@ -226,11 +232,6 @@ cant_inventory_budget %>%
     fns = list(total = "sum")
   )
 
-# cant_inventory_budget %>% 
-#   kableExtra::kable() %>% 
-#   add_header_above() %>%
-#   kable_styling(full_width = FALSE)
-
 rm(cant_inventory_budget)
 
 ```
@@ -241,25 +242,71 @@ rm(cant_inventory_budget)
 
 In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
 
+
+## Inventory map
+
+### Absolute values
+
+Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
+
+```{r cant_pos_inventory_map, fig.asp=1}
+
+breaks <- c(seq(0,16,2),Inf)
+breaks_n <- length(breaks) - 1
+
+cant_inventory_long <- cant_inventory_long %>% 
+  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
+                                breaks,
+                                right = FALSE))
+
+cant_inventory_long %>%
+  ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey30") +
+  geom_raster(aes(lon, lat, fill = cant_pos_inv_int)) +
+  coord_quickmap(expand = 0) +
+  # scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
+  scale_fill_scico_d(palette = "batlow", direction = -1) +
+  facet_wrap( ~ estimate, ncol = 1) +
+  theme(axis.title = element_blank())
+
+```
+
+
+### Offset
+
+Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
+
+```{r cant_pos_delta_inventory_map, fig.asp=1}
+
+
+breaks <- c(-Inf, seq(-16, 16, 2), Inf)
+
+cant_inventory_wide %>%
+  ggplot() +
+  geom_raster(data = landmask,
+              aes(lon, lat), fill = "grey80") +
+  geom_raster(aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
+  scale_fill_scico_d(palette = "vik", drop = FALSE) +
+  coord_quickmap(expand = 0) +
+  theme(axis.title = element_blank())
+
+```
+
+
 ## Zonal mean sections
 
+### Absolute values
+
 ```{r cant_pos_zonal_mean_sections}
-
-cant_zonal <- bind_rows(
-  cant_zonal,
-  cant_zonal_G19
-)
-
-rm(cant_zonal_G19)
 
 breaks <- c(seq(0,18,1),Inf)
 breaks_n <- length(breaks) - 1
 
-cant_zonal <- cant_zonal %>% 
+cant_zonal_long <- cant_zonal_long %>% 
   mutate(cant_pos_mean_int = cut(cant_pos_mean, 
                                 breaks,
                                 right = FALSE))
-
 
 zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
   
@@ -309,10 +356,10 @@ zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
 }
 
 
-for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
-  for (i_estimate in unique(cant_zonal$estimate)) {
+for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal_long$estimate)) {
 
-  print(zonal_section(cant_zonal,
+  print(zonal_section(cant_zonal_long,
                         i_basin_AIP = i_basin_AIP,
                         i_estimate = i_estimate,
                         "cant_pos_mean"))
@@ -326,37 +373,72 @@ rm(breaks, breaks_n)
 ```
 
 
-## Inventory map
+### Offset
 
-Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
+```{r cant_pos_delta_zonal_section, fig.asp=1}
 
-```{r cant_pos_inventory_map, fig.asp=1}
-
-cant_inventory <- bind_rows(
-  cant_inventory,
-  cant_inventory_G19
-)
-
-rm(cant_inventory_G19)
-
-breaks <- c(seq(0,16,2),Inf)
+breaks <- c(-Inf,seq(-16,16,2),Inf)
 breaks_n <- length(breaks) - 1
 
-cant_inventory <- cant_inventory %>% 
-  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
-                                breaks,
-                                right = FALSE))
+zonal_section <- function(df, i_basin_AIP, var) {
+  
+  # df <- cant_zonal_wide
+  # i_basin_AIP <- unique(cant_zonal_wide$basin_AIP)[1]
+  # var <- "cant_pos_mean_delta"
+  
+  name_var <- var
+  var <- sym(var)
+  
+  lat_max <- max(df$lat)
+  lat_min <- min(df$lat)
+  
+  df_sub <- df %>% 
+    filter(basin_AIP == i_basin_AIP)
+  
+  surface <- df_sub %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    coord_cartesian(expand = 0,
+                    ylim = c(500, 0),
+                    xlim = c(lat_min, lat_max)) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
+    theme(
+      axis.title.x = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank()
+    ) +
+    labs(y = "Depth (m)",
+         title = paste("Basin:", i_basin_AIP))
+  
+  deep <- df_sub %>%
+    ggplot(aes(lat, depth, z = !!var)) +
+    geom_contour_filled(breaks = breaks) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    scale_y_reverse() +
+    scale_x_continuous(breaks = seq(-100,100,20)) +
+    coord_cartesian(expand = 0,
+                    ylim = c(3000, 500),
+                    xlim = c(lat_min, lat_max)) +
+    labs(x = "latitude (°N)", y = "Depth (m)")
+  
+  surface / deep +
+    plot_layout(guides = "collect")
+  
+}
 
-cant_inventory %>%
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey30") +
-  geom_raster(aes(lon, lat, fill = cant_pos_inv_int)) +
-  coord_quickmap(expand = 0) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  # scale_fill_scico_d(palette = "batlow", direction = -1) +
-  facet_wrap( ~ estimate, ncol = 1) +
-  theme(axis.title = element_blank())
+
+for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
+
+  print(zonal_section(cant_zonal_long,
+                        i_basin_AIP = i_basin_AIP,
+                        "cant_pos_mean"))
+    
+}
+
+
+rm(breaks, breaks_n)
 
 ```
 
@@ -429,10 +511,10 @@ zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
 }
 
 
-for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
-  for (i_estimate in unique(cant_zonal$estimate)) {
+for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal_long$estimate)) {
 
-  print(zonal_section(cant_zonal,
+  print(zonal_section(cant_zonal_long,
                         i_basin_AIP = i_basin_AIP,
                         i_estimate = i_estimate,
                         "cant_mean"))
@@ -441,30 +523,32 @@ for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
 }
 
 
-rm(breaks, breaks_n)
-  
 ```
 
 
 ## Inventory map
 
+### Absolute values
+
 Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
 ```{r cant_inventory_map, fig.asp=1}
 
-# breaks <- c(-Inf,seq(-16,16,2),Inf)
-# breaks_n <- length(breaks) - 1
-# 
-# cant_inventory <- cant_inventory %>%
-#   mutate(cant_inv_int = cut(cant_inv,
-#                                 breaks,
-#                                 right = FALSE))
+breaks <- c(-Inf,seq(-16,16,2),Inf)
 
-
-map_inventory_divergent_estimate(cant_inventory, "cant_inv")
-
+cant_inventory_long %>% 
+  ggplot() +
+    geom_raster(data = landmask,
+                aes(lon, lat), fill = "grey80") +
+    geom_raster(aes(lon, lat, fill = cut(cant_inv, breaks))) +
+    coord_quickmap(expand = 0) +
+    scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    theme(axis.title = element_blank()) +
+    facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
 
 ```
+
+
 
 
 # Known issues
