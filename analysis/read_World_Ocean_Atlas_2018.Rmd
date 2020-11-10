@@ -163,18 +163,31 @@ basinmask_01 <- basinmask_01 %>%
 
 ```{r basin_masks_WOA18_map, fig.asp=0.6}
 
-ggplot() +
+map <- 
+  ggplot() +
   geom_raster(data = landmask,
               aes(lon, lat), fill = "grey80") +
+  coord_quickmap(expand = 0) +
+  theme(axis.title = element_blank())
+
+map +
   geom_raster(data = basinmask_01,
               aes(lon, lat, fill = basin_AIP)) +
   scale_fill_brewer(palette = "Dark2") +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top",
-        legend.title = element_blank(),
-        axis.title = element_blank())
+        legend.title = element_blank())
 
 ```
+
+```{r safe_base_map}
+
+map %>%  
+  write_rds(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "map.rds"))
+
+
+```
+
 
 
 ## Global section

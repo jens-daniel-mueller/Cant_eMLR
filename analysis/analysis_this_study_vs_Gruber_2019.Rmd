@@ -39,13 +39,9 @@ slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 
 ```{r read_mask_files, include = FALSE}
 
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
+map <-
+  read_rds(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
+                       "map.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -250,24 +246,20 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 
 ```{r cant_pos_inventory_map, fig.asp=1}
 
-breaks <- c(seq(0,16,2),Inf)
+breaks <- c(seq(0, 16, 2), Inf)
 breaks_n <- length(breaks) - 1
 
-cant_inventory_long <- cant_inventory_long %>% 
-  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
+cant_inventory_long <- cant_inventory_long %>%
+  mutate(cant_pos_inv_int = cut(cant_pos_inv,
                                 breaks,
                                 right = FALSE))
 
-cant_inventory_long %>%
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey30") +
-  geom_raster(aes(lon, lat, fill = cant_pos_inv_int)) +
-  coord_quickmap(expand = 0) +
+map +
+  geom_raster(data = cant_inventory_long,
+              aes(lon, lat, fill = cant_pos_inv_int)) +
   # scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
   scale_fill_scico_d(palette = "batlow", direction = -1) +
-  facet_wrap( ~ estimate, ncol = 1) +
-  theme(axis.title = element_blank())
+  facet_wrap(~ estimate, ncol = 1)
 
 ```
 
@@ -280,16 +272,12 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 
 breaks <- c(-Inf, seq(-15, 15, 3), Inf)
 
-cant_inventory_wide %>%
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
+map +
+  geom_raster(data = cant_inventory_wide,
+              aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
   scale_fill_scico_d(palette = "vik", drop = FALSE,
                      name = expression(atop(Delta~C[ant],
-                                            "JDM-G19"))) +
-  coord_quickmap(expand = 0) +
-  theme(axis.title = element_blank())
+                                            "JDM-G19")))
 
 ```
 
@@ -458,15 +446,11 @@ Column inventory of Cant (including positive and negative values) between the su
 
 breaks <- c(-Inf,seq(-16,16,2),Inf)
 
-cant_inventory_long %>% 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cut(cant_inv, breaks))) +
-    coord_quickmap(expand = 0) +
-    scale_fill_scico_d(palette = "vik", drop = FALSE) +
-    theme(axis.title = element_blank()) +
-    facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
+map +
+  geom_raster(data = cant_inventory_long,
+              aes(lon, lat, fill = cut(cant_inv, breaks))) +
+  scale_fill_scico_d(palette = "vik", drop = FALSE) +
+  facet_wrap(~ estimate, labeller = label_both, ncol = 1)
 
 ```
 
@@ -476,16 +460,12 @@ cant_inventory_long %>%
 
 breaks <- c(-Inf,seq(-15,15,3),Inf)
 
-cant_inventory_wide %>% 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
-    coord_quickmap(expand = 0) +
+map +
+   geom_raster(data = cant_inventory_wide,
+               aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
     scale_fill_scico_d(palette = "vik", drop = FALSE,
                      name = expression(atop(Delta~C[ant],
-                                            "JDM-G19"))) +
-    theme(axis.title = element_blank())
+                                            "JDM-G19")))
 
 ```
 
