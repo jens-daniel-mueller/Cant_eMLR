@@ -624,16 +624,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7e1c83611c574a0e4513b8e915494afdb848473etargetblank7e1c836a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7e1c83611c574a0e4513b8e915494afdb848473e" target="_blank">7e1c836</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree348376c454ee0eca1588d679360a807e0a9c9128targetblank348376ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/348376c454ee0eca1588d679360a807e0a9c9128" target="_blank">348376c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree7e1c83611c574a0e4513b8e915494afdb848473etargetblank7e1c836a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree348376c454ee0eca1588d679360a807e0a9c9128targetblank348376ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/7e1c83611c574a0e4513b8e915494afdb848473e" target="_blank">7e1c836</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/348376c454ee0eca1588d679360a807e0a9c9128" target="_blank">348376c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -693,6 +693,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/348376c454ee0eca1588d679360a807e0a9c9128/analysis/analysis_this_study_vs_Gruber_2019.Rmd" target="_blank">348376c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-10
+</td>
+<td>
+modified map color scale
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/2640d62212520d04c1aa666d211bacdc4291d5ee/docs/analysis_this_study_vs_Gruber_2019.html" target="_blank">2640d62</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2075,6 +2109,7 @@ map +
   scale_fill_manual(values = Gruber_rainbow(breaks_n),
                     name = expression(atop(Delta~C[ant],
                                            (mol~m^{-2})))) +
+  guides(fill = guide_colorsteps(barheight = unit(6, &quot;cm&quot;))) +
   # scale_fill_scico_d(palette = &quot;lapaz&quot;, direction = -1) +
   facet_wrap(~ estimate, ncol = 1)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -2090,6 +2125,7 @@ map +
   scale_fill_scico_d(palette = &quot;vik&quot;, drop = FALSE,
                      name = expression(atop(Delta~Delta~C[ant],
                                             (mol~m^{-2})))) +
+    guides(fill = guide_colorsteps(barheight = unit(6, &quot;cm&quot;))) +
     facet_wrap(~ &quot;JDM - G19&quot;, ncol = 1)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_delta_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -2169,6 +2205,7 @@ map +
   geom_raster(data = cant_inventory_long,
               aes(lon, lat, fill = cut(cant_inv, breaks))) +
   scale_fill_scico_d(palette = &quot;vik&quot;, drop = FALSE) +
+    guides(fill = guide_colorsteps(barheight = unit(6, &quot;cm&quot;))) +
   facet_wrap(~ estimate, labeller = label_both, ncol = 1)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -2181,7 +2218,8 @@ map +
                aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
     scale_fill_scico_d(palette = &quot;vik&quot;, drop = FALSE,
                      name = expression(atop(Delta~C[ant],
-                                            &quot;JDM-G19&quot;)))</code></pre>
+                                            &quot;JDM-G19&quot;))) +
+    guides(fill = guide_colorsteps(barheight = unit(6, &quot;cm&quot;)))</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_delta_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
