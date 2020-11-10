@@ -290,7 +290,7 @@ map +
 
 ### Absolute values
 
-```{r cant_pos_zonal_mean_sections}
+```{r cant_pos_zonal_mean_sections, fig.asp=0.5}
 
 df <- cant_zonal_long
 breaks <- c(seq(0, 18, 1), Inf)
@@ -324,7 +324,7 @@ rm(df, var, breaks, legend_title, breaks_n)
 
 ### Offset
 
-```{r cant_pos_delta_zonal_section}
+```{r cant_pos_delta_zonal_section, fig.asp=0.6}
 
 df <- cant_zonal_wide
 breaks <- c(-Inf,seq(-16,16,2),Inf)
