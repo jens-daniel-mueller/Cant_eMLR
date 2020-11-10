@@ -58,13 +58,12 @@ theme_set(theme_bw())
 
 # Data sources
 
-## This study
+Following Cant estimates from this study (JDM) and Gruber 2019 (G19) are used:
 
-cant estimates from this study:
-
-- Mean and SD per grid cell (lat, lon, depth)
-- Zonal mean and SD (basin, lat, depth)
+- Zonal mean (basin, lat, depth)
 - Inventories (lat, lon)
+
+## This study
 
 
 ```{r read_cant_files}
