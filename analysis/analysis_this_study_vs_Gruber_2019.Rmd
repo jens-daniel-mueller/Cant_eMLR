@@ -290,7 +290,7 @@ map +
 
 ### Absolute values
 
-```{r cant_pos_zonal_mean_sections, fig.asp=0.5}
+```{r cant_pos_zonal_mean_sections, fig.asp=0.6}
 
 df <- cant_zonal_long
 breaks <- c(seq(0, 18, 1), Inf)
@@ -332,8 +332,8 @@ var <- "cant_pos_mean_delta"
 legend_title <- expression(atop(Offset~Delta * C[ant],
                                 (mu * mol ~ kg ^ {-1})))
 
-i_basin_AIP <- unique(df$basin_AIP)[1]
-i_estimate <- unique(df$estimate)[1]
+# i_basin_AIP <- unique(df$basin_AIP)[1]
+# i_estimate <- unique(df$estimate)[1]
 
 for (i_basin_AIP in unique(df$basin_AIP)) {
     print(
@@ -394,9 +394,75 @@ map +
 
 ## Zonal mean sections
 
+
 ### Absolute values
 
-```{r cant_mean_zonal_section}
+```{r cant_zonal_mean_sections, fig.asp=0.6}
+
+df <- cant_zonal_long
+breaks <- c(-Inf,seq(-16,16,2),Inf)
+var <- "cant_mean"
+legend_title <- expression(atop(Delta * C[ant],
+                                (mu * mol ~ kg ^ {-1})))
+
+# i_basin_AIP <- unique(df$basin_AIP)[1]
+# i_estimate <- unique(df$estimate)[1]
+
+for (i_basin_AIP in unique(df$basin_AIP)) {
+  for (i_estimate in unique(df$estimate)) {
+    print(
+      section_zonal_layered_divergent(
+        df,
+        i_basin_AIP = i_basin_AIP,
+        i_estimate = i_estimate,
+        var,
+        breaks,
+        legend_title
+      )
+    )
+    
+  }
+}
+
+rm(df, var, breaks, legend_title)
+  
+```
+
+
+### Offset
+
+```{r cant_delta_zonal_section, fig.asp=0.6}
+
+df <- cant_zonal_wide
+breaks <- c(-Inf,seq(-16,16,2),Inf)
+var <- "cant_mean_delta"
+legend_title <- expression(atop(Offset~Delta * C[ant],
+                                (mu * mol ~ kg ^ {-1})))
+
+# i_basin_AIP <- unique(df$basin_AIP)[1]
+# i_estimate <- unique(df$estimate)[1]
+
+for (i_basin_AIP in unique(df$basin_AIP)) {
+    print(
+      section_zonal_layered_divergent(
+        df,
+        i_basin_AIP = i_basin_AIP,
+        i_estimate = i_estimate,
+        var,
+        breaks,
+        legend_title
+      )
+    )
+    
+  }
+
+rm(df, var, breaks, legend_title)
+
+```
+
+
+
+```{r cant_mean_zonal_section, eval=FALSE}
 
 breaks <- c(-Inf,seq(-16,16,2),Inf)
 breaks_n <- length(breaks) - 1
@@ -468,9 +534,7 @@ rm(breaks, breaks_n)
 
 ```
 
-### Offset
-
-```{r cant_mean_delta_zonal_section}
+```{r cant_mean_delta_zonal_section, eval=FALSE}
 
 breaks <- c(-Inf,seq(-15,15,3),Inf)
 breaks_n <- length(breaks) - 1
