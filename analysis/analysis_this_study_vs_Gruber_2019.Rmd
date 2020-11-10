@@ -289,7 +289,7 @@ map +
 
 ### Absolute values
 
-```{r cant_pos_zonal_mean_sections, fig.asp=0.8}
+```{r cant_pos_zonal_mean_sections}
 
 df <- cant_zonal_long
 breaks <- c(seq(0, 18, 1), Inf)
@@ -297,8 +297,8 @@ var <- "cant_pos_mean"
 legend_title <- expression(atop(Delta ~ C[ant],
                                 (mu * mol ~ kg ^ {-1})))
 
-# i_basin_AIP <- unique(df$basin_AIP)[1]
-# i_estimate <- unique(df$estimate)[1]
+i_basin_AIP <- unique(df$basin_AIP)[1]
+i_estimate <- unique(df$estimate)[1]
 
 for (i_basin_AIP in unique(df$basin_AIP)) {
   for (i_estimate in unique(df$estimate)) {

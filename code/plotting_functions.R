@@ -295,6 +295,7 @@ section_zonal_layered_continous <-
       geom_contour_filled(breaks = breaks) +
       scale_fill_manual(values = Gruber_rainbow(breaks_n),
                         name = legend_title) +
+      guides(fill = guide_colorsteps(barheight = unit(8, "cm"))) +
       scale_y_reverse() +
       scale_x_continuous(breaks = seq(-100, 100, 20)) +
       theme(
@@ -352,6 +353,7 @@ section_zonal_layered_divergent <-
       geom_contour_filled(breaks = breaks) +
       scale_fill_scico_d(palette = "vik", drop = FALSE,
                          name = legend_title) +
+      guides(fill = guide_colorsteps(barheight = unit(8, "cm"))) +
       scale_y_reverse() +
       scale_x_continuous(breaks = seq(-100, 100, 20)) +
       theme(
