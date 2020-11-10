@@ -297,8 +297,8 @@ var <- "cant_pos_mean"
 legend_title <- expression(atop(Delta ~ C[ant],
                                 (mu * mol ~ kg ^ {-1})))
 
-i_basin_AIP <- unique(df$basin_AIP)[1]
-i_estimate <- unique(df$estimate)[1]
+# i_basin_AIP <- unique(df$basin_AIP)[1]
+# i_estimate <- unique(df$estimate)[1]
 
 for (i_basin_AIP in unique(df$basin_AIP)) {
   for (i_estimate in unique(df$estimate)) {
@@ -328,19 +328,16 @@ rm(df, var, breaks, legend_title, breaks_n)
 df <- cant_zonal_wide
 breaks <- c(-Inf,seq(-16,16,2),Inf)
 var <- "cant_pos_mean_delta"
-legend_title <- expression(atop(Delta~Delta ~ C[ant],
+legend_title <- expression(atop(Offset~Delta ~ C[ant],
                                 (mu * mol ~ kg ^ {-1})))
 
 # i_basin_AIP <- unique(df$basin_AIP)[1]
-# i_estimate <- unique(df$estimate)[1]
 
 for (i_basin_AIP in unique(df$basin_AIP)) {
-  for (i_estimate in unique(df$estimate)) {
     print(
-      section_zonal_layered_divergent(
+      section_zonal_layered_offset(
         df,
         i_basin_AIP = i_basin_AIP,
-        i_estimate = i_estimate,
         var,
         breaks,
         legend_title
@@ -348,9 +345,8 @@ for (i_basin_AIP in unique(df$basin_AIP)) {
     )
     
   }
-}
 
-rm(df, var, breaks, legend_title, breaks_n)
+rm(df, var, breaks, legend_title)
 
 ```
 

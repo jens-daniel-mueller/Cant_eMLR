@@ -329,10 +329,9 @@ section_zonal_layered_continous <-
   }
 
 
-section_zonal_layered_divergent <-
+section_zonal_layered_offset <-
   function(df,
            i_basin_AIP,
-           i_estimate,
            var,
            breaks,
            legend_title) {
