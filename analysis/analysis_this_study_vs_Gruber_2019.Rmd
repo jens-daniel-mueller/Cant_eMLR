@@ -257,8 +257,10 @@ cant_inventory_long <- cant_inventory_long %>%
 map +
   geom_raster(data = cant_inventory_long,
               aes(lon, lat, fill = cant_pos_inv_int)) +
-  # scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  scale_fill_scico_d(palette = "batlow", direction = -1) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                    name = expression(atop(Delta~C[ant],
+                                           (mol~m^{-2})))) +
+  # scale_fill_scico_d(palette = "lapaz", direction = -1) +
   facet_wrap(~ estimate, ncol = 1)
 
 ```
@@ -276,8 +278,9 @@ map +
   geom_raster(data = cant_inventory_wide,
               aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
   scale_fill_scico_d(palette = "vik", drop = FALSE,
-                     name = expression(atop(Delta~C[ant],
-                                            "JDM-G19")))
+                     name = expression(atop(Delta~Delta~C[ant],
+                                            (mol~m^{-2})))) +
+    facet_wrap(~ "JDM - G19", ncol = 1)
 
 ```
 
@@ -288,15 +291,21 @@ map +
 
 ```{r cant_pos_zonal_mean_sections}
 
-breaks <- c(seq(0,18,1),Inf)
+
+breaks <- c(seq(0, 18, 1), Inf)
 breaks_n <- length(breaks) - 1
 
-cant_zonal_long <- cant_zonal_long %>% 
-  mutate(cant_pos_mean_int = cut(cant_pos_mean, 
-                                breaks,
-                                right = FALSE))
+cant_zonal_long <- cant_zonal_long %>%
+  mutate(cant_pos_mean_int = cut(cant_pos_mean,
+                                 breaks,
+                                 right = FALSE))
 
 zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
+  
+  # df <- cant_zonal_long
+  # i_basin_AIP <- unique(cant_zonal_long$basin_AIP)[1]
+  # i_estimate <- unique(cant_zonal_long$estimate)[1]
+  # var <- "cant_pos_mean"
   
   name_var <- var
   var <- sym(var)
@@ -304,59 +313,65 @@ zonal_section <- function(df, i_basin_AIP, i_estimate, var) {
   lat_max <- max(df$lat)
   lat_min <- min(df$lat)
   
-  df_sub <- df %>% 
+  df_sub <- df %>%
     filter(basin_AIP == i_basin_AIP,
            estimate == i_estimate)
   
-  surface <- df_sub %>%
+  section <- df_sub %>%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled(breaks = breaks) +
     scale_fill_manual(values = Gruber_rainbow(breaks_n),
                       name = "cant") +
-    coord_cartesian(expand = 0,
-                    ylim = c(500, 0),
-                    xlim = c(lat_min, lat_max)) +
     scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
+    scale_x_continuous(breaks = seq(-100, 100, 20)) +
     theme(
       axis.title.x = element_blank(),
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank()
+    )
+  
+  surface <-
+    section +
+    coord_cartesian(
+      expand = 0,
+      ylim = c(500, 0),
+      xlim = c(lat_min, lat_max)
     ) +
     labs(y = "Depth (m)",
          title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
   
-  deep <- df_sub %>%
-    ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_filled(breaks = breaks) +
-    scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                      name = "cant") +
-    scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
-    coord_cartesian(expand = 0,
-                    ylim = c(3000, 500),
-                    xlim = c(lat_min, lat_max)) +
+  deep <-
+    section +
+    coord_cartesian(
+      expand = 0,
+      ylim = c(3000, 500),
+      xlim = c(lat_min, lat_max)
+    ) +
     labs(x = "latitude (°N)", y = "Depth (m)")
   
   surface / deep +
     plot_layout(guides = "collect")
+  
   
 }
 
 
 for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
   for (i_estimate in unique(cant_zonal_long$estimate)) {
-
-  print(zonal_section(cant_zonal_long,
-                        i_basin_AIP = i_basin_AIP,
-                        i_estimate = i_estimate,
-                        "cant_pos_mean"))
+    print(
+      zonal_section(
+        cant_zonal_long,
+        i_basin_AIP = i_basin_AIP,
+        i_estimate = i_estimate,
+        "cant_pos_mean"
+      )
+    )
     
   }
 }
 
 
-rm(breaks, breaks_n)
+rm(breaks, breaks_n, section, surface, deep)
   
 ```
 
