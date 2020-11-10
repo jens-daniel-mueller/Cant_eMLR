@@ -261,6 +261,7 @@ map +
   scale_fill_manual(values = Gruber_rainbow(breaks_n),
                     name = expression(atop(Delta~C[ant],
                                            (mol~m^{-2})))) +
+  guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
   # scale_fill_scico_d(palette = "lapaz", direction = -1) +
   facet_wrap(~ estimate, ncol = 1)
 
@@ -281,6 +282,7 @@ map +
   scale_fill_scico_d(palette = "vik", drop = FALSE,
                      name = expression(atop(Delta~Delta~C[ant],
                                             (mol~m^{-2})))) +
+    guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
     facet_wrap(~ "JDM - G19", ncol = 1)
 
 ```
@@ -374,6 +376,7 @@ map +
   geom_raster(data = cant_inventory_long,
               aes(lon, lat, fill = cut(cant_inv, breaks))) +
   scale_fill_scico_d(palette = "vik", drop = FALSE) +
+    guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
   facet_wrap(~ estimate, labeller = label_both, ncol = 1)
 
 ```
@@ -389,7 +392,8 @@ map +
                aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
     scale_fill_scico_d(palette = "vik", drop = FALSE,
                      name = expression(atop(Delta~C[ant],
-                                            "JDM-G19")))
+                                            "JDM-G19"))) +
+    guides(fill = guide_colorsteps(barheight = unit(6, "cm")))
 
 ```
 
