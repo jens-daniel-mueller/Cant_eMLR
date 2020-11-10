@@ -329,9 +329,10 @@ section_zonal_layered_continous <-
   }
 
 
-section_zonal_layered_offset <-
+section_zonal_layered_divergent <-
   function(df,
            i_basin_AIP,
+           i_estimate,
            var,
            breaks,
            legend_title) {
@@ -345,7 +346,8 @@ section_zonal_layered_offset <-
     breaks_n <- length(breaks) - 1
 
     df_sub <- df %>%
-      filter(basin_AIP == i_basin_AIP)
+      filter(basin_AIP == i_basin_AIP,
+             estimate == i_estimate)
 
     section <- df_sub %>%
       ggplot(aes(lat, depth, z = !!var)) +
@@ -369,7 +371,7 @@ section_zonal_layered_offset <-
         xlim = c(lat_min, lat_max)
       ) +
       labs(y = "Depth (m)",
-           title = paste("Basin:", i_basin_AIP))
+           title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
 
     deep <-
       section +
