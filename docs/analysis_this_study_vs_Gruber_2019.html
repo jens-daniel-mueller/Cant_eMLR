@@ -624,16 +624,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree58edcced62005364ec5a24fdf1bdd0e2c9cc6426targetblank58edccea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/58edcced62005364ec5a24fdf1bdd0e2c9cc6426" target="_blank">58edcce</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5198b4b9f983591f2835adaabb78af1a544d426btargetblank5198b4ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5198b4b9f983591f2835adaabb78af1a544d426b" target="_blank">5198b4b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree58edcced62005364ec5a24fdf1bdd0e2c9cc6426targetblank58edccea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5198b4b9f983591f2835adaabb78af1a544d426btargetblank5198b4ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/58edcced62005364ec5a24fdf1bdd0e2c9cc6426" target="_blank">58edcce</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5198b4b9f983591f2835adaabb78af1a544d426b" target="_blank">5198b4b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -693,6 +693,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/5198b4b9f983591f2835adaabb78af1a544d426b/analysis/analysis_this_study_vs_Gruber_2019.Rmd" target="_blank">5198b4b</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-10
+</td>
+<td>
+divergent split section in external code
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/7a69d2cf63f692311a4af7d758b62c46084141fe/docs/analysis_this_study_vs_Gruber_2019.html" target="_blank">7a69d2c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1828,6 +1862,8 @@ map +
 <pre class="r"><code>df &lt;- cant_zonal_long
 breaks &lt;- c(seq(0, 18, 1), Inf)
 var &lt;- &quot;cant_pos_mean&quot;
+legend_title &lt;- expression(atop(Delta ~ C[ant],
+                                (mu * mol ~ kg ^ {-1})))
 
 # i_basin_AIP &lt;- unique(df$basin_AIP)[1]
 # i_estimate &lt;- unique(df$estimate)[1]
@@ -1840,78 +1876,44 @@ for (i_basin_AIP in unique(df$basin_AIP)) {
         i_basin_AIP = i_basin_AIP,
         i_estimate = i_estimate,
         var,
-        breaks
+        breaks,
+        legend_title
       )
     )
     
   }
 }</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(df, var, breaks, breaks_n, section, surface, deep)</code></pre>
+<pre class="r"><code>rm(df, var, breaks, legend_title, breaks_n)</code></pre>
 </div>
 <div id="offset-1" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Offset</h3>
-<pre class="r"><code>breaks &lt;- c(-Inf,seq(-16,16,2),Inf)
-breaks_n &lt;- length(breaks) - 1
+<pre class="r"><code>df &lt;- cant_zonal_wide
+breaks &lt;- c(-Inf,seq(-16,16,2),Inf)
+var &lt;- &quot;cant_pos_mean_delta&quot;
+legend_title &lt;- expression(atop(Delta~Delta ~ C[ant],
+                                (mu * mol ~ kg ^ {-1})))
 
-zonal_section &lt;- function(df, i_basin_AIP, var) {
-  
-  # df &lt;- cant_zonal_wide
-  # i_basin_AIP &lt;- unique(cant_zonal_wide$basin_AIP)[1]
-  # var &lt;- &quot;cant_pos_mean_delta&quot;
-  
-  name_var &lt;- var
-  var &lt;- sym(var)
-  
-  lat_max &lt;- max(df$lat)
-  lat_min &lt;- min(df$lat)
-  
-  df_sub &lt;- df %&gt;% 
-    filter(basin_AIP == i_basin_AIP)
-  
-  surface &lt;- df_sub %&gt;%
-    ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_filled(breaks = breaks) +
-    scale_fill_scico_d(palette = &quot;vik&quot;, drop = FALSE) +
-    coord_cartesian(expand = 0,
-                    ylim = c(500, 0),
-                    xlim = c(lat_min, lat_max)) +
-    scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.text.x = element_blank(),
-      axis.ticks.x = element_blank()
-    ) +
-    labs(y = &quot;Depth (m)&quot;,
-         title = paste(&quot;Basin:&quot;, i_basin_AIP))
-  
-  deep &lt;- df_sub %&gt;%
-    ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_filled(breaks = breaks) +
-    scale_fill_scico_d(palette = &quot;vik&quot;, drop = FALSE) +
-    scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
-    coord_cartesian(expand = 0,
-                    ylim = c(3000, 500),
-                    xlim = c(lat_min, lat_max)) +
-    labs(x = &quot;latitude (°N)&quot;, y = &quot;Depth (m)&quot;)
-  
-  surface / deep +
-    plot_layout(guides = &quot;collect&quot;)
-  
+# i_basin_AIP &lt;- unique(df$basin_AIP)[1]
+# i_estimate &lt;- unique(df$estimate)[1]
+
+for (i_basin_AIP in unique(df$basin_AIP)) {
+  for (i_estimate in unique(df$estimate)) {
+    print(
+      section_zonal_layered_divergent(
+        df,
+        i_basin_AIP = i_basin_AIP,
+        i_estimate = i_estimate,
+        var,
+        breaks,
+        legend_title
+      )
+    )
+    
+  }
 }
 
-
-for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
-
-  print(zonal_section(cant_zonal_wide,
-                        i_basin_AIP = i_basin_AIP,
-                        &quot;cant_pos_mean_delta&quot;))
-    
-}</code></pre>
-<p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_delta_zonal_section-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_delta_zonal_section-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_delta_zonal_section-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(breaks, breaks_n)</code></pre>
+rm(df, var, breaks, legend_title, breaks_n)</code></pre>
 </div>
 </div>
 </div>
