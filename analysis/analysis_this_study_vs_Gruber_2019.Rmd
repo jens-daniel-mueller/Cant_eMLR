@@ -291,10 +291,11 @@ map +
 
 ```{r cant_pos_zonal_mean_sections}
 
-
 df <- cant_zonal_long
 breaks <- c(seq(0, 18, 1), Inf)
 var <- "cant_pos_mean"
+legend_title <- expression(atop(Delta ~ C[ant],
+                                (mu * mol ~ kg ^ {-1})))
 
 # i_basin_AIP <- unique(df$basin_AIP)[1]
 # i_estimate <- unique(df$estimate)[1]
@@ -307,15 +308,15 @@ for (i_basin_AIP in unique(df$basin_AIP)) {
         i_basin_AIP = i_basin_AIP,
         i_estimate = i_estimate,
         var,
-        breaks
+        breaks,
+        legend_title
       )
     )
     
   }
 }
 
-
-rm(df, var, breaks, breaks_n, section, surface, deep)
+rm(df, var, breaks, legend_title, breaks_n)
   
 ```
 
@@ -324,68 +325,32 @@ rm(df, var, breaks, breaks_n, section, surface, deep)
 
 ```{r cant_pos_delta_zonal_section}
 
+df <- cant_zonal_wide
 breaks <- c(-Inf,seq(-16,16,2),Inf)
-breaks_n <- length(breaks) - 1
+var <- "cant_pos_mean_delta"
+legend_title <- expression(atop(Delta~Delta ~ C[ant],
+                                (mu * mol ~ kg ^ {-1})))
 
-zonal_section <- function(df, i_basin_AIP, var) {
-  
-  # df <- cant_zonal_wide
-  # i_basin_AIP <- unique(cant_zonal_wide$basin_AIP)[1]
-  # var <- "cant_pos_mean_delta"
-  
-  name_var <- var
-  var <- sym(var)
-  
-  lat_max <- max(df$lat)
-  lat_min <- min(df$lat)
-  
-  df_sub <- df %>% 
-    filter(basin_AIP == i_basin_AIP)
-  
-  surface <- df_sub %>%
-    ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_filled(breaks = breaks) +
-    scale_fill_scico_d(palette = "vik", drop = FALSE) +
-    coord_cartesian(expand = 0,
-                    ylim = c(500, 0),
-                    xlim = c(lat_min, lat_max)) +
-    scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.text.x = element_blank(),
-      axis.ticks.x = element_blank()
-    ) +
-    labs(y = "Depth (m)",
-         title = paste("Basin:", i_basin_AIP))
-  
-  deep <- df_sub %>%
-    ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_filled(breaks = breaks) +
-    scale_fill_scico_d(palette = "vik", drop = FALSE) +
-    scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
-    coord_cartesian(expand = 0,
-                    ylim = c(3000, 500),
-                    xlim = c(lat_min, lat_max)) +
-    labs(x = "latitude (°N)", y = "Depth (m)")
-  
-  surface / deep +
-    plot_layout(guides = "collect")
-  
-}
+# i_basin_AIP <- unique(df$basin_AIP)[1]
+# i_estimate <- unique(df$estimate)[1]
 
-
-for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
-
-  print(zonal_section(cant_zonal_wide,
-                        i_basin_AIP = i_basin_AIP,
-                        "cant_pos_mean_delta"))
+for (i_basin_AIP in unique(df$basin_AIP)) {
+  for (i_estimate in unique(df$estimate)) {
+    print(
+      section_zonal_layered_divergent(
+        df,
+        i_basin_AIP = i_basin_AIP,
+        i_estimate = i_estimate,
+        var,
+        breaks,
+        legend_title
+      )
+    )
     
+  }
 }
 
-
-rm(breaks, breaks_n)
+rm(df, var, breaks, legend_title, breaks_n)
 
 ```
 
