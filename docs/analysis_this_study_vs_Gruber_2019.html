@@ -624,16 +624,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb13b596aa50be233faa92db7f63132d0893fc906targetblankb13b596a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b13b596aa50be233faa92db7f63132d0893fc906" target="_blank">b13b596</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree4156f70d7d62f60703a59819e5a8ed507a63d0e6targetblank4156f70a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/4156f70d7d62f60703a59819e5a8ed507a63d0e6" target="_blank">4156f70</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb13b596aa50be233faa92db7f63132d0893fc906targetblankb13b596a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree4156f70d7d62f60703a59819e5a8ed507a63d0e6targetblank4156f70a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b13b596aa50be233faa92db7f63132d0893fc906" target="_blank">b13b596</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/4156f70d7d62f60703a59819e5a8ed507a63d0e6" target="_blank">4156f70</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -693,6 +693,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/4156f70d7d62f60703a59819e5a8ed507a63d0e6/analysis/analysis_this_study_vs_Gruber_2019.Rmd" target="_blank">4156f70</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-10
+</td>
+<td>
+improved plotting routine
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/42a2c826f301ab8a7e9027cfbae6eef81e0d1028/docs/analysis_this_study_vs_Gruber_2019.html" target="_blank">42a2c82</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1731,8 +1765,10 @@ cant_inventory_long &lt;- cant_inventory_long %&gt;%
 map +
   geom_raster(data = cant_inventory_long,
               aes(lon, lat, fill = cant_pos_inv_int)) +
-  # scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  scale_fill_scico_d(palette = &quot;batlow&quot;, direction = -1) +
+  scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                    name = expression(atop(Delta~C[ant],
+                                           (mol~m^{-2})))) +
+  # scale_fill_scico_d(palette = &quot;lapaz&quot;, direction = -1) +
   facet_wrap(~ estimate, ncol = 1)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -1745,8 +1781,9 @@ map +
   geom_raster(data = cant_inventory_wide,
               aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
   scale_fill_scico_d(palette = &quot;vik&quot;, drop = FALSE,
-                     name = expression(atop(Delta~C[ant],
-                                            &quot;JDM-G19&quot;)))</code></pre>
+                     name = expression(atop(Delta~Delta~C[ant],
+                                            (mol~m^{-2})))) +
+    facet_wrap(~ &quot;JDM - G19&quot;, ncol = 1)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_delta_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -1754,15 +1791,20 @@ map +
 <h2><span class="header-section-number">4.2</span> Zonal mean sections</h2>
 <div id="absolute-values-1" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> Absolute values</h3>
-<pre class="r"><code>breaks &lt;- c(seq(0,18,1),Inf)
+<pre class="r"><code>breaks &lt;- c(seq(0, 18, 1), Inf)
 breaks_n &lt;- length(breaks) - 1
 
-cant_zonal_long &lt;- cant_zonal_long %&gt;% 
-  mutate(cant_pos_mean_int = cut(cant_pos_mean, 
-                                breaks,
-                                right = FALSE))
+cant_zonal_long &lt;- cant_zonal_long %&gt;%
+  mutate(cant_pos_mean_int = cut(cant_pos_mean,
+                                 breaks,
+                                 right = FALSE))
 
 zonal_section &lt;- function(df, i_basin_AIP, i_estimate, var) {
+  
+  # df &lt;- cant_zonal_long
+  # i_basin_AIP &lt;- unique(cant_zonal_long$basin_AIP)[1]
+  # i_estimate &lt;- unique(cant_zonal_long$estimate)[1]
+  # var &lt;- &quot;cant_pos_mean&quot;
   
   name_var &lt;- var
   var &lt;- sym(var)
@@ -1770,58 +1812,64 @@ zonal_section &lt;- function(df, i_basin_AIP, i_estimate, var) {
   lat_max &lt;- max(df$lat)
   lat_min &lt;- min(df$lat)
   
-  df_sub &lt;- df %&gt;% 
+  df_sub &lt;- df %&gt;%
     filter(basin_AIP == i_basin_AIP,
            estimate == i_estimate)
   
-  surface &lt;- df_sub %&gt;%
+  section &lt;- df_sub %&gt;%
     ggplot(aes(lat, depth, z = !!var)) +
     geom_contour_filled(breaks = breaks) +
     scale_fill_manual(values = Gruber_rainbow(breaks_n),
                       name = &quot;cant&quot;) +
-    coord_cartesian(expand = 0,
-                    ylim = c(500, 0),
-                    xlim = c(lat_min, lat_max)) +
     scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
+    scale_x_continuous(breaks = seq(-100, 100, 20)) +
     theme(
       axis.title.x = element_blank(),
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank()
+    )
+  
+  surface &lt;-
+    section +
+    coord_cartesian(
+      expand = 0,
+      ylim = c(500, 0),
+      xlim = c(lat_min, lat_max)
     ) +
     labs(y = &quot;Depth (m)&quot;,
          title = paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| estimate:&quot;, i_estimate))
   
-  deep &lt;- df_sub %&gt;%
-    ggplot(aes(lat, depth, z = !!var)) +
-    geom_contour_filled(breaks = breaks) +
-    scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                      name = &quot;cant&quot;) +
-    scale_y_reverse() +
-    scale_x_continuous(breaks = seq(-100,100,20)) +
-    coord_cartesian(expand = 0,
-                    ylim = c(3000, 500),
-                    xlim = c(lat_min, lat_max)) +
+  deep &lt;-
+    section +
+    coord_cartesian(
+      expand = 0,
+      ylim = c(3000, 500),
+      xlim = c(lat_min, lat_max)
+    ) +
     labs(x = &quot;latitude (°N)&quot;, y = &quot;Depth (m)&quot;)
   
   surface / deep +
     plot_layout(guides = &quot;collect&quot;)
+  
   
 }
 
 
 for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
   for (i_estimate in unique(cant_zonal_long$estimate)) {
-
-  print(zonal_section(cant_zonal_long,
-                        i_basin_AIP = i_basin_AIP,
-                        i_estimate = i_estimate,
-                        &quot;cant_pos_mean&quot;))
+    print(
+      zonal_section(
+        cant_zonal_long,
+        i_basin_AIP = i_basin_AIP,
+        i_estimate = i_estimate,
+        &quot;cant_pos_mean&quot;
+      )
+    )
     
   }
 }</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_zonal_mean_sections-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>rm(breaks, breaks_n)</code></pre>
+<pre class="r"><code>rm(breaks, breaks_n, section, surface, deep)</code></pre>
 </div>
 <div id="offset-1" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Offset</h3>
