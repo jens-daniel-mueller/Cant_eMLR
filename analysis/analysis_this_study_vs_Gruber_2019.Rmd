@@ -247,7 +247,7 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 
 ```{r cant_pos_inventory_map, fig.asp=1}
 
-breaks <- c(seq(0, 16, 2), Inf)
+breaks <- c(seq(0, 16, 1), Inf)
 breaks_n <- length(breaks) - 1
 
 cant_inventory_long <- cant_inventory_long %>%
@@ -259,7 +259,7 @@ map +
   geom_raster(data = cant_inventory_long,
               aes(lon, lat, fill = cant_pos_inv_int)) +
   scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                    name = expression(atop(Delta~C[ant],
+                     name = expression(atop(Delta~C[ant],
                                            (mol~m^{-2})))) +
   guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
   # scale_fill_scico_d(palette = "lapaz", direction = -1) +
