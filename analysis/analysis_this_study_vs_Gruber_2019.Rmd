@@ -289,7 +289,7 @@ map +
 
 ### Absolute values
 
-```{r cant_pos_zonal_mean_sections}
+```{r cant_pos_zonal_mean_sections, fig.asp=0.8}
 
 df <- cant_zonal_long
 breaks <- c(seq(0, 18, 1), Inf)
