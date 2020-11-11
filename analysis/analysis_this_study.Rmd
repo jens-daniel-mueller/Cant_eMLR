@@ -300,6 +300,7 @@ map +
                      name = expression(atop(Delta*C[ant],
                                            (mol~m^{-2})))) +
   # scale_fill_scico_d(palette = "batlow", direction = -1) +
+  guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
   facet_wrap( ~ eras, ncol = 1)
 
 ```
