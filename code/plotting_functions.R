@@ -321,7 +321,7 @@ section_zonal_layered_continous <-
         ylim = c(3000, 500),
         xlim = c(lat_min, lat_max)
       ) +
-      labs(x = "latitude (°N)", y = "Depth (m)")
+      labs(x = expression(latitude~(degree*N)), y = "Depth (m)")
 
     surface / deep +
       plot_layout(guides = "collect")
@@ -380,7 +380,7 @@ section_zonal_layered_divergent <-
         ylim = c(3000, 500),
         xlim = c(lat_min, lat_max)
       ) +
-      labs(x = "latitude (°N)", y = "Depth (m)")
+      labs(x = expression(latitude~(degree*N)), y = "Depth (m)")
 
     surface / deep +
       plot_layout(guides = "collect")
