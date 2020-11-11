@@ -328,6 +328,64 @@ section_zonal_layered_continous <-
 
   }
 
+section_zonal_layered_continous_eras <-
+  function(df,
+           i_basin_AIP,
+           i_eras,
+           var,
+           breaks,
+           legend_title) {
+
+    name_var <- var
+    var <- sym(var)
+
+    lat_max <- max(df$lat)
+    lat_min <- min(df$lat)
+
+    breaks_n <- length(breaks) - 1
+
+    df_sub <- df %>%
+      filter(basin_AIP == i_basin_AIP,
+             eras == i_eras)
+
+    section <- df_sub %>%
+      ggplot(aes(lat, depth, z = !!var)) +
+      geom_contour_filled(breaks = breaks) +
+      scale_fill_manual(values = Gruber_rainbow(breaks_n),
+                        name = legend_title) +
+      guides(fill = guide_colorsteps(barheight = unit(8, "cm"))) +
+      scale_y_reverse() +
+      scale_x_continuous(breaks = seq(-100, 100, 20))
+
+    surface <-
+      section +
+      coord_cartesian(
+        expand = 0,
+        ylim = c(500, 0),
+        xlim = c(lat_min, lat_max)
+      ) +
+      labs(y = "Depth (m)",
+           title = paste("Basin:", i_basin_AIP, "| eras:", i_eras)) +
+      theme(
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()
+      )
+
+    deep <-
+      section +
+      coord_cartesian(
+        expand = 0,
+        ylim = c(3000, 500),
+        xlim = c(lat_min, lat_max)
+      ) +
+      labs(x = expression(latitude~(degree*N)), y = "Depth (m)")
+
+    surface / deep +
+      plot_layout(guides = "collect")
+
+  }
+
 
 section_zonal_layered_divergent <-
   function(df,

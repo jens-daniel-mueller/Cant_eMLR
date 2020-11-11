@@ -37,7 +37,7 @@ parameters <-
 slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 ```
 
-```{r read_mask_files, include = FALSE}
+```{r read_map, include = FALSE}
 
 map <-
   read_rds(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
