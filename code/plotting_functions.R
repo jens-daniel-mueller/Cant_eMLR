@@ -297,12 +297,7 @@ section_zonal_layered_continous <-
                         name = legend_title) +
       guides(fill = guide_colorsteps(barheight = unit(8, "cm"))) +
       scale_y_reverse() +
-      scale_x_continuous(breaks = seq(-100, 100, 20)) +
-      theme(
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()
-      )
+      scale_x_continuous(breaks = seq(-100, 100, 20))
 
     surface <-
       section +
@@ -312,7 +307,12 @@ section_zonal_layered_continous <-
         xlim = c(lat_min, lat_max)
       ) +
       labs(y = "Depth (m)",
-           title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
+           title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)) +
+      theme(
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()
+      )
 
     deep <-
       section +
@@ -356,12 +356,7 @@ section_zonal_layered_divergent <-
                          name = legend_title) +
       guides(fill = guide_colorsteps(barheight = unit(8, "cm"))) +
       scale_y_reverse() +
-      scale_x_continuous(breaks = seq(-100, 100, 20)) +
-      theme(
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()
-      )
+      scale_x_continuous(breaks = seq(-100, 100, 20))
 
     surface <-
       section +
@@ -371,7 +366,12 @@ section_zonal_layered_divergent <-
         xlim = c(lat_min, lat_max)
       ) +
       labs(y = "Depth (m)",
-           title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate))
+           title = paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)) +
+      theme(
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()
+      )
 
     deep <-
       section +

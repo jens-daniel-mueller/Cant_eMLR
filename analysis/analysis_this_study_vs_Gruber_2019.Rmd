@@ -145,6 +145,8 @@ cant_zonal_G19 <- cant_zonal_G19 %>%
 
 ## Join data sets
 
+Inventories and zonal sections are merged, and differences calculate per grid cell.
+
 ```{r join_G19_and_JDM_inventories}
 
 cant_inventory_long <- bind_rows(
