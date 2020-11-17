@@ -624,16 +624,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree66fbc5d3f7c9104bab5114bee73a00175b303095targetblank66fbc5da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/66fbc5d3f7c9104bab5114bee73a00175b303095" target="_blank">66fbc5d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree155b50279890c0024afb8a90214a35287e9d7c94targetblank155b502a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/155b50279890c0024afb8a90214a35287e9d7c94" target="_blank">155b502</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree66fbc5d3f7c9104bab5114bee73a00175b303095targetblank66fbc5da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree155b50279890c0024afb8a90214a35287e9d7c94targetblank155b502a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/66fbc5d3f7c9104bab5114bee73a00175b303095" target="_blank">66fbc5d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/155b50279890c0024afb8a90214a35287e9d7c94" target="_blank">155b502</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -697,6 +697,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/155b50279890c0024afb8a90214a35287e9d7c94/analysis/read_World_Ocean_Atlas_2018.Rmd" target="_blank">155b502</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-17
+</td>
+<td>
+subsetted nuts and O2
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/3bfff5dd48f4f0fcad75e28372c4985d77728f03/docs/read_World_Ocean_Atlas_2018.html" target="_blank">3bfff5d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3310,8 +3344,8 @@ section_global_coordinates %&gt;%
                        &quot;section_global_coordinates.csv&quot;))</code></pre>
 </div>
 </div>
-<div id="climatologies" class="section level1">
-<h1><span class="header-section-number">3</span> Climatologies</h1>
+<div id="climatology-s-and-t" class="section level1">
+<h1><span class="header-section-number">3</span> Climatology S and T</h1>
 <p>Copied from the WOA FAQ website, the file naming conventions is:</p>
 <p>PREF_DDDD_VTTFFGG.EXT, where:</p>
 <ul>
@@ -3489,11 +3523,11 @@ WOA18_sal_tem &lt;- WOA18_sal_tem %&gt;%
 <div id="writeopen-file" class="section level3">
 <h3><span class="header-section-number">3.5.3</span> Write/open file</h3>
 <pre class="r"><code>WOA18_sal_tem %&gt;% 
-  write_csv(here::here(&quot;data/interim/predictor_climatologies&quot;,
+  write_csv(here::here(&quot;data/interim&quot;,
                        &quot;WOA18_sal_tem.csv&quot;))
 
 WOA18_sal_tem_surface %&gt;%
-  write_csv(here::here(&quot;data/interim/predictor_climatologies&quot;,
+  write_csv(here::here(&quot;data/interim&quot;,
                        &quot;WOA18_sal_tem_surface.csv&quot;))</code></pre>
 </div>
 </div>
@@ -3557,6 +3591,92 @@ WOA18_sal_tem_surface %&gt;%
 <pre class="r"><code>section_global(WOA18_sal_tem_surface, &quot;gamma&quot;,
                &quot;Global climatological section&quot;)</code></pre>
 <p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/neutral_density_sections_WOA18_shallow-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="climatology-nuts-and-o2" class="section level1">
+<h1><span class="header-section-number">4</span> Climatology Nuts and O2</h1>
+<div id="read-ncdfs-1" class="section level2">
+<h2><span class="header-section-number">4.1</span> Read ncdfs</h2>
+<pre class="r"><code>file_list &lt;-
+  list.files(path = &quot;data/input/World_Ocean_Atlas_2018&quot;,
+             pattern = &quot;woa18_all*&quot;)
+
+
+print(file_list)</code></pre>
+<pre><code>[1] &quot;woa18_all_A00_01.nc&quot; &quot;woa18_all_i00_01.nc&quot; &quot;woa18_all_n00_01.nc&quot;
+[4] &quot;woa18_all_o00_01.nc&quot; &quot;woa18_all_p00_01.nc&quot;</code></pre>
+<pre class="r"><code># Keep grid cells of WOA18 surface and deep data sets, to join with
+
+WOA18_nuts_O2 &lt;-
+  WOA18_sal_tem %&gt;%
+  select(lon, lat, depth, basin, basin_AIP)
+
+WOA18_nuts_O2_surface &lt;-
+  WOA18_sal_tem_surface %&gt;%
+  select(lon, lat, depth, basin, basin_AIP)
+
+rm(WOA18_sal_tem, WOA18_sal_tem_surface)</code></pre>
+<pre class="r"><code>file &lt;- file_list[2]
+
+for (file in file_list) {
+  
+  # open file
+  WOA18 &lt;- tidync(here::here(&quot;data/input/World_Ocean_Atlas_2018&quot;,
+                             file))
+  
+  WOA18_tibble &lt;- WOA18 %&gt;% hyper_tibble()
+  
+  # extract parameter name
+  parameter &lt;- str_split(file, pattern = &quot;00&quot;, simplify = TRUE)[1]
+  parameter &lt;- str_split(parameter, pattern = &quot;all_&quot;, simplify = TRUE)[2]
+  parameter &lt;- paste(parameter, &quot;_an&quot;, sep = &quot;&quot;)
+  print(parameter)
+  
+  
+  WOA18_tibble &lt;- WOA18_tibble  %&gt;%
+    select(all_of(parameter),
+           lon, lat, depth) %&gt;%
+    mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
+  
+  
+  # join with basin mask and remove data outside basin mask
+  WOA18_tibble &lt;- inner_join(WOA18_tibble, basinmask_01)
+  
+  WOA18_nuts_O2 &lt;- left_join(WOA18_nuts_O2, WOA18_tibble)
+  WOA18_nuts_O2_surface &lt;- left_join(WOA18_nuts_O2_surface, WOA18_tibble)
+  
+
+  # plot maps
+  print(map_climatology(WOA18_tibble, parameter))
+  
+  # plot sections
+  print(section_global(
+    WOA18_tibble,
+    parameter,
+    &quot;World Ocean Atlas 2018&quot;
+  ))
+  
+}</code></pre>
+<pre><code>[1] &quot;A_an&quot;</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;i_an&quot;</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;n_an&quot;</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;o_an&quot;</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;p_an&quot;</code></pre>
+<p><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_World_Ocean_Atlas_2018.Rmd/read_WOA18_nuts_O2_file_list-10.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="writeopen-file-1" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Write/open file</h3>
+<pre class="r"><code>WOA18_nuts_O2 %&gt;% 
+  write_csv(here::here(&quot;data/interim&quot;,
+                       &quot;WOA18_nuts_O2.csv&quot;))
+
+WOA18_nuts_O2_surface %&gt;%
+  write_csv(here::here(&quot;data/interim&quot;,
+                       &quot;WOA18_nuts_O2_surface.csv&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
