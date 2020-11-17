@@ -286,7 +286,7 @@ section_global_coordinates %>%
 ```
 
 
-# Climatologies
+# Climatology S and T
 
 Copied from the WOA FAQ website, the file naming conventions is:  
 
@@ -520,11 +520,11 @@ WOA18_sal_tem <- WOA18_sal_tem %>%
 ```{r write_WOA18_predictor_file}
 
 WOA18_sal_tem %>% 
-  write_csv(here::here("data/interim/predictor_climatologies",
+  write_csv(here::here("data/interim",
                        "WOA18_sal_tem.csv"))
 
 WOA18_sal_tem_surface %>%
-  write_csv(here::here("data/interim/predictor_climatologies",
+  write_csv(here::here("data/interim",
                        "WOA18_sal_tem_surface.csv"))
 
 ```
@@ -614,5 +614,102 @@ map_climatology(WOA18_sal_tem_surface, "gamma")
 
 section_global(WOA18_sal_tem_surface, "gamma",
                "Global climatological section")
+
+```
+
+
+
+# Climatology Nuts and O2
+
+## Read ncdfs
+
+
+```{r WOA18_nuts_O2_file_list}
+
+file_list <-
+  list.files(path = "data/input/World_Ocean_Atlas_2018",
+             pattern = "woa18_all*")
+
+
+print(file_list)
+
+# Keep grid cells of WOA18 surface and deep data sets, to join with
+
+WOA18_nuts_O2 <-
+  WOA18_sal_tem %>%
+  select(lon, lat, depth, basin, basin_AIP)
+
+WOA18_nuts_O2_surface <-
+  WOA18_sal_tem_surface %>%
+  select(lon, lat, depth, basin, basin_AIP)
+
+rm(WOA18_sal_tem, WOA18_sal_tem_surface)
+
+```
+
+
+
+```{r read_WOA18_nuts_O2_file_list}
+
+
+file <- file_list[2]
+
+for (file in file_list) {
+  
+  # open file
+  WOA18 <- tidync(here::here("data/input/World_Ocean_Atlas_2018",
+                             file))
+  
+  WOA18_tibble <- WOA18 %>% hyper_tibble()
+  
+  # extract parameter name
+  parameter <- str_split(file, pattern = "00", simplify = TRUE)[1]
+  parameter <- str_split(parameter, pattern = "all_", simplify = TRUE)[2]
+  parameter <- paste(parameter, "_an", sep = "")
+  print(parameter)
+  
+  
+  WOA18_tibble <- WOA18_tibble  %>%
+    select(all_of(parameter),
+           lon, lat, depth) %>%
+    mutate(lon = if_else(lon < 20, lon + 360, lon))
+  
+  
+  # join with basin mask and remove data outside basin mask
+  WOA18_tibble <- inner_join(WOA18_tibble, basinmask_01)
+  
+  WOA18_nuts_O2 <- left_join(WOA18_nuts_O2, WOA18_tibble)
+  WOA18_nuts_O2_surface <- left_join(WOA18_nuts_O2_surface, WOA18_tibble)
+  
+
+  # plot maps
+  print(map_climatology(WOA18_tibble, parameter))
+  
+  # plot sections
+  print(section_global(
+    WOA18_tibble,
+    parameter,
+    "World Ocean Atlas 2018"
+  ))
+  
+}
+
+
+```
+
+
+
+
+### Write/open file
+
+```{r write_WOA18_nuts_O2_predictor_file}
+
+WOA18_nuts_O2 %>% 
+  write_csv(here::here("data/interim",
+                       "WOA18_nuts_O2.csv"))
+
+WOA18_nuts_O2_surface %>%
+  write_csv(here::here("data/interim",
+                       "WOA18_nuts_O2_surface.csv"))
 
 ```
