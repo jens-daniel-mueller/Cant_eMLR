@@ -29,7 +29,7 @@ theme_set(theme_bw())
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 ```
 
@@ -37,17 +37,18 @@ parameters <-
 
 basinmask <- read_csv(
   here::here(
-    "data/World_Ocean_Atlas_2018/_summarized_files",
+    "data/auxillary",
     "basin_mask_WOA18.csv"
   )
 )
 
-landmask <-  read_csv(
-  here::here(
-    "data/World_Ocean_Atlas_2018/_summarized_files",
-    "land_mask_WOA18.csv"
-  )
-)
+```
+
+```{r read_map, include = FALSE}
+
+map <-
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
 
 
@@ -60,13 +61,17 @@ Main data source for this project is `GLODAPv2.2020_Merged_Master_File.csv` down
 GLODAP <-
   read_csv(
     here::here(
-      "data/GLODAPv2_2020/Merged_data_product",
+      "data/input/GLODAPv2_2020",
       "GLODAPv2.2020_Merged_Master_File.csv"
     ),
     na = "-9999",
     col_types = cols(.default = col_double())
   )
 
+
+```
+
+```{r harmonize_variables}
 
 # select relevant columns
 GLODAP <- GLODAP %>%
@@ -99,6 +104,8 @@ GLODAP <- GLODAP %>%
   mutate_at(vars(ends_with(c("f", "qc"))), as.factor)
 
 ```
+
+
 
 # Exploratory data analysis
 
@@ -167,9 +174,11 @@ GLODAP <- GLODAP %>%
 
 ### Depth
 
-Only observations were taken into consideration with:
+Data above:
 
 - minimum sampling depth:  `r parameters$depth_min`m
+
+were excluded from the fit in order to avoid the inclusion of seasonal biases.
 
 ```{r apply_depth_min}
 
@@ -191,12 +200,12 @@ GLODAP <- GLODAP %>%
 
 ### Bottomdepth
 
-Only observations were taken into consideration with:
+Following restriction was considered, but is currently not implemented:
 
 - minimum bottom depth:  `r parameters$bottomdepth_min`m
 
 
-```{r apply_bottomdepth_min}
+```{r apply_bottomdepth_min, eval=FALSE}
 
 GLODAP <- GLODAP %>% 
   filter(bottomdepth >= parameters$bottomdepth_min)
@@ -245,22 +254,16 @@ GLODAP_obs <- GLODAP %>%
   summarise(n = n()) %>% 
   ungroup()
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = basinmask, aes(lon, lat, fill = basin)) +
   geom_raster(data = GLODAP_obs, aes(lon, lat)) +
   scale_fill_brewer(palette = "Dark2") +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top",
-        legend.title = element_blank(),
-        axis.title = element_blank())
+        legend.title = element_blank())
 
 rm(GLODAP_obs)
 
 ```
-
-
 
 
 ## Flags and missing data
@@ -328,16 +331,12 @@ rm(GLODAP_obs_grid_temp)
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, tco2f)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
   scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
   facet_grid(era ~ tco2f) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top")
 
 ###
@@ -374,16 +373,12 @@ GLODAP <- GLODAP %>%
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, tco2qc)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
   scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
   facet_grid(era ~ tco2qc) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top")
 
 ###
@@ -428,16 +423,12 @@ GLODAP <- GLODAP %>%
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkna)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
   scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
   facet_grid(era ~ talkna) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top")
 
 GLODAP <- GLODAP %>% 
@@ -475,15 +466,12 @@ Restricting the f flag to 2 would results in data gaps in the south-east Pacific
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkf)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
-    scale_fill_viridis_c(option = "magma",
+  scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
-  facet_grid(era~talkf) +
-  coord_quickmap(expand = 0) +
+  facet_grid(era ~ talkf) +
   theme(legend.position = "top",
         legend.title = element_blank())
 
@@ -521,18 +509,14 @@ GLODAP <- GLODAP %>%
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, talkqc)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
-    scale_fill_viridis_c(option = "magma",
+  scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
-  facet_grid(era~talkqc) +
-  coord_quickmap(expand = 0) +
+  facet_grid(era ~ talkqc) +
   theme(legend.position = "top",
         legend.title = element_blank())
-
 
 ###
 
@@ -575,16 +559,12 @@ GLODAP <- GLODAP %>%
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, phosphatena)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
   scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
   facet_grid(era ~ phosphatena) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top")
 
 GLODAP <- GLODAP %>% 
@@ -622,15 +602,12 @@ Restricting the f flag to 2 would not drastically reduce available data. Interpo
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, phosphatef)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
     scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
   facet_grid(era~phosphatef) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top",
         legend.title = element_blank())
 
@@ -670,15 +647,12 @@ Phosphate data for which secondary quality was not applied (qc flag 0) were remo
 GLODAP_obs_grid_temp <- GLODAP %>%
   count(lat, lon, era, phosphateqc)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid_temp, aes(lon, lat, fill = n)) +
     scale_fill_viridis_c(option = "magma",
                        direction = -1,
                        trans = "log10") +
   facet_grid(era~phosphateqc) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top",
         legend.title = element_blank())
 
@@ -810,12 +784,9 @@ GLODAP_cruises <- GLODAP %>%
          year %in% c(2013, 2014)) %>% 
   count(lat, lon, cruise)
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = GLODAP_cruises, aes(lon, lat, fill = as.factor(cruise))) +
   scale_fill_brewer(palette = "Dark2") +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "top",
         legend.title = element_blank())
 
@@ -859,7 +830,7 @@ GLODAP_stats_long <- GLODAP_stats %>%
 
 GLODAP_stats_long  %>%  write_csv(
   here::here(
-    "data/GLODAPv2_2020/_summarized_data_files",
+    "data/interim",
     "GLODAPv2.2020_stats.csv"
   )
 )
@@ -869,7 +840,7 @@ GLODAP_stats_long  %>%  write_csv(
 GLODAP_obs_grid_clean %>% 
   write_csv(
     here::here(
-      "data/GLODAPv2_2020/_summarized_data_files",
+      "data/interim",
       "GLODAPv2.2020_clean_obs_grid.csv"
     )
   )
@@ -884,20 +855,10 @@ GLODAP <- GLODAP %>%
 
 GLODAP  %>%  write_csv(
   here::here(
-    "data/GLODAPv2_2020/_summarized_data_files",
+    "data/interim",
     "GLODAPv2.2020_clean.csv"
   )
 )
-
-# GLODAP  %>%
-#   filter(year == 2007) %>%
-#   select(date, lat, lon, depth, tem, sal, tco2:silicate) %>%
-#   write_csv(
-#     here::here(
-#       "data/GLODAPv2_2020/_summarized_data_files",
-#       "GLODAPv2.2020_clean_2007.csv"
-#     )
-#   )
 
 ```
 
@@ -1042,10 +1003,7 @@ GLODAP_obs_grid <- GLODAP_obs_grid %>%
            unique(GLODAP_obs_grid$cleaning_level)
          ))
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
+map +
   geom_raster(data = GLODAP_obs_grid %>%
                 filter(cleaning_level == "all") %>% 
                 select(-cleaning_level),
@@ -1053,7 +1011,6 @@ ggplot() +
   geom_raster(data = GLODAP_obs_grid %>%
                 filter(cleaning_level != "all"),
               aes(lon, lat, fill = "subset")) +
-  coord_quickmap(expand = FALSE) +
   scale_fill_manual(values = c("grey", "red"), name = "") +
   facet_grid(cleaning_level ~ era) +
   theme(legend.position = "top",
@@ -1073,15 +1030,13 @@ GLODAP <- GLODAP %>%
 GLODAP_tco2_grid <- GLODAP %>%
   count(lat, lon, era)
 
-GLODAP %>%
-  ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
+map +
   geom_raster(data = GLODAP_tco2_grid, aes(lon, lat), fill = "grey80") +
-  geom_bin2d(binwidth = c(1,1)) +
+  geom_bin2d(data = GLODAP,
+             aes(lon, lat),
+             binwidth = c(1,1)) +
   scale_fill_viridis_c(option = "magma", direction = -1, trans = "log10",
                        name = "log10(eMLR_variables)") +
-  coord_quickmap(expand = FALSE) +
   facet_wrap(~era, ncol = 1) +
   theme(legend.position = "top",
         axis.title = element_blank())
