@@ -16,11 +16,6 @@ editor_options:
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-
-```
-
-
 # Variables
 
 Variables from source data files are converted and harmonized to satisfy following naming convention throughout the project:
@@ -37,6 +32,14 @@ Variables from source data files are converted and harmonized to satisfy followi
 - gamma: neutral density
 
 - cant: anthropogenic CO~2~ (mol kg^-1^)
+- cstar: C* (mol kg^-1^)
+
+# Variable and data set post fix
+
+- _mean: mean value
+- _sd: standard deviation
+- _inv: column inventory
+- _pos: positive values only (ie negative values set to zero)
 
 # Data sets / objects
 
@@ -46,6 +49,7 @@ Variables from source data files are converted and harmonized to satisfy followi
 - clean_xxx: subset rows of a data set
 - calculate_xxx: perform calculations on a data set (add or modify rows)
 - write_xxx: write summarized data file to disk
+- chunks producing plots are named according to the plot content, because the generated plot file will be named after the chunk
 
 # Folder structure
 
