@@ -624,16 +624,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree486d9e1e0e40a369a710a956ead35273584b4149targetblank486d9e1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/486d9e1e0e40a369a710a956ead35273584b4149" target="_blank">486d9e1</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree2087408c05e8a23df503d6c7a706d479904c6097targetblank2087408a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/2087408c05e8a23df503d6c7a706d479904c6097" target="_blank">2087408</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree486d9e1e0e40a369a710a956ead35273584b4149targetblank486d9e1a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree2087408c05e8a23df503d6c7a706d479904c6097targetblank2087408a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/486d9e1e0e40a369a710a956ead35273584b4149" target="_blank">486d9e1</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/2087408c05e8a23df503d6c7a706d479904c6097" target="_blank">2087408</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -695,6 +695,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/2087408c05e8a23df503d6c7a706d479904c6097/analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd" target="_blank">2087408</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-17
+</td>
+<td>
+avoid NA fill beyond bottom depth
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/6e1bc47903b0435247e2fbaee8f9de9400b084e8/docs/read_GLODAPv2_2016_MappedClimatologies.html" target="_blank">6e1bc47</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2794,38 +2828,38 @@ clim_tibble &lt;- clim_tibble %&gt;%
   fill(!!sym(parameter), .direction = &quot;downup&quot;) %&gt;%
   ungroup()
 
-# plot column NA inventory
-
-clim_tibble_grid &lt;- clim_tibble %&gt;%
-  filter(!is.na(!!sym(parameter))) %&gt;%
-  group_by(lat, lon) %&gt;%
-  summarise(depth_max = max(depth)) %&gt;%
-  ungroup()
-
-clim_tibble_grid &lt;- full_join(clim_tibble, clim_tibble_grid)
-
-clim_tibble_grid &lt;- clim_tibble_grid %&gt;%
-  filter(depth &lt;= depth_max) %&gt;%
-  select(-depth_max)
-
-clim_tibble_grid &lt;- clim_tibble_grid %&gt;%
-  filter(is.na(!!sym(parameter)),
-         depth &lt;= parameters$inventory_depth) %&gt;%
-  count(lat, lon)
-
-# plot NA map
-print(
-
-  map +
-    geom_raster(data = clim_tibble_grid,
-                aes(lon, lat, fill = n)) +
-    scale_fill_viridis_c() +
-    theme(axis.title = element_blank()) +
-    labs(title = paste(parameter, &quot;colum NA&quot;))
-
-)
-
-rm(clim_tibble_grid)
+# # plot column NA inventory
+# 
+# clim_tibble_grid &lt;- clim_tibble %&gt;%
+#   filter(!is.na(!!sym(parameter))) %&gt;%
+#   group_by(lat, lon) %&gt;%
+#   summarise(depth_max = max(depth)) %&gt;%
+#   ungroup()
+# 
+# clim_tibble_grid &lt;- full_join(clim_tibble, clim_tibble_grid)
+# 
+# clim_tibble_grid &lt;- clim_tibble_grid %&gt;%
+#   filter(depth &lt;= depth_max) %&gt;%
+#   select(-depth_max)
+# 
+# clim_tibble_grid &lt;- clim_tibble_grid %&gt;%
+#   filter(is.na(!!sym(parameter)),
+#          depth &lt;= parameters$inventory_depth) %&gt;%
+#   count(lat, lon)
+# 
+# # plot NA map
+# print(
+# 
+#   map +
+#     geom_raster(data = clim_tibble_grid,
+#                 aes(lon, lat, fill = n)) +
+#     scale_fill_viridis_c() +
+#     theme(axis.title = element_blank()) +
+#     labs(title = paste(parameter, &quot;colum NA&quot;))
+# 
+# )
+# 
+# rm(clim_tibble_grid)
 
 # remove NAs
 
@@ -2859,23 +2893,23 @@ clim_tibble %&gt;%
 
 }</code></pre>
 <pre><code>[1] &quot;Cant&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;NO3&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;oxygen&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;PO4&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;salinity&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-15.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;silicate&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-18.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-12.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;TAlk&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-19.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-21.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-14.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;TCO2&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-24.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-16.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[1] &quot;temperature&quot;</code></pre>
-<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-25.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-26.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-27.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/read_GLODAPv2_2016_MappedClimatologies.Rmd/GLODAPv2_2016_Mappedclimatologies-18.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
