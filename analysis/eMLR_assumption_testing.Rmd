@@ -32,7 +32,7 @@ library(corrr)
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 ```
 
@@ -40,17 +40,20 @@ parameters <-
 basinmask <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "data/auxillary",
       "basin_mask_WOA18.csv"
     )
   )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
+
+section_global_coordinates <-
+  read_csv(here::here("data/auxillary",
+                       "section_global_coordinates.csv"))
+```
+
+```{r read_map, include = FALSE}
+map <-
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -72,8 +75,8 @@ Required are:
 GLODAP <-
   read_csv(
     here::here(
-      "data/GLODAPv2_2020/_summarized_data_files",
-      "GLODAP_MLR_fitting_ready.csv"
+      "data/interim",
+      "GLODAPv2.2020_MLR_fitting_ready.csv"
     )
   )
 

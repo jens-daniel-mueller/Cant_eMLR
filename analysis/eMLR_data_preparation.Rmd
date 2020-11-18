@@ -14,7 +14,6 @@ editor_options:
 
 ```{r global_options, include = FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
@@ -24,9 +23,10 @@ library(patchwork)
 library(marelac)
 ```
 
+
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 ```
 
@@ -34,17 +34,20 @@ parameters <-
 basinmask <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "data/auxillary",
       "basin_mask_WOA18.csv"
     )
   )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
+
+section_global_coordinates <-
+  read_csv(here::here("data/auxillary",
+                       "section_global_coordinates.csv"))
+```
+
+```{r read_map, include = FALSE}
+map <-
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -70,7 +73,7 @@ Required are:
 GLODAP <-
   read_csv(
     here::here(
-      "data/GLODAPv2_2020/_summarized_data_files",
+      "data/interim",
       "GLODAPv2.2020_clean.csv"
     )
   )
@@ -78,31 +81,32 @@ GLODAP <-
 GLODAP_obs_grid <-
   read_csv(
     here::here(
-      "data/GLODAPv2_2020/_summarized_data_files",
+      "data/interim",
       "GLODAPv2.2020_clean_obs_grid.csv"
     )
   )
 
-Cant_clim <-
+S04_cant_3d <-
   read_csv(
     here::here(
-      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
-      "Cant.csv"
+      "data/interim",
+      "S04_cant_3d.csv"
     )
   )
 
+# G19_cant_3d <-
+#   read_csv(
+#     here::here(
+#       "data/interim",
+#       "G19_cant_3d.csv"
+#     )
+#   )
+
 co2_atm <-
   read_csv(here::here(
-    "data/pCO2_atmosphere/_summarized_data_files",
+    "data/interim",
     "co2_atm.csv"
   ))
-
-```
-
-```{r data_set_harmonization}
-
-Cant_clim <- Cant_clim %>%
-  rename(cant = Cant)
 
 ```
 
@@ -173,28 +177,32 @@ Note that eq. 6 in Clement and Gruber (2018) misses pCO~2~ pre-industrial in the
 
 ### GLODAP + Cant
 
+
 ```{r merge_Cstar_Cant}
 
-Cant_clim_obs <- left_join(GLODAP_obs_grid, Cant_clim)
+S04_cant_3d_obs <- left_join(
+  GLODAP_obs_grid,
+  S04_cant_3d %>% select(-c(cant, eras))
+  )
 
-Cant_clim_obs <- Cant_clim_obs %>%
+S04_cant_3d_obs <- S04_cant_3d_obs %>%
   group_by(lon, lat) %>% 
   mutate(n = n()) %>% 
   ungroup()
 
-# Cant_clim_obs %>%
+# S04_cant_3d_obs %>%
 #   filter(n <= 1) %>%
 #   ggplot(aes(lon,lat)) +
 #   geom_point(data = GLODAP_obs_grid, aes(lon, lat)) +
 #   geom_point(col = "red")
 
-rm(Cant_clim, GLODAP_obs_grid)
+rm(S04_cant_3d, GLODAP_obs_grid)
 
-GLODAP_Cant_obs <- full_join(GLODAP, Cant_clim_obs)
+GLODAP_cant_obs <- full_join(GLODAP, S04_cant_3d_obs)
 
-rm(GLODAP, Cant_clim_obs)
+rm(GLODAP, S04_cant_3d_obs)
 
-GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
+GLODAP_cant_obs <- GLODAP_cant_obs %>%
   group_by(lon, lat) %>% 
   mutate(n = mean(n, na.rm = TRUE)) %>% 
   ungroup()
@@ -209,39 +217,39 @@ The mapped Cant product was merged with GLODAP observation by:
 
 ```{r interpolate_Cant_to_observations}
 
-# GLODAP_Cant_obs <- full_join(GLODAP_Cant_obs, Cant_clim_obs_nr)
+# GLODAP_cant_obs <- full_join(GLODAP_cant_obs, S04_cant_3d_obs_nr)
 
-GLODAP_Cant_obs <- GLODAP_Cant_obs %>%
+GLODAP_cant_obs <- GLODAP_cant_obs %>%
   filter(n > 1) %>% 
   group_by(lat, lon) %>%
   arrange(depth) %>%
-  mutate(cant_int = approxfun(depth, cant, rule = 2)(depth)) %>%
+  mutate(cant_pos_int = approxfun(depth, cant_pos, rule = 2)(depth)) %>%
   ungroup()
 
-# GLODAP_Cant_obs_set <- GLODAP_Cant_obs %>%
+# GLODAP_cant_obs_set <- GLODAP_cant_obs %>%
 #   filter(n_cant == 1) %>% 
 #   group_by(lat, lon) %>%
 #   arrange(depth) %>%
-#   mutate(cant_int = mean(cant, na.rm = TRUE)) %>%
+#   mutate(cant_pos_int = mean(cant, na.rm = TRUE)) %>%
 #   ungroup()
 
 ggplot() +
   geom_path(
-    data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+    data = GLODAP_cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant_pos)) %>%
       arrange(depth),
-    aes(cant, depth, col = "mapped")
+    aes(cant_pos, depth, col = "mapped")
   ) +
   geom_point(
-    data = GLODAP_Cant_obs %>%
-      filter(lat == 48.5, lon == 165.5,!is.na(cant)) %>%
+    data = GLODAP_cant_obs %>%
+      filter(lat == 48.5, lon == 165.5,!is.na(cant_pos)) %>%
       arrange(depth),
-    aes(cant, depth, col = "mapped")
+    aes(cant_pos, depth, col = "mapped")
   ) +
   geom_point(
-    data = GLODAP_Cant_obs %>%
+    data = GLODAP_cant_obs %>%
       filter(lat == 48.5, lon == 165.5, date == ymd("2018-06-27")),
-    aes(cant_int, depth, col = "interpolated")
+    aes(cant_pos_int, depth, col = "interpolated")
   ) +
   scale_y_reverse() +
   scale_color_brewer(palette = "Dark2", name = "") +
@@ -249,12 +257,12 @@ ggplot() +
 
 # remove cant data at grid cells without observations
 
-GLODAP <- GLODAP_Cant_obs %>%
+GLODAP <- GLODAP_cant_obs %>%
   filter(!is.na(Cstar)) %>%
-  mutate(cant = cant_int) %>%
-  select(-cant_int, n)
+  mutate(cant_pos = cant_pos_int) %>%
+  select(-cant_pos_int, n)
 
-rm(GLODAP_Cant_obs)
+rm(GLODAP_cant_obs)
 
 ```
 
@@ -268,8 +276,12 @@ GLODAP <- left_join(GLODAP, co2_atm)
 
 ```
 
-
 ## Calculate adjustment
+
+Calculate Cant for tref = 2007 by applying alpha = 0.28 to the estimate of Sabine et al. (2004).
+
+For tref = 2015 we scaled alpha as 0.28/13 * dt.
+
 
 ```{r adjust_reference_year}
 
@@ -291,9 +303,12 @@ GLODAP <- full_join(GLODAP, co2_atm_tref)
 
 rm(co2_atm, tref)
 
-GLODAP <- GLODAP %>% 
-  mutate(Cstar_tref_delta = 
-           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * cant,
+
+GLODAP <- GLODAP %>%
+  mutate(alpha = (tref - min(tref)) * (0.28 / 13),
+         cant_pos = cant_pos * (1 + alpha),
+         Cstar_tref_delta =
+           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * cant_pos,
          Cstar_tref = Cstar - Cstar_tref_delta)
 
 ```
@@ -316,10 +331,13 @@ GLODAP %>%
 
 GLODAP %>% 
   sample_n(1e4) %>% 
-  ggplot(aes(year, Cstar_tref_delta, col = cant)) +
+  ggplot(aes(year, Cstar_tref_delta, col = cant_pos)) +
   geom_point() +
   scale_color_viridis_c() +
   labs(title = "random subsample 1e4")
+
+GLODAP <- GLODAP %>% 
+  select(-c(alpha))
 
 ```
 
@@ -337,17 +355,15 @@ GLODAP_cruise <- GLODAP %>%
 
 ```{r meridional_sections, fig.asp=0.6}
 
-GLODAP_cruise %>%
-  arrange(date) %>% 
-  ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
-  geom_path() +
-  geom_point(aes(col = date)) +
-  coord_quickmap(expand = 0) +
+map +
+  geom_path(data = GLODAP_cruise %>%
+              arrange(date),
+            aes(lon, lat)) +
+  geom_point(data = GLODAP_cruise %>%
+              arrange(date),
+             aes(lon, lat, col = date)) +
   scale_color_viridis_c(trans = "date") +
-  labs(title = paste("Cruise year:", mean(GLODAP_cruise$year))) +
-  theme(axis.title = element_blank())
+  labs(title = paste("Cruise year:", mean(GLODAP_cruise$year)))
 
 lat_section <- 
 GLODAP_cruise %>%
@@ -377,7 +393,7 @@ lat_section +
 rm(lat_section, GLODAP_cruise)
 
 GLODAP <- GLODAP %>% 
-  select(-c(rCP_phosphate:Cstar, cant:Cstar_tref_delta))
+  select(-c(rCP_phosphate:Cstar, cant_pos:Cstar_tref_delta))
 
 ```
 
@@ -533,7 +549,7 @@ GLODAP <- full_join(GLODAP, cruises)
 n <- 0
 for (i_cruise in unique(cruises$cruise)) {
 
-#i_cruise <- unique(cruises$cruise)[1]
+# i_cruise <- unique(cruises$cruise)[1]
 n <- n+1
 print(n)  
   
@@ -544,12 +560,10 @@ GLODAP_cruise <- GLODAP %>%
 cruises_cruise <- cruises %>%
   filter(cruise == i_cruise)
   
-map <- GLODAP_cruise %>%
-  ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask,
-              aes(lon, lat), fill = "grey80") +
-  geom_point(aes(col=date)) +
-  coord_quickmap(expand = FALSE) +
+map_plot <- 
+  map +
+  geom_point(data = GLODAP_cruise,
+             aes(lon, lat, col = date)) +
   scale_color_viridis_c(trans = "date") +
   labs(title = paste("Mean date:", cruises_cruise$date_mean,
                      "| cruise:", cruises_cruise$cruise,
@@ -583,7 +597,7 @@ lon_nitrate <- lon_section+
   geom_point(aes(col=nitrate))
 
 lon_Cstar <- lon_section+
-  geom_point(aes(col=Cstar))
+  geom_point(aes(col=Cstar_tref))
 
 
 lat_section <- GLODAP_cruise %>%
@@ -613,7 +627,7 @@ lat_nitrate <- lat_section+
   geom_point(aes(col=nitrate))
 
 lat_Cstar <- lat_section+
-  geom_point(aes(col=Cstar))
+  geom_point(aes(col=Cstar_tref))
 
 hist_tco2 <- GLODAP_cruise %>%
   ggplot(aes(tco2)) +
@@ -644,10 +658,10 @@ hist_nitrate <- GLODAP_cruise %>%
   geom_histogram()
 
 hist_Cstar <- GLODAP_cruise %>%
-  ggplot(aes(Cstar)) +
+  ggplot(aes(Cstar_tref)) +
   geom_histogram()
 
-(map /
+(map_plot /
     ((hist_tco2 / hist_talk / hist_phosphate / hist_Cstar) |
        (hist_oxygen / hist_phosphate_star / hist_nitrate / hist_aou)
     )) |
@@ -665,7 +679,7 @@ ggsave(here::here("output/figure/eMLR/data_preparation/all_cruises_clean",
                         sep = "_")),
                   width = 20, height = 12)
 
-rm(map,
+rm(map_plot,
    lon_section, lat_section,
    lat_tco2, lat_talk, lat_phosphate, lon_tco2, lon_talk, lon_phosphate,
    GLODAP_cruise, cruises_cruise)
@@ -683,13 +697,13 @@ rm(map,
 GLODAP <- GLODAP %>% 
   rename(Cstar = Cstar_tref)
 
-GLODAP %>% write_csv(here::here("data/GLODAPv2_2020/_summarized_data_files",
-                                "GLODAP_MLR_fitting_ready.csv"))
+GLODAP %>% write_csv(here::here("data/interim",
+                                "GLODAPv2.2020_MLR_fitting_ready.csv"))
 
-co2_atm_tref  %>% 
-  write_csv(here::here(
-    "data/pCO2_atmosphere/_summarized_data_files",
-    "co2_atm_tref.csv"
-  ))
+# co2_atm_tref  %>% 
+#   write_csv(here::here(
+#     "data/interim",
+#     "co2_atm_tref.csv"
+#   ))
 
 ```
