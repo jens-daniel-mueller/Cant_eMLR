@@ -33,7 +33,7 @@ theme_set(theme_bw())
 
 ```{r read_atm_co2}
 
-co2_atm <- read_table2(here::here("data/pCO2_atmosphere",
+co2_atm <- read_table2(here::here("data/input/pCO2_atmosphere",
                               "co2_annmean_gl.txt"),
                    col_names = FALSE, comment = "#")
 
@@ -61,9 +61,7 @@ co2_atm %>%
 ```{r write_co2_atm_clean_file}
 
 co2_atm %>% 
-  write_csv(here::here("data/pCO2_atmosphere/_summarized_data_files",
+  write_csv(here::here("data/interim",
                        "co2_atm.csv"))
-
-rm(co2_atm)
 
 ```

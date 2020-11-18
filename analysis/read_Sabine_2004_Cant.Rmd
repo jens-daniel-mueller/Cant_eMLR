@@ -20,12 +20,12 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(patchwork)
 library(lubridate)
+library(collapse)
 ```
-
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 ```
 
@@ -33,24 +33,25 @@ parameters <-
 basinmask <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18_AIP.csv"
+      "data/auxillary",
+      "basin_mask_WOA18.csv"
     )
   )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
+
 section_global_coordinates <-
-  read_csv(here::here("data",
+  read_csv(here::here("data/auxillary",
                        "section_global_coordinates.csv"))
+```
+
+```{r read_map, include = FALSE}
+map <-
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
+source(here::here("code", "mapping_functions.R"))
 ```
 
 ```{r ggplot_theme, include = FALSE}
@@ -59,54 +60,65 @@ theme_set(theme_bw())
 
 # Data source
 
-- Anthropogenic CO2 estimates (1994-2007) by Gruber et al. (2019) downloaded in August 2020 from [NOAA/NCEI Ocean Carbon Data System (OCADS)](ftp://ftp.nodc.noaa.gov/pub/data.nodc/ncei/ocads/data/0001644/){target="_blank"}
+- Anthropogenic CO2 estimates (1800-1994) by Sabine et al. (2004) downloaded in August 2020 from [NOAA/NCEI Ocean Carbon Data System (OCADS)](ftp://ftp.nodc.noaa.gov/pub/data.nodc/ncei/ocads/data/0001644/){target="_blank"}
 
 # Read ncdfs
 
 ```{r read_Sabine_2004}
 
-AnthCO2_data <- read_csv("data/GLODAPv1_1/GLODAP_gridded.data/AnthCO2.data/AnthCO2.data.txt", 
+AnthCO2_data <-
+  read_csv(
+    "data/input/GLODAPv1_1/GLODAP_gridded.data/AnthCO2.data/AnthCO2.data.txt",
     col_names = FALSE,
     na = "-999",
-    col_types = list(.default = "d"))
+    col_types = list(.default = "d")
+  )
 
-Depth_centers <- read_file("data/GLODAPv1_1/GLODAP_gridded.data/Depth.centers.txt")
+Depth_centers <-
+  read_file("data/input/GLODAPv1_1/GLODAP_gridded.data/Depth.centers.txt")
 
-Depth_centers <- Depth_centers %>% 
-  str_split(",") %>% 
+Depth_centers <- Depth_centers %>%
+  str_split(",") %>%
   as_vector()
 
-Lat_centers <- read_file("data/GLODAPv1_1/GLODAP_gridded.data/Lat.centers.txt")
+Lat_centers <-
+  read_file("data/input/GLODAPv1_1/GLODAP_gridded.data/Lat.centers.txt")
 
-Lat_centers <- Lat_centers %>% 
-  str_split(",") %>% 
+Lat_centers <- Lat_centers %>%
+  str_split(",") %>%
   as_vector()
 
-Long_centers <- read_file("data/GLODAPv1_1/GLODAP_gridded.data/Long.centers.txt")
+Long_centers <-
+  read_file("data/input/GLODAPv1_1/GLODAP_gridded.data/Long.centers.txt")
 
-Long_centers <- Long_centers %>% 
-  str_split(",") %>% 
+Long_centers <- Long_centers %>%
+  str_split(",") %>%
   as_vector()
 
 names(AnthCO2_data) <- Lat_centers
 
-Long_Depth <- expand_grid(depth = Depth_centers, lon = Long_centers) %>% 
+Long_Depth <-
+  expand_grid(depth = Depth_centers, lon = Long_centers) %>%
   mutate(lon = as.numeric(lon),
          depth = as.numeric(depth))
 
-Cant <- bind_cols(AnthCO2_data, Long_Depth)
+cant_3d <- bind_cols(AnthCO2_data, Long_Depth)
 
-Cant <- Cant %>% 
-  pivot_longer(1:180, names_to = "lat", values_to = "cant") %>% 
+cant_3d <- cant_3d %>%
+  pivot_longer(1:180, names_to = "lat", values_to = "cant") %>%
   mutate(lat = as.numeric(lat))
 
-Cant <- Cant %>% 
+cant_3d <- cant_3d %>%
   drop_na()
 
-Cant <- Cant %>% 
+cant_3d <- cant_3d %>%
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
-rm(AnthCO2_data, Long_Depth, Depth_centers, Lat_centers, Long_centers)
+rm(AnthCO2_data,
+   Long_Depth,
+   Depth_centers,
+   Lat_centers,
+   Long_centers)
 
 ```
 
@@ -114,7 +126,7 @@ rm(AnthCO2_data, Long_Depth, Depth_centers, Lat_centers, Long_centers)
 
 ```{r apply_basin_mask}
 
-Cant <- inner_join(Cant, basinmask)
+cant_3d <- inner_join(cant_3d, basinmask)
 
 ```
 
@@ -123,16 +135,18 @@ Cant <- inner_join(Cant, basinmask)
 
 ```{r calculate_inventory}
 
-source(here::here("code", "inventory_calculation.R"))
+cant_3d <- cant_3d %>% 
+  mutate(cant_pos = if_else(cant <= 0, 0, cant),
+         eras = "1800-1994")
 
-Cant <- layer_inventory(Cant, "cant")
+cant_inv <- calc_cant_inv(cant_3d) 
 
-Cant_inv <- Cant %>% 
-  filter(depth <= parameters$inventory_depth) %>% 
-  group_by(lon, lat, basin, basin_AIP) %>% 
-  summarise(cant_inv = sum(layer_inv_pos, na.rm = TRUE) / 1000,
-            cant_inv_incl_neg = sum(layer_inv, na.rm = TRUE) / 1000) %>% 
-  ungroup()
+# cant_inv <- cant_3d %>% 
+#   filter(depth <= parameters$inventory_depth) %>% 
+#   group_by(lon, lat, basin, basin_AIP) %>% 
+#   summarise(cant_inv = sum(layer_inv_pos, na.rm = TRUE) / 1000,
+#             cant_inv_incl_neg = sum(layer_inv, na.rm = TRUE) / 1000) %>% 
+#   ungroup()
 
 ```
 
@@ -148,50 +162,61 @@ Section locations are indicated as white lines in maps.
 
 ## Horizontal plane maps
 
-```{r Cant_maps, fig.asp=0.6}
+```{r cant_maps, fig.asp=0.6}
 
-map_climatology(Cant, "cant")
+map_climatology(cant_3d, "cant")
 
 
 ```
 
 ## Sections
 
-```{r Cant_sections}
+```{r cant_sections}
 
-section_global(Cant, "cant")
+section_global(cant_3d, "cant")
 
 ```
 
 ## Sections at regular longitudes
 
-```{r Cant_sections_regular, fig.asp=2}
+```{r cant_sections_regular, fig.asp=2}
 
-section_climatology_regular(Cant, "cant")
+section_climatology_regular(cant_3d, "cant")
 
 ```
 
+## Zonal mean section
+
+```{r calculate_zonal_mean_section}
+
+cant_zonal <- zonal_mean_section(cant_3d %>% select(-basin))
+
+```
 
 ## Inventory maps
 
-```{r Cant_inv_pos_maps, fig.asp=0.6}
+```{r cant_inv_pos_maps, fig.asp=0.6}
 
-map_climatology_inv(Cant_inv, "cant_inv")
+map_inventory(cant_inv, "cant_inv")
 
 ```
 
 
 ## Write files
 
-```{r write_Sabine_Cant_file}
+```{r write_Sabine_2004_cant_file}
 
-Cant %>% 
-  write_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                       "Cant_94.csv"))
+cant_3d %>% 
+  write_csv(here::here("data/interim",
+                       "S04_cant_3d.csv"))
 
-Cant_inv %>% 
-  write_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                       "Cant_94_inv.csv"))
+cant_inv %>% 
+  write_csv(here::here("data/interim",
+                       "S04_cant_inv.csv"))
+
+cant_zonal %>% 
+  write_csv(here::here("data/interim",
+                       "S04_cant_zonal.csv"))
 
 
 ```

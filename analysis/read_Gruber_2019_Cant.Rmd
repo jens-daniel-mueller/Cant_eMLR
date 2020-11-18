@@ -25,10 +25,9 @@ library(collapse)
 library(scico)
 ```
 
-
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 ```
 
@@ -36,20 +35,20 @@ parameters <-
 basinmask <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18_AIP.csv"
+      "data/auxillary",
+      "basin_mask_WOA18.csv"
     )
   )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
+
 section_global_coordinates <-
-  read_csv(here::here("data",
+  read_csv(here::here("data/auxillary",
                        "section_global_coordinates.csv"))
+```
+
+```{r read_map, include = FALSE}
+map <-
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -73,7 +72,7 @@ The publically available data sets contain only positive Cant estimates.
 
 ```{r read_Gruber_dcant}
 
-dcant <- tidync(here::here("data/Gruber_2019",
+dcant <- tidync(here::here("data/input/Gruber_2019",
                                "dcant_emlr_cstar_gruber_94-07_vs1.nc"))
 
 dcant <- dcant %>%  activate(DCANT_01)
@@ -91,7 +90,7 @@ dcant <- dcant %>%
 
 ```{r read_Gruber_dcant_inv}
 
-dcant_inv <- tidync(here::here("data/Gruber_2019",
+dcant_inv <- tidync(here::here("data/input/Gruber_2019",
                                "inv_dcant_emlr_cstar_gruber_94-07_vs1.nc"))
 
 dcant_inv <- dcant_inv %>%  activate(DCANT_INV01)
@@ -113,7 +112,7 @@ Internally available data sets also contain negative Cant estimates, as they are
 
 ```{r read_Gruber_V101}
 
-V101 <- tidync(here::here("data/Gruber_2019",
+V101 <- tidync(here::here("data/input/Gruber_2019",
                                "Cant_V101new.nc"))
 
 V101 <- V101 %>%  activate(Cant)
@@ -134,8 +133,8 @@ V101 <- V101 %>%
 
 ```{r apply_basin_mask}
 
-basinmask <- basinmask %>% 
-  select(-basin)
+# basinmask <- basinmask %>% 
+#   select(-basin)
 
 dcant <- inner_join(dcant, basinmask)
 dcant_inv <- inner_join(dcant_inv, basinmask)
@@ -159,7 +158,7 @@ rm(dcant, V101)
 
 ```{r calculate_zonal_mean_section}
 
-cant_zonal <- zonal_mean_section(cant_3d)
+cant_zonal <- zonal_mean_section(cant_3d %>% select(-basin))
 
 ```
 
@@ -169,19 +168,19 @@ cant_zonal <- zonal_mean_section(cant_3d)
 
 ```{r calculate_column_inventory}
 
-cant_inventory <- calc_cant_inventory(cant_3d)
+cant_inv <- calc_cant_inv(cant_3d)
 
 ```
 
-```{r G19_cant_inventory_maps}
+```{r G19_cant_inv_maps}
 
-map_inventory_divergent(cant_inventory, "cant_inv")
+map_inventory_divergent(cant_inv, "cant_inv")
 
 ```
 
 ```{r G19_cant_pos_inventory_maps}
 
-map_inventory(cant_inventory, "cant_pos_inv")
+map_inventory(cant_inv, "cant_pos_inv")
 
 ```
 
@@ -198,7 +197,7 @@ map_inventory(dcant_inv, "cant_pos_inv")
 ```{r G19_cant_offset_inventory}
 
 cant_offset <- inner_join(
-  cant_inventory %>% rename(cant_re = cant_pos_inv),
+  cant_inv %>% rename(cant_re = cant_pos_inv),
   dcant_inv %>% rename(cant_pub = cant_pos_inv)
 )
 
@@ -246,7 +245,7 @@ map_climatology(cant_3d, "cant_pos")
 
 ```{r Cant_sections_V101, fig.asp=0.8}
 
-section_global(cant_3d, "cant")
+section_global(cant_3d, "cant", "G19")
 
 ```
 
@@ -254,7 +253,7 @@ section_global(cant_3d, "cant")
 
 ```{r Cant_sections, fig.asp=0.8}
 
-section_global(cant_3d, "cant_pos")
+section_global(cant_3d, "cant_pos", "G19")
 
 ```
 
@@ -282,15 +281,15 @@ section_climatology_regular(cant_3d, "cant_pos")
 ```{r write_Gruber_Cant_file}
 
 cant_3d %>% 
-  write_csv(here::here("data/Gruber_2019/_summarized_files",
+  write_csv(here::here("data/interim",
                        "G19_cant_3d.csv"))
 
-cant_inventory %>% 
-  write_csv(here::here("data/Gruber_2019/_summarized_files",
+cant_inv %>% 
+  write_csv(here::here("data/interim",
                        "G19_cant_inv.csv"))
 
 cant_zonal %>% 
-  write_csv(here::here("data/Gruber_2019/_summarized_files",
+  write_csv(here::here("data/interim",
                        "G19_cant_zonal.csv"))
 
 ```

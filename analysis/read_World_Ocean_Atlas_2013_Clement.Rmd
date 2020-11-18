@@ -26,22 +26,34 @@ library(oce)
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 ```
 
-```{r read_mask_files}
 
-basinmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "basin_mask_WOA18.csv"))
+```{r read_map, include = FALSE}
 
-landmask <- read_csv(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                                 "land_mask_WOA18.csv"))
+map <-
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
+```
+
+
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/auxillary",
+      "basin_mask_WOA18.csv"
+    )
+  )
+
 section_global_coordinates <-
-  read_csv(here::here("data",
+  read_csv(here::here("data/auxillary",
                        "section_global_coordinates.csv"))
 
 ```
+
 
 ```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
@@ -60,7 +72,7 @@ Dominic Clement provided a netcdf file with the basin mask and neutral densities
 ```{r read_WOA13_dclement}
 
 
-nd_mask <- tidync(here::here("data/World_Ocean_Atlas_2013_Clement",
+nd_mask <- tidync(here::here("data/input/World_Ocean_Atlas_2013_Clement",
                              "nd_mask.nc"))
 
 nd_mask_tibble <- nd_mask %>% hyper_tibble()
@@ -130,7 +142,7 @@ map_climatology(nd_mask_tibble, "gamma")
 
 ```{r neutral_density_section_WOA18}
 
-section_global(nd_mask_tibble, "gamma")
+section_global(nd_mask_tibble, "gamma", "WOA13")
 
 ```
 
@@ -138,12 +150,10 @@ section_global(nd_mask_tibble, "gamma")
 
 ## Write file
 
-```{r write_WOA13_dclement_file}
+```{r write_WOA13_dclement_file, eval=FALSE}
 
 nd_mask_tibble %>%
   write_csv(here::here("data/World_Ocean_Atlas_2013_Clement/_summarized_files",
                        "WOA13_mask_gamma.csv"))
-
-rm(nd_mask, nd_mask_tibble, Atl_lon, Pac_lon, depth_surface_selection)
 
 ```
