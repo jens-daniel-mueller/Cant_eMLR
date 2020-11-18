@@ -31,17 +31,28 @@ library(gt)
 
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
+```
 
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
+```{r read_mask_files, include = FALSE}
+basinmask <-
+  read_csv(
+    here::here(
+      "data/auxillary",
+      "basin_mask_WOA18.csv"
+    )
+  )
+
+section_global_coordinates <-
+  read_csv(here::here("data/auxillary",
+                       "section_global_coordinates.csv"))
 ```
 
 ```{r read_map, include = FALSE}
-
 map <-
-  read_rds(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                       "map.rds"))
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
 
 ```{r read_functions, include = FALSE}
@@ -65,7 +76,7 @@ Following Cant estimates from this study (JDM) and Gruber 2019 (G19) are used:
 ```{r read_cant_files}
 
 # cant_3d_JDM <-
-#   read_csv(here::here("data/mapping/_summarized_files",
+#   read_csv(here::here("data/output",
 #                          "cant_3d.csv"))
 # 
 # cant_3d_JDM <- cant_3d_JDM %>%
@@ -80,7 +91,7 @@ Following Cant estimates from this study (JDM) and Gruber 2019 (G19) are used:
 
 
 cant_zonal_JDM <-
-  read_csv(here::here("data/mapping/_summarized_files",
+  read_csv(here::here("data/output",
                          "cant_zonal.csv"))
 
 cant_zonal_JDM <- cant_zonal_JDM %>%
@@ -94,16 +105,13 @@ cant_zonal_JDM <- cant_zonal_JDM %>%
          cant_pos_sd)
 
 
-cant_inventory_JDM <-
-  read_csv(here::here("data/mapping/_summarized_files",
+cant_inv_JDM <-
+  read_csv(here::here("data/output",
                          "cant_inv.csv"))
 
-cant_inventory_JDM <- cant_inventory_JDM %>% 
-  rename(cant_pos_inv = cant_inv_pos)
-
-cant_inventory_JDM <- cant_inventory_JDM %>% 
+cant_inv_JDM <- cant_inv_JDM %>% 
   filter(eras == "JGOFS_GO") %>% 
-  select(-c(eras, basin))
+  select(-c(eras))
 
 ```
 
@@ -112,22 +120,22 @@ cant_inventory_JDM <- cant_inventory_JDM %>%
 ```{r read_Gruber_cant_file}
 
 # cant_3d_G19 <- 
-#   read_csv(here::here("data/Gruber_2019/_summarized_files",
+#   read_csv(here::here("data/interim",
 #                        "G19_cant_3d.csv"))
 # 
 # cant_3d_G19 <- cant_3d_G19 %>% 
 #   mutate(estimate = "G19") %>% 
 #   select(-eras)
 
-cant_inventory_G19 <- 
-  read_csv(here::here("data/Gruber_2019/_summarized_files",
+cant_inv_G19 <- 
+  read_csv(here::here("data/interim",
                        "G19_cant_inv.csv"))
 
-cant_inventory_G19 <- cant_inventory_G19 %>% 
+cant_inv_G19 <- cant_inv_G19 %>% 
   select(-eras)
 
 cant_zonal_G19 <- 
-  read_csv(here::here("data/Gruber_2019/_summarized_files",
+  read_csv(here::here("data/interim",
                        "G19_cant_zonal.csv"))
 
 cant_zonal_G19 <- cant_zonal_G19 %>%
@@ -150,8 +158,8 @@ Inventories and zonal sections are merged, and differences calculate per grid ce
 ```{r join_G19_and_JDM_inventories}
 
 cant_inventory_long <- bind_rows(
-  cant_inventory_JDM %>%  mutate(estimate = "JDM"),
-  cant_inventory_G19 %>%  mutate(estimate = "G19")
+  cant_inv_JDM %>%  mutate(estimate = "JDM"),
+  cant_inv_G19 %>%  mutate(estimate = "G19")
   )
 
 cant_inventory_wide <- cant_inventory_long %>% 

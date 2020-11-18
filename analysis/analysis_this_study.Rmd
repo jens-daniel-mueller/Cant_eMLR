@@ -27,51 +27,31 @@ library(kableExtra)
 library(threejs)
 ```
 
-
 ```{r read_parameters, include = FALSE}
 parameters <-
-  read_rds(here::here("data",
+  read_rds(here::here("data/auxillary",
                        "parameters.rds"))
-
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 ```
 
 ```{r read_mask_files, include = FALSE}
 basinmask <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
+      "data/auxillary",
       "basin_mask_WOA18.csv"
-    )
-  )
-basinmask_AIP <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18_AIP.csv"
-    )
-  )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
     )
   )
 
 section_global_coordinates <-
-  read_csv(here::here("data",
+  read_csv(here::here("data/auxillary",
                        "section_global_coordinates.csv"))
 ```
 
-
 ```{r read_map, include = FALSE}
-
 map <-
-  read_rds(here::here("data/World_Ocean_Atlas_2018/_summarized_files",
-                       "map.rds"))
+  read_rds(here::here("data/auxillary",
+                       "map_landmask_WOA18.rds"))
 ```
-
 
 ```{r read_functions, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
@@ -94,19 +74,19 @@ cant estimates from this study:
 
 
 cant_3d <-
-  read_csv(here::here("data/mapping/_summarized_files",
+  read_csv(here::here("data/output",
                          "cant_3d.csv"))
 
 cant_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
+  read_csv(here::here("data/output",
                          "cant_zonal.csv"))
 
 cant_predictor_average_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
+  read_csv(here::here("data/output",
                          "cant_predictor_zonal.csv"))
 
-cant_inventory <-
-  read_csv(here::here("data/mapping/_summarized_files",
+cant_inv <-
+  read_csv(here::here("data/output",
                          "cant_inv.csv"))
 
 ```
@@ -118,14 +98,13 @@ C* estimates from this study:
 
 ```{r read_cstar_files}
 
+Cstar_3d <-
+  read_csv(here::here("data/output",
+                         "Cstar_3d.csv"))
 
-Cstar_average <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cstar_average.csv"))
-
-Cstar_average_zonal <-
-  read_csv(here::here("data/mapping/_summarized_files",
-                         "Cstar_average_zonal.csv"))
+Cstar_zonal <-
+  read_csv(here::here("data/output",
+                         "Cstar_zonal.csv"))
 
 
 ```
@@ -137,8 +116,8 @@ Cleaned GLODAPv2_2020 file as used in this study
 GLODAP <-
   read_csv(
     here::here(
-      "data/GLODAPv2_2020/_summarized_data_files",
-      "GLODAP_MLR_fitting_ready.csv"
+      "data/interim",
+      "GLODAPv2.2020_MLR_fitting_ready.csv"
     )
   )
 
@@ -170,9 +149,9 @@ Global cant inventories were estimated in Pg-C. Please note that here we only ad
 
 ```{r calculate_global_inventory}
 
-cant_inventory <- left_join(cant_inventory, basinmask_AIP) 
+# cant_inv <- left_join(cant_inv, basinmask_AIP) 
 
-cant_inventory_budget <- cant_inventory %>% 
+cant_inv_budget <- cant_inv %>% 
   mutate(surface_area = earth_surf(lat, lon),
          cant_inv_grid = cant_inv*surface_area) %>% 
   group_by(eras, basin_AIP) %>% 
@@ -183,12 +162,12 @@ cant_inventory_budget <- cant_inventory %>%
   pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
   mutate(total = Atlantic + Indian + Pacific)
 
-cant_inventory_budget %>% 
+cant_inv_budget %>% 
   kableExtra::kable() %>% 
   add_header_above() %>%
   kable_styling(full_width = FALSE)
 
-rm(cant_inventory_budget)
+rm(cant_inv_budget)
 
 ```
 
@@ -228,10 +207,9 @@ for (i_basin_AIP in unique(df$basin_AIP)) {
   }
 }
 
-rm(df, var, breaks, legend_title, breaks_n)
+rm(df, var, breaks, legend_title)
   
 ```
-
 
 ## Isoneutral slab distribution
 
@@ -261,17 +239,12 @@ cant_gamma_maps <- cant_gamma_maps %>%
   mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
 
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey30") +
+map +
   geom_raster(data = cant_gamma_maps,
               aes(lon, lat, fill = cant_pos_int)) +
   scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
   facet_grid(gamma_slab ~ eras) +
-  coord_quickmap(expand = 0) +
-  theme(axis.title = element_blank(),
-        axis.ticks = element_blank(),
+  theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         legend.position = "top")
 
@@ -287,15 +260,15 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 breaks <- c(seq(0,16,2),Inf)
 breaks_n <- length(breaks) - 1
 
-cant_inventory <- cant_inventory %>% 
-  mutate(cant_inv_pos_int = cut(cant_inv_pos, 
+cant_inv <- cant_inv %>% 
+  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
                                 breaks,
                                 right = FALSE)) %>% 
   mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
 
 map +
-  geom_raster(data = cant_inventory,
-              aes(lon, lat, fill = cant_inv_pos_int)) +
+  geom_raster(data = cant_inv,
+              aes(lon, lat, fill = cant_pos_inv_int)) +
   scale_fill_manual(values = Gruber_rainbow(breaks_n),
                      name = expression(atop(Delta*C[ant],
                                            (mol~m^{-2})))) +
@@ -334,6 +307,9 @@ In a second series of plots we explore the distribution of cant, taking positive
 ## Zonal mean sections
 
 ```{r cant_all_zonal_mean_sections}
+
+slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
+
 section_zonal_average_divergent(cant_zonal,
                                 "cant_mean",
                                 "gamma_mean")
@@ -367,18 +343,13 @@ cant_gamma_maps <- cant_gamma_maps %>%
                         right = FALSE)) %>% 
   mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
 
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey30") +
+map +
   geom_raster(data = cant_gamma_maps,
               aes(lon, lat, fill = cant_int)) +
   scale_fill_brewer(palette = "RdBu",
                     direction = -1) +
   facet_grid(gamma_slab ~ eras) +
-  coord_quickmap(expand = 0) +
   theme(
-    axis.title = element_blank(),
     axis.ticks = element_blank(),
     axis.text = element_blank(),
     legend.position = "top"
@@ -396,22 +367,18 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 breaks <- c(-Inf, seq(-16,16,4),Inf)
 breaks_n <- length(breaks) - 1
 
-cant_inventory <- cant_inventory %>% 
+cant_inv <- cant_inv %>% 
   mutate(cant_inv_int = cut(cant_inv, 
                                 breaks,
                                 right = FALSE))
-cant_inventory %>% 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-    geom_raster(aes(lon, lat, fill = cant_inv_int)) +
-    coord_quickmap(expand = 0) +
+
+map +
+  geom_raster(data = cant_inv ,
+              aes(lon, lat, fill = cant_inv_int)) +
   scale_fill_brewer(palette = "RdBu",
                     direction = -1) +
-  facet_wrap(~eras, ncol = 1) +
-    theme(
-      axis.title = element_blank()
-    )
+  facet_wrap( ~ eras, ncol = 1) +
+  theme(axis.title = element_blank())
 
 
 rm(breaks, breaks_n)
@@ -564,19 +531,14 @@ GLODAP_obs_coverage <- GLODAP %>%
   count(lat, lon, gamma_slab, era) %>% 
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
   
-ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
+map +
   geom_raster(data = gamma_maps,
               aes(lon, lat, fill = depth_max)) +
   geom_raster(data = GLODAP_obs_coverage,
               aes(lon, lat), fill = "red") +
   facet_grid(gamma_slab ~ era) +
-  coord_quickmap(expand = 0) +
   scale_fill_viridis_c(direction = -1) +
-  theme(axis.title = element_blank(),
-        axis.ticks = element_blank(),
+  theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         legend.position = "top")
 
@@ -646,10 +608,10 @@ cant_zonal %>%
 
 ```{r Cstar_zonal_mean_era}
 
-Cstar_average_zonal <- Cstar_average_zonal %>% 
+Cstar_zonal <- Cstar_zonal %>% 
     mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) 
 
-Cstar_average_zonal %>% 
+Cstar_zonal %>% 
     ggplot(aes(lat, depth, z = Cstar_mean_mean)) +
     geom_contour_filled(bins = 11) +
     scale_fill_viridis_d(name = "Cstar") +
