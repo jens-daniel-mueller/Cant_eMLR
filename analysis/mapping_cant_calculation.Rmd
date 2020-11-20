@@ -12,61 +12,15 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(metR)
+# Libraries
+
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
 library(seacarb)
-library(collapse)
-```
-
-```{r read_parameters, include = FALSE}
-
-parameters <-
-  read_rds(here::here("data",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files}
-
-basinmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18.csv"
-    )
-  )
-
-basinmask_AIP <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18_AIP.csv"
-    )
-  )
-
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
-
-section_global_coordinates <-
-  read_csv(here::here("data",
-                       "section_global_coordinates.csv"))
-```
-
-```{r read_parameters_functions, include = FALSE}
-source(here::here("code", "plotting_functions.R"))
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
 ```
 
 # Predictor fields
@@ -94,7 +48,7 @@ predictors_surface <-
 
 co2_atm_tref <-
   read_csv(here::here(
-    "data/pCO2_atmosphere/_summarized_data_files",
+    "data/interim",
     "co2_atm_tref.csv"
   ))
 
@@ -252,7 +206,6 @@ map_climatology(predictors_surface, "pCO2")
 
 section_global_surface(predictors_surface, "pCO2")
 
-
 ```
 
 ### Revelle factor
@@ -407,7 +360,7 @@ For each basin and era combination, the zonal mean cant is calculated, again for
 ```{r Calculate_cant_zonal_mean_sections}
 
 cant_average <- left_join(cant_average,
-                          basinmask_AIP %>% select(-basin))
+                          basinmask %>% select(-basin))
 
 cant_average_zonal <- cant_average %>%
   fselect(lat, depth, eras, basin, basin_AIP,
@@ -417,26 +370,6 @@ cant_average_zonal <- cant_average %>%
             fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
             fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
   }
-
-
-# cant_average_zonal <- cant_average %>%
-#   group_by(lat, depth, eras, basin, basin_AIP) %>%
-#   summarise(across(
-#     c(
-#       "cant_mean",
-#       "cant_pos_mean",
-#       "cant_sd",
-#       "cant_pos_sd",
-#       "gamma_mean",
-#       "gamma_sd"
-#     ),
-#     list(
-#       mean = ~ mean(.x, na.rm = TRUE),
-#       sd = ~ sd(.x, na.rm = TRUE)
-#     )
-#   )) %>%
-#   ungroup()
-
 
 cant_average_zonal_Atl <- cant_average_zonal %>% 
   filter(basin == "Atlantic") %>% 
@@ -459,7 +392,7 @@ For each basin and era combination, the zonal mean cant is calculated by model c
 ```{r Calculate_cant_predictor_mean_sections}
 
 cant_predictor_average <- full_join(cant_predictor_average,
-                                basinmask_AIP %>% select(-basin))
+                                basinmask %>% select(-basin))
 
 cant_predictor_average_zonal <- cant_predictor_average %>%
   fselect(lat, depth, eras, basin, basin_AIP,
@@ -468,15 +401,6 @@ cant_predictor_average_zonal <- cant_predictor_average %>%
    add_vars(fgroup_vars(.,"unique"),
             fmean(., keep.group_vars = FALSE))
   }
-
-
-# cant_predictor_average_zonal <- cant_predictor_average %>%
-#   group_by(lat, depth, eras, basin, basin_AIP) %>%
-#   summarise(across(
-#     cant_intercept_mean:gamma_mean,
-#     list(mean = ~ mean(.x, na.rm = TRUE))
-#   )) %>%
-#   ungroup()
 
 
 cant_predictor_average_zonal_Atl <- cant_predictor_average_zonal %>% 
@@ -504,34 +428,7 @@ Step 2 is performed again for all cant and positive cant values only
 
 ```{r calculate_inventories}
 
-depth_level_volume <- tibble(depth = unique(cant_average$depth)) %>% 
-  arrange(depth)
-
-depth_level_volume <- depth_level_volume %>%
-  mutate(
-    layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
-    layer_thickness_below = replace_na((lead(depth) - depth) / 2, 0),
-    layer_thickness = layer_thickness_above + layer_thickness_below
-  ) %>%
-  select(-c(layer_thickness_above,
-            layer_thickness_below))
-
-cant_average <-
-  full_join(cant_average, depth_level_volume)
-
-cant_average <- cant_average %>%
-  mutate(layer_inv = cant * layer_thickness) %>%
-  mutate(layer_inv_pos = if_else(layer_inv < 0, 0, layer_inv)) %>%
-  select(-layer_thickness)
-
-cant_inv <- cant_average %>%
-  group_by(lon, lat, basin, basin_AIP, eras) %>%
-  summarise(
-    cant_inv_pos = sum(layer_inv_pos, na.rm = TRUE) / 1000,
-    cant_inv     = sum(layer_inv, na.rm = TRUE) / 1000
-  ) %>%
-  ungroup()
-
+cant_inv <- calc_cant_inv(cant_average)
 
 ```
 
@@ -541,27 +438,27 @@ cant_inv <- cant_average %>%
 ```{r write_cant_files}
 
 # cant %>%
-#     write_csv(here::here("data/mapping/_summarized_files",
+#     write_csv(here::here("data/output",
 #                          "cant.csv"))
 
 cant_average %>%
-    write_csv(here::here("data/mapping/_summarized_files",
+    write_csv(here::here("data/output",
                          "cant_3d.csv"))
 
 cant_predictor_average %>%
-    write_csv(here::here("data/mapping/_summarized_files",
+    write_csv(here::here("data/output",
                          "cant_predictor_3d.csv"))
 
 cant_average_zonal %>%
-    write_csv(here::here("data/mapping/_summarized_files",
+    write_csv(here::here("data/output",
                          "cant_zonal.csv"))
 
 cant_predictor_average_zonal %>%
-    write_csv(here::here("data/mapping/_summarized_files",
+    write_csv(here::here("data/output",
                          "cant_predictor_zonal.csv"))
 
 cant_inv %>%
-    write_csv(here::here("data/mapping/_summarized_files",
+    write_csv(here::here("data/output",
                          "cant_inv.csv"))
 
 ```

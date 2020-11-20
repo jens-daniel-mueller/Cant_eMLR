@@ -12,55 +12,18 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(patchwork)
+# Libraries
+
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
 library(metR)
 library(marelac)
 library(gsw)
-```
-
-```{r read_parameters, include = FALSE}
-
-parameters <-
-  read_rds(here::here("data",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files}
-
-
-basinmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18.csv"
-    )
-  )
-
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
-
-section_global_coordinates <-
-  read_csv(here::here("data",
-                       "section_global_coordinates.csv"))
-```
-
-```{r read_parameters_functions, include = FALSE}
-source(here::here("code", "plotting_functions.R"))
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
+  
 ```
 
 # Required data
@@ -87,8 +50,8 @@ variables <-
 for (i_variable in variables) {
   temp <- read_csv(
     here::here(
-      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
-      paste(i_variable, ".csv", sep = "")
+      "data/interim",
+      paste("GLODAPv2_2016_MappedClimatology",i_variable, ".csv", sep = "")
     )
   )
   
@@ -118,8 +81,8 @@ variables <-
 for (i_variable in variables) {
   temp <- read_csv(
     here::here(
-      "data/GLODAPv2_2016b_MappedClimatologies/_summarized_files",
-      paste(i_variable, ".csv", sep = "")
+      "data/interim",
+      paste("GLODAPv2_2016_MappedClimatology",i_variable, ".csv", sep = "")
     )
   )
   
@@ -153,16 +116,16 @@ GLODAP_predictors_CO2 <- GLODAP_predictors_CO2 %>%
 WOA18_predictors <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "WOA18_predictors.csv"
+      "data/interim",
+      "WOA18_sal_tem.csv"
     )
   )
 
 WOA18_predictors_surface <-
   read_csv(
     here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "WOA18_predictors_surface.csv"
+      "data/interim",
+      "WOA18_sal_tem_surface.csv"
     )
   )
 
@@ -247,7 +210,7 @@ N_Atl <- predictors %>%
          lon == parameters$lon_Atl_section)
 
 N_Atl <- N_Atl %>% 
-  select(-basin) %>% 
+  select(-c(basin, basin_AIP)) %>% 
   pivot_longer(oxygen:gamma, names_to = "parameter", values_to = "value")
 
 N_Atl %>% 
@@ -365,15 +328,13 @@ Predictor sections along with lines are shown below for each (potential) predict
 
 ```{r predictors_observations_sections_map, fig.asp=0.6}
 
-predictors %>%
-  ggplot(aes(lon, lat)) +
-      geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-  geom_bin2d(binwidth = c(1,1)) +
+map +
+  geom_bin2d(data = predictors,
+             aes(lon, lat),
+             binwidth = c(1,1)) +
   geom_vline(xintercept = parameters$longitude_sections_regular,
              col = "white") +
   scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "bottom")
 
 ```
@@ -404,15 +365,13 @@ Predictor sections along with lines are shown below for each (potential) predict
 
 ```{r predictors_observations_sections_map_surface, fig.asp=0.6}
 
-predictors_surface %>%
-  ggplot(aes(lon, lat)) +
-  geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
-  geom_bin2d(binwidth = c(1,1)) +
+map +
+  geom_bin2d(data = predictors_surface,
+             aes(lon, lat),
+             binwidth = c(1,1)) +
   geom_vline(xintercept = parameters$longitude_sections_regular,
              col = "white") +
   scale_fill_viridis_c(direction = -1) +
-  coord_quickmap(expand = 0) +
   theme(legend.position = "bottom")
 
 ```
@@ -448,64 +407,3 @@ predictors_surface %>%
 
 ```
 
-
-# Alternative predictors
-
-## WOA13 + GLODAP
-
-Currently not used.
-
-
-```{r load_WOA13_gamma, eval=FALSE}
-
-WOA13 <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2013_Clement/_summarized_files",
-      "WOA13_mask_gamma.csv"
-    )
-  )
-
-WOA13_gamma <- WOA13 %>%
-  select(-mask)
-
-rm(WOA13)
-
-```
-
-
-```{r join_WOA13_GLODAP_predictors, eval=FALSE}
-
-predictors <- full_join(GLODAP_predictors, WOA13_gamma)
-GLODAP_depths <- unique(GLODAP_predictors$depth)
-
-rm(GLODAP_predictors, WOA13_gamma)
-
-predictors <- predictors %>% 
-  group_by(lat, lon) %>% 
-  mutate(n_oxygen = sum(!is.na(oxygen)),
-         n_PO4 = sum(!is.na(PO4)),
-         n_silicate = sum(!is.na(silicate)),
-         n_sal = sum(!is.na(sal)),
-         n_tem = sum(!is.na(tem)),
-         n_gamma = sum(!is.na(gamma))) %>% 
-  ungroup()
-
-predictors <- predictors %>% 
-  filter(n_oxygen > 0,
-         n_PO4 > 0,
-         n_silicate > 0, 
-         n_sal > 0, 
-         n_tem > 0, 
-         n_gamma > 0) %>% 
-  select(-c(n_oxygen, 
-            n_PO4, 
-            n_silicate, 
-            n_sal, 
-            n_tem,
-            n_gamma))
-
-predictors <- predictors %>% 
-  drop_na()
-
-```
