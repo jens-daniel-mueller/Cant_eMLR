@@ -12,55 +12,18 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(patchwork)
-library(scico)
+# Libraries
+
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
 library(scales)
-library(metR)
-library(kableExtra)
-library(collapse)
 library(marelac)
 library(gt)
-```
-
-
-```{r read_parameters, include = FALSE}
-parameters <-
-  read_rds(here::here("data/auxillary",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files, include = FALSE}
-basinmask <-
-  read_csv(
-    here::here(
-      "data/auxillary",
-      "basin_mask_WOA18.csv"
-    )
-  )
-
-section_global_coordinates <-
-  read_csv(here::here("data/auxillary",
-                       "section_global_coordinates.csv"))
-```
-
-```{r read_map, include = FALSE}
-map <-
-  read_rds(here::here("data/auxillary",
-                       "map_landmask_WOA18.rds"))
-```
-
-```{r read_functions, include = FALSE}
-source(here::here("code", "plotting_functions.R"))
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
 ```
 
 # Data sources
@@ -73,22 +36,7 @@ Following Cant estimates from this study (JDM) and Gruber 2019 (G19) are used:
 ## This study
 
 
-```{r read_cant_files}
-
-# cant_3d_JDM <-
-#   read_csv(here::here("data/output",
-#                          "cant_3d.csv"))
-# 
-# cant_3d_JDM <- cant_3d_JDM %>%
-#   filter(eras == "JGOFS_GO") %>%
-#   select(lon,
-#          lat,
-#          depth,
-#          basin_AIP,
-#          cant,
-#          cant_pos) %>%
-#   mutate(estimate = "JDM")
-
+```{r read_JDM_cant_files}
 
 cant_zonal_JDM <-
   read_csv(here::here("data/output",
@@ -118,14 +66,6 @@ cant_inv_JDM <- cant_inv_JDM %>%
 ## Gruber 2019
 
 ```{r read_Gruber_cant_file}
-
-# cant_3d_G19 <- 
-#   read_csv(here::here("data/interim",
-#                        "G19_cant_3d.csv"))
-# 
-# cant_3d_G19 <- cant_3d_G19 %>% 
-#   mutate(estimate = "G19") %>% 
-#   select(-eras)
 
 cant_inv_G19 <- 
   read_csv(here::here("data/interim",
