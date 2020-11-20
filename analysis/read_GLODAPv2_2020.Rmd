@@ -847,7 +847,7 @@ rm(GLODAP_hovmoeller_year)
 
 ### Subsetting process
 
-```{r coverage_maps_era_subsetting, fig.asp=1.5}
+```{r coverage_maps_era_subsetting}
 
 GLODAP_obs_grid <- GLODAP_obs_grid %>%
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")),

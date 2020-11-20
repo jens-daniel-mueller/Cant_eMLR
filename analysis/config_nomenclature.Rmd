@@ -31,6 +31,15 @@ Variables from source data files are converted and harmonized to satisfy followi
 - theta: potential temperature in deg C (Check scales!)
 - gamma: neutral density
 
+- phosphate
+- nitrate
+- silicate
+- oxygen
+- aou
+
+- tco2
+- talk
+
 - cant: anthropogenic CO~2~ (mol kg^-1^)
 - cstar: C* (mol kg^-1^)
 

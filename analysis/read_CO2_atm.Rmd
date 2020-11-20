@@ -12,19 +12,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-```
-
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(lubridate)
-library(patchwork)
-```
-
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
 # Read data
