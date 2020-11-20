@@ -15,11 +15,13 @@ editor_options:
 ```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(lubridate)
-library(cutr)
-```
+# Libraries
 
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
+library(lubridate)
+```
 
 # Read files
 
