@@ -87,33 +87,11 @@ GLODAP <-
 
 ```
 
-# Color scale
-
-For ease of comparison with Gruber et al (2019) we adapt their color scale, including the ranges and breaks applied in various types of visualizations.
-
-```{r define_Gruber_rainbow, eval=FALSE}
-
-rgb2hex <- function(r, g, b)
-  rgb(r, g, b, maxColorValue = 100)
-
-cols = c(rgb2hex(95, 95, 95),
-         rgb2hex(0, 0, 95),
-         rgb2hex(100, 0, 0),
-         rgb2hex(100, 100, 0))
-
-Gruber_rainbow <- colorRampPalette(cols)
-
-rm(rgb2hex, cols)
-
-```
-
 # C~ant~ budgets
 
 Global C~ant~ inventories were estimated in units of Pg C. Please note that here we only added positive C~ant~ values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
-
-# cant_inv <- left_join(cant_inv, basinmask_AIP) 
 
 cant_inv_budget <- cant_inv %>% 
   mutate(surface_area = earth_surf(lat, lon),

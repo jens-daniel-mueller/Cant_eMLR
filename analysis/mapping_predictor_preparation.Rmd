@@ -398,11 +398,11 @@ for (i_var in vars) {
 ```{r write_joined_predictor_fields}
 
 predictors %>%
-    write_csv(here::here("data/mapping/predictor_fields",
+    write_csv(here::here("data/mapping",
                          "W18_st_G16_opsn.csv"))
 
 predictors_surface %>%
-    write_csv(here::here("data/mapping/predictor_fields",
+    write_csv(here::here("data/mapping",
                          "W18_st_G16_opsn_surface.csv"))
 
 ```

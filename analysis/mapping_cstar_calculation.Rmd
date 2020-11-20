@@ -25,7 +25,7 @@ Currently, we use combined predictor fields:
 ```{r read_predictor_file}
 
 predictors <- 
-    read_csv(here::here("data/mapping/predictor_fields",
+    read_csv(here::here("data/mapping",
                          "W18_st_G16_opsn.csv"))
 
 ```
@@ -110,11 +110,6 @@ For each basin and era combination, the zonal mean cstar is calculated. Likewise
 ```{r Calculate_cstar_mean_sections}
 
 
-
-
-
-
-
 cstar_average <- left_join(cstar_average,
                            basinmask %>% select(-basin))
 
@@ -146,7 +141,7 @@ rm(cstar_average_zonal_Atl, cstar_average_zonal_Ind_Pac)
 
 # Write csv
 
-```{r write_cstar_files, eval=FALSE}
+```{r write_cstar_files}
 
 cstar_average %>%
     write_csv(here::here("data/output",

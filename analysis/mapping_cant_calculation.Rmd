@@ -33,11 +33,11 @@ Currently, we use combined predictor fields:
 ```{r read_predictor_file}
 
 predictors <- 
-    read_csv(here::here("data/mapping/predictor_fields",
+    read_csv(here::here("data/mapping",
                          "W18_st_G16_opsn.csv"))
 
 predictors_surface <- 
-    read_csv(here::here("data/mapping/predictor_fields",
+    read_csv(here::here("data/mapping",
                          "W18_st_G16_opsn_surface.csv"))
 
 ```
