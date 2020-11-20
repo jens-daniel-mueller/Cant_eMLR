@@ -1,15 +1,28 @@
+# define Gruber color scale
+
+  rgb2hex <- function(r, g, b)
+    rgb(r, g, b, maxColorValue = 100)
+
+  cols = c(rgb2hex(95, 95, 95),
+           rgb2hex(0, 0, 95),
+           rgb2hex(100, 0, 0),
+           rgb2hex(100, 100, 0))
+
+  Gruber_rainbow <- colorRampPalette(cols)
+
+  rm(rgb2hex, cols)
+
+
+
 map_inventory <- function(df, var) {
   var <- sym(var)
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+  map +
     geom_raster(data = df,
                 aes(lon, lat, fill = !!var)) +
-    coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
     theme(axis.title = element_blank()) +
-    facet_wrap( ~ eras, labeller = label_both)
+    facet_wrap(~ eras, labeller = label_both)
 
 }
 
@@ -24,15 +37,11 @@ map_inventory_divergent <- function(df, var) {
 
   limits <- c(-1, 1) * max
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+  map +
     geom_raster(data = df,
                 aes(lon, lat, fill = !!var)) +
-    coord_quickmap(expand = 0) +
     scale_fill_scico(palette = "vik",
                      limits = limits) +
-    theme(axis.title = element_blank()) +
     facet_wrap( ~ eras, labeller = label_both)
 
 }
@@ -48,12 +57,9 @@ map_inventory_divergent_estimate <- function(df, var) {
 
   limits <- c(-1, 1) * max
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+map +
     geom_raster(data = df,
                 aes(lon, lat, fill = !!var)) +
-    coord_quickmap(expand = 0) +
     scale_fill_scico(palette = "vik",
                      limits = limits) +
     theme(axis.title = element_blank()) +
@@ -64,16 +70,12 @@ map_inventory_divergent_estimate <- function(df, var) {
 map_climatology <- function(df, var) {
   var <- sym(var)
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+  map +
     geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
                 aes(lon, lat, fill = !!var)) +
     geom_raster(data = section_global_coordinates,
                aes(lon, lat), fill = "white") +
-    coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
-    theme(axis.title = element_blank()) +
     facet_wrap( ~ depth, labeller = label_both)
 
 }
@@ -91,17 +93,13 @@ map_climatology_divergent <- function(df, var) {
 
   limits <- c(-1, 1) * max
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+  map +
     geom_raster(data = df,
                 aes(lon, lat, fill = !!var)) +
     geom_raster(data = section_global_coordinates,
                aes(lon, lat), fill = "white") +
-    coord_quickmap(expand = 0) +
     scale_fill_scico(palette = "vik",
                      limits = limits) +
-    theme(axis.title = element_blank()) +
     facet_wrap( ~ depth, labeller = label_both)
 
 }
@@ -109,14 +107,11 @@ map_climatology_divergent <- function(df, var) {
 map_climatology_discrete <- function(df, var) {
   var <- sym(var)
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+map +
     geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
                 aes(lon, lat, fill = !!var)) +
     geom_raster(data = section_global_coordinates,
                aes(lon, lat), fill = "white") +
-    coord_quickmap(expand = 0) +
     scale_fill_viridis_d() +
     theme(axis.title = element_blank()) +
     facet_wrap( ~ depth, labeller = label_both)
@@ -126,14 +121,11 @@ map_climatology_discrete <- function(df, var) {
 map_climatology_eras <- function(df, var) {
   var <- sym(var)
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+map +
     geom_raster(data = df %>% filter(depth %in% parameters$depth_levels),
                 aes(lon, lat, fill = !!var)) +
     geom_raster(data = section_global_coordinates,
                aes(lon, lat), fill = "white") +
-    coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
     theme(axis.title = element_blank()) +
     facet_grid(eras ~ depth, labeller = label_both)
@@ -143,12 +135,9 @@ map_climatology_eras <- function(df, var) {
 map_climatology_inv <- function(df, var) {
   var <- sym(var)
 
-  ggplot() +
-    geom_raster(data = landmask,
-                aes(lon, lat), fill = "grey80") +
+map +
     geom_raster(data = df,
                 aes(lon, lat, fill = !!var)) +
-    coord_quickmap(expand = 0) +
     scale_fill_viridis_c() +
     theme(axis.title = element_blank())
 }
@@ -446,42 +435,44 @@ section_zonal_layered_divergent <-
   }
 
 
-section_global <- function(df, var) {
+section_global <- function(df, var, title="Global section NAtl -> SO -> NPac") {
 
   name_var <- var
   var <- sym(var)
 
   df_sub <- left_join(section_global_coordinates, df)
 
-  surface <- df_sub %>%
+  section <- df_sub %>%
     ggplot(aes(dist, depth, z = !!var)) +
     geom_contour_filled() +
     geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
                aes(xintercept = dist), col = "white") +
     scale_fill_viridis_d(name = name_var) +
-    coord_cartesian(expand = 0,
-                    ylim = c(500,0)) +
+    guides(fill = guide_colorsteps(barheight = unit(8, "cm"))) +
     scale_y_reverse() +
-    theme(axis.title.x = element_blank(),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          legend.position = "top") +
     labs(y = "Depth (m)")
 
-  deep <- df_sub %>%
-    ggplot(aes(dist, depth, z = !!var)) +
-    geom_contour_filled() +
-    geom_vline(data = section_global_coordinates %>% filter(lat == 0.5),
-               aes(xintercept = dist), col = "white") +
-    scale_fill_viridis_d(name = name_var) +
-    scale_y_reverse() +
-    coord_cartesian(expand = 0, ylim = c(3000,500)) +
-    labs(x = "Distance (Mm)", y = "Depth (m)") +
-    theme(legend.position = "none")
+  surface <-
+    section +
+    coord_cartesian(expand = 0,
+                    ylim = c(500,0)) +
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    labs(y = "Depth (m)",
+         title = title)
 
-  surface / deep
+  deep <-
+    section +
+    coord_cartesian(expand = 0,
+                    ylim = c(parameters$plotting_depth, 500)) +
+    labs(x = "Distance (Mm)", y = "Depth (m)")
+
+  surface / deep +
+    plot_layout(guides = "collect")
 
 }
+
 
 section_global_surface <- function(df, var) {
 

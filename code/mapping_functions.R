@@ -23,10 +23,11 @@ layer_inventory <- function(df, parameter) {
 
 }
 
-calc_cant_inventory <- function(df) {
+calc_cant_inv <- function(df) {
 
   depth_level_volume <- tibble(
-    depth = unique(df$depth))
+    depth = unique(df$depth)) %>%
+    arrange(depth)
 
   depth_level_volume <- depth_level_volume %>%
     mutate(layer_thickness_above = replace_na((depth - lag(depth)) / 2, 0),
@@ -70,3 +71,23 @@ zonal_mean_section <- function(df) {
   return(zonal_mean_section)
 
 }
+
+
+
+grid_horizontal <- function(df) {
+
+  # cut lat and lon to a 1 x 1 deg horizontal grid
+
+  df <- df %>%
+    mutate(
+      lat = cut(lat, seq(-90, 90, 1), seq(-89.5, 89.5, 1)),
+      lat = as.numeric(as.character(lat)),
+      lon = cut(lon, seq(20, 380, 1), seq(20.5, 379.5, 1)),
+      lon = as.numeric(as.character(lon))
+    )
+
+  return(df)
+
+}
+
+

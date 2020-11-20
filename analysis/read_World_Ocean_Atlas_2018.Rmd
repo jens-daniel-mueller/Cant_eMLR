@@ -69,25 +69,26 @@ According to the [WOA18 documentation](https://data.nodc.noaa.gov/woa/WOA18/DOC/
 
 The landmask was derived as coordinates with value 1.
 
-```{r assign_region_labels}
+```{r format_landmask}
 
-landmask <- landsea_01 %>% 
+landmask <- landsea_01 %>%
   mutate(region = if_else(Bottom_Standard_Level == "1",
-                         "land", "ocean")) %>% 
+                          "land", "ocean")) %>%
   select(-Bottom_Standard_Level)
 
-landmask <- landmask %>% 
+landmask <- landmask %>%
   rename(lat = Latitude,
-         lon = Longitude) %>% 
+         lon = Longitude) %>%
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 landmask <- landmask %>%
-  filter(region == "land", 
+  filter(region == "land",
          lat >= parameters$lat_min,
-         lat <= parameters$lat_max) %>% 
+         lat <= parameters$lat_max) %>%
   select(-region)
 
 rm(landsea_01)
+
 ```
 
 ## Basins
@@ -96,7 +97,7 @@ rm(landsea_01)
 
 The surface mask (0m) with 1x1° resolution from the file `basinmask_01.msk` was used.
 
-```{r read_basinmask}
+```{r read_and_format_basinmask}
 
 basinmask_01 <- read_csv(here::here("data/input/World_Ocean_Atlas_2018",
                                     "basinmask_01.msk"),
@@ -125,13 +126,13 @@ Indian Ocean:
 
 - 3: Indian Ocean 
 - 10: Southern Ocean between 20°E and 147°E
+- 56: Bay of Bengal
 
 Pacific Ocean:  
 
 - 2: Pacific Ocean
 - 10: Southern Ocean between 147°E and 63°W
 - 12: Sea of Japan
-- 56: Bay of Bengal
 
 For eMLR model fitting and mapping, Indian and Pacific Ocean were combined as Indo-Pacific.
 
@@ -183,7 +184,7 @@ map +
 
 ```
 
-```{r safe_base_map}
+```{r write_base_map_as_rds_file}
 
 map %>%  
   write_rds(here::here("data/auxillary",
@@ -196,7 +197,7 @@ map %>%
 
 To plot sections from the North Atlantic south to the Southern Ocean, around Antartica and back North across the Pacific Ocean, corresponding coordinates were subsetted from the basin mask and distances between coordinate grid points calculated.
 
-```{r Create_section_global}
+```{r Create_coordinates_of_section_global}
 
 section <- basinmask_01 %>%
   select(lon, lat)
@@ -259,19 +260,11 @@ map +
 ```
 
 
-
-
 ## Write files
 
 ```{r write_files}
 
-# basinmask_01 %>% 
-#   select(-basin) %>% 
-#   write_csv(here::here("data/auxillary",
-#                        "basin_mask_WOA18_AIP.csv"))
-
 basinmask_01 %>% 
-  #select(-basin_AIP) %>% 
   write_csv(here::here("data/auxillary",
                        "basin_mask_WOA18.csv"))
 
@@ -350,6 +343,7 @@ rm(WOA18_sal, WOA18_tem)
 
 ```
 
+## Join predictors
 
 ```{r join_predictors}
 
@@ -403,6 +397,8 @@ WOA18_sal_tem <- WOA18_sal_tem %>%
 
 ## Potential temperature
 
+Potential temperature is calculated as in input variable for the neutral density calculation.
+
 ### Calculation
 
 ```{r calculate_potential_temperature}
@@ -439,10 +435,6 @@ WOA18_sal_tem %>%
 ### Section
 
 ```{r WOA18_pot_temperature_section}
-
-section_global_coordinates <-
-  read_csv(here::here("data/auxillary",
-                      "section_global_coordinates.csv"))
 
 section_global(WOA18_sal_tem,
                "THETA",
@@ -623,8 +615,9 @@ section_global(WOA18_sal_tem_surface, "gamma",
 
 ## Read ncdfs
 
+```{r read_WOA18_nuts_O2_files}
 
-```{r WOA18_nuts_O2_file_list}
+# create file list
 
 file_list <-
   list.files(path = "data/input/World_Ocean_Atlas_2018",
@@ -645,14 +638,9 @@ WOA18_nuts_O2_surface <-
 
 rm(WOA18_sal_tem, WOA18_sal_tem_surface)
 
-```
+# file <- file_list[2]
 
-
-
-```{r read_WOA18_nuts_O2_file_list}
-
-
-file <- file_list[2]
+# read, plot and join data sets while looping over file list
 
 for (file in file_list) {
   
@@ -696,8 +684,6 @@ for (file in file_list) {
 
 
 ```
-
-
 
 
 ### Write/open file

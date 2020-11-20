@@ -106,7 +106,13 @@ wflow_open("analysis/first-analysis.Rmd")
 wflow_build()
 
 # commit regular changes (locally) and rebuild site
-wflow_publish("analysis/*", message = "XXX")
+wflow_publish(here::here(
+  "analysis",
+  c(
+    "analysis_previous_studies.Rmd"
+  )
+),
+message = "use setup child Rmd file")
 
 # commit regular changes (locally) and rebuild site
 wflow_publish(all = TRUE, message = "XXX")
@@ -137,7 +143,6 @@ wflow_publish(here::here(
     "mapping_cstar_calculation.Rmd",
     "analysis_this_study_vs_Gruber_2019.Rmd",
     "analysis_this_study.Rmd",
-    "analysis_this_study_3d.Rmd",
     "analysis_previous_studies.Rmd"
   )
 ),
