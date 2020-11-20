@@ -91,7 +91,7 @@ GLODAP <-
 
 For ease of comparison with Gruber et al (2019) we adapt their color scale, including the ranges and breaks applied in various types of visualizations.
 
-```{r define_Gruber_rainbow}
+```{r define_Gruber_rainbow, eval=FALSE}
 
 rgb2hex <- function(r, g, b)
   rgb(r, g, b, maxColorValue = 100)
@@ -107,9 +107,9 @@ rm(rgb2hex, cols)
 
 ```
 
-# cant budgets
+# C~ant~ budgets
 
-Global cant inventories were estimated in Pg-C. Please note that here we only added positive cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
+Global C~ant~ inventories were estimated in units of Pg C. Please note that here we only added positive C~ant~ values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
@@ -566,7 +566,7 @@ cant_zonal %>%
 ```
 
 
-# cstar
+# C*
 
 ## Zonal mean sections
 
@@ -576,14 +576,14 @@ cstar_zonal <- cstar_zonal %>%
     mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) 
 
 cstar_zonal %>% 
-    ggplot(aes(lat, depth, z = cstar_mean_mean)) +
+    ggplot(aes(lat, depth, z = cstar_mean)) +
     geom_contour_filled(bins = 11) +
     scale_fill_viridis_d(name = "cstar") +
-    geom_contour(aes(lat, depth, z = gamma_mean_mean),
+    geom_contour(aes(lat, depth, z = gamma_mean),
                  breaks = slab_breaks,
                  col = "white") +
     geom_text_contour(
-      aes(lat, depth, z = gamma_mean_mean),
+      aes(lat, depth, z = gamma_mean),
       breaks = slab_breaks,
       col = "white",
       skip = 1
