@@ -12,43 +12,12 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
 ```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
 library(lubridate)
-library(patchwork)
 library(cutr)
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
-```
-
-```{r read_parameters, include = FALSE}
-parameters <-
-  read_rds(here::here("data/auxillary",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files, include = FALSE}
-
-basinmask <- read_csv(
-  here::here(
-    "data/auxillary",
-    "basin_mask_WOA18.csv"
-  )
-)
-
-```
-
-```{r read_map, include = FALSE}
-
-map <-
-  read_rds(here::here("data/auxillary",
-                       "map_landmask_WOA18.rds"))
 ```
 
 
