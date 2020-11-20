@@ -466,9 +466,6 @@ div.tocify {
       <a href="analysis_this_study.html">This study</a>
     </li>
     <li>
-      <a href="analysis_this_study_3d.html">This study - 3d globes</a>
-    </li>
-    <li>
       <a href="analysis_previous_studies.html">Previous studies</a>
     </li>
   </ul>
@@ -624,16 +621,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeecc117d20693445ee1ea69db58827e7f71d5c9e1targetblankecc117da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ecc117d20693445ee1ea69db58827e7f71d5c9e1" target="_blank">ecc117d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree6b50088141c8ebb2d01eaa1e9dc197b33f3e0b9etargetblank6b50088a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/6b50088141c8ebb2d01eaa1e9dc197b33f3e0b9e" target="_blank">6b50088</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeecc117d20693445ee1ea69db58827e7f71d5c9e1targetblankecc117da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree6b50088141c8ebb2d01eaa1e9dc197b33f3e0b9etargetblank6b50088a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ecc117d20693445ee1ea69db58827e7f71d5c9e1" target="_blank">ecc117d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/6b50088141c8ebb2d01eaa1e9dc197b33f3e0b9e" target="_blank">6b50088</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,7 +638,6 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
-    Ignored:    data/WOCE/
     Ignored:    data/auxillary/
     Ignored:    data/eMLR/
     Ignored:    data/input/
@@ -652,7 +648,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/child/
-    Untracked:  output/figure/analysis_this_study/
+    Untracked:  code/test_scripts/analysis_this_study_3d.Rmd
     Untracked:  output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1981-07-14_n_2095_cruise_237_.png
     Untracked:  output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1983-01-12_n_1184_cruise_238_.png
     Untracked:  output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1984-07-22_n_272_cruise_223_.png
@@ -740,11 +736,13 @@ Untracked files:
 
 Unstaged changes:
     Modified:   README.md
-    Modified:   analysis/analysis_previous_studies.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/analysis_this_study_3d.Rmd
     Modified:   code/Workflowr_project_managment.R
     Deleted:    code/inventory_calculation.R
     Modified:   code/mapping_functions.R
     Modified:   code/plotting_functions.R
+    Deleted:    data/README.md
     Deleted:    output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1981-07-14_n_2127_cruise_237_.png
     Deleted:    output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1983-01-10_n_1238_cruise_238_.png
     Modified:   output/figure/eMLR/data_preparation/all_cruises_clean/GLODAP_cruise_date_1983-11-25_n_409_cruise_239_.png
@@ -1096,6 +1094,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/6b50088141c8ebb2d01eaa1e9dc197b33f3e0b9e/analysis/mapping_cstar_calculation.Rmd" target="_blank">6b50088</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-20
+</td>
+<td>
+rebuild all with seperate set-up and harmonized variable names
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/55011f6e50074603bec1f9361cd8d1f99eaffcad/docs/mapping_cstar_calculation.html" target="_blank">55011f6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/ecc117d20693445ee1ea69db58827e7f71d5c9e1/analysis/mapping_cstar_calculation.Rmd" target="_blank">ecc117d</a>
 </td>
 <td>
@@ -1395,7 +1427,7 @@ rebuild after revision
 <li>GLODAP16: Oxygen, PO4, NO3, Silicate, and derived variables</li>
 </ul>
 <pre class="r"><code>predictors &lt;- 
-    read_csv(here::here(&quot;data/mapping/predictor_fields&quot;,
+    read_csv(here::here(&quot;data/mapping&quot;,
                          &quot;W18_st_G16_opsn.csv&quot;))</code></pre>
 </div>
 <div id="load-mlr-models" class="section level1">
