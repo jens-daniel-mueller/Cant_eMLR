@@ -12,53 +12,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(patchwork)
-library(scico)
+# Libraries
+
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
 library(scales)
-library(metR)
 library(marelac)
 library(kableExtra)
-library(threejs)
-```
-
-```{r read_parameters, include = FALSE}
-parameters <-
-  read_rds(here::here("data/auxillary",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files, include = FALSE}
-basinmask <-
-  read_csv(
-    here::here(
-      "data/auxillary",
-      "basin_mask_WOA18.csv"
-    )
-  )
-
-section_global_coordinates <-
-  read_csv(here::here("data/auxillary",
-                       "section_global_coordinates.csv"))
-```
-
-```{r read_map, include = FALSE}
-map <-
-  read_rds(here::here("data/auxillary",
-                       "map_landmask_WOA18.rds"))
-```
-
-```{r read_functions, include = FALSE}
-source(here::here("code", "plotting_functions.R"))
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
 ```
 
 # Data sources
@@ -98,13 +62,13 @@ C* estimates from this study:
 
 ```{r read_cstar_files}
 
-Cstar_3d <-
+cstar_3d <-
   read_csv(here::here("data/output",
-                         "Cstar_3d.csv"))
+                         "cstar_3d.csv"))
 
-Cstar_zonal <-
+cstar_zonal <-
   read_csv(here::here("data/output",
-                         "Cstar_zonal.csv"))
+                         "cstar_zonal.csv"))
 
 
 ```
@@ -602,19 +566,19 @@ cant_zonal %>%
 ```
 
 
-# Cstar
+# cstar
 
 ## Zonal mean sections
 
-```{r Cstar_zonal_mean_era}
+```{r cstar_zonal_mean_era}
 
-Cstar_zonal <- Cstar_zonal %>% 
+cstar_zonal <- cstar_zonal %>% 
     mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era"))) 
 
-Cstar_zonal %>% 
-    ggplot(aes(lat, depth, z = Cstar_mean_mean)) +
+cstar_zonal %>% 
+    ggplot(aes(lat, depth, z = cstar_mean_mean)) +
     geom_contour_filled(bins = 11) +
-    scale_fill_viridis_d(name = "Cstar") +
+    scale_fill_viridis_d(name = "cstar") +
     geom_contour(aes(lat, depth, z = gamma_mean_mean),
                  breaks = slab_breaks,
                  col = "white") +
