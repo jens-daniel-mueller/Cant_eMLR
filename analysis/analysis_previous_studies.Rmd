@@ -12,82 +12,62 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(lubridate)
+# Libraries
+
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
 library(marelac)
 library(kableExtra)
-```
-
-
-```{r read_parameters, include = FALSE}
-parameters <-
-  read_rds(here::here("data",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files, include = FALSE}
-basinmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18.csv"
-    )
-  )
-basinmask_AIP <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "basin_mask_WOA18_AIP.csv"
-    )
-  )
-landmask <-
-  read_csv(
-    here::here(
-      "data/World_Ocean_Atlas_2018/_summarized_files",
-      "land_mask_WOA18.csv"
-    )
-  )
-```
-
-```{r read_functions, include = FALSE}
-source(here::here("code", "plotting_functions.R"))
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
 ```
 
 # Data sources
 
 ## Sabine 2004
 
-```{r read_Sabine_Cant_file}
 
-Cant_94 <- read_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                               "Cant_94.csv"))
+```{r read_S04_cant_file}
 
-Cant_94_inv <-
-  read_csv(here::here("data/GLODAPv1_1/_summarized_files",
-                      "Cant_94_inv.csv"))
+cant_inv_S04 <- 
+  read_csv(here::here("data/interim",
+                       "S04_cant_inv.csv"))
+
+cant_inv_S04 <- cant_inv_S04 %>% 
+  select(-eras)
+
+cant_zonal_S04 <- 
+  read_csv(here::here("data/interim",
+                       "S04_cant_zonal.csv"))
+
+cant_zonal_S04 <- cant_zonal_S04 %>%
+  select(-eras)
 
 
 ```
 
+
 ## Gruber 2019
 
-```{r read_Gruber_Cant_file}
+```{r read_G19_cant_file}
 
-Cant_07 <- read_csv(here::here("data/Gruber_2019/_summarized_files",
-                               "G19_cant_3d.csv"))
+cant_inv_G19 <- 
+  read_csv(here::here("data/interim",
+                       "G19_cant_inv.csv"))
 
-Cant_07_inv <-
-  read_csv(here::here("data/Gruber_2019/_summarized_files",
-                      "G19_cant_inv.csv"))
+cant_inv_G19 <- cant_inv_G19 %>% 
+  select(-eras)
+
+cant_zonal_G19 <- 
+  read_csv(here::here("data/interim",
+                       "G19_cant_zonal.csv"))
+
+cant_zonal_G19 <- cant_zonal_G19 %>%
+  select(-eras)
+
 
 ```
 
@@ -97,18 +77,13 @@ Cant inventory estimates of S04 (Sabine et al, 2004) and G19 (Gruber et al, 2019
 
 ## Merge data sets
 
-```{r merge_Cant_data_sets}
+```{r merge_cant_data_sets}
 
-Cant_94_inv <- Cant_94_inv %>% 
-  select(-c(cant_inv_incl_neg, basin))
+cant_inv <- full_join(cant_inv_G19 %>% mutate(estimate = "G19"),
+                      cant_inv_S04 %>% mutate(estimate = "S04")) %>% 
+  select(-cant_inv)
 
-Cant_07_inv <- Cant_07_inv %>% 
-  select(-c(cant_pos_inv, eras))
-
-Cant_inv <- full_join(Cant_07_inv %>% mutate(estimate = "G19"),
-                      Cant_94_inv %>% mutate(estimate = "S04"))
-
-rm(Cant_07_inv, Cant_94_inv)
+rm(cant_inv_G19, cant_inv_S04)
 
 ```
 
@@ -116,15 +91,11 @@ rm(Cant_07_inv, Cant_94_inv)
 
 Spanning different time periods, the Cant inventories differ in magnitude.
 
-```{r Cant_inv_comparison, fig.asp=1}
+```{r cant_inv_comparison, fig.asp=1}
  
-Cant_inv %>%
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = cant_inv)) +
-  coord_quickmap(expand = 0) +
+map +
+  geom_raster(data = cant_inv,
+              aes(lon, lat, fill = cant_pos_inv)) +
   scale_fill_viridis_c() +
   facet_wrap( ~ estimate, ncol = 1) +
   theme(
@@ -135,26 +106,26 @@ Cant_inv %>%
 
 ```
 
-## Cant budgets
+## C~ant~ budgets
 
 Global Cant inventories were estimated in Pg-C. Please note that here we only added positive Cant values in the upper `r parameters$inventory_depth`m and do not apply additional corrections for areas not covered.
 
 ```{r calculate_global_inventory}
 
-Cant_inv <- Cant_inv %>% 
+cant_inv <- cant_inv %>% 
   mutate(surface_area = earth_surf(lat, lon),
-         cant_inv_grid = cant_inv*surface_area)
+         cant_pos_inv_grid = cant_pos_inv*surface_area)
 
-Cant_inv_budget <- Cant_inv %>% 
+cant_inv_budget <- cant_inv %>% 
   group_by(estimate, basin_AIP) %>% 
-  summarise(cant_total = sum(cant_inv_grid)*12*1e-15,
-            cant_total = round(cant_total,1)) %>% 
+  summarise(cant_pos_total = sum(cant_pos_inv_grid)*12*1e-15,
+            cant_pos_total = round(cant_pos_total,1)) %>% 
   ungroup() %>% 
-  pivot_wider(values_from = cant_total, names_from = basin_AIP) %>% 
+  pivot_wider(values_from = cant_pos_total, names_from = basin_AIP) %>% 
   mutate(total = Atlantic + Indian + Pacific)
 
-Cant_inv_budget %>% 
-  kableExtra::kable() %>% 
+cant_inv_budget %>% 
+  kable() %>% 
   add_header_above() %>%
   kable_styling(full_width = FALSE)
 
@@ -163,19 +134,19 @@ Cant_inv_budget %>%
 
 ## Relative inventories
 
-```{r calculate_Cant_inv_ratio}
+```{r calculate_cant_inv_ratio}
 
-Cant_inv_wide <- Cant_inv %>%
-  pivot_wider(values_from = c(cant_inv, cant_inv_grid),
+cant_inv_wide <- cant_inv %>%
+  pivot_wider(values_from = c(cant_pos_inv, cant_pos_inv_grid),
               names_from = estimate)
 
-Cant_inv_wide <- Cant_inv_wide %>% 
+cant_inv_wide <- cant_inv_wide %>% 
   drop_na() %>% 
-  mutate(G19_rel = cant_inv_grid_G19 / sum(cant_inv_grid_G19),
-         S04_rel = cant_inv_grid_S04 / sum(cant_inv_grid_S04),
+  mutate(G19_rel = cant_pos_inv_grid_G19 / sum(cant_pos_inv_grid_G19),
+         S04_rel = cant_pos_inv_grid_S04 / sum(cant_pos_inv_grid_S04),
          cant_ratio_rel = G19_rel / S04_rel)
 
-Cant_inv_rel <- Cant_inv_wide %>% 
+cant_inv_rel <- cant_inv_wide %>% 
   pivot_longer(cols = c(G19_rel, S04_rel),
                         names_to = "estimate",
                         values_to = "cant_inv_rel")
@@ -184,15 +155,11 @@ Cant_inv_rel <- Cant_inv_wide %>%
 
 
 
-```{r Cant_inv_rel_maps, fig.asp=1}
+```{r cant_inv_rel_maps, fig.asp=1}
 
-Cant_inv_rel %>%
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
-  geom_raster(aes(lon, lat, fill = cant_inv_rel*100)) +
-  coord_quickmap(expand = 0) +
+map +
+  geom_raster(data = cant_inv_rel,
+              aes(lon, lat, fill = cant_inv_rel*100)) +
   scale_fill_viridis_c() +
   facet_wrap( ~ estimate, ncol = 1) +
   theme(
@@ -205,16 +172,13 @@ Cant_inv_rel %>%
 
 ## Relative inventory ratios
 
-```{r Cant_inv_ratio_map, fig.asp=0.6}
+```{r cant_inv_ratio_map, fig.asp=0.6}
 
-Cant_inv_wide %>%
+map +
+  geom_contour_filled(data = cant_inv_wide %>%
   filter(cant_ratio_rel < 10,
-         cant_ratio_rel > 0.1) %>% 
-  ggplot() +
-  geom_raster(data = landmask,
-              aes(lon, lat),
-              fill = "grey80") +
-  geom_contour_filled(aes(lon, lat, z = log10(cant_ratio_rel))) +
+         cant_ratio_rel > 0.1),
+                      aes(lon, lat, z = log10(cant_ratio_rel))) +
   coord_quickmap(expand = 0) +
   scale_fill_brewer(palette = "RdBu", direction = -1) +
   labs(title = "Cant inventory distribution | 1994-2007 vs preind-1994",
