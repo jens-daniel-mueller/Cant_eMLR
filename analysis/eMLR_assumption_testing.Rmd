@@ -12,56 +12,21 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-
+```{r parent, child = here::here("analysis/child/setup.Rmd")}
 ```
 
-```{r library, message=FALSE, warning=FALSE}
-library(tidyverse)
+# Libraries
+
+Loading libraries specific to the the analysis performed in this section.
+
+```{r load_libraries_specific, message=FALSE, warning=FALSE}
 library(lubridate)
-library(patchwork)
 library(GGally)
 library(olsrr)
 library(knitr)
 library(kableExtra)
 library(broom)
 library(corrr)
-  
-```
-
-```{r read_parameters, include = FALSE}
-parameters <-
-  read_rds(here::here("data/auxillary",
-                       "parameters.rds"))
-```
-
-```{r read_mask_files, include = FALSE}
-basinmask <-
-  read_csv(
-    here::here(
-      "data/auxillary",
-      "basin_mask_WOA18.csv"
-    )
-  )
-
-section_global_coordinates <-
-  read_csv(here::here("data/auxillary",
-                       "section_global_coordinates.csv"))
-```
-
-```{r read_map, include = FALSE}
-map <-
-  read_rds(here::here("data/auxillary",
-                       "map_landmask_WOA18.rds"))
-```
-
-```{r read_functions, include = FALSE}
-source(here::here("code", "plotting_functions.R"))
-```
-
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
 ```
 
 # Required data
