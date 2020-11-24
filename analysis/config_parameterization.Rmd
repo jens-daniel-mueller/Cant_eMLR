@@ -20,11 +20,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 ```
 
-```{r ggplot_theme, include = FALSE}
-theme_set(theme_bw())
-```
-
-
 # Definition
 
 Following parameterizations were chosen to run analysis and display results:
@@ -129,7 +124,6 @@ parameters <-
     longitude_sections_regular = longitude_sections_regular,
     inventory_depth = 3000,
     plotting_depth = 4500,
-    coarse_grid_resolution = 10,
     cruises_meridional = 1041,
     predictors_max = 5,
     predictors_min = 2,
@@ -137,7 +131,10 @@ parameters <-
     depth_levels = depth_levels,
     depth_levels_33 = depth_levels_33,
     slabs_Atl = slabs_Atl,
-    slabs_Ind_Pac = slabs_Ind_Pac
+    slabs_Ind_Pac = slabs_Ind_Pac,
+    breaks_cant_inv_pos = c(seq(0,16,2),Inf),
+    breaks_cant_inv_offset = c(-Inf, seq(-15, 15, 3), Inf),
+    breaks_cant_inv = c(-Inf,seq(-16,16,2),Inf)
   )
 
 parameters

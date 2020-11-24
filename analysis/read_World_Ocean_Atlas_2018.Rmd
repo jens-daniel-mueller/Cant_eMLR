@@ -436,9 +436,8 @@ WOA18_sal_tem %>%
 
 ```{r WOA18_pot_temperature_section}
 
-section_global(WOA18_sal_tem,
-               "THETA",
-               "Global climatological section")
+p_section_global_continous(WOA18_sal_tem,
+                         "THETA")
 
 ```
 
@@ -534,7 +533,7 @@ Section locations are indicated as white lines in maps.
 
 ```{r temperature_surface_WOA18_map, fig.asp=0.6}
 
-map_climatology(WOA18_sal_tem, "tem")
+p_map_climatology_continous(WOA18_sal_tem, "tem")
 
 ```
 
@@ -542,9 +541,7 @@ map_climatology(WOA18_sal_tem, "tem")
 
 ```{r temperature_sections_WOA18}
 
-section_global(WOA18_sal_tem,
-               "tem",
-               "Global climatological section")
+p_section_global_continous(WOA18_sal_tem, "tem")
 
 ```
 
@@ -555,8 +552,7 @@ section_global(WOA18_sal_tem,
 
 ```{r salinity_surface_WOA18_map}
 
-map_climatology(WOA18_sal_tem,
-                "sal")
+p_map_climatology_continous(WOA18_sal_tem, "sal")
 
 ```
 
@@ -564,9 +560,7 @@ map_climatology(WOA18_sal_tem,
 
 ```{r salinity_sections_WOA18}
 
-section_global(WOA18_sal_tem,
-               "sal",
-               "Global climatological section")
+p_section_global_continous(WOA18_sal_tem, "sal")
 
 ```
 
@@ -579,7 +573,7 @@ section_global(WOA18_sal_tem,
 
 ```{r neutral_density_surface_WOA18_map}
 
-map_climatology(WOA18_sal_tem, "gamma")
+p_map_climatology_continous(WOA18_sal_tem, "gamma")
 
 ```
 
@@ -587,8 +581,7 @@ map_climatology(WOA18_sal_tem, "gamma")
 
 ```{r neutral_density_sections_WOA18}
 
-section_global(WOA18_sal_tem, "gamma",
-               "Global climatological section")
+p_section_global_continous(WOA18_sal_tem, "gamma")
 
 ```
 
@@ -596,7 +589,7 @@ section_global(WOA18_sal_tem, "gamma",
 
 ```{r neutral_density_surface_WOA18_map_shallow}
 
-map_climatology(WOA18_sal_tem_surface, "gamma")
+p_map_climatology_continous(WOA18_sal_tem_surface, "gamma")
 
 ```
 
@@ -604,8 +597,7 @@ map_climatology(WOA18_sal_tem_surface, "gamma")
 
 ```{r neutral_density_sections_WOA18_shallow}
 
-section_global(WOA18_sal_tem_surface, "gamma",
-               "Global climatological section")
+p_section_global_continous(WOA18_sal_tem_surface, "gamma")
 
 ```
 
@@ -671,13 +663,12 @@ for (file in file_list) {
   
 
   # plot maps
-  print(map_climatology(WOA18_tibble, parameter))
+  print(p_map_climatology_continous(WOA18_tibble, parameter))
   
   # plot sections
-  print(section_global(
+  print(p_section_global_continous(
     WOA18_tibble,
-    parameter,
-    "World Ocean Atlas 2018"
+    parameter
   ))
   
 }

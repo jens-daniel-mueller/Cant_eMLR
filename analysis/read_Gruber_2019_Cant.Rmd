@@ -33,7 +33,7 @@ library(tidync)
 
 ## Public data sets
 
-The publically available data sets contain only positive Cant estimates.
+The publicly available data sets contain only positive Cant estimates.
 
 ```{r read_Gruber_dcant}
 
@@ -123,7 +123,7 @@ rm(dcant, V101)
 
 ```{r calculate_zonal_mean_section}
 
-cant_zonal <- zonal_mean_section(cant_3d %>% select(-basin))
+cant_zonal <- m_zonal_mean_section(cant_3d %>% select(-basin))
 
 ```
 
@@ -133,19 +133,19 @@ cant_zonal <- zonal_mean_section(cant_3d %>% select(-basin))
 
 ```{r calculate_column_inventory}
 
-cant_inv <- calc_cant_inv(cant_3d)
+cant_inv <- m_cant_inv(cant_3d)
 
 ```
 
 ```{r G19_cant_inv_maps}
 
-map_inventory_divergent(cant_inv, "cant_inv")
+p_map_cant_inv(cant_inv)
 
 ```
 
 ```{r G19_cant_pos_inventory_maps}
 
-map_inventory(cant_inv, "cant_pos_inv")
+p_map_cant_pos_inv(cant_inv)
 
 ```
 
@@ -153,7 +153,7 @@ map_inventory(cant_inv, "cant_pos_inv")
 
 ```{r G19_cant_pos_inventory_maps_published}
 
-map_inventory(dcant_inv, "cant_pos_inv")
+p_map_cant_pos_inv(dcant_inv)
 
 ```
 
@@ -169,7 +169,9 @@ cant_offset <- inner_join(
 cant_offset <- cant_offset %>% 
   mutate(delta_cant = cant_re - cant_pub)
 
-map_inventory_divergent(cant_offset, "delta_cant")
+p_map_cant_inv_offset(df = cant_offset,
+                      var = "delta_cant",
+                      breaks = seq(-3,3,1))
 
 rm(cant_offset, dcant_inv)
 ```
@@ -191,7 +193,7 @@ Section locations are indicated as white lines in maps.
 
 ```{r Cant_maps, fig.asp=0.6}
 
-map_climatology_divergent(cant_3d, "cant")
+p_map_climatology_divergent(cant_3d, "cant")
 
 ```
 
@@ -199,7 +201,7 @@ map_climatology_divergent(cant_3d, "cant")
 
 ```{r Cant_maps_V101, fig.asp=0.6}
 
-map_climatology(cant_3d, "cant_pos")
+p_map_climatology_continous(cant_3d, "cant_pos")
 
 ```
 
@@ -210,7 +212,7 @@ map_climatology(cant_3d, "cant_pos")
 
 ```{r Cant_sections_V101, fig.asp=0.8}
 
-section_global(cant_3d, "cant", "G19")
+p_section_global_divergent(cant_3d, "cant")
 
 ```
 
@@ -218,7 +220,7 @@ section_global(cant_3d, "cant", "G19")
 
 ```{r Cant_sections, fig.asp=0.8}
 
-section_global(cant_3d, "cant_pos", "G19")
+p_section_global_continous(cant_3d, "cant_pos")
 
 ```
 
@@ -229,7 +231,7 @@ section_global(cant_3d, "cant_pos", "G19")
 
 ```{r Cant_sections_regular, fig.asp=2}
 
-section_climatology_regular(cant_3d, "cant")
+p_section_climatology_regular_divergent(cant_3d, "cant")
 
 ```
 
@@ -237,7 +239,7 @@ section_climatology_regular(cant_3d, "cant")
 
 ```{r Cant_sections_regular_V101, fig.asp=2}
 
-section_climatology_regular(cant_3d, "cant_pos")
+p_section_climatology_regular_continous(cant_3d, "cant_pos")
 
 ```
 

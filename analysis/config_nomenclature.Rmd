@@ -60,6 +60,13 @@ Variables from source data files are converted and harmonized to satisfy followi
 - write_xxx: write summarized data file to disk
 - chunks producing plots are named according to the plot content, because the generated plot file will be named after the chunk
 
+# Functions
+
+Functions are stored in separate .R files. This include function for:
+
+- mapping with a prefix "m_"
+- plotting with a prefix "p_"
+
 # Folder structure
 
 - data: contains all data, not synced to Github

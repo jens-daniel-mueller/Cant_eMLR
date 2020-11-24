@@ -83,7 +83,7 @@ For merging with other data sets, all observations were grouped into latitude in
 
 ```{r grid_spatially_1x1}
 
-GLODAP <- grid_horizontal(GLODAP)
+GLODAP <- m_grid_horizontal(GLODAP)
 
 ```
 
@@ -747,11 +747,7 @@ For the following plots, the cleaned data set was re-opened and observations wer
 
 ```{r grid_spatially_5x5}
 
-GLODAP <- GLODAP %>% 
-  mutate(lat_grid = cut(lat, seq(-90, 90, 5), seq(-87.5, 87.5, 5)),
-         lat_grid = as.numeric(as.character(lat_grid)),
-         lon_grid = cut(lon, seq(20, 380, 5), seq(22.5, 377.5, 5)),
-         lon_grid = as.numeric(as.character(lon_grid)))
+GLODAP <- m_grid_horizontal_coarse(GLODAP)
 
 ```
 
@@ -791,6 +787,8 @@ era_median_year <- GLODAP %>%
   group_by(era) %>%
   summarise(t_ref = median(year)) %>%
   ungroup()
+
+era_median_year
 
 GLODAP_histogram_year %>%
   ggplot() +

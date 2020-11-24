@@ -96,7 +96,7 @@ cant_3d <- cant_3d %>%
   mutate(cant_pos = if_else(cant <= 0, 0, cant),
          eras = "1800-1994")
 
-cant_inv <- calc_cant_inv(cant_3d) 
+cant_inv <- m_cant_inv(cant_3d) 
 
 # cant_inv <- cant_3d %>% 
 #   filter(depth <= parameters$inventory_depth) %>% 
@@ -121,8 +121,7 @@ Section locations are indicated as white lines in maps.
 
 ```{r cant_maps, fig.asp=0.6}
 
-map_climatology(cant_3d, "cant")
-
+p_map_climatology_divergent(cant_3d, "cant")
 
 ```
 
@@ -130,7 +129,7 @@ map_climatology(cant_3d, "cant")
 
 ```{r cant_sections}
 
-section_global(cant_3d, "cant")
+p_section_global_divergent(cant_3d, "cant")
 
 ```
 
@@ -138,7 +137,7 @@ section_global(cant_3d, "cant")
 
 ```{r cant_sections_regular, fig.asp=2}
 
-section_climatology_regular(cant_3d, "cant")
+p_section_climatology_regular_divergent(cant_3d, "cant")
 
 ```
 
@@ -146,7 +145,7 @@ section_climatology_regular(cant_3d, "cant")
 
 ```{r calculate_zonal_mean_section}
 
-cant_zonal <- zonal_mean_section(cant_3d %>% select(-basin))
+cant_zonal <- m_zonal_mean_section(cant_3d %>% select(-basin))
 
 ```
 
@@ -154,7 +153,9 @@ cant_zonal <- zonal_mean_section(cant_3d %>% select(-basin))
 
 ```{r cant_inv_pos_maps, fig.asp=0.6}
 
-map_inventory(cant_inv, "cant_inv")
+p_map_cant_pos_inv(
+  cant_inv,
+  breaks = seq(0,max(cant_inv$cant_pos_inv),5))
 
 ```
 
