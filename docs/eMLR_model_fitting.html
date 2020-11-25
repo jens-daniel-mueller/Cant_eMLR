@@ -404,9 +404,6 @@ div.tocify {
       <a href="read_GLODAPv2_2016_MappedClimatologies.html">GLODAPv2_2016_MappedClimatologies</a>
     </li>
     <li>
-      <a href="read_World_Ocean_Atlas_2013_Clement.html">World Ocean Atlas 2013</a>
-    </li>
-    <li>
       <a href="read_Gruber_2019_Cant.html">Cant Gruber 2019</a>
     </li>
     <li>
@@ -466,9 +463,6 @@ div.tocify {
     <li>
       <a href="analysis_this_study.html">This study</a>
     </li>
-    <li>
-      <a href="analysis_previous_studies.html">Previous studies</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -506,7 +500,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">eMLR - model fitting</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">20 November, 2020</h4>
+<h4 class="date">25 November, 2020</h4>
 
 </div>
 
@@ -531,7 +525,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-20
+<strong>Last updated:</strong> 2020-11-25
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -622,16 +616,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree21f6e295819b50d3b90e06cb11a73bb022cc1828targetblank21f6e29a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/21f6e295819b50d3b90e06cb11a73bb022cc1828" target="_blank">21f6e29</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeca27c82419efed96a769a96bf0280d3125156b73targetblankca27c82a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ca27c82419efed96a769a96bf0280d3125156b73" target="_blank">ca27c82</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree21f6e295819b50d3b90e06cb11a73bb022cc1828targetblank21f6e29a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeca27c82419efed96a769a96bf0280d3125156b73targetblankca27c82a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/21f6e295819b50d3b90e06cb11a73bb022cc1828" target="_blank">21f6e29</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/ca27c82419efed96a769a96bf0280d3125156b73" target="_blank">ca27c82</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,6 +635,25 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/
     Ignored:    dump/
+
+Untracked files:
+    Untracked:  code/biogeochemical_functions.R
+    Untracked:  code/test_scripts/analysis_previous_studies.Rmd
+    Untracked:  code/test_scripts/read_World_Ocean_Atlas_2013_Clement.Rmd
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/analysis_previous_studies.Rmd
+    Modified:   analysis/analysis_this_study.Rmd
+    Modified:   analysis/analysis_this_study_vs_Gruber_2019.Rmd
+    Modified:   analysis/child/setup.Rmd
+    Modified:   analysis/mapping_cant_calculation.Rmd
+    Modified:   analysis/mapping_cstar_calculation.Rmd
+    Modified:   analysis/mapping_predictor_preparation.Rmd
+    Deleted:    analysis/read_World_Ocean_Atlas_2013_Clement.Rmd
+    Modified:   code/Workflowr_project_managment.R
+    Modified:   code/mapping_functions.R
+    Modified:   code/plotting_functions.R
 
 </code></pre>
 <p>
@@ -679,6 +692,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/ca27c82419efed96a769a96bf0280d3125156b73/analysis/eMLR_model_fitting.Rmd" target="_blank">ca27c82</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+republish after creating functions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/b9cbd4f61051355da415d4896d9834976c27388e/docs/eMLR_model_fitting.html" target="_blank">b9cbd4f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1496,8 +1543,11 @@ library(GGally)</code></pre>
 </div>
 <div id="model-fitting" class="section level1">
 <h1><span class="header-section-number">3</span> Model fitting</h1>
+<div id="rmse-calculation" class="section level2">
+<h2><span class="header-section-number">3.1</span> RMSE calculation</h2>
 <p>Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.</p>
-<pre class="r"><code>for (i_basin in unique(GLODAP$basin)) {
+<pre class="r"><code># loops across all basins and eras
+for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
     
     # i_basin &lt;- unique(GLODAP$basin)[1]
@@ -1506,9 +1556,11 @@ library(GGally)</code></pre>
     print(i_basin) 
     print(i_era  )
     
+    # subset one basin and era for fitting
     GLODAP_basin_era &lt;- GLODAP %&gt;%
       filter(basin == i_basin, era == i_era)
-
+    
+    # loop across all gamma slabs in the current basin and era
     for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
 
       # i_gamma_slab &lt;- unique(GLODAP_basin_era$gamma_slab)[1]
@@ -1517,7 +1569,8 @@ library(GGally)</code></pre>
       GLODAP_basin_era_slab &lt;- GLODAP_basin_era %&gt;% 
         filter(gamma_slab == i_gamma_slab)
       
-      lm_full &lt;- lm(Cstar ~ 
+      # fit the full linear model, i.e. all predictor combinations
+      lm_full &lt;- lm(cstar ~ 
                 sal  + 
                 tem  + 
                 aou  + 
@@ -1527,8 +1580,11 @@ library(GGally)</code></pre>
                 phosphate_star, 
               data = GLODAP_basin_era_slab)
       
+      # fit linear models for all possible predictor combinations
+      # unfortunately, this functions does not provide model coeffcients (yet)
       lm_all &lt;- ols_step_all_possible(lm_full)
       
+      # extract diagnostics of each linear model
       lm_all &lt;- as_tibble(lm_all$result)
       
       lm_all &lt;- lm_all %&gt;% 
@@ -1536,6 +1592,7 @@ library(GGally)</code></pre>
                era = i_era,
                gamma_slab = i_gamma_slab)
       
+      # expanding table with model diagnostics for all eras, basins, slabs
       if (exists(&quot;lm_all_stats&quot;)) {
         lm_all_stats &lt;- bind_rows(lm_all_stats, lm_all)
       }
@@ -1552,6 +1609,7 @@ library(GGally)</code></pre>
   
 }
 
+# write model diagnostics to file
 lm_all_stats %&gt;%
   write_csv(here::here(&quot;data/eMLR&quot;,
                        &quot;lm_all_stats.csv&quot;))
@@ -1574,8 +1632,9 @@ lm_all_stats %&gt;%
   facet_grid(gamma_slab~era) +
   scale_color_brewer(palette = &quot;Set1&quot;)</code></pre>
 <p><img src="figure/eMLR_model_fitting.Rmd/eMLR_predictor_model_quality-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="rmse-alternatives" class="section level2">
-<h2><span class="header-section-number">3.1</span> RMSE alternatives</h2>
+<h2><span class="header-section-number">3.2</span> RMSE alternatives</h2>
 <p>AIC is an alternative criterion to RMSE to judge model quality, but not (yet) taken into account.</p>
 <pre class="r"><code>lm_all_stats %&gt;% 
   ggplot(aes(rmse, aic, col = gamma_slab)) +
@@ -1585,22 +1644,28 @@ lm_all_stats %&gt;%
 <p><img src="figure/eMLR_model_fitting.Rmd/AIC_RMSE-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="predictor-selection" class="section level2">
-<h2><span class="header-section-number">3.2</span> Predictor selection</h2>
+<h2><span class="header-section-number">3.3</span> Predictor selection</h2>
 <p>Within each basin and slab, the 10 linear regression models with lowest summed RMSE across all eras were selected.</p>
-<pre class="r"><code>lm_all_stats &lt;- lm_all_stats %&gt;%
+<pre class="r"><code># select relevant columns
+lm_all_stats &lt;- lm_all_stats %&gt;%
   select(basin, era, gamma_slab, predictors, rmse)
 
+# pivot table
 lm_all_stats_wide &lt;- lm_all_stats %&gt;%
   pivot_wider(names_from = era,
               values_from = rmse,
               names_prefix = &quot;rmse_&quot;)
 
+# calculate coefficient difference
+# it would be good to recode this for a variable number of eras
+# currently it is hard coded by era names
 lm_all_stats_wide &lt;- lm_all_stats_wide %&gt;%
   mutate(
     rmse_sum_JGOFS_GO = rmse_JGOFS_WOCE + rmse_GO_SHIP,
     rmse_sum_GO_new = rmse_GO_SHIP + rmse_new_era
   )
 
+# pivot back to long format
 lm_all_stats &lt;- lm_all_stats_wide %&gt;%
   pivot_longer(
     c(rmse_sum_JGOFS_GO, rmse_sum_GO_new),
@@ -1609,6 +1674,7 @@ lm_all_stats &lt;- lm_all_stats_wide %&gt;%
     names_prefix = &quot;rmse_sum_&quot;
   )
 
+# subset models with lowest RMSE
 lm_best &lt;- lm_all_stats %&gt;%
   group_by(basin, gamma_slab, eras) %&gt;%
   slice_min(order_by = rmse_sum,
@@ -1617,6 +1683,7 @@ lm_best &lt;- lm_all_stats %&gt;%
   ungroup() %&gt;% 
   arrange(basin, gamma_slab, eras, predictors)
 
+# plot table for website
 kable(lm_best) %&gt;%
   add_header_above() %&gt;%
   kable_styling() %&gt;%
@@ -1845,19 +1912,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.517881
+6.514931
 </td>
 <td style="text-align:right;">
-6.584181
+6.589463
 </td>
 <td style="text-align:right;">
-2.678819
+2.680247
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-9.196700
+9.195177
 </td>
 </tr>
 <tr>
@@ -1868,7 +1935,7 @@ Atlantic
 (-Inf,26]
 </td>
 <td style="text-align:left;">
-sal tem oxygen silicate phosphate_star
+sal tem oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
 6.520974
@@ -1894,7 +1961,7 @@ Atlantic
 (-Inf,26]
 </td>
 <td style="text-align:left;">
-sal tem silicate phosphate phosphate_star
+sal tem oxygen silicate phosphate_star
 </td>
 <td style="text-align:right;">
 6.520974
@@ -2079,19 +2146,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.517881
+6.514931
 </td>
 <td style="text-align:right;">
-6.584181
+6.589463
 </td>
 <td style="text-align:right;">
-2.678819
+2.680247
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-13.102062
+13.104394
 </td>
 </tr>
 <tr>
@@ -2781,19 +2848,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.190807
+4.194604
 </td>
 <td style="text-align:right;">
-3.959117
+3.966208
 </td>
 <td style="text-align:right;">
-3.167058
+3.163883
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-7.357865
+7.358487
 </td>
 </tr>
 <tr>
@@ -3041,19 +3108,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.190807
+4.194604
 </td>
 <td style="text-align:right;">
-3.959117
+3.966208
 </td>
 <td style="text-align:right;">
-3.167058
+3.163883
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-8.149924
+8.160811
 </td>
 </tr>
 <tr>
@@ -3249,19 +3316,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.331698
+4.334386
 </td>
 <td style="text-align:right;">
-4.414428
+4.415839
 </td>
 <td style="text-align:right;">
-3.685812
+3.684673
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-8.017510
+8.019058
 </td>
 </tr>
 <tr>
@@ -3431,19 +3498,19 @@ Atlantic
 tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.368996
+4.370058
 </td>
 <td style="text-align:right;">
-4.473575
+4.474638
 </td>
 <td style="text-align:right;">
-3.703951
+3.702781
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-8.072947
+8.072838
 </td>
 </tr>
 <tr>
@@ -3558,32 +3625,6 @@ Atlantic
 (26.75,27]
 </td>
 <td style="text-align:left;">
-sal tem aou phosphate_star
-</td>
-<td style="text-align:right;">
-4.364832
-</td>
-<td style="text-align:right;">
-4.429663
-</td>
-<td style="text-align:right;">
-3.798562
-</td>
-<td style="text-align:left;">
-JGOFS_GO
-</td>
-<td style="text-align:right;">
-8.794495
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(26.75,27]
-</td>
-<td style="text-align:left;">
 sal tem aou silicate phosphate
 </td>
 <td style="text-align:right;">
@@ -3613,19 +3654,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.331698
+4.334386
 </td>
 <td style="text-align:right;">
-4.414428
+4.415839
 </td>
 <td style="text-align:right;">
-3.685812
+3.684673
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-8.746126
+8.750225
 </td>
 </tr>
 <tr>
@@ -3704,6 +3745,32 @@ JGOFS_GO
 </td>
 <td style="text-align:right;">
 8.749298
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(26.75,27]
+</td>
+<td style="text-align:left;">
+sal tem phosphate phosphate_star
+</td>
+<td style="text-align:right;">
+4.367237
+</td>
+<td style="text-align:right;">
+4.430224
+</td>
+<td style="text-align:right;">
+3.797318
+</td>
+<td style="text-align:left;">
+JGOFS_GO
+</td>
+<td style="text-align:right;">
+8.797460
 </td>
 </tr>
 <tr>
@@ -3821,19 +3888,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.707344
+4.715622
 </td>
 <td style="text-align:right;">
-5.107561
+5.109386
 </td>
 <td style="text-align:right;">
-4.790733
+4.785133
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-9.498077
+9.500756
 </td>
 </tr>
 <tr>
@@ -4003,19 +4070,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.707344
+4.715622
 </td>
 <td style="text-align:right;">
-5.107561
+5.109386
 </td>
 <td style="text-align:right;">
-4.790733
+4.785133
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-9.814905
+9.825008
 </td>
 </tr>
 <tr>
@@ -4185,19 +4252,19 @@ Atlantic
 tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.742552
+4.749838
 </td>
 <td style="text-align:right;">
-5.158848
+5.159735
 </td>
 <td style="text-align:right;">
-5.006370
+4.997648
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-9.901400
+9.909573
 </td>
 </tr>
 <tr>
@@ -4598,22 +4665,48 @@ Atlantic
 (27.25,27.5]
 </td>
 <td style="text-align:left;">
-sal tem aou silicate phosphate_star
+sal tem aou phosphate_star
 </td>
 <td style="text-align:right;">
-4.186174
+4.187329
 </td>
 <td style="text-align:right;">
-4.512357
+4.513282
 </td>
 <td style="text-align:right;">
-3.960480
+4.075869
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-8.698531
+8.700611
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(27.25,27.5]
+</td>
+<td style="text-align:left;">
+sal tem aou silicate phosphate_star
+</td>
+<td style="text-align:right;">
+4.186556
+</td>
+<td style="text-align:right;">
+4.510618
+</td>
+<td style="text-align:right;">
+3.951001
+</td>
+<td style="text-align:left;">
+JGOFS_GO
+</td>
+<td style="text-align:right;">
+8.697174
 </td>
 </tr>
 <tr>
@@ -4625,32 +4718,6 @@ Atlantic
 </td>
 <td style="text-align:left;">
 sal tem oxygen phosphate
-</td>
-<td style="text-align:right;">
-4.190387
-</td>
-<td style="text-align:right;">
-4.511502
-</td>
-<td style="text-align:right;">
-4.064790
-</td>
-<td style="text-align:left;">
-JGOFS_GO
-</td>
-<td style="text-align:right;">
-8.701889
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(27.25,27.5]
-</td>
-<td style="text-align:left;">
-sal tem oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
 4.190387
@@ -4861,19 +4928,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.365838
+4.359172
 </td>
 <td style="text-align:right;">
-4.438431
+4.433508
 </td>
 <td style="text-align:right;">
-4.413150
+4.416434
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-8.778989
+8.775606
 </td>
 </tr>
 <tr>
@@ -5147,19 +5214,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.365838
+4.359172
 </td>
 <td style="text-align:right;">
-4.438431
+4.433508
 </td>
 <td style="text-align:right;">
-4.413150
+4.416434
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-8.804269
+8.792680
 </td>
 </tr>
 <tr>
@@ -5407,19 +5474,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.706344
+4.704552
 </td>
 <td style="text-align:right;">
-4.598592
+4.597494
 </td>
 <td style="text-align:right;">
-6.724646
+6.730363
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-11.430989
+11.434915
 </td>
 </tr>
 <tr>
@@ -5430,7 +5497,7 @@ Atlantic
 (27.75,27.85]
 </td>
 <td style="text-align:left;">
-sal tem oxygen silicate phosphate_star
+sal tem oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
 4.699260
@@ -5456,7 +5523,7 @@ Atlantic
 (27.75,27.85]
 </td>
 <td style="text-align:left;">
-sal tem silicate phosphate phosphate_star
+sal tem oxygen silicate phosphate_star
 </td>
 <td style="text-align:right;">
 4.699260
@@ -5901,19 +5968,19 @@ Atlantic
 sal aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.922570
+4.944030
 </td>
 <td style="text-align:right;">
-3.992602
+4.017605
 </td>
 <td style="text-align:right;">
-4.990023
+5.022147
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-9.912593
+9.966177
 </td>
 </tr>
 <tr>
@@ -5953,19 +6020,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.890751
+4.890741
 </td>
 <td style="text-align:right;">
-3.943447
+3.944027
 </td>
 <td style="text-align:right;">
-4.909190
+4.911670
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-9.799941
+9.802411
 </td>
 </tr>
 <tr>
@@ -6161,19 +6228,19 @@ Atlantic
 sal aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.922570
+4.944030
 </td>
 <td style="text-align:right;">
-3.992602
+4.017605
 </td>
 <td style="text-align:right;">
-4.990023
+5.022147
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-8.915172
+8.961635
 </td>
 </tr>
 <tr>
@@ -6213,19 +6280,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.890751
+4.890741
 </td>
 <td style="text-align:right;">
-3.943447
+3.944027
 </td>
 <td style="text-align:right;">
-4.909190
+4.911670
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-8.834199
+8.834768
 </td>
 </tr>
 <tr>
@@ -6421,19 +6488,19 @@ Atlantic
 sal aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-5.739109
+5.741383
 </td>
 <td style="text-align:right;">
-3.718339
+3.722383
 </td>
 <td style="text-align:right;">
-5.088156
+5.097551
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-10.827265
+10.838935
 </td>
 </tr>
 <tr>
@@ -6525,19 +6592,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-5.737730
+5.741118
 </td>
 <td style="text-align:right;">
-3.718002
+3.720558
 </td>
 <td style="text-align:right;">
-5.088058
+5.096524
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-10.825788
+10.837642
 </td>
 </tr>
 <tr>
@@ -6681,19 +6748,19 @@ Atlantic
 sal aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-5.739109
+5.741383
 </td>
 <td style="text-align:right;">
-3.718339
+3.722383
 </td>
 <td style="text-align:right;">
-5.088156
+5.097551
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-9.457448
+9.463766
 </td>
 </tr>
 <tr>
@@ -6759,19 +6826,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-5.737730
+5.741118
 </td>
 <td style="text-align:right;">
-3.718002
+3.720558
 </td>
 <td style="text-align:right;">
-5.088058
+5.096524
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-9.455732
+9.461676
 </td>
 </tr>
 <tr>
@@ -7201,19 +7268,19 @@ Atlantic
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.083547
+6.097688
 </td>
 <td style="text-align:right;">
-3.641505
+3.650365
 </td>
 <td style="text-align:right;">
-5.079364
+5.100949
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-9.725052
+9.748053
 </td>
 </tr>
 <tr>
@@ -7458,22 +7525,22 @@ Atlantic
 (28.1,28.15]
 </td>
 <td style="text-align:left;">
-sal tem aou phosphate_star
+sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.670569
+6.665681
 </td>
 <td style="text-align:right;">
-3.433060
+3.387941
 </td>
 <td style="text-align:right;">
-4.737733
+4.744749
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-11.408302
+11.410431
 </td>
 </tr>
 <tr>
@@ -7484,22 +7551,22 @@ Atlantic
 (28.1,28.15]
 </td>
 <td style="text-align:left;">
-sal tem aou silicate phosphate_star
+sal tem oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
-6.662297
+6.667020
 </td>
 <td style="text-align:right;">
-3.389809
+3.386968
 </td>
 <td style="text-align:right;">
-4.737720
+4.747359
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-11.400017
+11.414378
 </td>
 </tr>
 <tr>
@@ -7718,22 +7785,48 @@ Atlantic
 (28.1,28.15]
 </td>
 <td style="text-align:left;">
-sal tem aou silicate phosphate_star
+sal tem aou phosphate_star
 </td>
 <td style="text-align:right;">
-6.662297
+6.673542
 </td>
 <td style="text-align:right;">
-3.389809
+3.427793
 </td>
 <td style="text-align:right;">
-4.737720
+4.744819
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-10.052106
+10.101335
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(28.1,28.15]
+</td>
+<td style="text-align:left;">
+sal tem aou silicate phosphate_star
+</td>
+<td style="text-align:right;">
+6.665681
+</td>
+<td style="text-align:right;">
+3.387941
+</td>
+<td style="text-align:right;">
+4.744749
+</td>
+<td style="text-align:left;">
+JGOFS_GO
+</td>
+<td style="text-align:right;">
+10.053622
 </td>
 </tr>
 <tr>
@@ -7745,32 +7838,6 @@ Atlantic
 </td>
 <td style="text-align:left;">
 sal tem oxygen phosphate
-</td>
-<td style="text-align:right;">
-6.672915
-</td>
-<td style="text-align:right;">
-3.428923
-</td>
-<td style="text-align:right;">
-4.748511
-</td>
-<td style="text-align:left;">
-JGOFS_GO
-</td>
-<td style="text-align:right;">
-10.101838
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(28.1,28.15]
-</td>
-<td style="text-align:left;">
-sal tem oxygen phosphate phosphate_star
 </td>
 <td style="text-align:right;">
 6.672915
@@ -7848,32 +7915,6 @@ Atlantic
 (28.1,28.15]
 </td>
 <td style="text-align:left;">
-sal tem phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-6.672915
-</td>
-<td style="text-align:right;">
-3.428923
-</td>
-<td style="text-align:right;">
-4.748511
-</td>
-<td style="text-align:left;">
-JGOFS_GO
-</td>
-<td style="text-align:right;">
-10.101838
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Atlantic
-</td>
-<td style="text-align:left;">
-(28.1,28.15]
-</td>
-<td style="text-align:left;">
 sal tem silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
@@ -7890,6 +7931,32 @@ JGOFS_GO
 </td>
 <td style="text-align:right;">
 10.053988
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Atlantic
+</td>
+<td style="text-align:left;">
+(28.1,28.15]
+</td>
+<td style="text-align:left;">
+sal tem silicate phosphate_star
+</td>
+<td style="text-align:right;">
+6.668588
+</td>
+<td style="text-align:right;">
+3.406748
+</td>
+<td style="text-align:right;">
+4.748527
+</td>
+<td style="text-align:left;">
+JGOFS_GO
+</td>
+<td style="text-align:right;">
+10.075336
 </td>
 </tr>
 <tr>
@@ -9044,6 +9111,32 @@ Indo-Pacific
 (-Inf,26]
 </td>
 <td style="text-align:left;">
+sal tem aou oxygen phosphate_star
+</td>
+<td style="text-align:right;">
+6.769375
+</td>
+<td style="text-align:right;">
+11.746900
+</td>
+<td style="text-align:right;">
+5.869605
+</td>
+<td style="text-align:left;">
+GO_new
+</td>
+<td style="text-align:right;">
+12.638980
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indo-Pacific
+</td>
+<td style="text-align:left;">
+(-Inf,26]
+</td>
+<td style="text-align:left;">
 sal tem aou silicate phosphate
 </td>
 <td style="text-align:right;">
@@ -9073,19 +9166,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.552718
+6.537234
 </td>
 <td style="text-align:right;">
-11.456988
+11.449846
 </td>
 <td style="text-align:right;">
-5.771181
+5.750335
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-12.323900
+12.287569
 </td>
 </tr>
 <tr>
@@ -9164,32 +9257,6 @@ GO_new
 </td>
 <td style="text-align:right;">
 12.347560
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Indo-Pacific
-</td>
-<td style="text-align:left;">
-(-Inf,26]
-</td>
-<td style="text-align:left;">
-sal tem silicate phosphate_star
-</td>
-<td style="text-align:right;">
-6.555444
-</td>
-<td style="text-align:right;">
-11.459463
-</td>
-<td style="text-align:right;">
-5.929318
-</td>
-<td style="text-align:left;">
-GO_new
-</td>
-<td style="text-align:right;">
-12.484762
 </td>
 </tr>
 <tr>
@@ -9333,19 +9400,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.552718
+6.537234
 </td>
 <td style="text-align:right;">
-11.456988
+11.449846
 </td>
 <td style="text-align:right;">
-5.771181
+5.750335
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-18.009706
+17.987080
 </td>
 </tr>
 <tr>
@@ -9437,19 +9504,19 @@ Indo-Pacific
 sal tem silicate phosphate_star
 </td>
 <td style="text-align:right;">
-6.555444
+6.774534
 </td>
 <td style="text-align:right;">
-11.459463
+11.599943
 </td>
 <td style="text-align:right;">
-5.929318
+6.319494
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-18.014908
+18.374478
 </td>
 </tr>
 <tr>
@@ -9528,32 +9595,6 @@ GO_new
 </td>
 <td style="text-align:right;">
 8.702101
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Indo-Pacific
-</td>
-<td style="text-align:left;">
-(26,26.5]
-</td>
-<td style="text-align:left;">
-sal tem aou oxygen phosphate
-</td>
-<td style="text-align:right;">
-4.966446
-</td>
-<td style="text-align:right;">
-7.630642
-</td>
-<td style="text-align:right;">
-4.313716
-</td>
-<td style="text-align:left;">
-GO_new
-</td>
-<td style="text-align:right;">
-9.280162
 </td>
 </tr>
 <tr>
@@ -9619,19 +9660,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.797335
+4.789457
 </td>
 <td style="text-align:right;">
-7.563192
+7.553076
 </td>
 <td style="text-align:right;">
-4.114310
+4.101477
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-8.911645
+8.890933
 </td>
 </tr>
 <tr>
@@ -9710,6 +9751,32 @@ GO_new
 </td>
 <td style="text-align:right;">
 8.892012
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indo-Pacific
+</td>
+<td style="text-align:left;">
+(26,26.5]
+</td>
+<td style="text-align:left;">
+sal tem silicate phosphate_star
+</td>
+<td style="text-align:right;">
+4.811875
+</td>
+<td style="text-align:right;">
+7.571497
+</td>
+<td style="text-align:right;">
+4.101752
+</td>
+<td style="text-align:left;">
+GO_new
+</td>
+<td style="text-align:right;">
+8.913627
 </td>
 </tr>
 <tr>
@@ -9824,32 +9891,6 @@ Indo-Pacific
 (26,26.5]
 </td>
 <td style="text-align:left;">
-sal tem aou phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-4.966446
-</td>
-<td style="text-align:right;">
-7.630642
-</td>
-<td style="text-align:right;">
-4.313716
-</td>
-<td style="text-align:left;">
-JGOFS_GO
-</td>
-<td style="text-align:right;">
-12.597088
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Indo-Pacific
-</td>
-<td style="text-align:left;">
-(26,26.5]
-</td>
-<td style="text-align:left;">
 sal tem aou silicate phosphate
 </td>
 <td style="text-align:right;">
@@ -9879,19 +9920,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.797335
+4.789457
 </td>
 <td style="text-align:right;">
-7.563192
+7.553076
 </td>
 <td style="text-align:right;">
-4.114310
+4.101477
 </td>
 <td style="text-align:left;">
 JGOFS_GO
 </td>
 <td style="text-align:right;">
-12.360527
+12.342533
 </td>
 </tr>
 <tr>
@@ -9970,6 +10011,32 @@ JGOFS_GO
 </td>
 <td style="text-align:right;">
 12.345779
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indo-Pacific
+</td>
+<td style="text-align:left;">
+(26,26.5]
+</td>
+<td style="text-align:left;">
+sal tem silicate phosphate_star
+</td>
+<td style="text-align:right;">
+4.811875
+</td>
+<td style="text-align:right;">
+7.571497
+</td>
+<td style="text-align:right;">
+4.101752
+</td>
+<td style="text-align:left;">
+JGOFS_GO
+</td>
+<td style="text-align:right;">
+12.383372
 </td>
 </tr>
 <tr>
@@ -11673,19 +11740,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.316632
+4.306666
 </td>
 <td style="text-align:right;">
-5.629242
+5.592507
 </td>
 <td style="text-align:right;">
-3.285669
+3.283628
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-7.602301
+7.590294
 </td>
 </tr>
 <tr>
@@ -12193,19 +12260,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-3.818621
+3.815870
 </td>
 <td style="text-align:right;">
-4.989376
+4.967140
 </td>
 <td style="text-align:right;">
-2.974864
+2.974870
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-6.793484
+6.790740
 </td>
 </tr>
 <tr>
@@ -12294,22 +12361,22 @@ Indo-Pacific
 (27.5,27.75]
 </td>
 <td style="text-align:left;">
-tem aou oxygen silicate phosphate_star
+sal tem silicate phosphate_star
 </td>
 <td style="text-align:right;">
-4.020120
+3.847276
 </td>
 <td style="text-align:right;">
-4.433049
+5.087142
 </td>
 <td style="text-align:right;">
-3.303266
+3.072401
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-7.323386
+6.919677
 </td>
 </tr>
 <tr>
@@ -12609,19 +12676,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-3.332746
+3.335814
 </td>
 <td style="text-align:right;">
-4.148067
+4.143793
 </td>
 <td style="text-align:right;">
-2.865182
+2.866905
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-6.197928
+6.202719
 </td>
 </tr>
 <tr>
@@ -12710,6 +12777,32 @@ Indo-Pacific
 (27.75,27.85]
 </td>
 <td style="text-align:left;">
+sal tem silicate phosphate_star
+</td>
+<td style="text-align:right;">
+3.360371
+</td>
+<td style="text-align:right;">
+4.332853
+</td>
+<td style="text-align:right;">
+2.866984
+</td>
+<td style="text-align:left;">
+GO_new
+</td>
+<td style="text-align:right;">
+6.227355
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indo-Pacific
+</td>
+<td style="text-align:left;">
+(27.75,27.85]
+</td>
+<td style="text-align:left;">
 tem aou oxygen silicate phosphate
 </td>
 <td style="text-align:right;">
@@ -12788,33 +12881,7 @@ Indo-Pacific
 (27.75,27.85]
 </td>
 <td style="text-align:left;">
-tem aou silicate phosphate_star
-</td>
-<td style="text-align:right;">
-3.337914
-</td>
-<td style="text-align:right;">
-4.162423
-</td>
-<td style="text-align:right;">
-2.918528
-</td>
-<td style="text-align:left;">
-GO_new
-</td>
-<td style="text-align:right;">
-6.256442
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Indo-Pacific
-</td>
-<td style="text-align:left;">
-(27.75,27.85]
-</td>
-<td style="text-align:left;">
-tem oxygen silicate phosphate_star
+tem silicate phosphate phosphate_star
 </td>
 <td style="text-align:right;">
 3.339171
@@ -13100,32 +13167,6 @@ Indo-Pacific
 (27.85,27.95]
 </td>
 <td style="text-align:left;">
-sal aou silicate phosphate phosphate_star
-</td>
-<td style="text-align:right;">
-3.020889
-</td>
-<td style="text-align:right;">
-4.293944
-</td>
-<td style="text-align:right;">
-2.884052
-</td>
-<td style="text-align:left;">
-GO_new
-</td>
-<td style="text-align:right;">
-5.904941
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Indo-Pacific
-</td>
-<td style="text-align:left;">
-(27.85,27.95]
-</td>
-<td style="text-align:left;">
 sal tem aou silicate phosphate
 </td>
 <td style="text-align:right;">
@@ -13155,19 +13196,19 @@ Indo-Pacific
 sal tem aou silicate phosphate_star
 </td>
 <td style="text-align:right;">
-3.025496
+3.023674
 </td>
 <td style="text-align:right;">
-4.328959
+4.325539
 </td>
 <td style="text-align:right;">
-2.858284
+2.859157
 </td>
 <td style="text-align:left;">
 GO_new
 </td>
 <td style="text-align:right;">
-5.883780
+5.882831
 </td>
 </tr>
 <tr>
@@ -13246,6 +13287,32 @@ GO_new
 </td>
 <td style="text-align:right;">
 5.883694
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indo-Pacific
+</td>
+<td style="text-align:left;">
+(27.85,27.95]
+</td>
+<td style="text-align:left;">
+sal tem silicate phosphate_star
+</td>
+<td style="text-align:right;">
+3.044774
+</td>
+<td style="text-align:right;">
+4.466925
+</td>
+<td style="text-align:right;">
+2.859236
+</td>
+<td style="text-align:left;">
+GO_new
+</td>
+<td style="text-align:right;">
+5.904011
 </td>
 </tr>
 <tr>
@@ -15177,9 +15244,9 @@ JGOFS_GO
 </div>
 </div>
 <div id="correlations-rmse-between-eras" class="section level2">
-<h2><span class="header-section-number">3.3</span> Correlations RMSE between eras</h2>
+<h2><span class="header-section-number">3.4</span> Correlations RMSE between eras</h2>
 <div id="all-models" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> All models</h3>
+<h3><span class="header-section-number">3.4.1</span> All models</h3>
 <pre class="r"><code>lm_all_stats %&gt;%
   ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
   geom_point() +
@@ -15189,24 +15256,25 @@ JGOFS_GO
 <pre class="r"><code>rm(lm_all_stats, lm_all_stats_wide)</code></pre>
 </div>
 <div id="best-models" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> 10 best models</h3>
+<h3><span class="header-section-number">3.4.2</span> 10 best models</h3>
 <pre class="r"><code>lm_best %&gt;%
   ggplot(aes(rmse_GO_SHIP, rmse_sum - rmse_GO_SHIP, col = gamma_slab)) +
   geom_point() +
   scale_color_viridis_d() +
   facet_grid(eras ~ basin)</code></pre>
 <p><img src="figure/eMLR_model_fitting.Rmd/rmse_correlation_across_eras_10_models-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>lm_1 &lt;- GLODAP %&gt;% 
+<pre class="r"><code># this code tests the rmse output of the ols_step_all_possible() function used
+lm_1 &lt;- GLODAP %&gt;% 
   filter(basin == &quot;Atlantic&quot;,
          gamma_slab == &quot;(-Inf,26]&quot;,
          era == &quot;new_era&quot;) %&gt;% 
-  lm(Cstar ~ sal + tem + aou + oxygen + phosphate_star, data = .)
+  lm(cstar ~ sal + tem + aou + oxygen + phosphate_star, data = .)
 
 lm_2 &lt;- GLODAP %&gt;% 
   filter(basin == &quot;Atlantic&quot;,
          gamma_slab == &quot;(-Inf,26]&quot;,
          era == &quot;new_era&quot;) %&gt;% 
-  lm(Cstar ~ sal + tem + aou + oxygen + phosphate, data = .)
+  lm(cstar ~ sal + tem + aou + oxygen + phosphate, data = .)
 
 lm_1
 lm_2
@@ -15216,12 +15284,14 @@ sqrt(mean(lm_2$residuals^2))</code></pre>
 </div>
 </div>
 <div id="fitting-best-models" class="section level2">
-<h2><span class="header-section-number">3.4</span> Fitting best models</h2>
+<h2><span class="header-section-number">3.5</span> Fitting best models</h2>
 <p>After selecting 10 linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.</p>
-<pre class="r"><code>lm_best &lt;- lm_best %&gt;% 
+<pre class="r"><code># format model formula
+lm_best &lt;- lm_best %&gt;% 
   mutate(lm_coeff = str_replace_all(predictors, &quot; &quot;, &quot; + &quot;),
-         lm_coeff = paste(&quot;Cstar ~&quot;, lm_coeff))
+         lm_coeff = paste(&quot;cstar ~&quot;, lm_coeff))
 
+# define combined eras that will be analysed against each other
 eras_era &lt;-
   tibble(
     eras = c(&quot;JGOFS_GO&quot;, &quot;GO_new&quot;, &quot;JGOFS_GO&quot;, &quot;GO_new&quot;),
@@ -15229,11 +15299,13 @@ eras_era &lt;-
   )
 
 lm_best &lt;- full_join(lm_best, eras_era)
-
 rm(eras_era)</code></pre>
-<pre class="r"><code>lm_best &lt;- lm_best %&gt;% 
+<pre class="r"><code># select required columns
+lm_best &lt;- lm_best %&gt;% 
   select(basin, gamma_slab, era, eras, predictors, lm_coeff, rmse_sum)
 
+# run similar loop as for rmse calculation
+# to get model coeffcients for 10 best models
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
     # i_basin &lt;- unique(GLODAP$basin)[1]
@@ -15285,7 +15357,7 @@ for (i_basin in unique(GLODAP$basin)) {
 
           # p_model &lt;- ggnostic(
           #   lm_fit_single,
-          #   columnsY = c(&quot;Cstar&quot;, &quot;.fitted&quot;, &quot;.resid&quot;),
+          #   columnsY = c(&quot;cstar&quot;, &quot;.fitted&quot;, &quot;.resid&quot;),
           #   title = paste(&quot;eras:&quot;, i_eras,
           #                 &quot;| era:&quot;, i_era,
           #                 &quot;| basin:&quot;, i_basin,
@@ -15302,7 +15374,7 @@ for (i_basin in unique(GLODAP$basin)) {
           #           i_basin,
           #           i_gamma_slab,
           #           i_predictors,
-          #           &quot;eMLR_Cstar_residuals.png&quot;,
+          #           &quot;eMLR_cstar_residuals.png&quot;,
           #           sep = &quot;_&quot;)
           #   ),
           #   width = 14,
@@ -15351,26 +15423,27 @@ rm(lm_fit_single, coefficients, i_rmse_sum,
 lm_all &lt;- lm_all %&gt;% 
   select(basin, gamma_slab, era, eras, model, term, estimate)
 
+# set coefficient to zero if not fitted (=NA)
 lm_all &lt;- lm_all %&gt;% 
   mutate(estimate = if_else(is.na(estimate), 0, estimate))
 
+# write lm models to file
 lm_all %&gt;%
   write_csv(here::here(&quot;data/eMLR&quot;,
                        &quot;lm_all.csv&quot;))
 
-# Prepare model coefficients for mapping of Cstar
-
-lm_all_wide_Cstar &lt;- lm_all %&gt;% 
+# Prepare model coefficients for mapping of cstar
+lm_all_wide_cstar &lt;- lm_all %&gt;% 
   pivot_wider(values_from = estimate,
               names_from = term,
               names_prefix = &quot;coeff_&quot;,
               values_fill = 0)
 
-lm_all_wide_Cstar %&gt;%
+lm_all_wide_cstar %&gt;%
   write_csv(here::here(&quot;data/eMLR&quot;,
-                       &quot;lm_all_wide_Cstar.csv&quot;))
+                       &quot;lm_all_wide_cstar.csv&quot;))
 
-rm(lm_all_wide_Cstar)
+rm(lm_all_wide_cstar)
 
 # Prepare model coefficients differences for mapping of Cant
 
