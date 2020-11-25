@@ -45,7 +45,7 @@ cant_zonal <-
   read_csv(here::here("data/output",
                          "cant_zonal.csv"))
 
-cant_predictor_average_zonal <-
+cant_predictor_zonal <-
   read_csv(here::here("data/output",
                          "cant_predictor_zonal.csv"))
 
@@ -115,7 +115,7 @@ rm(cant_inv_budget)
 
 
 
-# cant - positive
+# Cant - positive
 
 In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.
 
@@ -124,32 +124,23 @@ In a first series of plots we explore the distribution of cant, taking only posi
 
 ```{r cant_pos_zonal_mean_sections, fig.asp=0.6}
 
-df <- cant_zonal
-breaks <- c(seq(0, 18, 1), Inf)
-var <- "cant_pos_mean"
-legend_title <- expression(atop(Delta * C[ant],
-                                (mu * mol ~ kg ^ {-1})))
-
-# i_basin_AIP <- unique(df$basin_AIP)[1]
-# i_estimate <- unique(df$estimate)[1]
-
-for (i_basin_AIP in unique(df$basin_AIP)) {
-  for (i_eras in unique(df$eras)) {
-    print(
-      section_zonal_layered_continous_eras(
-        df,
-        i_basin_AIP = i_basin_AIP,
-        i_eras = i_eras,
-        var,
-        breaks,
-        legend_title
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+  for (i_eras in unique(cant_zonal$eras)) {
+   
+     print(
+      p_section_zonal_continous(
+        df = cant_zonal %>%
+          filter(basin_AIP == i_basin_AIP,
+                 eras == i_eras),
+        var = "cant_pos_mean",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| eras:", i_eras)
       )
+      
     )
     
   }
 }
-
-rm(df, var, breaks, legend_title)
   
 ```
 
@@ -162,101 +153,113 @@ Please note that:
 - density slabs covering values >28.1 occur by definition only either in the Atlantic or Indo-Pacific basin
 - gaps in the maps represent areas where (thin) density layers fit between discrete depth levels used for mapping
 
+```{r calculate_gamma_slab_maps}
 
-```{r cant_pos_gamma_slab_maps, fig.asp=2.5}
+cant_gamma_maps <- m_cant_slab(cant_3d)
 
-cant_gamma_maps <- cant_3d %>% 
-  group_by(lat, lon, gamma_slab, eras) %>% 
-  summarise(cant_pos = mean(cant_pos, na.rm = TRUE)) %>% 
-  ungroup()
+```
 
-
-breaks <- c(seq(0,16,2),Inf)
-breaks_n <- length(breaks) - 1
+```{r cant_pos_gamma_slab_maps}
 
 cant_gamma_maps <- cant_gamma_maps %>% 
-  mutate(cant_pos_int = cut(cant_pos, 
-                                breaks,
-                                right = FALSE)) %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
+  arrange(gamma_slab, eras)
+
+# i_eras <- unique(cant_gamma_maps$eras)[1]
+# i_gamma_slab <- unique(cant_gamma_maps$gamma_slab)[1]
+
+for (i_eras in unique(cant_gamma_maps$eras)) {
+  for (i_gamma_slab in unique(cant_gamma_maps$gamma_slab)) {
+    print(
+      p_map_cant_pos_slab(
+      cant_gamma_maps %>% filter(eras == i_eras,
+                                 gamma_slab == i_gamma_slab),
+      subtitle_text = paste("Eras:", i_eras,
+                            "| Neutral density:", i_gamma_slab))
+    )
+    
+  }
+}
 
 
-map +
-  geom_raster(data = cant_gamma_maps,
-              aes(lon, lat, fill = cant_pos_int)) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n)) +
-  facet_grid(gamma_slab ~ eras) +
-  theme(axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        legend.position = "top")
-
-rm(cant_gamma_maps, breaks, breaks_n)
 ```
 
 ## Inventory map
 
 Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r cant_pos_inventory_map, fig.asp=1}
+```{r cant_pos_inventory_map}
 
-breaks <- c(seq(0,16,2),Inf)
-breaks_n <- length(breaks) - 1
+# i_eras <- unique(cant_inv$eras)[1]
 
-cant_inv <- cant_inv %>% 
-  mutate(cant_pos_inv_int = cut(cant_pos_inv, 
-                                breaks,
-                                right = FALSE)) %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
-
-map +
-  geom_raster(data = cant_inv,
-              aes(lon, lat, fill = cant_pos_inv_int)) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                     name = expression(atop(Delta*C[ant],
-                                           (mol~m^{-2})))) +
-  # scale_fill_scico_d(palette = "batlow", direction = -1) +
-  guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
-  facet_wrap( ~ eras, ncol = 1)
+for (i_eras in unique(cant_inv$eras)) {
+  
+  print(p_map_cant_pos_inv(
+    cant_inv %>% filter(eras == i_eras),
+    subtitle_text = paste("Eras:", i_eras)
+  ))
+  
+}
 
 ```
 
 
-## Global section
-
-### JGOFS_GO
+## Global sections
 
 ```{r cant_sections_positive_mean_one_lon_JGOFS_GO}
 
-section_global(cant_3d %>% filter(eras == "JGOFS_GO"),
-                    "cant_pos")
+
+for (i_eras in unique(cant_3d$eras)) {
+  print(
+    p_section_global_continous(
+      cant_3d %>% filter(eras == i_eras),
+      "cant_pos",
+      subtitle_text = paste("Eras:", i_eras)
+    )
+  )
+  
+}
 
 ```
 
-### GO_new
 
-```{r cant_sections_positive_mean_one_lon_GO_new}
-
-section_global(cant_3d %>% filter(eras == "GO_new"),
-                    "cant_pos")
-
-```
-
-
-# cant - all
+# Cant - all
 
 In a second series of plots we explore the distribution of cant, taking positive and negative estimates into account.
 
 ## Zonal mean sections
 
-```{r cant_all_zonal_mean_sections}
+```{r cant_all_zonal_mean_sections, fig.asp=0.6}
 
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
+# i_eras <- unique(cant_zonal$eras)[1]
+# i_basin_AIP <- unique(cant_zonal$basin_AIP)[2]
 
-section_zonal_average_divergent(cant_zonal,
-                                "cant_mean",
-                                "gamma_mean")
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+  
+  
+  # select slab breaks for plotted basin
+  if (i_basin_AIP == "Atlantic") {
+    slab_breaks <- parameters$slabs_Atl
+  } else {
+    slab_breaks <- parameters$slabs_Ind_Pac
+  }
+  
+  for (i_eras in unique(cant_zonal$eras)) {
+    print(
+      p_section_zonal_divergent_gamma(
+        df = cant_zonal %>%
+          filter(basin_AIP == i_basin_AIP,
+                 eras == i_eras),
+        var = "cant_mean",
+        gamma = "gamma_mean",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| eras:", i_eras)
+      )
+    )
+    
+  }
+}
+  
 ```
-
 
 ## Isoneutral slab distribution
 
@@ -270,34 +273,23 @@ Please note that:
 
 ```{r cant_all_gamma_slab_maps, fig.asp=2.5}
 
-cant_gamma_maps <- cant_3d %>%
-  group_by(lat, lon, gamma_slab, eras) %>%
-  summarise(cant = mean(cant, na.rm = TRUE)) %>%
-  ungroup()
+# i_eras <- unique(cant_gamma_maps$eras)[1]
+# i_gamma_slab <- unique(cant_gamma_maps$gamma_slab)[1]
+
+for (i_eras in unique(cant_gamma_maps$eras)) {
+  for (i_gamma_slab in unique(cant_gamma_maps$gamma_slab)) {
+    print(
+      p_map_cant_slab(
+      cant_gamma_maps %>% filter(eras == i_eras,
+                                 gamma_slab == i_gamma_slab),
+      subtitle_text = paste("Eras:", i_eras,
+                            "| Neutral density:", i_gamma_slab))
+    )
+    
+  }
+}
 
 
-breaks <- c(-Inf, seq(-16, 16, 4), Inf)
-breaks_n <- length(breaks) - 1
-
-cant_gamma_maps <- cant_gamma_maps %>%
-  mutate(cant_int = cut(cant,
-                        breaks,
-                        right = FALSE)) %>% 
-  mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
-
-map +
-  geom_raster(data = cant_gamma_maps,
-              aes(lon, lat, fill = cant_int)) +
-  scale_fill_brewer(palette = "RdBu",
-                    direction = -1) +
-  facet_grid(gamma_slab ~ eras) +
-  theme(
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    legend.position = "top"
-  )
-
-rm(cant_gamma_maps, breaks, breaks_n)
 ```
 
 ## Inventory map
@@ -306,38 +298,59 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 
 ```{r cant_all_inventory_map, fig.asp=1}
 
-breaks <- c(-Inf, seq(-16,16,4),Inf)
-breaks_n <- length(breaks) - 1
+# i_eras <- unique(cant_inv$eras)[1]
 
-cant_inv <- cant_inv %>% 
-  mutate(cant_inv_int = cut(cant_inv, 
-                                breaks,
-                                right = FALSE))
-
-map +
-  geom_raster(data = cant_inv ,
-              aes(lon, lat, fill = cant_inv_int)) +
-  scale_fill_brewer(palette = "RdBu",
-                    direction = -1) +
-  facet_wrap( ~ eras, ncol = 1) +
-  theme(axis.title = element_blank())
-
-
-rm(breaks, breaks_n)
+for (i_eras in unique(cant_inv$eras)) {
+  
+  print(
+    p_map_cant_inv(
+    cant_inv %>% filter(eras == i_eras),
+    subtitle_text = paste("Eras:", i_eras)
+  )
+  )
+  
+}
 
 ```
 
-# cant - standard deviation 
+# Cant - standard deviation 
 
 ## Across models
 
-Standard deviation across cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
+Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
 
 ```{r cant_sections_sd_models}
 
-section_zonal_average_continous(cant_zonal,
-                                "cant_sd_mean",
-                                "gamma_mean")
+# i_eras <- unique(cant_zonal$eras)[1]
+# i_basin_AIP <- unique(cant_zonal$basin_AIP)[2]
+
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+  
+  
+  # select slab breaks for plotted basin
+  if (i_basin_AIP == "Atlantic") {
+    slab_breaks <- parameters$slabs_Atl
+  } else {
+    slab_breaks <- parameters$slabs_Ind_Pac
+  }
+  
+  for (i_eras in unique(cant_zonal$eras)) {
+    print(
+      p_section_zonal_continous_gamma(
+        df = cant_zonal %>%
+          filter(basin_AIP == i_basin_AIP,
+                 eras == i_eras),
+        var = "cant_sd_mean",
+        gamma = "gamma_mean",
+        legend_title = "sd",
+        title_text = "Zonal mean section of Cant sd between models",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| eras:", i_eras))
+    )
+    
+  }
+}
+  
 
 ```
 
@@ -347,15 +360,41 @@ Standard deviation of mean cant values was calculate across all longitudes. This
 
 ```{r cant_sections_sd_cant}
 
-section_zonal_average_continous(cant_zonal,
-                                "cant_sd",
-                                "gamma_mean")
+# i_eras <- unique(cant_zonal$eras)[1]
+# i_basin_AIP <- unique(cant_zonal$basin_AIP)[2]
+
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+  
+  
+  # select slab breaks for plotted basin
+  if (i_basin_AIP == "Atlantic") {
+    slab_breaks <- parameters$slabs_Atl
+  } else {
+    slab_breaks <- parameters$slabs_Ind_Pac
+  }
+  
+  for (i_eras in unique(cant_zonal$eras)) {
+    print(
+      p_section_zonal_continous_gamma(
+        df = cant_zonal %>%
+          filter(basin_AIP == i_basin_AIP,
+                 eras == i_eras),
+        var = "cant_sd",
+        gamma = "gamma_mean",
+        legend_title = "sd",
+        title_text = "Zonal mean section of sd between model mean Cant",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| eras:", i_eras))
+    )
+    
+  }
+}
 
 ```
 
 ## Correlation
 
-### cant vs model SD
+### Cant vs model SD
 
 ```{r cant_vs_sd_by_basin_era}
 
@@ -390,7 +429,7 @@ cant_3d %>%
 
 ```
 
-### cant vs regional SD
+### Cant vs regional SD
 
 ```{r cant_vs_sd_by_basin_era_zonal}
 
@@ -422,13 +461,14 @@ cant_zonal %>%
 
 ```
 
-# cant - predictor contribution
+# Cant - predictor contribution
 
 ```{r cant_section_predictor_contribution}
 
-cant_predictor_average_zonal <- cant_predictor_average_zonal %>% 
+cant_predictor_zonal <- cant_predictor_zonal %>% 
   mutate(eras = factor(eras, c("JGOFS_GO", "GO_new")))
 
+variable <- "cant_intercept"
 
 for (variable in c(
   "cant_intercept",
@@ -441,9 +481,9 @@ for (variable in c(
   "cant_sal")) {
 
 print(
-section_zonal_average_continous(cant_predictor_average_zonal,
-                                variable,
-                                "gamma")
+p_section_zonal_divergent_gamma_eras_basin(cant_predictor_zonal,
+                          variable,
+                          "gamma")
 )
     
 }
@@ -464,17 +504,12 @@ Please note that:
 
 ```{r gamma_maps, fig.asp=2.5}
 
-gamma_maps <- cant_3d %>% 
-  group_by(lat, lon, gamma_slab) %>% 
-  summarise(depth_max = max(depth, na.rm = TRUE)) %>% 
-  ungroup()
-
 GLODAP_obs_coverage <- GLODAP %>% 
   count(lat, lon, gamma_slab, era) %>% 
   mutate(era = factor(era, c("JGOFS_WOCE", "GO_SHIP", "new_era")))
   
 map +
-  geom_raster(data = gamma_maps,
+  geom_raster(data = cant_gamma_maps,
               aes(lon, lat, fill = depth_max)) +
   geom_raster(data = GLODAP_obs_coverage,
               aes(lon, lat), fill = "red") +
@@ -484,65 +519,9 @@ map +
         axis.text = element_blank(),
         legend.position = "top")
 
-rm(gamma_maps, GLODAP_obs_coverage)
-```
-
-## Surface maps
-
-```{r gamma_surface_map}
-
-map_climatology_discrete(cant_3d, "gamma_slab")
+rm(GLODAP_obs_coverage)
 
 ```
-
-
-## Zonal sections
-
-The mean zonal distribution of neutral densities was calculated. **CAVEAT:** Due to practical reasons, binning here does not include the two highest isoneutral density slabs in the Atlantic, yet.
-
-### Mean
-
-```{r gamma_sections_mean}
-
-cant_zonal %>% 
-  filter(eras == "JGOFS_GO") %>% 
-  ggplot(aes(lat, depth, z = gamma_mean)) +
-  geom_contour_filled(breaks = slab_breaks) +
-  geom_contour(breaks = slab_breaks,
-               col = "white") +
-  geom_text_contour(breaks = slab_breaks,
-               col = "white",
-               skip = 1) +
-  scale_fill_viridis_d(name = "Gamma",
-                       direction = -1) +
-  scale_y_reverse() +
-  scale_x_continuous(breaks = seq(-100, 100, 20)) +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~.)
-
-```
-
-### SD
-
-Higher SD of gamma in shallow, subtropical waters results from a more pronounced longitudinal variability.
-
-```{r gamma_sections_sd}
-
-cant_zonal %>% 
-  filter(eras == "JGOFS_GO") %>% 
-  ggplot(aes(lat, depth, z = gamma_sd)) +
-  geom_contour_filled() +
-  scale_fill_viridis_d(name = "Gamma SD",
-                       direction = -1) +
-  scale_y_reverse() +
-  scale_x_continuous(breaks = seq(-100, 100, 20)) +
-  coord_cartesian(expand = 0) +
-  guides(fill = guide_colorsteps(barheight = unit(10, "cm"))) +
-  facet_grid(basin_AIP~.)
-
-```
-
 
 # C*
 
