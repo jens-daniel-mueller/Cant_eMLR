@@ -55,22 +55,13 @@ rm(predictors, lm_all_wide_cstar)
 ```
 
 
-# Map Cstar
+# Map cstar
 
 ## Apply MLRs to predictor
 
 ```{r calculate_cstar}
 
-cstar <- cstar %>% 
-  mutate(cstar =
-          `coeff_(Intercept)` +
-           coeff_aou * aou +
-           coeff_oxygen * oxygen +
-           coeff_phosphate * phosphate +
-           coeff_phosphate_star * phosphate_star +
-           coeff_silicate * silicate +
-           coeff_sal * sal + 
-           coeff_tem * tem)
+cstar <- b_cstar_model(cstar)
 
 cstar <- cstar %>% 
   select(lon, lat, depth, era, basin, cstar, gamma)
@@ -79,27 +70,11 @@ cstar <- cstar %>%
 
 ```{r cstar_average}
 
-cstar_average <- cstar %>%
-  fselect(lon, lat, depth, era, basin, cstar, gamma) %>% 
-  fgroup_by(lon, lat, depth, era, basin) %>% {
-   add_vars(fgroup_vars(.,"unique"),
-            fmean(., keep.group_vars = FALSE),
-            fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
-  }
+cstar_average <- m_cstar_model_average(cstar)
 
 rm(cstar)
 
-cstar_average_Atl <- cstar_average %>% 
-  filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
-
-cstar_average_Ind_Pac <- cstar_average %>% 
-  filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
-
-cstar_average <- bind_rows(cstar_average_Atl, cstar_average_Ind_Pac)
-
-rm(cstar_average_Atl, cstar_average_Ind_Pac)
+cstar_average <- m_cut_gamma(cstar_average, "gamma")
 
 ```
 
@@ -109,33 +84,13 @@ For each basin and era combination, the zonal mean cstar is calculated. Likewise
 
 ```{r Calculate_cstar_mean_sections}
 
-
 cstar_average <- left_join(cstar_average,
                            basinmask %>% select(-basin))
 
 
-cstar_average_zonal <- cstar_average %>%
-  fselect(lat, depth, era, basin, basin_AIP,
-          cstar, gamma, cstar_sd, gamma_sd) %>% 
-  fgroup_by(lat, depth, era, basin, basin_AIP) %>% {
-   add_vars(fgroup_vars(.,"unique"),
-            fmean(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_mean"),
-            fsd(., keep.group_vars = FALSE) %>% add_stub(pre = FALSE, "_sd"))
-  }
+cstar_average_zonal <- m_cstar_zonal_mean(cstar_average)
 
-
-cstar_average_zonal_Atl <- cstar_average_zonal %>% 
-  filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Atl))
-
-cstar_average_zonal_Ind_Pac <- cstar_average_zonal %>% 
-  filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma_mean, parameters$slabs_Ind_Pac))
-
-cstar_average_zonal <- bind_rows(cstar_average_zonal_Atl, cstar_average_zonal_Ind_Pac)
-
-rm(cstar_average_zonal_Atl, cstar_average_zonal_Ind_Pac)
-
+cstar_average_zonal <- m_cut_gamma(cstar_average_zonal, "gamma_mean")
 
 ```
 

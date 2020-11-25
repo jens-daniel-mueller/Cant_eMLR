@@ -107,8 +107,8 @@ cant_inv_wide <- cant_inv_long %>%
   drop_na()
 
 cant_inv_wide <- cant_inv_wide %>% 
-  mutate(cant_pos_inv_delta = cant_pos_inv_JDM - cant_pos_inv_G19,
-         cant_inv_delta = cant_inv_JDM - cant_inv_G19,
+  mutate(cant_pos_inv_offset = cant_pos_inv_JDM - cant_pos_inv_G19,
+         cant_inv_offset = cant_inv_JDM - cant_inv_G19,
          estimate = "JDM - G19")
 
 ```
@@ -126,8 +126,8 @@ cant_zonal_wide <- cant_zonal_long %>%
   drop_na()
 
 cant_zonal_wide <- cant_zonal_wide %>% 
-  mutate(cant_pos_mean_delta = cant_pos_mean_JDM - cant_pos_mean_G19,
-         cant_mean_delta = cant_mean_JDM - cant_mean_G19,
+  mutate(cant_pos_mean_offset = cant_pos_mean_JDM - cant_pos_mean_G19,
+         cant_mean_offset = cant_mean_JDM - cant_mean_G19,
          estimate = "JDM - G19")
 
 ```
@@ -197,7 +197,7 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 ```{r cant_pos_offset_inventory_map, fig.asp=0.5}
 
 p_map_cant_inv_offset(cant_inv_wide,
-                      "cant_pos_inv_delta",
+                      "cant_pos_inv_offset",
                       subtitle_text = "JDM - G19")
 
 ```
@@ -247,7 +247,7 @@ for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
       p_section_zonal_divergent(
         df = cant_zonal_wide %>%
           filter(basin_AIP == i_basin_AIP),
-        var = "cant_pos_mean_delta",
+        var = "cant_pos_mean_offset",
         subtitle_text =
           paste("Basin:", i_basin_AIP)
       )
@@ -291,7 +291,7 @@ for (i_estimate in unique(cant_inv_long$estimate)) {
 ```{r cant_offset_inventory_map, fig.asp = 0.5}
 
 p_map_cant_inv_offset(cant_inv_wide,
-                      "cant_inv_delta",
+                      "cant_inv_offset",
                       subtitle_text = "JDM - G19")
 
 ```
@@ -347,7 +347,7 @@ for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
         df = cant_zonal_wide %>%
           filter(basin_AIP == i_basin_AIP,
                  estimate == i_estimate),
-        var = "cant_mean_delta",
+        var = "cant_mean_offset",
         subtitle_text =
           paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)
       )
