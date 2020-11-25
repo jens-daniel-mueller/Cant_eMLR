@@ -88,17 +88,10 @@ Contributions of those processes are estimated from phosphate and alkalinity con
 
 ## Stoichiometric ratios
 
-```{r set_criteria_stoichiometric_ratios}
-
-rCP <- 117
-rNP <- 16
-
-```
-
 The stoichiometric nutrient ratios for the production and mineralization of organic matter were set to:
 
-- C/P: `r rCP`
-- N/P: `r rNP`
+- C/P: `r parameters$rCP`
+- N/P: `r parameters$rNP`
 
 ## Calculation
 
@@ -106,17 +99,15 @@ C* is calculated as:
 
 
 
-```{r calculate_Cstar}
+```{r calculate_cstar}
 
-print("Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05")
+print(b_cstar)
 
 GLODAP <- GLODAP %>% 
-  mutate(rCP_phosphate = -rCP * phosphate,
+  mutate(rCP_phosphate = -parameters$rCP * phosphate,
          talk_05 = -0.5 * talk,
-         rNP_phosphate_05 = -0.5 * rNP * phosphate,
-         Cstar = tco2  + rCP_phosphate  + talk_05  + rNP_phosphate_05)
-
-rm(rCP, rNP)
+         rNP_phosphate_05 = -0.5 * parameters$rNP * phosphate,
+         cstar = b_cstar(tco2, phosphate, talk))
 
 ```
 
@@ -127,7 +118,7 @@ The predictor PO~4~* was be calculated according to Clement and Gruber (2018), i
 ```{r calculate_phosphate_star}
 
 GLODAP <- GLODAP %>% 
-  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
+  mutate(phosphate_star = b_phosphate_star(phosphate, oxygen))
 
 ```
 
@@ -144,13 +135,14 @@ Note that eq. 6 in Clement and Gruber (2018) misses pCO~2~ pre-industrial in the
 ### GLODAP + Cant
 
 
-```{r merge_Cstar_Cant}
+```{r merge_cstar_cant}
 
 S04_cant_3d_obs <- left_join(
   GLODAP_obs_grid,
   S04_cant_3d %>% select(-c(cant, eras))
   )
 
+# calculate number of cant data points per grid cell
 S04_cant_3d_obs <- S04_cant_3d_obs %>%
   group_by(lon, lat) %>% 
   mutate(n = n()) %>% 
@@ -168,9 +160,10 @@ GLODAP_cant_obs <- full_join(GLODAP, S04_cant_3d_obs)
 
 rm(GLODAP, S04_cant_3d_obs)
 
+# fill number of cant data points per grid cell to all observations
 GLODAP_cant_obs <- GLODAP_cant_obs %>%
   group_by(lon, lat) %>% 
-  mutate(n = mean(n, na.rm = TRUE)) %>% 
+  fill(n, .direction = "updown") %>% 
   ungroup()
 
 
@@ -179,25 +172,29 @@ GLODAP_cant_obs <- GLODAP_cant_obs %>%
 The mapped Cant product was merged with GLODAP observation by:
 
 - using an identical 1x1° horizontal grid
-- linear interpolation of Cant from standard to sampling depth
+- linear interpolation of C~ant~ from standard to sampling depth
 
-```{r interpolate_Cant_to_observations}
+```{r cant_interpolation_to_observations}
 
-# GLODAP_cant_obs <- full_join(GLODAP_cant_obs, S04_cant_3d_obs_nr)
-
-GLODAP_cant_obs <- GLODAP_cant_obs %>%
+# interpolate cant to observation depth
+GLODAP_cant_obs_int <- GLODAP_cant_obs %>%
   filter(n > 1) %>% 
   group_by(lat, lon) %>%
   arrange(depth) %>%
   mutate(cant_pos_int = approxfun(depth, cant_pos, rule = 2)(depth)) %>%
   ungroup()
 
-# GLODAP_cant_obs_set <- GLODAP_cant_obs %>%
-#   filter(n_cant == 1) %>% 
-#   group_by(lat, lon) %>%
-#   arrange(depth) %>%
-#   mutate(cant_pos_int = mean(cant, na.rm = TRUE)) %>%
-#   ungroup()
+# set cant for observation depth if only one cant available
+GLODAP_cant_obs_set <- GLODAP_cant_obs %>%
+  filter(n == 1) %>%
+  group_by(lat, lon) %>%
+  mutate(cant_pos_int = mean(cant_pos, na.rm = TRUE)) %>%
+  ungroup()
+
+# bin data sets with interpolated and set cant
+GLODAP_cant_obs <- bind_rows(GLODAP_cant_obs_int, GLODAP_cant_obs_set)
+rm(GLODAP_cant_obs_int, GLODAP_cant_obs_set)
+
 
 ggplot() +
   geom_path(
@@ -222,9 +219,8 @@ ggplot() +
   labs(title = "Cant interpolation to sampling depth - example profile")
 
 # remove cant data at grid cells without observations
-
 GLODAP <- GLODAP_cant_obs %>%
-  filter(!is.na(Cstar)) %>%
+  filter(!is.na(cstar)) %>%
   mutate(cant_pos = cant_pos_int) %>%
   select(-cant_pos_int, n)
 
@@ -236,7 +232,7 @@ rm(GLODAP_cant_obs)
 
 GLODAP observations were merged with mean annual atmospheric pCO~2~ levels by year.
 
-```{r merge_Cstar_pCO2}
+```{r merge_cstar_pCO2}
 
 GLODAP <- left_join(GLODAP, co2_atm)
 
@@ -244,38 +240,45 @@ GLODAP <- left_join(GLODAP, co2_atm)
 
 ## Calculate adjustment
 
-Calculate Cant for tref = 2007 by applying alpha = 0.28 to the estimate of Sabine et al. (2004).
+C~ant~ for tref = 2007 was calculated by applying alpha = 0.28 to the estimate of Sabine et al. (2004).
 
 For tref = 2015 we scaled alpha as 0.28/13 * dt.
 
 
 ```{r adjust_reference_year}
 
+# assign reference year
 GLODAP <- GLODAP %>% 
   group_by(era) %>% 
   mutate(tref = median(year)) %>% 
   ungroup()
 
+# calculate reference year
 tref <- GLODAP %>% 
   group_by(era) %>% 
   summarise(year = median(year)) %>% 
   ungroup()
 
+# extract atm pCO2 at reference year
 co2_atm_tref <- right_join(co2_atm, tref) %>% 
   select(-year) %>% 
   rename(pCO2_tref = pCO2)
 
+# merge atm pCO2 at tref with GLODAP
 GLODAP <- full_join(GLODAP, co2_atm_tref)
-
 rm(co2_atm, tref)
 
-
+# scale cant to reference year
 GLODAP <- GLODAP %>%
   mutate(alpha = (tref - min(tref)) * (0.28 / 13),
-         cant_pos = cant_pos * (1 + alpha),
-         Cstar_tref_delta =
-           ((pCO2 - pCO2_tref) / (pCO2_tref - 280)) * cant_pos,
-         Cstar_tref = Cstar - Cstar_tref_delta)
+         cant_pos = cant_pos * (1 + alpha))
+
+# calculate cstar for reference year
+GLODAP <- GLODAP %>%
+  mutate(
+    cstar_tref_delta =
+      ((pCO2 - pCO2_tref) / (pCO2_tref - parameters$preind_atm_pCO2)) * cant_pos,
+    cstar_tref = cstar - cstar_tref_delta)
 
 ```
 
@@ -283,27 +286,24 @@ GLODAP <- GLODAP %>%
 
 ### Histogram
 
-```{r Cstar_reference_year_adjustment_histogram}
+```{r cstar_reference_year_adjustment_histogram}
 
 GLODAP %>% 
-  ggplot(aes(Cstar_tref_delta)) +
+  ggplot(aes(cstar_tref_delta)) +
   geom_histogram()
 
 ```
 
 ### Time series
 
-```{r Cstar_reference_year_adjustment_vs_time_difference_Cant}
+```{r cstar_reference_year_adjustment_vs_time_difference_Cant}
 
 GLODAP %>% 
   sample_n(1e4) %>% 
-  ggplot(aes(year, Cstar_tref_delta, col = cant_pos)) +
+  ggplot(aes(year, cstar_tref_delta, col = cant_pos)) +
   geom_point() +
   scale_color_viridis_c() +
   labs(title = "random subsample 1e4")
-
-GLODAP <- GLODAP %>% 
-  select(-c(alpha))
 
 ```
 
@@ -351,15 +351,16 @@ lat_section +
   geom_point(aes(col = rNP_phosphate_05))
 
 lat_section +
-  geom_point(aes(col = Cstar))
+  geom_point(aes(col = cstar))
 
 lat_section +
-  geom_point(aes(col = -Cstar_tref_delta))
+  geom_point(aes(col = cstar_tref))
 
 rm(lat_section, GLODAP_cruise)
 
+# remove columns not required for further analysis
 GLODAP <- GLODAP %>% 
-  select(-c(rCP_phosphate:Cstar, cant_pos:Cstar_tref_delta))
+  select(-c(rCP_phosphate:cstar, cant_pos:cstar_tref_delta))
 
 ```
 
@@ -375,17 +376,7 @@ Continuous neutral densities (gamma) values from GLODAP are grouped into isoneut
 
 ```{r cut_isoneutral_slabs}
 
-GLODAP_Atl <- GLODAP %>% 
-  filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
-
-GLODAP_Ind_Pac <- GLODAP %>% 
-  filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
-
-GLODAP <- bind_rows(GLODAP_Atl, GLODAP_Ind_Pac)
-
-rm(GLODAP_Atl, GLODAP_Ind_Pac)
+GLODAP <- m_cut_gamma(GLODAP, "gamma")
 
 ```
 
@@ -562,8 +553,8 @@ lon_phosphate_star <- lon_section+
 lon_nitrate <- lon_section+
   geom_point(aes(col=nitrate))
 
-lon_Cstar <- lon_section+
-  geom_point(aes(col=Cstar_tref))
+lon_cstar <- lon_section+
+  geom_point(aes(col=cstar_tref))
 
 
 lat_section <- GLODAP_cruise %>%
@@ -592,8 +583,8 @@ lat_phosphate_star <- lat_section+
 lat_nitrate <- lat_section+
   geom_point(aes(col=nitrate))
 
-lat_Cstar <- lat_section+
-  geom_point(aes(col=Cstar_tref))
+lat_cstar <- lat_section+
+  geom_point(aes(col=cstar_tref))
 
 hist_tco2 <- GLODAP_cruise %>%
   ggplot(aes(tco2)) +
@@ -623,16 +614,16 @@ hist_nitrate <- GLODAP_cruise %>%
   ggplot(aes(nitrate)) +
   geom_histogram()
 
-hist_Cstar <- GLODAP_cruise %>%
-  ggplot(aes(Cstar_tref)) +
+hist_cstar <- GLODAP_cruise %>%
+  ggplot(aes(cstar_tref)) +
   geom_histogram()
 
 (map_plot /
-    ((hist_tco2 / hist_talk / hist_phosphate / hist_Cstar) |
+    ((hist_tco2 / hist_talk / hist_phosphate / hist_cstar) |
        (hist_oxygen / hist_phosphate_star / hist_nitrate / hist_aou)
     )) |
-  ((lat_tco2 / lat_talk / lat_phosphate / lat_oxygen / lat_aou / lat_phosphate_star / lat_nitrate / lat_Cstar) |
-     (lon_tco2 / lon_talk / lon_phosphate / lon_oxygen /  lon_aou /lon_phosphate_star / lon_nitrate / lon_Cstar))    
+  ((lat_tco2 / lat_talk / lat_phosphate / lat_oxygen / lat_aou / lat_phosphate_star / lat_nitrate / lat_cstar) |
+     (lon_tco2 / lon_talk / lon_phosphate / lon_oxygen /  lon_aou /lon_phosphate_star / lon_nitrate / lon_cstar))    
 
 ggsave(here::here("output/figure/eMLR/data_preparation/all_cruises_clean",
                   paste("GLODAP_cruise_date",
@@ -661,7 +652,7 @@ rm(map_plot,
 ```{r write_csv_GLODAP_used_for_fitting}
 
 GLODAP <- GLODAP %>% 
-  rename(Cstar = Cstar_tref)
+  rename(cstar = cstar_tref)
 
 GLODAP %>% write_csv(here::here("data/interim",
                                 "GLODAPv2.2020_MLR_fitting_ready.csv"))

@@ -66,6 +66,7 @@ Functions are stored in separate .R files. This include function for:
 
 - mapping with a prefix "m_"
 - plotting with a prefix "p_"
+- biogeochemical calculations with a prefix "b_"
 
 # Folder structure
 
