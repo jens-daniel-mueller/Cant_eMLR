@@ -97,16 +97,16 @@ Inventories and zonal sections are merged, and differences calculate per grid ce
 
 ```{r join_G19_and_JDM_inventories}
 
-cant_inventory_long <- bind_rows(
+cant_inv_long <- bind_rows(
   cant_inv_JDM %>%  mutate(estimate = "JDM"),
   cant_inv_G19 %>%  mutate(estimate = "G19")
   )
 
-cant_inventory_wide <- cant_inventory_long %>% 
+cant_inv_wide <- cant_inv_long %>% 
   pivot_wider(names_from = estimate, values_from = cant_pos_inv:cant_inv) %>% 
   drop_na()
 
-cant_inventory_wide <- cant_inventory_wide %>% 
+cant_inv_wide <- cant_inv_wide %>% 
   mutate(cant_pos_inv_delta = cant_pos_inv_JDM - cant_pos_inv_G19,
          cant_inv_delta = cant_inv_JDM - cant_inv_G19,
          estimate = "JDM - G19")
@@ -139,7 +139,7 @@ Global C~ant~ inventories were estimated in units of Pg C, based on all vs posit
 
 ```{r calculate_global_inventory}
 
-cant_inventory_budget <- cant_inventory_long %>% 
+cant_inv_budget <- cant_inv_long %>% 
   mutate(surface_area = earth_surf(lat, lon),
          cant_inv_grid = cant_inv*surface_area,
          cant_pos_inv_grid = cant_pos_inv*surface_area) %>% 
@@ -151,7 +151,7 @@ cant_inventory_budget <- cant_inventory_long %>%
   ungroup()
 
 
-cant_inventory_budget %>%
+cant_inv_budget %>%
   gt(rowname_col = "basin_AIP",
      groupname_col = c("estimate")) %>% 
   summary_rows(
@@ -159,7 +159,7 @@ cant_inventory_budget %>%
     fns = list(total = "sum")
   )
 
-rm(cant_inventory_budget)
+rm(cant_inv_budget)
 
 ```
 
@@ -176,25 +176,16 @@ In a first series of plots we explore the distribution of Cant, taking only posi
 
 Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r cant_pos_inventory_map, fig.asp=1}
+```{r cant_pos_inventory_map}
 
-breaks <- c(seq(0, 16, 1), Inf)
-breaks_n <- length(breaks) - 1
-
-cant_inventory_long <- cant_inventory_long %>%
-  mutate(cant_pos_inv_int = cut(cant_pos_inv,
-                                breaks,
-                                right = FALSE))
-
-map +
-  geom_raster(data = cant_inventory_long,
-              aes(lon, lat, fill = cant_pos_inv_int)) +
-  scale_fill_manual(values = Gruber_rainbow(breaks_n),
-                     name = expression(atop(Delta*C[ant],
-                                           (mol~m^{-2})))) +
-  guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
-  # scale_fill_scico_d(palette = "lapaz", direction = -1) +
-  facet_wrap(~ estimate, ncol = 1)
+for (i_estimate in unique(cant_inv_long$estimate)) {
+  
+  print(p_map_cant_pos_inv(
+    cant_inv_long %>% filter(estimate == i_estimate),
+    subtitle_text = paste("Estimate:", i_estimate)
+  ))
+  
+}
 
 ```
 
@@ -203,18 +194,11 @@ map +
 
 Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r cant_pos_delta_inventory_map, fig.asp=0.5}
+```{r cant_pos_offset_inventory_map, fig.asp=0.5}
 
-breaks <- c(-Inf, seq(-15, 15, 3), Inf)
-
-map +
-  geom_raster(data = cant_inventory_wide,
-              aes(lon, lat, fill = cut(cant_pos_inv_delta, breaks))) +
-  scale_fill_scico_d(palette = "vik", drop = FALSE,
-                     name = expression(atop(Offset~Delta*C[ant],
-                                            (mol~m^{-2})))) +
-    guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
-    facet_wrap(~ "JDM - G19", ncol = 1)
+p_map_cant_inv_offset(cant_inv_wide,
+                      "cant_pos_inv_delta",
+                      subtitle_text = "JDM - G19")
 
 ```
 
@@ -223,67 +207,54 @@ map +
 
 ### Absolute values
 
-```{r cant_pos_zonal_mean_sections, fig.asp=0.6}
-
-df <- cant_zonal_long
-breaks <- c(seq(0, 18, 1), Inf)
-var <- "cant_pos_mean"
-legend_title <- expression(atop(Delta * C[ant],
-                                (mu * mol ~ kg ^ {-1})))
+```{r cant_pos_zonal_mean_section, fig.asp=0.6}
 
 # i_basin_AIP <- unique(df$basin_AIP)[1]
 # i_estimate <- unique(df$estimate)[1]
 
-for (i_basin_AIP in unique(df$basin_AIP)) {
-  for (i_estimate in unique(df$estimate)) {
-    print(
-      section_zonal_layered_continous(
-        df,
-        i_basin_AIP = i_basin_AIP,
-        i_estimate = i_estimate,
-        var,
-        breaks,
-        legend_title
+for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal_long$estimate)) {
+   
+     print(
+      p_section_zonal_continous(
+        df = cant_zonal_long %>%
+          filter(basin_AIP == i_basin_AIP,
+                 estimate == i_estimate),
+        var = "cant_pos_mean",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)
       )
+      
     )
     
   }
 }
 
-rm(df, var, breaks, legend_title, breaks_n)
-  
+
 ```
 
 
 ### Offset
 
-```{r cant_pos_delta_zonal_section, fig.asp=0.6}
+```{r cant_pos_offset_zonal_section, fig.asp=0.6}
 
-df <- cant_zonal_wide
-breaks <- c(-Inf,seq(-16,16,2),Inf)
-var <- "cant_pos_mean_delta"
-legend_title <- expression(atop(Offset~Delta * C[ant],
-                                (mu * mol ~ kg ^ {-1})))
+# i_basin_AIP <- unique(df$basin_AIP)[1]
+# i_estimate <- unique(df$estimate)[1]
 
-i_basin_AIP <- unique(df$basin_AIP)[1]
-i_estimate <- unique(df$estimate)[1]
-
-for (i_basin_AIP in unique(df$basin_AIP)) {
-  for (i_estimate in unique(df$estimate)) {
+for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal_wide$estimate)) {
     print(
-      section_zonal_layered_divergent(
-        df,
-        i_basin_AIP = i_basin_AIP,
-        i_estimate = i_estimate,
-        var,
-        breaks,
-        legend_title
+      p_section_zonal_divergent(
+        df = cant_zonal_wide %>%
+          filter(basin_AIP == i_basin_AIP),
+        var = "cant_pos_mean_delta",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP)
       )
     )
   }
 }
 
-rm(df, var, breaks, legend_title)
 
 ```
 
@@ -299,38 +270,29 @@ In a first series of plots we explore the distribution of cant, taking only posi
 
 Column inventory of Cant (including positive and negative values) between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r cant_inventory_map, fig.asp=1}
 
-breaks <- c(-Inf,seq(-16,16,2),Inf)
+```{r cant_inventory_map}
 
-
-map +
-  geom_raster(data = cant_inventory_long,
-              aes(lon, lat, fill = cut(cant_inv, breaks))) +
-  scale_fill_scico_d(palette = "vik",
-                     drop = FALSE,
-                     name = expression(atop(Delta * C[ant],
-                                            (mu * mol ~ kg ^ {-1})))) +
-  guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
-  facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
+for (i_estimate in unique(cant_inv_long$estimate)) {
+  
+  print(p_map_cant_inv(
+    cant_inv_long %>% filter(estimate == i_estimate),
+    subtitle_text = paste("Estimate:", i_estimate)
+  ))
+  
+}
 
 ```
 
+
+
 ### Offset
 
-```{r cant_delta_inventory_map, fig.asp = 0.5}
+```{r cant_offset_inventory_map, fig.asp = 0.5}
 
-breaks <- c(-Inf,seq(-15,15,3),Inf)
-
-map +
-  geom_raster(data = cant_inventory_wide,
-              aes(lon, lat, fill = cut(cant_inv_delta, breaks))) +
-  scale_fill_scico_d(palette = "vik",
-                     drop = FALSE,
-                     name = expression(atop(Offset ~ Delta * C[ant],
-                                            (mu * mol ~ kg ^ {-1})))) +
-  guides(fill = guide_colorsteps(barheight = unit(6, "cm"))) +
-  facet_wrap( ~ estimate, labeller = label_both, ncol = 1)
+p_map_cant_inv_offset(cant_inv_wide,
+                      "cant_inv_delta",
+                      subtitle_text = "JDM - G19")
 
 ```
 
@@ -339,70 +301,65 @@ map +
 
 ### Absolute values
 
-```{r cant_zonal_mean_sections, fig.asp=0.6}
 
-df <- cant_zonal_long
-breaks <- c(-Inf,seq(-16,16,2),Inf)
-var <- "cant_mean"
-legend_title <- expression(atop(Delta * C[ant],
-                                (mu * mol ~ kg ^ {-1})))
+```{r cant_zonal_mean_section, fig.asp=0.6}
 
 # i_basin_AIP <- unique(df$basin_AIP)[1]
 # i_estimate <- unique(df$estimate)[1]
 
-for (i_basin_AIP in unique(df$basin_AIP)) {
-  for (i_estimate in unique(df$estimate)) {
-    print(
-      section_zonal_layered_divergent(
-        df,
-        i_basin_AIP = i_basin_AIP,
-        i_estimate = i_estimate,
-        var,
-        breaks,
-        legend_title
+for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal_long$estimate)) {
+   
+     print(
+      p_section_zonal_divergent(
+        df = cant_zonal_long %>%
+          filter(basin_AIP == i_basin_AIP,
+                 estimate == i_estimate),
+        var = "cant_mean",
+        legend_title = expression(atop(Delta * C[ant],
+                                          (mu * mol ~ kg ^ {-1}))),
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)
       )
+      
     )
     
   }
 }
 
-rm(df, var, breaks, legend_title)
-  
+
 ```
 
 
 ### Offset
 
-```{r cant_delta_zonal_section, fig.asp=0.6}
 
-df <- cant_zonal_wide
-breaks <- c(-Inf,seq(-16,16,2),Inf)
-var <- "cant_mean_delta"
-legend_title <- expression(atop(Offset~Delta * C[ant],
-                                (mu * mol ~ kg ^ {-1})))
+```{r cant_offset_zonal_mean_section, fig.asp=0.6}
 
 # i_basin_AIP <- unique(df$basin_AIP)[1]
 # i_estimate <- unique(df$estimate)[1]
 
-
-for (i_basin_AIP in unique(df$basin_AIP)) {
-  for (i_estimate in unique(df$estimate)) {
-    print(
-      section_zonal_layered_divergent(
-        df,
-        i_basin_AIP = i_basin_AIP,
-        i_estimate = i_estimate,
-        var,
-        breaks,
-        legend_title
+for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
+  for (i_estimate in unique(cant_zonal_wide$estimate)) {
+   
+     print(
+      p_section_zonal_divergent(
+        df = cant_zonal_wide %>%
+          filter(basin_AIP == i_basin_AIP,
+                 estimate == i_estimate),
+        var = "cant_mean_delta",
+        subtitle_text =
+          paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)
       )
+      
     )
+    
   }
 }
 
-rm(df, var, breaks, legend_title)
 
 ```
+
 
 # Known issues
 
