@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8dtargetblank1d0fbe4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8d" target="_blank">1d0fbe4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee0f50cf4071b6d265c8ac7415b293183312a84betargetblanke0f50cfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e0f50cf4071b6d265c8ac7415b293183312a84be" target="_blank">e0f50cf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8dtargetblank1d0fbe4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreee0f50cf4071b6d265c8ac7415b293183312a84betargetblanke0f50cfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8d" target="_blank">1d0fbe4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/e0f50cf4071b6d265c8ac7415b293183312a84be" target="_blank">e0f50cf</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -639,21 +639,6 @@ Untracked files:
     Untracked:  code/biogeochemical_functions.R
     Untracked:  code/test_scripts/analysis_previous_studies.Rmd
     Untracked:  code/test_scripts/read_World_Ocean_Atlas_2013_Clement.Rmd
-
-Unstaged changes:
-    Modified:   analysis/_site.yml
-    Deleted:    analysis/analysis_previous_studies.Rmd
-    Modified:   analysis/analysis_this_study.Rmd
-    Modified:   analysis/analysis_this_study_vs_Gruber_2019.Rmd
-    Modified:   analysis/child/setup.Rmd
-    Modified:   analysis/eMLR_model_fitting.Rmd
-    Modified:   analysis/mapping_cant_calculation.Rmd
-    Modified:   analysis/mapping_cstar_calculation.Rmd
-    Modified:   analysis/mapping_predictor_preparation.Rmd
-    Deleted:    analysis/read_World_Ocean_Atlas_2013_Clement.Rmd
-    Modified:   code/Workflowr_project_managment.R
-    Modified:   code/mapping_functions.R
-    Modified:   code/plotting_functions.R
 
 </code></pre>
 <p>
@@ -692,6 +677,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/e0f50cf4071b6d265c8ac7415b293183312a84be/analysis/eMLR_data_preparation.Rmd" target="_blank">e0f50cf</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+added count plot for tref adjustment
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/47487dc90e1e36f859754bb1e16d7e6f61b47d81/docs/eMLR_data_preparation.html" target="_blank">47487dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1795,7 +1814,12 @@ GLODAP &lt;- GLODAP %&gt;%
   geom_point() +
   scale_color_viridis_c() +
   labs(title = &quot;random subsample 1e4&quot;)</code></pre>
-<p><img src="figure/eMLR_data_preparation.Rmd/cstar_reference_year_adjustment_vs_time_difference_Cant-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/eMLR_data_preparation.Rmd/cstar_reference_year_adjustment_vs_time_cant-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>GLODAP %&gt;% 
+  ggplot(aes(year, cstar_tref_delta)) +
+  geom_bin2d() +
+  scale_fill_viridis_c()</code></pre>
+<p><img src="figure/eMLR_data_preparation.Rmd/cstar_reference_year_adjustment_vs_time_count-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
