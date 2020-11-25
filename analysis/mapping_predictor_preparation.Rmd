@@ -23,7 +23,6 @@ Loading libraries specific to the the analysis performed in this section.
 library(metR)
 library(marelac)
 library(gsw)
-  
 ```
 
 # Required data
@@ -66,6 +65,9 @@ for (i_variable in variables) {
 
 rm(temp, i_variable, variables)
 
+GLODAP_predictors <- GLODAP_predictors %>%
+  rename(phosphate = PO4)
+
 # removed na's attributable to slightly different coverage of predictor fields
 GLODAP_predictors <- GLODAP_predictors %>%
   drop_na()
@@ -97,6 +99,10 @@ for (i_variable in variables) {
 
 rm(temp, i_variable, variables)
 
+
+GLODAP_predictors_CO2 <- GLODAP_predictors_CO2 %>%
+  rename(phosphate = PO4)
+
 # removed na's attributable to slightly different coverage of predictor fields
 GLODAP_predictors_CO2 <- GLODAP_predictors_CO2 %>%
   drop_na()
@@ -109,7 +115,6 @@ GLODAP_predictors_CO2 <- GLODAP_predictors_CO2 %>%
 - Salinity
 - Temperature
 - Neutral density
-- Basin mask
 
 ```{r load_WOA18}
 
@@ -171,11 +176,11 @@ rm(GLODAP_predictors_CO2, WOA18_predictors_surface)
 Three maps are generated to control successful merging of data sets.
 
 ```{r joined_climatology_control_PO4, fig.asp=0.6}
-map_climatology(predictors, "PO4")
+p_map_climatology_continous(predictors, "phosphate")
 ```
 
 ```{r joined_climatology_control_tem, fig.asp=0.6}
-map_climatology(predictors, "tem")
+p_map_climatology_continous(predictors, "tem")
 ```
 
 ### Maps surface
@@ -183,19 +188,19 @@ map_climatology(predictors, "tem")
 Three maps are generated to control successful merging of data sets.
 
 ```{r joined_climatology_control_TAlk_surface, fig.asp=0.6}
-map_climatology(predictors_surface, "TAlk")
+p_map_climatology_continous(predictors_surface, "TAlk")
 ```
 
 ```{r joined_climatology_control_TCO2_surface, fig.asp=0.6}
-map_climatology(predictors_surface, "TCO2")
+p_map_climatology_continous(predictors_surface, "TCO2")
 ```
 
 ```{r joined_climatology_control_sal_surface, fig.asp=0.6}
-map_climatology(predictors_surface, "sal")
+p_map_climatology_continous(predictors_surface, "sal")
 ```
 
 ```{r joined_climatology_control_tem_surface, fig.asp=0.6}
-map_climatology(predictors_surface, "tem")
+p_map_climatology_continous(predictors_surface, "tem")
 ```
 
 
@@ -235,8 +240,7 @@ The predictor PO~4~* was be calculated according to Clement and Gruber (2018), i
 ```{r calculate_phosphate_star_clement}
 
 predictors <- predictors %>% 
-  rename(phosphate = PO4) %>% 
-  mutate(phosphate_star = phosphate + (oxygen / 170)  - 1.95)
+  mutate(phosphate_star = b_phosphate_star(phosphate, oxygen))
 
 ```
 
@@ -244,7 +248,7 @@ predictors <- predictors %>%
 
 ```{r PO4_star_climatology_maps, fig.asp=0.6}
 
-map_climatology(predictors, "phosphate_star")
+p_map_climatology_divergent(predictors, "phosphate_star")
 
 ```
 
@@ -252,7 +256,7 @@ map_climatology(predictors, "phosphate_star")
 
 ```{r PO4_star_climatology_section}
 
-section_global(predictors, "phosphate_star")
+p_section_global_divergent(predictors, "phosphate_star")
 
 ```
 
@@ -261,21 +265,13 @@ section_global(predictors, "phosphate_star")
 
 ### Calculation
 
-AOU was calculated as the difference between saturation concentration and observed concentration.  
-
+AOU was calculated as the difference between saturation concentration and observed concentration. 
 **CAVEAT**: Algorithms used to calculate oxygen saturation concentration are not yet identical in GLODAP data set (fitting) and predictor climatologies (mapping).
 
 ```{r calculate_aou_climatology}
 
 predictors <- predictors %>% 
-  mutate(oxygen_sat_m3 = gas_satconc(S = sal,
-                                  t = tem,
-                                  P = 1.013253,
-                                  species = "O2"),
-         rho = gsw_pot_rho_t_exact(SA = sal, t = tem, p = depth, p_ref = 10.1325),
-         oxygen_sat_kg = oxygen_sat_m3 * (1000/rho),
-         aou = oxygen_sat_kg - oxygen) %>% 
-  select(-c(oxygen_sat_m3, rho, oxygen_sat_kg))
+  mutate(aou = b_aou(sal, tem, depth, oxygen))
 
 ```
 
@@ -283,7 +279,7 @@ predictors <- predictors %>%
 
 ```{r aou_climatology_maps, fig.asp=0.6}
 
-map_climatology(predictors, "aou")
+p_map_climatology_continous(predictors, "aou")
 
 ```
 
@@ -291,7 +287,7 @@ map_climatology(predictors, "aou")
 
 ```{r aou_climatology_section}
 
-section_global(predictors, "aou")
+p_section_global_divergent(predictors, "aou")
 
 ```
 
@@ -306,17 +302,7 @@ Continuous neutral density (gamma) values based on WOA18 are grouped into isoneu
 
 ```{r cut_isoneutral_slabs}
 
-predictors_Atl <- predictors %>% 
-  filter(basin == "Atlantic") %>% 
-  mutate(gamma_slab = cut(gamma, parameters$slabs_Atl))
-
-predictors_Ind_Pac <- predictors %>% 
-  filter(basin == "Indo-Pacific") %>% 
-  mutate(gamma_slab = cut(gamma, parameters$slabs_Ind_Pac))
-
-predictors <- bind_rows(predictors_Atl, predictors_Ind_Pac)
-
-rm(predictors_Atl, predictors_Ind_Pac)
+predictors <- m_cut_gamma(predictors, "gamma")
 
 ```
 
@@ -353,8 +339,10 @@ vars <-
     "silicate"
   )
 
+# i_var <- vars[1]
+
 for (i_var in vars) {
-  print(section_climatology_regular(predictors, i_var))
+  print(p_section_climatology_regular_continous(predictors, i_var))
 }
 
 ```
@@ -388,7 +376,7 @@ vars <-
   )
 
 for (i_var in vars) {
-  print(section_climatology_regular(predictors_surface, i_var))
+  print(p_section_climatology_regular_continous(predictors_surface, i_var))
 }
 
 ```
