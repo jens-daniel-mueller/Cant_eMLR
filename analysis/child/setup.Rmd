@@ -16,7 +16,6 @@ parameters <-
   read_rds(here::here("data/auxillary",
                        "parameters.rds"))
 
-slab_breaks <- c(parameters$slabs_Atl[1:12],Inf)
 ```
 
 ```{r read_basinmask_file_global, include = FALSE}
@@ -45,6 +44,7 @@ map <-
 ```{r read_functions_global, include = FALSE}
 source(here::here("code", "plotting_functions.R"))
 source(here::here("code", "mapping_functions.R"))
+source(here::here("code", "biogeochemical_functions.R"))
 ```
 
 ```{r set_ggplot_theme_global, include = FALSE}

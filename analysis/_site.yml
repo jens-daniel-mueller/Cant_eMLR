@@ -19,8 +19,6 @@ navbar:
       href: read_GLODAPv2_2020.html
     - text: GLODAPv2_2016_MappedClimatologies
       href: read_GLODAPv2_2016_MappedClimatologies.html
-    - text: World Ocean Atlas 2013
-      href: read_World_Ocean_Atlas_2013_Clement.html
     - text: Cant Gruber 2019
       href: read_Gruber_2019_Cant.html
     - text: Cant Sabine 2004
@@ -50,8 +48,6 @@ navbar:
       href: analysis_this_study_vs_Gruber_2019.html
     - text: This study
       href: analysis_this_study.html
-    - text: Previous studies
-      href: analysis_previous_studies.html
   right:
   - icon: fa-github
     text: Source code

@@ -134,7 +134,6 @@ wflow_publish(here::here(
     "read_Gruber_2019_Cant.Rmd",
     "read_Sabine_2004_Cant.Rmd",
     "read_CO2_atm.Rmd",
-    "read_World_Ocean_Atlas_2013_Clement.Rmd",
     "eMLR_data_preparation.Rmd",
     "eMLR_assumption_testing.Rmd",
     "eMLR_model_fitting.Rmd",
@@ -142,8 +141,7 @@ wflow_publish(here::here(
     "mapping_cant_calculation.Rmd",
     "mapping_cstar_calculation.Rmd",
     "analysis_this_study_vs_Gruber_2019.Rmd",
-    "analysis_this_study.Rmd",
-    "analysis_previous_studies.Rmd"
+    "analysis_this_study.Rmd"
   )
 ),
 message = "XXX",

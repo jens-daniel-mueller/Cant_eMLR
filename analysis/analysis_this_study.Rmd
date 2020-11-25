@@ -159,7 +159,7 @@ cant_gamma_maps <- m_cant_slab(cant_3d)
 
 ```
 
-```{r cant_pos_gamma_slab_maps}
+```{r cant_pos_gamma_slab_maps, fig.asp=0.5}
 
 cant_gamma_maps <- cant_gamma_maps %>% 
   arrange(gamma_slab, eras)
@@ -187,7 +187,7 @@ for (i_eras in unique(cant_gamma_maps$eras)) {
 
 Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r cant_pos_inventory_map}
+```{r cant_pos_inventory_map, fig.asp=0.5}
 
 # i_eras <- unique(cant_inv$eras)[1]
 
@@ -205,7 +205,7 @@ for (i_eras in unique(cant_inv$eras)) {
 
 ## Global sections
 
-```{r cant_sections_positive_mean_one_lon_JGOFS_GO}
+```{r cant_sections_positive_mean_one_lon_JGOFS_GO, fig.asp=0.6}
 
 
 for (i_eras in unique(cant_3d$eras)) {
@@ -271,7 +271,7 @@ Please note that:
 - gaps in the maps represent areas where (thin) density layers fit between discrete depth levels used for mapping
 
 
-```{r cant_all_gamma_slab_maps, fig.asp=2.5}
+```{r cant_all_gamma_slab_maps, fig.asp=0.5}
 
 # i_eras <- unique(cant_gamma_maps$eras)[1]
 # i_gamma_slab <- unique(cant_gamma_maps$gamma_slab)[1]
@@ -296,7 +296,7 @@ for (i_eras in unique(cant_gamma_maps$eras)) {
 
 Column inventory of positive cant between the surface and `r parameters$inventory_depth`m water depth per horizontal grid cell (lat x lon).
 
-```{r cant_all_inventory_map, fig.asp=1}
+```{r cant_all_inventory_map, fig.asp=0.5}
 
 # i_eras <- unique(cant_inv$eras)[1]
 
@@ -319,7 +319,7 @@ for (i_eras in unique(cant_inv$eras)) {
 
 Standard deviation across Cant from all MLR models was calculate for each grid cell (XYZ). The zonal mean of this standard deviation should reflect the uncertainty associated to the predictor selection within each slab and era. 
 
-```{r cant_sections_sd_models}
+```{r cant_sections_sd_models, fig.asp=0.6}
 
 # i_eras <- unique(cant_zonal$eras)[1]
 # i_basin_AIP <- unique(cant_zonal$basin_AIP)[2]
@@ -358,7 +358,7 @@ for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
 
 Standard deviation of mean cant values was calculate across all longitudes. This standard deviation should reflect the zonal variability of cant within the basin and era.
 
-```{r cant_sections_sd_cant}
+```{r cant_sections_sd_cant, fig.asp=0.6}
 
 # i_eras <- unique(cant_zonal$eras)[1]
 # i_basin_AIP <- unique(cant_zonal$basin_AIP)[2]
