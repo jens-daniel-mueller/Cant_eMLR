@@ -462,9 +462,6 @@ div.tocify {
     <li>
       <a href="analysis_this_study.html">This study</a>
     </li>
-    <li>
-      <a href="analysis_previous_studies.html">Previous studies</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -618,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree181d430a607832c3b92915f9fac0601da08e4e89targetblank181d430a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/181d430a607832c3b92915f9fac0601da08e4e89" target="_blank">181d430</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree10b99b9e0439e402eac8ce1f94526da9cf881ee2targetblank10b99b9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/10b99b9e0439e402eac8ce1f94526da9cf881ee2" target="_blank">10b99b9</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree181d430a607832c3b92915f9fac0601da08e4e89targetblank181d430a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree10b99b9e0439e402eac8ce1f94526da9cf881ee2targetblank10b99b9a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/181d430a607832c3b92915f9fac0601da08e4e89" target="_blank">181d430</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/10b99b9e0439e402eac8ce1f94526da9cf881ee2" target="_blank">10b99b9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -640,21 +637,16 @@ Ignored files:
 
 Untracked files:
     Untracked:  code/biogeochemical_functions.R
-    Untracked:  code/plotting_functions_old.R
+    Untracked:  code/test_scripts/analysis_previous_studies.Rmd
     Untracked:  code/test_scripts/read_World_Ocean_Atlas_2013_Clement.Rmd
 
 Unstaged changes:
     Modified:   analysis/_site.yml
+    Deleted:    analysis/analysis_previous_studies.Rmd
+    Modified:   analysis/analysis_this_study.Rmd
     Modified:   analysis/child/setup.Rmd
-    Modified:   analysis/config_nomenclature.Rmd
-    Modified:   analysis/config_parameterization.Rmd
-    Modified:   analysis/eMLR_assumption_testing.Rmd
-    Modified:   analysis/eMLR_data_preparation.Rmd
-    Modified:   analysis/eMLR_model_fitting.Rmd
-    Modified:   analysis/mapping_cant_calculation.Rmd
-    Modified:   analysis/mapping_cstar_calculation.Rmd
-    Modified:   analysis/mapping_predictor_preparation.Rmd
     Deleted:    analysis/read_World_Ocean_Atlas_2013_Clement.Rmd
+    Modified:   code/Workflowr_project_managment.R
     Modified:   code/mapping_functions.R
     Modified:   code/plotting_functions.R
 
@@ -695,6 +687,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/10b99b9e0439e402eac8ce1f94526da9cf881ee2/analysis/analysis_this_study_vs_Gruber_2019.Rmd" target="_blank">10b99b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+rebuild with functions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/e29dbdd9f0ee49e1deb4e65822d8a0a4682039ec/docs/analysis_this_study_vs_Gruber_2019.html" target="_blank">e29dbdd</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1933,8 +1959,8 @@ cant_inv_wide &lt;- cant_inv_long %&gt;%
   drop_na()
 
 cant_inv_wide &lt;- cant_inv_wide %&gt;% 
-  mutate(cant_pos_inv_delta = cant_pos_inv_JDM - cant_pos_inv_G19,
-         cant_inv_delta = cant_inv_JDM - cant_inv_G19,
+  mutate(cant_pos_inv_offset = cant_pos_inv_JDM - cant_pos_inv_G19,
+         cant_inv_offset = cant_inv_JDM - cant_inv_G19,
          estimate = &quot;JDM - G19&quot;)</code></pre>
 <pre class="r"><code>cant_zonal_long &lt;- bind_rows(
   cant_zonal_JDM %&gt;%  mutate(estimate = &quot;JDM&quot;),
@@ -1946,8 +1972,8 @@ cant_zonal_wide &lt;- cant_zonal_long %&gt;%
   drop_na()
 
 cant_zonal_wide &lt;- cant_zonal_wide %&gt;% 
-  mutate(cant_pos_mean_delta = cant_pos_mean_JDM - cant_pos_mean_G19,
-         cant_mean_delta = cant_mean_JDM - cant_mean_G19,
+  mutate(cant_pos_mean_offset = cant_pos_mean_JDM - cant_pos_mean_G19,
+         cant_mean_offset = cant_mean_JDM - cant_mean_G19,
          estimate = &quot;JDM - G19&quot;)</code></pre>
 </div>
 </div>
@@ -2393,7 +2419,7 @@ cant_inv_budget %&gt;%
 <h3><span class="header-section-number">4.1.2</span> Offset</h3>
 <p>Column inventory of positive cant between the surface and 3000m water depth per horizontal grid cell (lat x lon).</p>
 <pre class="r"><code>p_map_cant_inv_offset(cant_inv_wide,
-                      &quot;cant_pos_inv_delta&quot;,
+                      &quot;cant_pos_inv_offset&quot;,
                       subtitle_text = &quot;JDM - G19&quot;)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_pos_offset_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -2435,7 +2461,7 @@ for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
       p_section_zonal_divergent(
         df = cant_zonal_wide %&gt;%
           filter(basin_AIP == i_basin_AIP),
-        var = &quot;cant_pos_mean_delta&quot;,
+        var = &quot;cant_pos_mean_offset&quot;,
         subtitle_text =
           paste(&quot;Basin:&quot;, i_basin_AIP)
       )
@@ -2467,7 +2493,7 @@ for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
 <div id="offset-2" class="section level3">
 <h3><span class="header-section-number">5.1.2</span> Offset</h3>
 <pre class="r"><code>p_map_cant_inv_offset(cant_inv_wide,
-                      &quot;cant_inv_delta&quot;,
+                      &quot;cant_inv_offset&quot;,
                       subtitle_text = &quot;JDM - G19&quot;)</code></pre>
 <p><img src="figure/analysis_this_study_vs_Gruber_2019.Rmd/cant_offset_inventory_map-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -2513,7 +2539,7 @@ for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
         df = cant_zonal_wide %&gt;%
           filter(basin_AIP == i_basin_AIP,
                  estimate == i_estimate),
-        var = &quot;cant_mean_delta&quot;,
+        var = &quot;cant_mean_offset&quot;,
         subtitle_text =
           paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| estimate:&quot;, i_estimate)
       )
