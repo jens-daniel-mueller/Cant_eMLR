@@ -28,7 +28,6 @@ library(kableExtra)
 library(broom)
 library(corrr)
 library(GGally)
-  
 ```
 
 # Required data
@@ -53,10 +52,14 @@ GLODAP <-
 
 # Model fitting
 
+## RMSE calculation
+
 Individual linear regression models were fitted for C* as a function of each predictor combination. Fitting was performed separately within each basin, era, and slab. The root mean squared error (RMSE) was calculated for each fitted model.
 
 ```{r eMLR_fitting_all_predictor_combinations, results='hide'}
 
+
+# loops across all basins and eras
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
     
@@ -66,9 +69,11 @@ for (i_basin in unique(GLODAP$basin)) {
     print(i_basin) 
     print(i_era  )
     
+    # subset one basin and era for fitting
     GLODAP_basin_era <- GLODAP %>%
       filter(basin == i_basin, era == i_era)
-
+    
+    # loop across all gamma slabs in the current basin and era
     for (i_gamma_slab in unique(GLODAP_basin_era$gamma_slab)) {
 
       # i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[1]
@@ -77,7 +82,8 @@ for (i_basin in unique(GLODAP$basin)) {
       GLODAP_basin_era_slab <- GLODAP_basin_era %>% 
         filter(gamma_slab == i_gamma_slab)
       
-      lm_full <- lm(Cstar ~ 
+      # fit the full linear model, i.e. all predictor combinations
+      lm_full <- lm(cstar ~ 
                 sal  + 
                 tem  + 
                 aou  + 
@@ -87,8 +93,11 @@ for (i_basin in unique(GLODAP$basin)) {
                 phosphate_star, 
               data = GLODAP_basin_era_slab)
       
+      # fit linear models for all possible predictor combinations
+      # unfortunately, this functions does not provide model coeffcients (yet)
       lm_all <- ols_step_all_possible(lm_full)
       
+      # extract diagnostics of each linear model
       lm_all <- as_tibble(lm_all$result)
       
       lm_all <- lm_all %>% 
@@ -96,6 +105,7 @@ for (i_basin in unique(GLODAP$basin)) {
                era = i_era,
                gamma_slab = i_gamma_slab)
       
+      # expanding table with model diagnostics for all eras, basins, slabs
       if (exists("lm_all_stats")) {
         lm_all_stats <- bind_rows(lm_all_stats, lm_all)
       }
@@ -112,6 +122,7 @@ for (i_basin in unique(GLODAP$basin)) {
   
 }
 
+# write model diagnostics to file
 lm_all_stats %>%
   write_csv(here::here("data/eMLR",
                        "lm_all_stats.csv"))
@@ -162,20 +173,26 @@ Within each basin and slab, the `r parameters$MLR_number` linear regression mode
 
 ```{r predictor_selection}
 
+# select relevant columns
 lm_all_stats <- lm_all_stats %>%
   select(basin, era, gamma_slab, predictors, rmse)
 
+# pivot table
 lm_all_stats_wide <- lm_all_stats %>%
   pivot_wider(names_from = era,
               values_from = rmse,
               names_prefix = "rmse_")
 
+# calculate coefficient difference
+# it would be good to recode this for a variable number of eras
+# currently it is hard coded by era names
 lm_all_stats_wide <- lm_all_stats_wide %>%
   mutate(
     rmse_sum_JGOFS_GO = rmse_JGOFS_WOCE + rmse_GO_SHIP,
     rmse_sum_GO_new = rmse_GO_SHIP + rmse_new_era
   )
 
+# pivot back to long format
 lm_all_stats <- lm_all_stats_wide %>%
   pivot_longer(
     c(rmse_sum_JGOFS_GO, rmse_sum_GO_new),
@@ -184,6 +201,7 @@ lm_all_stats <- lm_all_stats_wide %>%
     names_prefix = "rmse_sum_"
   )
 
+# subset models with lowest RMSE
 lm_best <- lm_all_stats %>%
   group_by(basin, gamma_slab, eras) %>%
   slice_min(order_by = rmse_sum,
@@ -192,6 +210,7 @@ lm_best <- lm_all_stats %>%
   ungroup() %>% 
   arrange(basin, gamma_slab, eras, predictors)
 
+# plot table for website
 kable(lm_best) %>%
   add_header_above() %>%
   kable_styling() %>%
@@ -232,17 +251,18 @@ lm_best %>%
 
 ```{r test_rmse_output, eval=FALSE}
 
+# this code tests the rmse output of the ols_step_all_possible() function used
 lm_1 <- GLODAP %>% 
   filter(basin == "Atlantic",
          gamma_slab == "(-Inf,26]",
          era == "new_era") %>% 
-  lm(Cstar ~ sal + tem + aou + oxygen + phosphate_star, data = .)
+  lm(cstar ~ sal + tem + aou + oxygen + phosphate_star, data = .)
 
 lm_2 <- GLODAP %>% 
   filter(basin == "Atlantic",
          gamma_slab == "(-Inf,26]",
          era == "new_era") %>% 
-  lm(Cstar ~ sal + tem + aou + oxygen + phosphate, data = .)
+  lm(cstar ~ sal + tem + aou + oxygen + phosphate, data = .)
 
 lm_1
 lm_2
@@ -260,10 +280,12 @@ After selecting `r parameters$MLR_number` linear regression models with lowest s
 
 ```{r prepare_model_table}
 
+# format model formula
 lm_best <- lm_best %>% 
   mutate(lm_coeff = str_replace_all(predictors, " ", " + "),
-         lm_coeff = paste("Cstar ~", lm_coeff))
+         lm_coeff = paste("cstar ~", lm_coeff))
 
+# define combined eras that will be analysed against each other
 eras_era <-
   tibble(
     eras = c("JGOFS_GO", "GO_new", "JGOFS_GO", "GO_new"),
@@ -271,7 +293,6 @@ eras_era <-
   )
 
 lm_best <- full_join(lm_best, eras_era)
-
 rm(eras_era)
 
 ```
@@ -279,9 +300,12 @@ rm(eras_era)
 
 ```{r fit_best_models, results='hide'}
 
+# select required columns
 lm_best <- lm_best %>% 
   select(basin, gamma_slab, era, eras, predictors, lm_coeff, rmse_sum)
 
+# run similar loop as for rmse calculation
+# to get model coeffcients for 10 best models
 for (i_basin in unique(GLODAP$basin)) {
   for (i_era in unique(GLODAP$era)) {
     # i_basin <- unique(GLODAP$basin)[1]
@@ -333,7 +357,7 @@ for (i_basin in unique(GLODAP$basin)) {
 
           # p_model <- ggnostic(
           #   lm_fit_single,
-          #   columnsY = c("Cstar", ".fitted", ".resid"),
+          #   columnsY = c("cstar", ".fitted", ".resid"),
           #   title = paste("eras:", i_eras,
           #                 "| era:", i_era,
           #                 "| basin:", i_basin,
@@ -350,7 +374,7 @@ for (i_basin in unique(GLODAP$basin)) {
           #           i_basin,
           #           i_gamma_slab,
           #           i_predictors,
-          #           "eMLR_Cstar_residuals.png",
+          #           "eMLR_cstar_residuals.png",
           #           sep = "_")
           #   ),
           #   width = 14,
@@ -399,26 +423,27 @@ rm(lm_fit_single, coefficients, i_rmse_sum,
 lm_all <- lm_all %>% 
   select(basin, gamma_slab, era, eras, model, term, estimate)
 
+# set coefficient to zero if not fitted (=NA)
 lm_all <- lm_all %>% 
   mutate(estimate = if_else(is.na(estimate), 0, estimate))
 
+# write lm models to file
 lm_all %>%
   write_csv(here::here("data/eMLR",
                        "lm_all.csv"))
 
-# Prepare model coefficients for mapping of Cstar
-
-lm_all_wide_Cstar <- lm_all %>% 
+# Prepare model coefficients for mapping of cstar
+lm_all_wide_cstar <- lm_all %>% 
   pivot_wider(values_from = estimate,
               names_from = term,
               names_prefix = "coeff_",
               values_fill = 0)
 
-lm_all_wide_Cstar %>%
+lm_all_wide_cstar %>%
   write_csv(here::here("data/eMLR",
-                       "lm_all_wide_Cstar.csv"))
+                       "lm_all_wide_cstar.csv"))
 
-rm(lm_all_wide_Cstar)
+rm(lm_all_wide_cstar)
 
 # Prepare model coefficients differences for mapping of Cant
 
