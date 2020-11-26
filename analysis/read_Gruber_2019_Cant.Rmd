@@ -137,15 +137,24 @@ cant_inv <- m_cant_inv(cant_3d)
 
 ```
 
+### Cant - all
+
 ```{r G19_cant_inv_maps}
 
-p_map_cant_inv(cant_inv)
+p_map_cant_inv(
+  df = cant_inv,
+  var = "cant_inv",
+  col = "divergent")
 
 ```
 
+### Cant - pos
+
 ```{r G19_cant_pos_inventory_maps}
 
-p_map_cant_pos_inv(cant_inv)
+p_map_cant_inv(
+  df = cant_inv,
+  var = "cant_pos_inv")
 
 ```
 
@@ -153,7 +162,9 @@ p_map_cant_pos_inv(cant_inv)
 
 ```{r G19_cant_pos_inventory_maps_published}
 
-p_map_cant_pos_inv(dcant_inv)
+p_map_cant_inv(
+  df = dcant_inv,
+  var = "cant_pos_inv")
 
 ```
 
@@ -171,7 +182,7 @@ cant_offset <- cant_offset %>%
 
 p_map_cant_inv_offset(df = cant_offset,
                       var = "delta_cant",
-                      breaks = seq(-3,3,1))
+                      breaks = seq(-3,3,0.25))
 
 rm(cant_offset, dcant_inv)
 ```
@@ -193,7 +204,10 @@ Section locations are indicated as white lines in maps.
 
 ```{r Cant_maps, fig.asp=0.6}
 
-p_map_climatology_divergent(cant_3d, "cant")
+p_map_climatology(
+  df = cant_3d,
+  var = "cant",
+  col = "divergent")
 
 ```
 
@@ -201,7 +215,9 @@ p_map_climatology_divergent(cant_3d, "cant")
 
 ```{r Cant_maps_V101, fig.asp=0.6}
 
-p_map_climatology_continous(cant_3d, "cant_pos")
+p_map_climatology(
+  df = cant_3d,
+  var = "cant_pos")
 
 ```
 
@@ -212,7 +228,10 @@ p_map_climatology_continous(cant_3d, "cant_pos")
 
 ```{r Cant_sections_V101, fig.asp=0.8}
 
-p_section_global_divergent(cant_3d, "cant")
+p_section_global(
+  df = cant_3d,
+  var = "cant",
+  col = "divergent")
 
 ```
 
@@ -220,8 +239,9 @@ p_section_global_divergent(cant_3d, "cant")
 
 ```{r Cant_sections, fig.asp=0.8}
 
-p_section_global_continous(cant_3d, "cant_pos")
-
+p_section_global(
+  df = cant_3d,
+  var = "cant_pos")
 ```
 
 
@@ -231,7 +251,10 @@ p_section_global_continous(cant_3d, "cant_pos")
 
 ```{r Cant_sections_regular, fig.asp=2}
 
-p_section_climatology_regular_divergent(cant_3d, "cant")
+p_section_climatology_regular(
+  df = cant_3d,
+  var = "cant",
+  col = "divergent")
 
 ```
 
@@ -239,7 +262,9 @@ p_section_climatology_regular_divergent(cant_3d, "cant")
 
 ```{r Cant_sections_regular_V101, fig.asp=2}
 
-p_section_climatology_regular_continous(cant_3d, "cant_pos")
+p_section_climatology_regular(
+  df = cant_3d,
+  var = "cant_pos")
 
 ```
 

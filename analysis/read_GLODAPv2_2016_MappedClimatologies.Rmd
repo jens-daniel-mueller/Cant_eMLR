@@ -148,23 +148,31 @@ clim_tibble <- clim_tibble %>%
 
 # plot maps
 
-print(p_map_climatology_continous(clim_tibble,
-                                  parameter))
+print(
+  p_map_climatology(
+    df = clim_tibble,
+    var = parameter)
+  )
 
 # plot sections
 
 print(
-  p_section_global_continous(clim_tibble,
-                             parameter,
-                             "GLODAPv2_2016_Mapped_Climatology")
+  p_section_global(
+    df = clim_tibble,
+    var = parameter,
+    title_text = "GLODAPv2_2016_Mapped_Climatology")
 )
 
 
 # write csv file
 
 clim_tibble %>% 
-  write_csv(here::here("data/interim",
-                       paste("GLODAPv2_2016_MappedClimatology",parameter,".csv", sep = "")))
+  write_csv(here::here(
+    "data/interim",
+    paste("GLODAPv2_2016_MappedClimatology",
+          parameter,
+          ".csv",
+          sep = "")))
 
 }
 

@@ -121,7 +121,10 @@ Section locations are indicated as white lines in maps.
 
 ```{r cant_maps, fig.asp=0.6}
 
-p_map_climatology_divergent(cant_3d, "cant")
+p_map_climatology(
+  df = cant_3d,
+  var = "cant",
+  col = "divergent")
 
 ```
 
@@ -129,7 +132,10 @@ p_map_climatology_divergent(cant_3d, "cant")
 
 ```{r cant_sections}
 
-p_section_global_divergent(cant_3d, "cant")
+p_section_global(
+  df = cant_3d,
+  var = "cant",
+  col = "divergent")
 
 ```
 
@@ -137,7 +143,10 @@ p_section_global_divergent(cant_3d, "cant")
 
 ```{r cant_sections_regular, fig.asp=2}
 
-p_section_climatology_regular_divergent(cant_3d, "cant")
+p_section_climatology_regular(
+  df = cant_3d,
+  var = "cant",
+  col = "divergent")
 
 ```
 
@@ -153,8 +162,9 @@ cant_zonal <- m_zonal_mean_section(cant_3d %>% select(-basin))
 
 ```{r cant_inv_pos_maps, fig.asp=0.6}
 
-p_map_cant_pos_inv(
-  cant_inv,
+p_map_cant_inv(
+  df = cant_inv,
+  var = "cant_pos_inv",
   breaks = seq(0,max(cant_inv$cant_pos_inv),5))
 
 ```
