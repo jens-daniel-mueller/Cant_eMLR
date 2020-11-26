@@ -178,12 +178,15 @@ Column inventory of positive cant between the surface and `r parameters$inventor
 
 ```{r cant_pos_inventory_map, fig.asp=0.5}
 
+i_estimate <- unique(cant_inv_long$estimate)[1]
+
 for (i_estimate in unique(cant_inv_long$estimate)) {
   
-  print(p_map_cant_pos_inv(
-    cant_inv_long %>% filter(estimate == i_estimate),
-    subtitle_text = paste("Estimate:", i_estimate)
-  ))
+  print(
+    p_map_cant_inv(
+      cant_inv_long %>% filter(estimate == i_estimate),
+      subtitle_text = paste("Estimate:", i_estimate))
+    )
   
 }
 
@@ -209,18 +212,19 @@ p_map_cant_inv_offset(cant_inv_wide,
 
 ```{r cant_pos_zonal_mean_section, fig.asp=0.6}
 
-# i_basin_AIP <- unique(df$basin_AIP)[1]
-# i_estimate <- unique(df$estimate)[1]
+# i_basin_AIP <- unique(cant_zonal_long$basin_AIP)[1]
+# i_estimate <- unique(cant_zonal_long$estimate)[1]
 
 for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
   for (i_estimate in unique(cant_zonal_long$estimate)) {
    
      print(
-      p_section_zonal_continous(
+      p_section_zonal(
         df = cant_zonal_long %>%
           filter(basin_AIP == i_basin_AIP,
                  estimate == i_estimate),
         var = "cant_pos_mean",
+        plot_slabs = "n",
         subtitle_text =
           paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)
       )
@@ -238,22 +242,23 @@ for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
 
 ```{r cant_pos_offset_zonal_section, fig.asp=0.6}
 
-# i_basin_AIP <- unique(df$basin_AIP)[1]
-# i_estimate <- unique(df$estimate)[1]
+# i_basin_AIP <- unique(cant_zonal_wide$basin_AIP)[1]
+# i_estimate <- unique(cant_zonal_wide$estimate)[1]
 
 for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
-  for (i_estimate in unique(cant_zonal_wide$estimate)) {
     print(
-      p_section_zonal_divergent(
+      p_section_zonal(
         df = cant_zonal_wide %>%
           filter(basin_AIP == i_basin_AIP),
         var = "cant_pos_mean_offset",
+        breaks = parameters$breaks_cant_offset,
+        plot_slabs = "n",
+        col = "divergent",
         subtitle_text =
           paste("Basin:", i_basin_AIP)
       )
     )
   }
-}
 
 
 ```
@@ -273,12 +278,16 @@ Column inventory of Cant (including positive and negative values) between the su
 
 ```{r cant_inventory_map, fig.asp=0.5}
 
+# i_estimate <- unique(cant_inv_long$estimate)[1] 
+
 for (i_estimate in unique(cant_inv_long$estimate)) {
   
-  print(p_map_cant_inv(
+  print(
+    p_map_cant_inv(
     cant_inv_long %>% filter(estimate == i_estimate),
-    subtitle_text = paste("Estimate:", i_estimate)
-  ))
+    subtitle_text = paste("Estimate:", i_estimate),
+    col = "divergent")
+  )
   
 }
 
@@ -290,9 +299,10 @@ for (i_estimate in unique(cant_inv_long$estimate)) {
 
 ```{r cant_offset_inventory_map, fig.asp = 0.5}
 
-p_map_cant_inv_offset(cant_inv_wide,
-                      "cant_inv_offset",
-                      subtitle_text = "JDM - G19")
+p_map_cant_inv_offset(
+  df = cant_inv_wide,
+  var = "cant_inv_offset",
+  subtitle_text = "JDM - G19")
 
 ```
 
@@ -311,11 +321,14 @@ for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
   for (i_estimate in unique(cant_zonal_long$estimate)) {
    
      print(
-      p_section_zonal_divergent(
+      p_section_zonal(
         df = cant_zonal_long %>%
           filter(basin_AIP == i_basin_AIP,
                  estimate == i_estimate),
         var = "cant_mean",
+        col = "divergent",
+        breaks = parameters$breaks_cant,
+        plot_slabs = "n",
         legend_title = expression(atop(Delta * C[ant],
                                           (mu * mol ~ kg ^ {-1}))),
         subtitle_text =
@@ -336,25 +349,24 @@ for (i_basin_AIP in unique(cant_zonal_long$basin_AIP)) {
 
 ```{r cant_offset_zonal_mean_section, fig.asp=0.6}
 
-# i_basin_AIP <- unique(df$basin_AIP)[1]
-# i_estimate <- unique(df$estimate)[1]
+# i_basin_AIP <- unique(cant_zonal_wide$basin_AIP)[1]
+# i_estimate <- unique(cant_zonal_wide$estimate)[1]
 
 for (i_basin_AIP in unique(cant_zonal_wide$basin_AIP)) {
-  for (i_estimate in unique(cant_zonal_wide$estimate)) {
-   
+
      print(
-      p_section_zonal_divergent(
+      p_section_zonal(
         df = cant_zonal_wide %>%
-          filter(basin_AIP == i_basin_AIP,
-                 estimate == i_estimate),
+          filter(basin_AIP == i_basin_AIP),
         var = "cant_mean_offset",
+        plot_slabs = "n",
+        col = "divergent",
+        breaks = parameters$breaks_cant_offset,
         subtitle_text =
           paste("Basin:", i_basin_AIP, "| estimate:", i_estimate)
       )
       
     )
-    
-  }
 }
 
 
