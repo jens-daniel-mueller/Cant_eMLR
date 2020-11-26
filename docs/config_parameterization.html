@@ -499,7 +499,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Parameterization</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">25 November, 2020</h4>
+<h4 class="date">26 November, 2020</h4>
 
 </div>
 
@@ -524,7 +524,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-25
+<strong>Last updated:</strong> 2020-11-26
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8dtargetblank1d0fbe4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8d" target="_blank">1d0fbe4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb30e6fb95671e51302faf1adfc7a67bd118f24b1targetblankb30e6fba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b30e6fb95671e51302faf1adfc7a67bd118f24b1" target="_blank">b30e6fb</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8dtargetblank1d0fbe4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeb30e6fb95671e51302faf1adfc7a67bd118f24b1targetblankb30e6fba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/1d0fbe4a1ab1c34680d1610707e46fe25a1b8f8d" target="_blank">1d0fbe4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/b30e6fb95671e51302faf1adfc7a67bd118f24b1" target="_blank">b30e6fb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,18 +641,13 @@ Untracked files:
     Untracked:  code/test_scripts/read_World_Ocean_Atlas_2013_Clement.Rmd
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
-    Deleted:    analysis/analysis_previous_studies.Rmd
     Modified:   analysis/analysis_this_study.Rmd
     Modified:   analysis/analysis_this_study_vs_Gruber_2019.Rmd
-    Modified:   analysis/child/setup.Rmd
-    Modified:   analysis/eMLR_model_fitting.Rmd
     Modified:   analysis/mapping_cant_calculation.Rmd
-    Modified:   analysis/mapping_cstar_calculation.Rmd
     Modified:   analysis/mapping_predictor_preparation.Rmd
-    Deleted:    analysis/read_World_Ocean_Atlas_2013_Clement.Rmd
-    Modified:   code/Workflowr_project_managment.R
-    Modified:   code/mapping_functions.R
+    Modified:   analysis/read_GLODAPv2_2016_MappedClimatologies.Rmd
+    Modified:   analysis/read_Gruber_2019_Cant.Rmd
+    Modified:   analysis/read_Sabine_2004_Cant.Rmd
     Modified:   code/plotting_functions.R
 
 </code></pre>
@@ -692,6 +687,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/b30e6fb95671e51302faf1adfc7a67bd118f24b1/analysis/config_parameterization.Rmd" target="_blank">b30e6fb</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-26
+</td>
+<td>
+rebuild with integrated plotting functions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/47487dc90e1e36f859754bb1e16d7e6f61b47d81/docs/config_parameterization.html" target="_blank">47487dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2256,10 +2285,11 @@ parameters &lt;-
     slabs_Atl = slabs_Atl,
     slabs_Ind_Pac = slabs_Ind_Pac,
     breaks_cant_pos_inv = c(seq(0,16,2),Inf),
-    breaks_cant_inv_offset = c(-Inf, seq(-15, 15, 3), Inf),
     breaks_cant_inv = c(-Inf,seq(-16,16,2),Inf),
+    breaks_cant_inv_offset = c(-Inf, seq(-15, 15, 3), Inf),
     breaks_cant_pos = c(seq(0, 18, 1), Inf),
     breaks_cant = c(-Inf,seq(-16,16,2),Inf),
+    breaks_cant_offset = c(-Inf,seq(-8,8,),Inf),
     rCP = 117,
     rNP = 16,
     rPO = 170,
@@ -2366,12 +2396,12 @@ $slabs_Ind_Pac
 $breaks_cant_pos_inv
  [1]   0   2   4   6   8  10  12  14  16 Inf
 
-$breaks_cant_inv_offset
- [1] -Inf  -15  -12   -9   -6   -3    0    3    6    9   12   15  Inf
-
 $breaks_cant_inv
  [1] -Inf  -16  -14  -12  -10   -8   -6   -4   -2    0    2    4    6    8   10
 [16]   12   14   16  Inf
+
+$breaks_cant_inv_offset
+ [1] -Inf  -15  -12   -9   -6   -3    0    3    6    9   12   15  Inf
 
 $breaks_cant_pos
  [1]   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18
@@ -2380,6 +2410,10 @@ $breaks_cant_pos
 $breaks_cant
  [1] -Inf  -16  -14  -12  -10   -8   -6   -4   -2    0    2    4    6    8   10
 [16]   12   14   16  Inf
+
+$breaks_cant_offset
+ [1] -Inf   -8   -7   -6   -5   -4   -3   -2   -1    0    1    2    3    4    5
+[16]    6    7    8  Inf
 
 $rCP
 [1] 117
