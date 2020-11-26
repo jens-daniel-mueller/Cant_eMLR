@@ -500,7 +500,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analysis of cant estimates</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">25 November, 2020</h4>
+<h4 class="date">26 November, 2020</h4>
 
 </div>
 
@@ -525,7 +525,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-25
+<strong>Last updated:</strong> 2020-11-26
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -616,16 +616,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreefc70e178d593d61ca722046e1e7d127f1d8b8ee3targetblankfc70e17a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/fc70e178d593d61ca722046e1e7d127f1d8b8ee3" target="_blank">fc70e17</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5b4d20c854c1dc96a1e1fe9ae0557d17a62e8200targetblank5b4d20ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5b4d20c854c1dc96a1e1fe9ae0557d17a62e8200" target="_blank">5b4d20c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreefc70e178d593d61ca722046e1e7d127f1d8b8ee3targetblankfc70e17a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree5b4d20c854c1dc96a1e1fe9ae0557d17a62e8200targetblank5b4d20ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/fc70e178d593d61ca722046e1e7d127f1d8b8ee3" target="_blank">fc70e17</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/5b4d20c854c1dc96a1e1fe9ae0557d17a62e8200" target="_blank">5b4d20c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -633,6 +633,7 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/
     Ignored:    dump/
 
@@ -640,6 +641,12 @@ Untracked files:
     Untracked:  code/biogeochemical_functions.R
     Untracked:  code/test_scripts/analysis_previous_studies.Rmd
     Untracked:  code/test_scripts/read_World_Ocean_Atlas_2013_Clement.Rmd
+
+Unstaged changes:
+    Modified:   analysis/config_parameterization.Rmd
+    Modified:   analysis/eMLR_model_fitting.Rmd
+    Modified:   code/mapping_functions.R
+    Modified:   code/plotting_functions.R
 
 </code></pre>
 <p>
@@ -678,6 +685,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/5b4d20c854c1dc96a1e1fe9ae0557d17a62e8200/analysis/analysis_this_study.Rmd" target="_blank">5b4d20c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-26
+</td>
+<td>
+rebuild with integrated plotting functions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/2c0ac0410683be90b48a02ce693fd5a0be4a4a10/docs/analysis_this_study.html" target="_blank">2c0ac04</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2739,19 +2780,20 @@ GO_new
 <p>In a first series of plots we explore the distribution of cant, taking only positive estimates into account (positive here refers to the mean cant estimate across 10 eMLR model predictions available for each grid cell). Negative values were set to zero before calculating mean sections and inventories.</p>
 <div id="zonal-mean-sections" class="section level2">
 <h2><span class="header-section-number">4.1</span> Zonal mean sections</h2>
-<pre class="r"><code>for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
+<pre class="r"><code># i_basin_AIP &lt;- unique(cant_zonal$basin_AIP)[2]
+# i_eras &lt;- unique(cant_zonal$eras)[1]
+
+for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
   for (i_eras in unique(cant_zonal$eras)) {
    
      print(
-      p_section_zonal_continous(
+      p_section_zonal(
         df = cant_zonal %&gt;%
           filter(basin_AIP == i_basin_AIP,
                  eras == i_eras),
         var = &quot;cant_pos_mean&quot;,
         subtitle_text =
-          paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| eras:&quot;, i_eras)
-      )
-      
+          paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| eras:&quot;, i_eras))
     )
     
   }
@@ -2766,21 +2808,24 @@ GO_new
 <li>density slabs covering values &gt;28.1 occur by definition only either in the Atlantic or Indo-Pacific basin</li>
 <li>gaps in the maps represent areas where (thin) density layers fit between discrete depth levels used for mapping</li>
 </ul>
-<pre class="r"><code>cant_gamma_maps &lt;- m_cant_slab(cant_3d)</code></pre>
-<pre class="r"><code>cant_gamma_maps &lt;- cant_gamma_maps %&gt;% 
-  arrange(gamma_slab, eras)
+<pre class="r"><code>cant_gamma_maps &lt;- m_cant_slab(cant_3d)
 
-# i_eras &lt;- unique(cant_gamma_maps$eras)[1]
+cant_gamma_maps &lt;- cant_gamma_maps %&gt;% 
+  arrange(gamma_slab, eras)</code></pre>
+<pre class="r"><code># i_eras &lt;- unique(cant_gamma_maps$eras)[1]
 # i_gamma_slab &lt;- unique(cant_gamma_maps$gamma_slab)[1]
 
 for (i_eras in unique(cant_gamma_maps$eras)) {
   for (i_gamma_slab in unique(cant_gamma_maps$gamma_slab)) {
     print(
-      p_map_cant_pos_slab(
-      cant_gamma_maps %&gt;% filter(eras == i_eras,
-                                 gamma_slab == i_gamma_slab),
-      subtitle_text = paste(&quot;Eras:&quot;, i_eras,
-                            &quot;| Neutral density:&quot;, i_gamma_slab))
+      p_map_cant_slab(
+        df = cant_gamma_maps %&gt;%
+          filter(eras == i_eras,
+                 gamma_slab == i_gamma_slab),
+        subtitle_text = paste(
+          &quot;Eras:&quot;, i_eras,
+          &quot;| Neutral density:&quot;, i_gamma_slab)
+        )
     )
     
   }
@@ -2794,10 +2839,12 @@ for (i_eras in unique(cant_gamma_maps$eras)) {
 
 for (i_eras in unique(cant_inv$eras)) {
   
-  print(p_map_cant_pos_inv(
-    cant_inv %&gt;% filter(eras == i_eras),
-    subtitle_text = paste(&quot;Eras:&quot;, i_eras)
-  ))
+  print(
+    p_map_cant_inv(
+      df = cant_inv %&gt;% filter(eras == i_eras),
+      var = &quot;cant_pos_inv&quot;,
+      subtitle_text = paste(&quot;Eras:&quot;, i_eras))
+  )
   
 }</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/cant_pos_inventory_map-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_this_study.Rmd/cant_pos_inventory_map-2.png" width="672" style="display: block; margin: auto;" /></p>
@@ -2806,9 +2853,9 @@ for (i_eras in unique(cant_inv$eras)) {
 <h2><span class="header-section-number">4.4</span> Global sections</h2>
 <pre class="r"><code>for (i_eras in unique(cant_3d$eras)) {
   print(
-    p_section_global_continous(
-      cant_3d %&gt;% filter(eras == i_eras),
-      &quot;cant_pos&quot;,
+    p_section_global(
+      df = cant_3d %&gt;% filter(eras == i_eras),
+      var = &quot;cant_pos&quot;,
       subtitle_text = paste(&quot;Eras:&quot;, i_eras)
     )
   )
@@ -2823,29 +2870,21 @@ for (i_eras in unique(cant_inv$eras)) {
 <div id="zonal-mean-sections-1" class="section level2">
 <h2><span class="header-section-number">5.1</span> Zonal mean sections</h2>
 <pre class="r"><code># i_eras &lt;- unique(cant_zonal$eras)[1]
-# i_basin_AIP &lt;- unique(cant_zonal$basin_AIP)[2]
+# i_basin_AIP &lt;- unique(cant_zonal$basin_AIP)[1]
 
 for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
-  
-  
-  # select slab breaks for plotted basin
-  if (i_basin_AIP == &quot;Atlantic&quot;) {
-    slab_breaks &lt;- parameters$slabs_Atl
-  } else {
-    slab_breaks &lt;- parameters$slabs_Ind_Pac
-  }
-  
   for (i_eras in unique(cant_zonal$eras)) {
     print(
-      p_section_zonal_divergent_gamma(
+      p_section_zonal(
         df = cant_zonal %&gt;%
           filter(basin_AIP == i_basin_AIP,
                  eras == i_eras),
         var = &quot;cant_mean&quot;,
         gamma = &quot;gamma_mean&quot;,
+        breaks = parameters$breaks_cant,
+        col = &quot;divergent&quot;,
         subtitle_text =
-          paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| eras:&quot;, i_eras)
-      )
+          paste(&quot;Basin:&quot;, i_basin_AIP, &quot;| eras:&quot;, i_eras))
     )
     
   }
@@ -2861,16 +2900,20 @@ for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
 <li>gaps in the maps represent areas where (thin) density layers fit between discrete depth levels used for mapping</li>
 </ul>
 <pre class="r"><code># i_eras &lt;- unique(cant_gamma_maps$eras)[1]
-# i_gamma_slab &lt;- unique(cant_gamma_maps$gamma_slab)[1]
+# i_gamma_slab &lt;- unique(cant_gamma_maps$gamma_slab)[5]
 
 for (i_eras in unique(cant_gamma_maps$eras)) {
   for (i_gamma_slab in unique(cant_gamma_maps$gamma_slab)) {
     print(
       p_map_cant_slab(
-      cant_gamma_maps %&gt;% filter(eras == i_eras,
-                                 gamma_slab == i_gamma_slab),
-      subtitle_text = paste(&quot;Eras:&quot;, i_eras,
-                            &quot;| Neutral density:&quot;, i_gamma_slab))
+        df = cant_gamma_maps %&gt;%
+          filter(eras == i_eras,
+                 gamma_slab == i_gamma_slab),
+        var = &quot;cant&quot;,
+        col = &quot;divergent&quot;,
+        subtitle_text = paste(
+          &quot;Eras:&quot;, i_eras,
+          &quot;| Neutral density:&quot;, i_gamma_slab))
     )
     
   }
@@ -2886,9 +2929,10 @@ for (i_eras in unique(cant_inv$eras)) {
   
   print(
     p_map_cant_inv(
-    cant_inv %&gt;% filter(eras == i_eras),
-    subtitle_text = paste(&quot;Eras:&quot;, i_eras)
-  )
+      df = cant_inv %&gt;% filter(eras == i_eras),
+      var = &quot;cant_inv&quot;,
+      col = &quot;divergent&quot;,
+      subtitle_text = paste(&quot;Eras:&quot;, i_eras))
   )
   
 }</code></pre>
@@ -2904,18 +2948,9 @@ for (i_eras in unique(cant_inv$eras)) {
 # i_basin_AIP &lt;- unique(cant_zonal$basin_AIP)[2]
 
 for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
-  
-  
-  # select slab breaks for plotted basin
-  if (i_basin_AIP == &quot;Atlantic&quot;) {
-    slab_breaks &lt;- parameters$slabs_Atl
-  } else {
-    slab_breaks &lt;- parameters$slabs_Ind_Pac
-  }
-  
   for (i_eras in unique(cant_zonal$eras)) {
     print(
-      p_section_zonal_continous_gamma(
+      p_section_zonal(
         df = cant_zonal %&gt;%
           filter(basin_AIP == i_basin_AIP,
                  eras == i_eras),
@@ -2938,18 +2973,9 @@ for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
 # i_basin_AIP &lt;- unique(cant_zonal$basin_AIP)[2]
 
 for (i_basin_AIP in unique(cant_zonal$basin_AIP)) {
-  
-  
-  # select slab breaks for plotted basin
-  if (i_basin_AIP == &quot;Atlantic&quot;) {
-    slab_breaks &lt;- parameters$slabs_Atl
-  } else {
-    slab_breaks &lt;- parameters$slabs_Ind_Pac
-  }
-  
   for (i_eras in unique(cant_zonal$eras)) {
     print(
-      p_section_zonal_continous_gamma(
+      p_section_zonal(
         df = cant_zonal %&gt;%
           filter(basin_AIP == i_basin_AIP,
                  eras == i_eras),
@@ -3040,9 +3066,10 @@ for (variable in c(
   &quot;cant_sal&quot;)) {
 
 print(
-p_section_zonal_divergent_gamma_eras_basin(cant_predictor_zonal,
-                          variable,
-                          &quot;gamma&quot;)
+p_section_zonal_divergent_gamma_eras_basin(
+  df = cant_predictor_zonal,
+  var = variable,
+  gamma = &quot;gamma&quot;)
 )
     
 }</code></pre>
@@ -3083,6 +3110,8 @@ map +
 <pre class="r"><code>cstar_zonal &lt;- cstar_zonal %&gt;% 
     mutate(era = factor(era, c(&quot;JGOFS_WOCE&quot;, &quot;GO_SHIP&quot;, &quot;new_era&quot;))) 
 
+slab_breaks &lt;- c(parameters$slabs_Atl[1:12],Inf)
+
 cstar_zonal %&gt;% 
     ggplot(aes(lat, depth, z = cstar_mean)) +
     geom_contour_filled(bins = 11) +
@@ -3102,6 +3131,7 @@ cstar_zonal %&gt;%
     guides(fill = guide_colorsteps(barheight = unit(10, &quot;cm&quot;))) +
     facet_grid(basin_AIP ~ era)</code></pre>
 <p><img src="figure/analysis_this_study.Rmd/cstar_zonal_mean_era-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(slab_breaks)</code></pre>
 </div>
 </div>
 <div id="sections-by-model" class="section level1">
