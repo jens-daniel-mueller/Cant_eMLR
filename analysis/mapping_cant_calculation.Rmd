@@ -184,14 +184,18 @@ predictors_surface <- predictors_surface %>%
 
 ```{r pCO2_climatology_map}
 
-p_map_climatology_continous(predictors_surface, "pCO2")
+p_map_climatology(
+  df = predictors_surface,
+  var = "pCO2")
 
 ```
 
 
 ```{r pCO2_climatology_sections}
 
-p_section_climatology_regular_continous(predictors_surface, "pCO2")
+p_section_climatology_regular(
+  df = predictors_surface,
+  var = "pCO2")
 
 ```
 
@@ -216,14 +220,18 @@ predictors_surface <- predictors_surface %>%
 
 ```{r revelle_factor_climatology_map}
 
-p_map_climatology_continous(predictors_surface, "rev_fac")
+p_map_climatology(
+  df = predictors_surface,
+  var = "rev_fac")
 
 ```
 
 
 ```{r revelle_factor_climatology_sections}
 
-p_section_climatology_regular_continous(predictors_surface, "rev_fac")
+p_section_climatology_regular(
+  df = predictors_surface,
+  var = "rev_fac")
 
 ```
 
@@ -256,14 +264,18 @@ cant_surface <- cant_surface %>%
 
 ```{r cant_surface_climatology_map}
 
-p_map_climatology_continous(cant_surface, "cant")
+p_map_climatology(
+  df = cant_surface,
+  var = "cant")
 
 ```
 
 
 ```{r cant_surface_climatology_sections}
 
-p_section_climatology_regular_continous(cant_surface, "cant")
+p_section_climatology_regular(
+  df = cant_surface,
+  var = "cant")
 
 ```
 
