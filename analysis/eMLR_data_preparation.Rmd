@@ -502,7 +502,7 @@ GLODAP %>%
 
 Zonal and meridional section plots are produce for each cruise individually and can be downloaded [here](https://github.com/jens-daniel-mueller/Cant_eMLR/tree/master/output/figure/eMLR/data_preparation/all_cruises_clean){target="_blank"}.
 
-```{r individual_cruises_clean_triplicates, eval = FALSE}
+```{r plot_all_individual_cruises_clean}
 
 cruises <- GLODAP %>% 
   group_by(cruise) %>% 
@@ -517,7 +517,7 @@ n <- 0
 for (i_cruise in unique(cruises$cruise)) {
 
 # i_cruise <- unique(cruises$cruise)[1]
-n <- n+1
+n <- n + 1
 print(n)  
   
 GLODAP_cruise <- GLODAP %>%

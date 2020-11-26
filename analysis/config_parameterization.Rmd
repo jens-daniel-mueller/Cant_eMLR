@@ -101,6 +101,15 @@ slabs_Ind_Pac <-
 longitude_sections_basin <- c(335.5, 190.5, 70.5)
 longitude_sections_regular <- seq(30.5, 380.5, 20)
 
+MLR_full_model <- "cstar ~ 
+                sal  + 
+                tem  + 
+                aou  + 
+                oxygen  + 
+                silicate  + 
+                phosphate  + 
+                phosphate_star"
+
 parameters <-
   lst(
     Version_ID = "V_101",
@@ -126,6 +135,7 @@ parameters <-
     inventory_depth = 3000,
     plotting_depth = 4500,
     cruises_meridional = 1041,
+    MLR_full_model = MLR_full_model,
     predictors_max = 5,
     predictors_min = 2,
     MLR_number = 10,
