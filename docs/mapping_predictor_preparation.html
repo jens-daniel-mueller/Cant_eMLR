@@ -499,7 +499,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Mapping</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">25 November, 2020</h4>
+<h4 class="date">26 November, 2020</h4>
 
 </div>
 
@@ -524,7 +524,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-25
+<strong>Last updated:</strong> 2020-11-26
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree44d4ef36cdd7f3a9c6ff49cc02b6b134e618b97btargetblank44d4ef3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/44d4ef36cdd7f3a9c6ff49cc02b6b134e618b97b" target="_blank">44d4ef3</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree057a4c30cb80cb53bc9c4601fe62c32bd25bbfe2targetblank057a4c3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/057a4c30cb80cb53bc9c4601fe62c32bd25bbfe2" target="_blank">057a4c3</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree44d4ef36cdd7f3a9c6ff49cc02b6b134e618b97btargetblank44d4ef3a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree057a4c30cb80cb53bc9c4601fe62c32bd25bbfe2targetblank057a4c3a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/44d4ef36cdd7f3a9c6ff49cc02b6b134e618b97b" target="_blank">44d4ef3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/057a4c30cb80cb53bc9c4601fe62c32bd25bbfe2" target="_blank">057a4c3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -641,15 +641,8 @@ Untracked files:
     Untracked:  code/test_scripts/read_World_Ocean_Atlas_2013_Clement.Rmd
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
-    Deleted:    analysis/analysis_previous_studies.Rmd
     Modified:   analysis/analysis_this_study.Rmd
     Modified:   analysis/analysis_this_study_vs_Gruber_2019.Rmd
-    Modified:   analysis/child/setup.Rmd
-    Modified:   analysis/mapping_cant_calculation.Rmd
-    Modified:   analysis/mapping_cstar_calculation.Rmd
-    Deleted:    analysis/read_World_Ocean_Atlas_2013_Clement.Rmd
-    Modified:   code/Workflowr_project_managment.R
     Modified:   code/mapping_functions.R
     Modified:   code/plotting_functions.R
 
@@ -690,6 +683,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/057a4c30cb80cb53bc9c4601fe62c32bd25bbfe2/analysis/mapping_predictor_preparation.Rmd" target="_blank">057a4c3</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-26
+</td>
+<td>
+rebuild with integrated plotting functions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/8beb8b24aedfa9b411007a98b120cb776dc81057/docs/mapping_predictor_preparation.html" target="_blank">8beb8b2</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1725,21 +1752,33 @@ rm(GLODAP_predictors_CO2, WOA18_predictors_surface)</code></pre>
 <div id="maps" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> Maps</h3>
 <p>Three maps are generated to control successful merging of data sets.</p>
-<pre class="r"><code>p_map_climatology_continous(predictors, &quot;phosphate&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors, 
+  var = &quot;phosphate&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_PO4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p_map_climatology_continous(predictors, &quot;tem&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors, 
+  var = &quot;tem&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_tem-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="maps-surface" class="section level3">
 <h3><span class="header-section-number">3.1.2</span> Maps surface</h3>
 <p>Three maps are generated to control successful merging of data sets.</p>
-<pre class="r"><code>p_map_climatology_continous(predictors_surface, &quot;TAlk&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors_surface, 
+  var = &quot;TAlk&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_TAlk_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p_map_climatology_continous(predictors_surface, &quot;TCO2&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors_surface, 
+  var = &quot;TCO2&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_TCO2_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p_map_climatology_continous(predictors_surface, &quot;sal&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors_surface, 
+  var = &quot;sal&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_sal_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p_map_climatology_continous(predictors_surface, &quot;tem&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors_surface, 
+  var = &quot;tem&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/joined_climatology_control_tem_surface-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="predictor-profiles" class="section level3">
@@ -1775,12 +1814,18 @@ N_Atl %&gt;%
   mutate(phosphate_star = b_phosphate_star(phosphate, oxygen))</code></pre>
 <div id="maps-1" class="section level3">
 <h3><span class="header-section-number">4.1.1</span> Maps</h3>
-<pre class="r"><code>p_map_climatology_divergent(predictors, &quot;phosphate_star&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors,
+  var = &quot;phosphate_star&quot;,
+  col = &quot;divergent&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/PO4_star_climatology_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections" class="section level3">
 <h3><span class="header-section-number">4.1.2</span> Sections</h3>
-<pre class="r"><code>p_section_global_divergent(predictors, &quot;phosphate_star&quot;)</code></pre>
+<pre class="r"><code>p_section_global(
+  df = predictors,
+  var = &quot;phosphate_star&quot;,
+  col = &quot;divergent&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/PO4_star_climatology_section-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -1794,12 +1839,18 @@ N_Atl %&gt;%
 </div>
 <div id="maps-2" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Maps</h3>
-<pre class="r"><code>p_map_climatology_continous(predictors, &quot;aou&quot;)</code></pre>
+<pre class="r"><code>p_map_climatology(
+  df = predictors,
+  var = &quot;aou&quot;,
+  col = &quot;divergent&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/aou_climatology_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sections-1" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Sections</h3>
-<pre class="r"><code>p_section_global_divergent(predictors, &quot;aou&quot;)</code></pre>
+<pre class="r"><code>p_section_global(
+  df = predictors,
+  var = &quot;aou&quot;,
+  col = &quot;divergent&quot;)</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/aou_climatology_section-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -1843,7 +1894,11 @@ N_Atl %&gt;%
 # i_var &lt;- vars[1]
 
 for (i_var in vars) {
-  print(p_section_climatology_regular_continous(predictors, i_var))
+  print(
+    p_section_climatology_regular(
+      df = predictors,
+      var = i_var)
+    )
 }</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections-8.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
@@ -1869,7 +1924,11 @@ for (i_var in vars) {
   )
 
 for (i_var in vars) {
-  print(p_section_climatology_regular_continous(predictors_surface, i_var))
+  print(
+    p_section_climatology_regular(
+      df = predictors_surface,
+      var = i_var)
+    )
 }</code></pre>
 <p><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/mapping_predictor_preparation.Rmd/all_predictor_sections_surface-5.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
