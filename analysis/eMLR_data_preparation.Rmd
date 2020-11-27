@@ -305,7 +305,7 @@ GLODAP %>%
 
 ```
 
-```{r cstar_reference_year_adjustment_vs_time_count}
+```{r cstar_reference_year_adjustment_vs_time_counts}
 
 GLODAP %>% 
   ggplot(aes(year, cstar_tref_delta)) +
