@@ -290,7 +290,7 @@ GLODAP <- GLODAP %>%
 
 GLODAP %>% 
   ggplot(aes(cstar_tref_delta)) +
-  geom_histogram()
+  geom_histogram(binwidth = 1)
 
 ```
 
@@ -312,7 +312,7 @@ GLODAP %>%
 
 GLODAP %>% 
   ggplot(aes(year, cstar_tref_delta)) +
-  geom_bin2d() +
+  geom_bin2d(binwidth = 1) +
   scale_fill_viridis_c()
 
 ```
