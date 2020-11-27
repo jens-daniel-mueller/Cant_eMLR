@@ -615,16 +615,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeeb8366004928a2a5e1cb3357b8668fb3d3811cb2targetblankeb83660a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/eb8366004928a2a5e1cb3357b8668fb3d3811cb2" target="_blank">eb83660</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9b95647a7fe12469619fb257df40b603d8c56175targetblank9b95647a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9b95647a7fe12469619fb257df40b603d8c56175" target="_blank">9b95647</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtreeeb8366004928a2a5e1cb3357b8668fb3d3811cb2targetblankeb83660a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerCanteMLRtree9b95647a7fe12469619fb257df40b603d8c56175targetblank9b95647a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/eb8366004928a2a5e1cb3357b8668fb3d3811cb2" target="_blank">eb83660</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jens-daniel-mueller/Cant_eMLR/tree/9b95647a7fe12469619fb257df40b603d8c56175" target="_blank">9b95647</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -672,6 +672,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/Cant_eMLR/blob/9b95647a7fe12469619fb257df40b603d8c56175/analysis/eMLR_data_preparation.Rmd" target="_blank">9b95647</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-27
+</td>
+<td>
+change binwidth of control plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/Cant_eMLR/75e56a15c325a39a76602b1f7af27bf8a759488e/docs/eMLR_data_preparation.html" target="_blank">75e56a1</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2020-11-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1913,28 +1947,24 @@ GLODAP &lt;- GLODAP %&gt;%
 </div>
 <div id="control-plots" class="section level2">
 <h2><span class="header-section-number">5.3</span> Control plots</h2>
-<div id="histogram" class="section level3">
-<h3><span class="header-section-number">5.3.1</span> Histogram</h3>
 <pre class="r"><code>GLODAP %&gt;% 
   ggplot(aes(cstar_tref_delta)) +
-  geom_histogram(binwidth = 1)</code></pre>
+  geom_histogram(binwidth = 1) +
+  labs(title = &quot;Histogramm with binwidth = 1&quot;)</code></pre>
 <p><img src="figure/eMLR_data_preparation.Rmd/cstar_reference_year_adjustment_histogram-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="time-series" class="section level3">
-<h3><span class="header-section-number">5.3.2</span> Time series</h3>
 <pre class="r"><code>GLODAP %&gt;% 
   sample_n(1e4) %&gt;% 
   ggplot(aes(year, cstar_tref_delta, col = cant_pos)) +
   geom_point() +
   scale_color_viridis_c() +
-  labs(title = &quot;random subsample 1e4&quot;)</code></pre>
+  labs(title = &quot;Time series of random subsample 1e4&quot;)</code></pre>
 <p><img src="figure/eMLR_data_preparation.Rmd/cstar_reference_year_adjustment_vs_time_cant-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>GLODAP %&gt;% 
   ggplot(aes(year, cstar_tref_delta)) +
   geom_bin2d(binwidth = 1) +
-  scale_fill_viridis_c()</code></pre>
+  scale_fill_viridis_c(trans = &quot;log&quot;) +
+  labs(title = &quot;Heatmap with binwidth = 1&quot;)</code></pre>
 <p><img src="figure/eMLR_data_preparation.Rmd/cstar_reference_year_adjustment_vs_time_count-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
 </div>
 </div>
 <div id="selected-section-plots" class="section level1">
