@@ -50,7 +50,7 @@ GLODAP <-
 
 
 
-# Model fitting
+# Fitting all models
 
 ## RMSE calculation
 
@@ -79,19 +79,14 @@ for (i_basin in unique(GLODAP$basin)) {
       # i_gamma_slab <- unique(GLODAP_basin_era$gamma_slab)[1]
       print(i_gamma_slab)
       
+      # subset one gamma slab
       GLODAP_basin_era_slab <- GLODAP_basin_era %>% 
         filter(gamma_slab == i_gamma_slab)
-      
+
       # fit the full linear model, i.e. all predictor combinations
-      lm_full <- lm(cstar ~ 
-                sal  + 
-                tem  + 
-                aou  + 
-                oxygen  + 
-                silicate  + 
-                phosphate  + 
-                phosphate_star, 
-              data = GLODAP_basin_era_slab)
+      lm_full <- lm(
+        parameters$MLR_full_model,
+        data = GLODAP_basin_era_slab)
       
       # fit linear models for all possible predictor combinations
       # unfortunately, this functions does not provide model coeffcients (yet)
@@ -274,7 +269,7 @@ sqrt(mean(lm_2$residuals^2))
 
 
 
-## Fitting best models
+# Fitting best models
 
 After selecting `r parameters$MLR_number` linear regression models with lowest summed RMSE across all eras, models are fitted again and model coefficients are saved to file.
 
@@ -475,6 +470,10 @@ lm_all_wide <- lm_all_long %>%
 lm_all_wide %>%
   write_csv(here::here("data/eMLR",
                        "lm_all_wide.csv"))
+
+# lm_all_long %>%
+#   write_csv(here::here("data/eMLR",
+#                        "lm_all_long.csv"))
 
 rm(lm_all_long, lm_all_wide)
 

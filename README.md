@@ -24,7 +24,13 @@ Functions are stored in .R files located under /code.
 
 ## Unevaluated chunks
 
-- 
+Following code chunks are not executed (set to eval=FALSE) in routine mode:
+
+- eMLR_
+
+- mapping_
+
+Respective code chunks create a high number of diagnostic figures as separate output which results in higher runtime of the code. Therefore, those chunks must be run manually to generate the desired output.
 
 
 A [workflowr][] project.

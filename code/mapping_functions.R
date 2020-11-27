@@ -1,3 +1,5 @@
+#### Averaging of mapped fields ####
+
 m_cant_predictor_model_average <- function(df) {
 
   df <- df %>%
@@ -163,6 +165,8 @@ m_zonal_mean_section <- function(df) {
 }
 
 
+#### Horizontal gridding ####
+
 # cut lat and lon to a 1 x 1 deg horizontal grid
 m_grid_horizontal <- function(df) {
 
@@ -194,6 +198,8 @@ m_grid_horizontal_coarse <- function(df) {
 }
 
 
+
+#### Neutral density slab assignment ####
 # cut neutral density gamma into specific slabs for basins
 m_cut_gamma <- function(df, var) {
 
