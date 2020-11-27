@@ -26,9 +26,21 @@ Functions are stored in .R files located under /code.
 
 Following code chunks are not executed (set to eval=FALSE) in routine mode:
 
-- eMLR_
+in eMLR_data_preparation.Rmd  
 
-- mapping_
+- plot_all_individual_cruises_clean
+
+in eMLR_assumption_testing.Rmd  
+
+- predictor_correlation_per_basin_era_slab  
+
+in eMLR_model_fitting.Rmd  
+
+- fit_best_models (only plot commands uncommented within loop)
+
+in mapping_cant_calculation.Rmd  
+
+- cant_section_by_model_eras_lon  
 
 Respective code chunks create a high number of diagnostic figures as separate output which results in higher runtime of the code. Therefore, those chunks must be run manually to generate the desired output.
 
