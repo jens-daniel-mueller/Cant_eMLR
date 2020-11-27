@@ -19,7 +19,19 @@ Code chunks that are used across several .Rmd files are located in /analysis/chi
 
 ## Using functions
 
-Functions are stored in .R files located under /code.
+Functions are stored in .R files located under /code. Here, it is distinguished between:
+
+biogeochemical_functions.R  
+
+- calculate biogeochemical parameters, such as C*
+
+mapping_functions.R  
+
+- map properties, eg calculate \Delta C~ant~ by appliying model coeffcients to predictor climatologies, and regional averaging
+
+plotting_functions.R  
+
+- produce maps, zonal mean sections and other plots
 
 
 ## Unevaluated chunks
