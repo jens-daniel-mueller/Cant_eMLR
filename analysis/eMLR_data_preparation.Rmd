@@ -284,17 +284,14 @@ GLODAP <- GLODAP %>%
 
 ## Control plots
 
-### Histogram
-
 ```{r cstar_reference_year_adjustment_histogram}
 
 GLODAP %>% 
   ggplot(aes(cstar_tref_delta)) +
-  geom_histogram(binwidth = 1)
+  geom_histogram(binwidth = 1) +
+  labs(title = "Histogramm with binwidth = 1")
 
 ```
-
-### Time series
 
 ```{r cstar_reference_year_adjustment_vs_time_cant}
 
@@ -303,7 +300,7 @@ GLODAP %>%
   ggplot(aes(year, cstar_tref_delta, col = cant_pos)) +
   geom_point() +
   scale_color_viridis_c() +
-  labs(title = "random subsample 1e4")
+  labs(title = "Time series of random subsample 1e4")
 
 
 ```
@@ -313,7 +310,8 @@ GLODAP %>%
 GLODAP %>% 
   ggplot(aes(year, cstar_tref_delta)) +
   geom_bin2d(binwidth = 1) +
-  scale_fill_viridis_c()
+  scale_fill_viridis_c(trans = "log") +
+  labs(title = "Heatmap with binwidth = 1")
 
 ```
 
